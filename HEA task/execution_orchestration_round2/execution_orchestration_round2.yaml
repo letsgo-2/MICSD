@@ -1,0 +1,684 @@
+metadata:
+  artifact: execution_orchestration
+  round: round2
+  output_language: English
+  created_from_skill: scientific-execution-orchestrator
+  status: draft_pending_user_run_confirmation
+  model_or_algorithm_locked: true
+  locked_by: implemented_AL_folder_inspection
+  execution_performed_in_this_update: false
+
+upstream_inputs:
+  previous_execution_orchestration: execution_orchestration_round1/
+  knowledge_alignment_yaml: knowledge_alignment_round2/knowledge_alignment_round2.yaml
+  knowledge_alignment_report: knowledge_alignment_round2/knowledge_alignment_report_round2.md
+  expert_review_queue: knowledge_alignment_round2/expert_review_queue_round2.yaml
+  al_implementation_path: AL/catalyst_active_learning_runnable
+  input_status: loaded_and_inspected
+
+execution_context:
+  project_goal: "Iteratively optimize octonary HEA catalyst formulations with peak power density as core performance metric while tracking cost, validity, novelty, credibility, and high-performance stability."
+  canonical_element_order: [Pd, Pt, Cu, Au, Ir, Ce, Nb, Cr]
+  composition_type: mass_fraction_vector
+  sample_unit: catalyst_formulation_record
+  formal_execution_allowed: false
+  reason_not_active: "User requested run procedure confirmation and no unauthorized execution."
+  run_path_status: available_pending_user_confirmation
+
+metric_candidates:
+  - metric_id: M001
+    name: Peak power density
+    aliases: [power_density, maximum_power_density, peak_power_density]
+    definition: "Core performance target for formulation optimization."
+    proposed_roles: [primary_objective]
+    direction: maximize
+    threshold:
+      value: null
+      range: [0.02709, 75.45]
+      unit: local_power_density_unit_pending
+      status: local_training_range_from_data_readme
+      implemented_prediction_guard: [0, 500]
+      implemented_stop_threshold: 200.0
+    conditions: [CSV_target_column_power_density]
+    acquisition: [CSV_input, LLM_prediction, GBR_virtual_oracle]
+    evidence_refs: [EO2-E003, EO2-E006, EO2-E007, EO2-E008]
+    expert_status: core_metric_confirmed
+    unresolved_fields: [physical_unit]
+  - metric_id: M002
+    name: Composition validity
+    aliases: [simplex_validity, normalized_ratio_validity]
+    definition: "Candidate vector is finite, length 8, nonnegative, and normalizable to sum 1."
+    proposed_roles: [hard_constraint]
+    direction: target_range
+    threshold:
+      finite: true
+      nonnegative: true
+      vector_length: 8
+      sum_rule: "sum > 0 before normalization; normalized to sum 1"
+      status: implemented
+    conditions: [all_data_rows, all_generated_candidates]
+    acquisition: [normalize_ratio, _read_and_validate, provider_parser]
+    evidence_refs: [EO2-E005, EO2-E007]
+    expert_status: confirmed
+    unresolved_fields: []
+  - metric_id: M003
+    name: Fixed element order
+    aliases: [schema_order]
+    definition: "All inputs and outputs use Pd, Pt, Cu, Au, Ir, Ce, Nb, Cr order."
+    proposed_roles: [hard_constraint]
+    direction: target_range
+    threshold:
+      value: [Pd, Pt, Cu, Au, Ir, Ce, Nb, Cr]
+      status: implemented
+    conditions: [all_interfaces]
+    acquisition: [README, METAL_ORDER, provider_prompt, output_writer]
+    evidence_refs: [EO2-E003, EO2-E005, EO2-E007, EO2-E008]
+    expert_status: confirmed_for_AL_path
+    unresolved_fields: []
+  - metric_id: M004
+    name: Element content ranges
+    aliases: [element_bounds]
+    definition: "Allowed per-element mass-fraction bounds."
+    proposed_roles: [hard_constraint, soft_constraint]
+    direction: target_range
+    threshold:
+      lower_bound: 0.0
+      upper_bound: 1.0
+      status: mathematical_simplex_only
+    conditions: [generated_candidates]
+    acquisition: [normalize_ratio]
+    evidence_refs: [EO2-E005]
+    expert_status: synthesis_bounds_pending
+    unresolved_fields: [synthesis_specific_min_max, dispensing_resolution]
+  - metric_id: M005
+    name: Normalized cost
+    aliases: [normalized_catalyst_cost]
+    definition: "Weighted composition cost normalized by Pd price and multiplied by 100."
+    proposed_roles: [secondary_objective, soft_constraint]
+    direction: minimize
+    threshold:
+      reference: pure_Pd_equals_100
+      formula: "dot(ratio, [26393,20325,4.53,29298,23926,5.37,32.22,5.86]) / 26393 * 100"
+      status: implemented_provisional
+    conditions: [normalized_composition]
+    acquisition: [calculate_normalized_cost]
+    evidence_refs: [EO2-E005]
+    expert_status: price_basis_pending
+    unresolved_fields: [price_source_date]
+  - metric_id: M006
+    name: Candidate difference from existing samples
+    aliases: [novelty, diversity, Aitchison_distance_to_examples]
+    definition: "Difference from existing sample pool measured in CLR/Aitchison-like space and used in AK-DAS selection and similar-example retrieval."
+    proposed_roles: [diagnostic, selection_metric]
+    direction: maximize_or_balance_with_relevance
+    threshold:
+      value: null
+      status: implemented_without_absolute_threshold
+    conditions: [candidate_selection]
+    acquisition: [clr_transform, find_similar_examples, AKDAS]
+    evidence_refs: [EO2-E008, local_literature_compositional_data]
+    expert_status: implemented_as_selection_behavior
+    unresolved_fields: [absolute_novelty_threshold]
+  - metric_id: M007
+    name: Model prediction credibility
+    aliases: [LLM_committee_uncertainty, prediction_uncertainty, UCB]
+    definition: "Credibility proxy from repeated LLM predictions; std represents spread and UCB combines mean with exploration uncertainty."
+    proposed_roles: [diagnostic, acquisition_metric]
+    direction: minimize_std_or_manage_with_UCB
+    threshold:
+      committee_size: 3
+      ucb_formula: "llm_mean + ucb_exploration_weight * llm_std"
+      ucb_exploration_weight: 1.0
+      prediction_allowed_range: [0, 500]
+      status: implemented
+    conditions: [LLM_committee_prediction]
+    acquisition: [predict_committee, pipeline_scored_candidates]
+    evidence_refs: [EO2-E007, EO2-E008]
+    expert_status: implemented
+    unresolved_fields: [credibility_acceptance_threshold]
+  - metric_id: M008
+    name: High-performance formulation stability
+    aliases: [stability_of_high_performance_recipes, robust_high_PD]
+    definition: "Whether high peak-power-density behavior persists across retained candidates, nearby compositions, or repeated iterations."
+    proposed_roles: [diagnostic]
+    direction: maximize
+    threshold:
+      value: null
+      status: proposed_not_explicitly_implemented
+      suggested_sources: [iteration_log, total_pool, query_log]
+    conditions: [post_run_analysis]
+    acquisition: [log_analysis]
+    evidence_refs: [EO2-E008]
+    expert_status: pending_definition
+    unresolved_fields: [stability_metric_formula, threshold]
+  - metric_id: M009
+    name: Final score
+    aliases: [weighted_batch_score]
+    definition: "Batch-local weighted score combining normalized virtual-oracle power density and normalized cost."
+    proposed_roles: [selection_metric]
+    direction: maximize
+    threshold:
+      formula: "performance_weight * normalized_power - (1-performance_weight) * normalized_cost"
+      performance_weight: 0.6
+      status: implemented
+    conditions: [queried_batch]
+    acquisition: [_score_and_retain]
+    evidence_refs: [EO2-E008]
+    expert_status: implemented_selection_not_core_science_metric
+    unresolved_fields: []
+
+metric_decisions:
+  - metric_id: M001
+    final_role: primary_objective
+    rank: 1
+    ranking_basis: ["Computer expert finalized peak power density as core performance metric.", "Implemented AL uses power_density as target, LLM prediction output, GBR oracle output, and summary best metric."]
+    direction: maximize
+    threshold: {implemented_stop_threshold: 200.0, prediction_guard: [0, 500], local_training_range: [0.02709, 75.45]}
+    evaluator_id: MODEL-GBR-ORACLE_and_MODEL-LLM-COMMITTEE
+    decision_status: active_pending_run_confirmation
+    evidence_refs: [EO2-E003, EO2-E006, EO2-E007, EO2-E008]
+    expert_feedback_refs: [user_round2_request]
+  - metric_id: M002
+    final_role: hard_constraint
+    rank: 2
+    ranking_basis: ["Nonnegative and sum-to-1 composition constraints are final expert requirements.", "Implemented code normalizes and rejects invalid vectors."]
+    direction: target_range
+    threshold: {finite: true, nonnegative: true, vector_length: 8, sum_after_normalization: 1}
+    evaluator_id: MODEL-CONSTRAINTS
+    decision_status: active_pending_run_confirmation
+    evidence_refs: [EO2-E005]
+    expert_feedback_refs: [user_round2_request]
+  - metric_id: M003
+    final_role: hard_constraint
+    rank: 3
+    ranking_basis: ["Fixed element order is final expert requirement.", "AL path implements Pd, Pt, Cu, Au, Ir, Ce, Nb, Cr everywhere inspected."]
+    direction: target_range
+    threshold: {element_order: [Pd, Pt, Cu, Au, Ir, Ce, Nb, Cr]}
+    evaluator_id: MODEL-CONSTRAINTS
+    decision_status: active_pending_run_confirmation
+    evidence_refs: [EO2-E003, EO2-E005, EO2-E007]
+    expert_feedback_refs: [user_round2_request]
+  - metric_id: M004
+    final_role: hard_constraint
+    rank: 4
+    ranking_basis: ["Element ranges control formulation feasibility.", "Current code only implements mathematical nonnegative simplex; real synthesis bounds need expert input."]
+    direction: target_range
+    threshold: {current_lower_bound: 0.0, current_upper_bound: 1.0, status: synthesis_bounds_pending}
+    evaluator_id: MODEL-CONSTRAINTS
+    decision_status: active_for_nonnegative_only
+    evidence_refs: [EO2-E005]
+    expert_feedback_refs: [user_round2_request]
+  - metric_id: M005
+    final_role: soft_constraint
+    rank: 5
+    ranking_basis: ["Materials expert requested cost tracking.", "AL code uses normalized cost in target generation, Pareto screening, and final score."]
+    direction: minimize
+    threshold: {reference: pure_Pd_equals_100, price_basis_status: pending}
+    evaluator_id: MODEL-COST
+    decision_status: active_provisional
+    evidence_refs: [EO2-E005, EO2-E008]
+    expert_feedback_refs: [user_round2_request]
+  - metric_id: M006
+    final_role: diagnostic
+    rank: 6
+    ranking_basis: ["Materials expert requested candidate difference from existing samples.", "AL implements CLR/Aitchison similar-example retrieval and AK-DAS diversity selection."]
+    direction: maximize_or_balance
+    threshold: {absolute_threshold: null, status: implemented_relative_selection}
+    evaluator_id: MODEL-AKDAS
+    decision_status: active_diagnostic
+    evidence_refs: [EO2-E008]
+    expert_feedback_refs: [user_round2_request]
+  - metric_id: M007
+    final_role: diagnostic
+    rank: 7
+    ranking_basis: ["Computer-facing model credibility is needed before trusting candidates.", "AL implements LLM committee mean/std and UCB score."]
+    direction: context_dependent
+    threshold: {committee_size: 3, prediction_allowed_range: [0, 500], credibility_cutoff: null}
+    evaluator_id: MODEL-LLM-COMMITTEE
+    decision_status: active_diagnostic
+    evidence_refs: [EO2-E007, EO2-E008]
+    expert_feedback_refs: [user_round2_request]
+  - metric_id: M008
+    final_role: diagnostic
+    rank: 8
+    ranking_basis: ["Materials expert requested high-performance stability.", "Current AL logs allow post-run stability analysis but no explicit stability metric is implemented."]
+    direction: maximize
+    threshold: {status: proposed_post_processing}
+    evaluator_id: MODEL-POSTPROCESS-STABILITY
+    decision_status: proposed
+    evidence_refs: [EO2-E008]
+    expert_feedback_refs: [user_round2_request]
+
+model_interfaces:
+  - model_id: MODEL-CONSTRAINTS
+    name: Composition validator and normalizer
+    role: constraint_checker
+    status: available_pending_user_confirmation
+    source: {type: local, location: AL/catalyst_active_learning_runnable/catalyst_al/costs.py, version: workspace}
+    entrypoint: {command: "import/use normalize_ratio", script: "", environment: Python 3.10-3.12, working_directory: AL/catalyst_active_learning_runnable}
+    human_provision:
+      model_information_provided: true
+      script_location_provided: true
+      executable_interface_exposed: true
+      parameter_interface_exposed: false
+      access_level: execute_fixed_after_confirmation
+      authorized_parameters: []
+      prohibited_actions: [run_without_user_confirmation, modify_original_code]
+      provided_by: AL_folder
+      confirmation_ref: user_round2_request
+    input_schema: [Pd, Pt, Cu, Au, Ir, Ce, Nb, Cr]
+    output_schema: [normalized_ratio_or_error]
+    supported_metrics: [M002, M003, M004]
+    parameters: {element_order: [Pd, Pt, Cu, Au, Ir, Ce, Nb, Cr]}
+    validation: {test_data: tests/test_core.py, metrics: {}, applicability_domain: eight_element_mass_fraction_vectors, known_failures: [synthesis_bounds_not_encoded]}
+    evidence_refs: [EO2-E005, EO2-E009]
+  - model_id: MODEL-COST
+    name: Normalized cost calculator
+    role: constraint_checker
+    status: available_pending_user_confirmation
+    source: {type: local, location: AL/catalyst_active_learning_runnable/catalyst_al/costs.py, version: workspace}
+    entrypoint: {command: "import/use calculate_normalized_cost", script: "", environment: Python 3.10-3.12, working_directory: AL/catalyst_active_learning_runnable}
+    human_provision:
+      model_information_provided: true
+      script_location_provided: true
+      executable_interface_exposed: true
+      parameter_interface_exposed: false
+      access_level: execute_fixed_after_confirmation
+      authorized_parameters: []
+      prohibited_actions: [treat_price_table_as_certified_market_data]
+      provided_by: AL_folder
+      confirmation_ref: user_round2_request
+    input_schema: [Pd, Pt, Cu, Au, Ir, Ce, Nb, Cr]
+    output_schema: [normalized_cost]
+    supported_metrics: [M005]
+    parameters: {Pd: 26393.0, Pt: 20325.0, Cu: 4.53, Au: 29298.0, Ir: 23926.0, Ce: 5.37, Nb: 32.22, Cr: 5.86, reference: Pd}
+    validation: {test_data: tests/test_core.py, metrics: {pure_Pd_cost: 100.0}, applicability_domain: provisional_cost_screening, known_failures: [price_source_date_missing]}
+    evidence_refs: [EO2-E005, EO2-E009]
+  - model_id: MODEL-GBR-ORACLE
+    name: GBR virtual experimental oracle
+    role: surrogate
+    status: available_pending_user_confirmation
+    source: {type: local, location: AL/catalyst_active_learning_runnable/catalyst_al/model.py, version: scikit-learn_1.6.1}
+    entrypoint: {command: "python train_oracle.py or automatic load_or_train_oracle via python run.py", script: train_oracle.py, environment: Python 3.10-3.12, working_directory: AL/catalyst_active_learning_runnable}
+    human_provision:
+      model_information_provided: true
+      script_location_provided: true
+      executable_interface_exposed: true
+      parameter_interface_exposed: false
+      access_level: execute_fixed_after_confirmation
+      authorized_parameters: []
+      prohibited_actions: [claim_as_real_experiment, run_without_user_confirmation]
+      provided_by: AL_folder
+      confirmation_ref: user_round2_request
+    input_schema: [Pd, Pt, Cu, Au, Ir, Ce, Nb, Cr]
+    output_schema: [power_density_prediction]
+    supported_metrics: [M001]
+    parameters: {n_estimators: 512, learning_rate: 0.03, max_depth: 3, loss: squared_error, test_size: 0.2, random_seed: 42}
+    validation: {test_data: data/oracle_training_sample.csv, metrics: [test_r2, test_rmse, test_mae], applicability_domain: virtual_oracle_training_sample, known_failures: [not_real_experiment]}
+    evidence_refs: [EO2-E006]
+  - model_id: MODEL-LLM-PROVIDER
+    name: OpenAI-compatible LLM composition generator
+    role: generator
+    status: available_requires_api_configuration
+    source: {type: local_api_adapter, location: AL/catalyst_active_learning_runnable/catalyst_al/providers.py, version: openai_package_1.58_to_3}
+    entrypoint: {command: "python run.py", script: run.py, environment: .env_with_OPENAI_API_KEY_and_OPENAI_MODEL, working_directory: AL/catalyst_active_learning_runnable}
+    human_provision:
+      model_information_provided: true
+      script_location_provided: true
+      executable_interface_exposed: true
+      parameter_interface_exposed: limited_cli
+      access_level: execute_fixed_after_confirmation
+      authorized_parameters: [OPENAI_MODEL, OPENAI_BASE_URL, iterations, candidate_pool_size, output_dir]
+      prohibited_actions: [run_without_user_confirmation, expose_api_key]
+      provided_by: AL_folder
+      confirmation_ref: user_round2_request
+    input_schema: [target_pd, target_cost, reference_examples]
+    output_schema: [eight_number_bracketed_vector]
+    supported_metrics: [M001, M002, M003]
+    parameters: {temperature: 0.2, max_tokens_generate_ratio: 120, max_tokens_predict: 20}
+    validation: {test_data: outputs/api_check_after_confirmation, metrics: [parse_success, constraint_pass, output_files_exist], applicability_domain: prompt_following_for_8D_composition, known_failures: [network_or_api_failure, parse_failure]}
+    evidence_refs: [EO2-E003, EO2-E007]
+  - model_id: MODEL-LLM-COMMITTEE
+    name: LLM committee predictor and UCB calculator
+    role: uncertainty_model
+    status: available_requires_api_configuration
+    source: {type: local_api_adapter, location: AL/catalyst_active_learning_runnable/catalyst_al/providers.py and pipeline.py, version: workspace}
+    entrypoint: {command: "python run.py", script: run.py, environment: .env_with_api, working_directory: AL/catalyst_active_learning_runnable}
+    human_provision:
+      model_information_provided: true
+      script_location_provided: true
+      executable_interface_exposed: true
+      parameter_interface_exposed: limited_cli_and_config
+      access_level: execute_fixed_after_confirmation
+      authorized_parameters: [committee_size, ucb_exploration_weight]
+      prohibited_actions: [treat_llm_predictions_as_measurements]
+      provided_by: AL_folder
+      confirmation_ref: user_round2_request
+    input_schema: [candidate_ratio, similar_examples, committee_size]
+    output_schema: [llm_mean, llm_std, ucb_score]
+    supported_metrics: [M001, M007]
+    parameters: {committee_size: 3, ucb_exploration_weight: 1.0, prediction_allowed_range: [0, 500]}
+    validation: {test_data: outputs/api_check_after_confirmation, metrics: [std_distribution, parse_success], applicability_domain: same_unit_as_examples_prompt, known_failures: [uncalibrated_uncertainty]}
+    evidence_refs: [EO2-E007, EO2-E008]
+  - model_id: MODEL-AKDAS
+    name: CLR/Aitchison AK-DAS selector
+    role: generator
+    status: available_pending_user_confirmation
+    source: {type: local, location: AL/catalyst_active_learning_runnable/catalyst_al/sampling.py, version: workspace}
+    entrypoint: {command: "python run.py", script: run.py, environment: Python 3.10-3.12, working_directory: AL/catalyst_active_learning_runnable}
+    human_provision:
+      model_information_provided: true
+      script_location_provided: true
+      executable_interface_exposed: true
+      parameter_interface_exposed: config_file
+      access_level: execute_fixed_after_confirmation
+      authorized_parameters: [candidate_pool_size, kdas_select_size, lambda_start, lambda_end, kdas_sigma, similar_examples_k]
+      prohibited_actions: [run_without_user_confirmation]
+      provided_by: AL_folder
+      confirmation_ref: user_round2_request
+    input_schema: [Dirichlet_candidate_pool, LLM_generated_target_ratio]
+    output_schema: [selected_candidate_ratios]
+    supported_metrics: [M006]
+    parameters: {candidate_pool_size: 20000, kdas_select_size: 10, lambda_start: 0.5, lambda_end: 0.7, kdas_sigma: 1.5}
+    validation: {test_data: tests/test_core.py, metrics: [simplex_output_shape_and_sum], applicability_domain: positive_simplex_with_epsilon_for_CLR, known_failures: [absolute_distance_threshold_missing]}
+    evidence_refs: [EO2-E008, EO2-E009]
+  - model_id: MODEL-PARETO-SCORER
+    name: Pareto and final weighted scorer
+    role: constraint_checker
+    status: available_pending_user_confirmation
+    source: {type: local, location: AL/catalyst_active_learning_runnable/catalyst_al/pareto.py and pipeline.py, version: workspace}
+    entrypoint: {command: "python run.py", script: run.py, environment: Python 3.10-3.12, working_directory: AL/catalyst_active_learning_runnable}
+    human_provision:
+      model_information_provided: true
+      script_location_provided: true
+      executable_interface_exposed: true
+      parameter_interface_exposed: config_file
+      access_level: execute_fixed_after_confirmation
+      authorized_parameters: [query_top_k, retain_top_k, performance_weight]
+      prohibited_actions: [treat_final_score_as_scientific_endpoint]
+      provided_by: AL_folder
+      confirmation_ref: user_round2_request
+    input_schema: [candidate_ratio, ucb_score, normalized_cost, power_density]
+    output_schema: [retained_flag, final_score]
+    supported_metrics: [M001, M005, M009]
+    parameters: {query_top_k: 8, retain_top_k: 3, performance_weight: 0.6}
+    validation: {test_data: tests/test_core.py, metrics: [no_duplicate_reference_sort], applicability_domain: batch_local_selection, known_failures: [score_not_global]}
+    evidence_refs: [EO2-E008, EO2-E009]
+
+reward_components:
+  - component_id: RC2-001
+    metric_id: M002
+    evaluator_id: MODEL-CONSTRAINTS
+    role: hard_constraint
+    direction: target_range
+    threshold: {finite: true, nonnegative: true, vector_length: 8, sum_normalized_to: 1}
+    normalization: none
+    weight: null
+    uncertainty_penalty: none
+    missing_policy: reject
+    status: active_pending_run_confirmation
+    evidence_refs: [EO2-E005]
+  - component_id: RC2-002
+    metric_id: M003
+    evaluator_id: MODEL-CONSTRAINTS
+    role: hard_constraint
+    direction: target_range
+    threshold: {element_order: [Pd, Pt, Cu, Au, Ir, Ce, Nb, Cr]}
+    normalization: none
+    weight: null
+    uncertainty_penalty: none
+    missing_policy: reject
+    status: active_pending_run_confirmation
+    evidence_refs: [EO2-E003, EO2-E005]
+  - component_id: RC2-003
+    metric_id: M001
+    evaluator_id: MODEL-GBR-ORACLE
+    role: objective
+    direction: maximize
+    threshold: {stop_if_global_best_ge: 200.0, implemented_prediction_guard: [0, 500]}
+    normalization: minmax_batch_local_in_final_score
+    weight: 0.6
+    uncertainty_penalty: handled_indirectly_by_UCB_before_GBR_query
+    missing_policy: reject
+    status: active_pending_run_confirmation
+    evidence_refs: [EO2-E006, EO2-E008]
+  - component_id: RC2-004
+    metric_id: M005
+    evaluator_id: MODEL-COST
+    role: soft_constraint
+    direction: minimize
+    threshold: {target_cost_reduction_mean: 0.03, target_cost_reduction_std: 0.01, floor: 0.1}
+    normalization: minmax_batch_local_in_final_score
+    weight: 0.4
+    uncertainty_penalty: price_basis_pending
+    missing_policy: manual_review
+    status: active_provisional
+    evidence_refs: [EO2-E005, EO2-E008]
+  - component_id: RC2-005
+    metric_id: M006
+    evaluator_id: MODEL-AKDAS
+    role: soft_constraint
+    direction: maximize
+    threshold: {absolute_threshold: null, relative_diversity_penalty: implemented}
+    normalization: CLR_Aitchison_kernel
+    weight: {lambda_start: 0.5, lambda_end: 0.7}
+    uncertainty_penalty: none
+    missing_policy: skip
+    status: active_diagnostic
+    evidence_refs: [EO2-E008]
+  - component_id: RC2-006
+    metric_id: M007
+    evaluator_id: MODEL-LLM-COMMITTEE
+    role: soft_constraint
+    direction: context_dependent
+    threshold: {committee_size: 3, ucb_exploration_weight: 1.0}
+    normalization: none
+    weight: 1.0
+    uncertainty_penalty: "llm_std recorded; high uncertainty increases UCB for exploration but lowers credibility interpretation"
+    missing_policy: reject
+    status: active_diagnostic
+    evidence_refs: [EO2-E007, EO2-E008]
+
+workflow:
+  workflow_id: WF-AL-R2
+  name: Implemented AL workflow pending confirmation
+  status: ready_for_user_confirmation_not_run
+  search_space:
+    definition: "Eight-dimensional mass-fraction simplex over [Pd, Pt, Cu, Au, Ir, Ce, Nb, Cr]."
+    allowed_regions: ["finite nonnegative vectors normalized to sum 1"]
+    forbidden_regions: ["wrong element order", "negative values", "non-finite values", "non-parseable LLM output", "LLM predicted PD outside [0,500]"]
+    expert_rules: ["Peak power density is core metric", "Do not describe GBR predictions as real experiments", "Use normalized cost as tradeoff metric"]
+  nodes:
+    - node_id: WF2-N01
+      action: load
+      model_id: CONFIG
+      inputs: [config.json]
+      outputs: [RunConfig]
+      retry_policy: fix_config_validation_errors
+      stop_on_failure: true
+    - node_id: WF2-N02
+      action: load
+      model_id: MODEL-CONSTRAINTS
+      inputs: [data/initial_examples.csv]
+      outputs: [initial_examples_with_normalized_cost]
+      retry_policy: fix_missing_columns_or_non_numeric_values
+      stop_on_failure: true
+    - node_id: WF2-N03
+      action: train_or_load
+      model_id: MODEL-GBR-ORACLE
+      inputs: [data/oracle_training_sample.csv, artifacts/oracle_gbr.joblib]
+      outputs: [GBR_virtual_oracle]
+      retry_policy: train_if_model_missing
+      stop_on_failure: true
+    - node_id: WF2-N04
+      action: generate
+      model_id: MODEL-LLM-PROVIDER
+      inputs: [target_pd, target_cost, pareto_sorted_reference_examples]
+      outputs: [generated_ratio, generated_cost]
+      retry_policy: fail_on_parse_error
+      stop_on_failure: true
+    - node_id: WF2-N05
+      action: generate
+      model_id: MODEL-AKDAS
+      inputs: [Dirichlet_pool, generated_ratio]
+      outputs: [selected_candidate_ratios]
+      retry_policy: regenerate_if_invalid
+      stop_on_failure: true
+    - node_id: WF2-N06
+      action: predict
+      model_id: MODEL-LLM-COMMITTEE
+      inputs: [selected_candidate_ratios, similar_examples]
+      outputs: [llm_mean, llm_std, ucb_score]
+      retry_policy: fail_on_api_or_parse_error
+      stop_on_failure: true
+    - node_id: WF2-N07
+      action: select
+      model_id: MODEL-PARETO-SCORER
+      inputs: [ucb_score, normalized_cost]
+      outputs: [top_candidates]
+      retry_policy: return_available_pareto_front
+      stop_on_failure: true
+    - node_id: WF2-N08
+      action: predict
+      model_id: MODEL-GBR-ORACLE
+      inputs: [top_candidate_ratios]
+      outputs: [virtual_power_density]
+      retry_policy: fail_on_prediction_error
+      stop_on_failure: true
+    - node_id: WF2-N09
+      action: score
+      model_id: MODEL-PARETO-SCORER
+      inputs: [virtual_power_density, normalized_cost]
+      outputs: [retained_candidates, final_score]
+      retry_policy: retain_top_available
+      stop_on_failure: true
+    - node_id: WF2-N10
+      action: export
+      model_id: PIPELINE_SAVE
+      inputs: [examples, iteration_log, query_log, generated_log, summary]
+      outputs: [total_pool_csv, iteration_log_csv, query_log_csv, generated_ratios_csv, summary_json]
+      retry_policy: fail_on_write_error
+      stop_on_failure: true
+  budget:
+    default_iterations: 10
+    api_check_iterations: 1
+    default_candidate_pool_size: 20000
+    api_check_candidate_pool_size: 2000
+    default_api_calls_per_iteration: 31
+    default_total_api_calls: 310
+    compute_limit: user_to_confirm
+  stopping_conditions:
+    - "global_best_power_density >= 200.0"
+    - "num_iterations completed"
+    - "API/config/model parse failure"
+    - "user or expert pauses run"
+  output_paths:
+    default_output_dir: AL/catalyst_active_learning_runnable/outputs/llm_experiment
+    recommended_api_check_output_dir: AL/catalyst_active_learning_runnable/outputs/api_check
+    recommended_full_run_output_dir: AL/catalyst_active_learning_runnable/outputs/full_run
+    output_files: [total_pool.csv, iteration_log.csv, query_log.csv, generated_ratios.csv, summary.json]
+
+parameter_controls:
+  - parameter_id: PARAM2-001
+    target: workflow
+    name: iterations
+    current_value: 10
+    allowed_range: [1, 10]
+    allowed_values: []
+    adjustment_mode: user_confirmation_required
+    trigger: first API check should use 1 iteration
+    max_change_per_round: null
+    rollback_value: 1
+    change_history: []
+  - parameter_id: PARAM2-002
+    target: generator
+    name: candidate_pool_size
+    current_value: 20000
+    allowed_range: [2000, 20000]
+    allowed_values: []
+    adjustment_mode: user_confirmation_required
+    trigger: first API check should use 2000
+    max_change_per_round: null
+    rollback_value: 2000
+    change_history: []
+  - parameter_id: PARAM2-003
+    target: selector
+    name: performance_weight
+    current_value: 0.6
+    allowed_range: [0.0, 1.0]
+    allowed_values: []
+    adjustment_mode: fixed_until_expert_revision
+    trigger: none
+    max_change_per_round: null
+    rollback_value: 0.6
+    change_history: []
+  - parameter_id: PARAM2-004
+    target: output
+    name: output_dir
+    current_value: outputs/llm_experiment
+    allowed_range: []
+    allowed_values: [outputs/api_check, outputs/full_run, custom_user_path]
+    adjustment_mode: user_confirmation_required
+    trigger: before run
+    max_change_per_round: null
+    rollback_value: outputs/api_check
+    change_history: []
+
+run_procedure_for_confirmation:
+  no_execution_performed: true
+  working_directory: /Users/jimmmmmies/Desktop/催化剂案例/AL/catalyst_active_learning_runnable
+  prerequisite_commands_for_user_confirmation:
+    - "python -m pip install -r requirements.txt"
+    - "create .env with OPENAI_API_KEY, OPENAI_MODEL, optional OPENAI_BASE_URL"
+    - "python check_environment.py"
+  recommended_first_run:
+    command: "python run.py --iterations 1 --candidate-pool-size 2000 --output-dir outputs/api_check"
+    expected_output_dir: /Users/jimmmmmies/Desktop/催化剂案例/AL/catalyst_active_learning_runnable/outputs/api_check
+  later_full_run:
+    command: "python run.py --output-dir outputs/full_run"
+    expected_output_dir: /Users/jimmmmmies/Desktop/催化剂案例/AL/catalyst_active_learning_runnable/outputs/full_run
+  expected_output_files: [total_pool.csv, iteration_log.csv, query_log.csv, generated_ratios.csv, summary.json]
+
+expert_feedback_history: []
+expert_activity_log:
+  - activity_id: EA2-001
+    expert_role: materials_expert
+    action_type: revise
+    target_type: metric
+    target_id: metric_organization
+    contribution: "Requested inclusion of normalized cost, composition validity, element ranges, candidate difference, prediction credibility, and stability of high-performance formulations."
+    decision_or_effect: "Metrics M005-M008 added or promoted in Round 2 organization."
+    evidence_refs: [user_round2_request]
+    timestamp: ""
+    status: recorded
+  - activity_id: EA2-002
+    expert_role: computer_expert
+    action_type: approve
+    target_type: metric
+    target_id: M001_M002_M003
+    contribution: "Confirmed peak power density as core performance metric and fixed-order nonnegative sum-to-one mass-fraction vector as composition constraint."
+    decision_or_effect: "Peak power density activated as primary objective; composition validity/order activated as hard constraints."
+    evidence_refs: [user_round2_request]
+    timestamp: ""
+    status: recorded
+  - activity_id: EA2-003
+    expert_role: computer_expert
+    action_type: provide
+    target_type: model
+    target_id: AL_folder
+    contribution: "Provided AL folder as implemented model run path for interface audit."
+    decision_or_effect: "AL model interfaces registered as available pending confirmation."
+    evidence_refs: [AL_folder_inspection]
+    timestamp: ""
+    status: recorded
+
+run_history:
+  - run_id: inspection_round2
+    executed: false
+    summary: "Only files were inspected. No model run, training, tests, or environment check were executed."
+    artifacts_written: [execution_orchestration_report_round2.md, execution_orchestration_round2.yaml, execution_review_queue_round2.yaml]
+
+version_history:
+  - version: round2
+    change_summary: "Updated metric organization, registered implemented AL interfaces, documented run procedure and output paths, kept execution paused pending user confirmation."
+    evidence_refs: [EO2-E001, EO2-E002, EO2-E003, EO2-E004, EO2-E005, EO2-E006, EO2-E007, EO2-E008, EO2-E009, EO2-E010]

@@ -1,0 +1,323 @@
+project:
+  stage: performance_evaluation
+  evaluation_round: round2
+  language: en-US
+  generated: '2026-07-25'
+  status: evidence_update_from_meloculardftcal
+  goal: Update performance-evaluation toolchain, parameters, result interpretation, and optimization recommendations using the executed meloculardftcal workflow evidence.
+  based_on:
+    previous_outputs:
+      - performance_evaluation_report_round1.md
+      - performance_evaluation_round1.yaml
+      - performance_review_queue_round1.yaml
+    workflow_repository: meloculardftcal
+    interface_files:
+      - meloculardftcal/AGENT_INTERFACE.md
+      - meloculardftcal/AGENT_INTERFACE_EN.md
+    queried_commands:
+      - python3 workflow.py show
+      - python3 workflow.py stages
+      - python3 workflow.py parameters
+      - python3 workflow.py paths --check
+
+evidence:
+  - evidence_id: PE-R2-E001
+    source_type: workflow_interface
+    source_ref: meloculardftcal/AGENT_INTERFACE_EN.md
+    extracted_claim: meloculardftcal provides a staged RDKit/ORCA/Slurm/statistics/plotting workflow with stable stage IDs and machine-readable query commands.
+    verification_status: read
+  - evidence_id: PE-R2-E002
+    source_type: metrics_report
+    source_ref: meloculardftcal/reports/pic16_s1/metrics.json
+    extracted_claim: pic16_s1 contains 222 complete v22 rows, 191 no-imaginary minima, 2 two-objective Pareto rows, and 14 three-objective Pareto rows.
+    verification_status: parsed
+  - evidence_id: PE-R2-E003
+    source_type: environment_report
+    source_ref: meloculardftcal/reports/environment.json
+    extracted_claim: local environment has Python/RDKit/Open Babel data tools, but sbatch, squeue, and ORCA are unavailable because ORCA_BIN is not set.
+    verification_status: parsed
+  - evidence_id: PE-R2-E004
+    source_type: dataset_provenance
+    source_ref: meloculardftcal/data/core/pic16_s1/DATASET.md
+    extracted_claim: raw ORCA logs, GBW files, optimized geometries, Slurm outputs, Excel workbooks, and bulk images are intentionally excluded.
+    verification_status: read
+
+toolchain:
+  repository:
+    name: meloculardftcal
+    url: https://github.com/letsgo-2/meloculardftcal.git
+    path_policy: repository_relative
+    default_batch: pic16
+    default_display_label: S1
+  software:
+    python_required: '>=3.9'
+    python_environment_reported: 3.12.2
+    orca_parser_target: 6.0.1
+    orca_reference_build: linux_x86-64_shared_openmpi416_avx2
+    mpi_reference: OpenMPI 4.1.6
+    ucx_reference: 1.15.0
+    scheduler: Slurm
+    structure_generation: Open Babel obabel
+    cheminformatics: RDKit
+    data_and_plots: [NumPy, pandas, SciPy, Matplotlib, Seaborn]
+    chemical_space_plots: [scikit-learn, UMAP]
+  local_environment_report:
+    path: meloculardftcal/reports/environment.json
+    python: 3.12.2
+    rdkit: 2025.9.3
+    numpy: 1.26.4
+    pandas: 2.2.2
+    scipy: 1.15.2
+    matplotlib: 3.8.4
+    seaborn: 0.13.2
+    scikit_learn: 1.4.2
+    umap_learn: null
+    openbabel: Open Babel 3.1.0
+    mpirun: Open MPI 4.0.3
+    sbatch_available: false
+    squeue_available: false
+    orca_available: false
+    orca_unavailable_reason: ORCA_BIN is not set
+
+scheduler_parameters:
+  partition: amd_512q
+  nodes: 1
+  opt_mpi_ranks: 64
+  td_mpi_ranks: 32
+  omp_threads_per_rank: 1
+  maxcore_mb_per_rank: 3000
+  max_jobs_per_user: 20
+  poll_interval_seconds: 1800
+  cluster_private_config: meloculardftcal/config/cluster.env
+  cluster_private_config_exists_in_checkout: false
+
+quantum_profiles:
+  opt_standard:
+    generator: 01_structure_preparation/gjf_to_inp.sh
+    method: B3LYP
+    basis: def2-SVP
+    tasks: [Opt, Freq]
+    keywords: [RIJCOSX, CPCM(Water)]
+    mpi_ranks: 64
+    maxcore_mb_per_rank: 3000
+  opt_heavy_zora:
+    generator: 01_structure_preparation/gjf_to_inpp13.sh
+    method: PBE0
+    basis: ZORA-def2-TZVP
+    auxiliary_basis: SARC/J
+    tasks: [Opt, Freq]
+    keywords: [D3BJ, ZORA, RIJCOSX, TightSCF, CPCM(Water)]
+    mpi_ranks: 64
+    maxcore_mb_per_rank: 3000
+  td_standard:
+    generator: 01_structure_preparation/gjf_to_inptd.sh
+    method: wB97X-D3
+    basis: def2-TZVP
+    keywords: [RIJCOSX, TightSCF, CPCM(Water)]
+    nroots: 10
+    triplets: true
+    dosoc: true
+    guess: MORead
+    mpi_ranks: 32
+    maxcore_mb_per_rank: 3000
+  td_heavy_zora:
+    generator: 01_structure_preparation/gjf_to_inptdp13.sh
+    method: wB97X-D3
+    basis: ZORA-def2-TZVP
+    auxiliary_basis: SARC/J
+    keywords: [ZORA, RIJCOSX, RI-SOMF(1X), TightSCF, CPCM(Water)]
+    nroots: 10
+    triplets: true
+    dosoc: true
+    guess: MORead
+    mpi_ranks: 32
+    maxcore_mb_per_rank: 3000
+
+workflow_stages:
+  - {stage_id: S00_PREFLIGHT, entrypoint: 07_validation/check_environment.py, external_mutation: false}
+  - {stage_id: S10_STRUCTURE, entrypoint: 01_structure_preparation/convertInputs.py, external_mutation: false}
+  - {stage_id: S20_OPT_GENERATE, entrypoint: 01_structure_preparation/gjf_to_inp.sh, external_mutation: false}
+  - {stage_id: S21_OPT_SUBMIT, entrypoint: 02_cluster_execution/suboptsbatch.sh, external_mutation: true}
+  - {stage_id: S22_OPT_QC, entrypoint: 02_cluster_execution/find_missing_opt_ids.sh, external_mutation: false}
+  - {stage_id: S30_TD_GENERATE, entrypoint: 01_structure_preparation/gjf_to_inptd.sh, external_mutation: false}
+  - {stage_id: S31_TD_SUBMIT, entrypoint: 02_cluster_execution/subtdsbatch.sh, external_mutation: true}
+  - {stage_id: S32_TD_QC, entrypoint: 02_cluster_execution/find_missing_td_ids.sh, external_mutation: false}
+  - {stage_id: S40_PARSE_OPT, entrypoint: 03_result_parsing/parse_orca_opt.py, external_mutation: false}
+  - {stage_id: S41_PARSE_TD, entrypoint: 03_result_parsing/parse_orca_td_socv2.py, external_mutation: false}
+  - {stage_id: S42_MERGE_DFT, entrypoint: 03_result_parsing/merge_dft_csv.py, external_mutation: false}
+  - {stage_id: S50_MERGE_SOURCE, entrypoint: 04_data_processing/merge_summary.py, external_mutation: false}
+  - {stage_id: S51_ENRICH, entrypoint: 04_data_processing/addrdkit.py, external_mutation: false}
+  - {stage_id: S60_METRICS, entrypoint: 07_validation/collect_metrics.py, external_mutation: false}
+  - {stage_id: S70_ANALYZE, entrypoint: 05_analysis/plotters/plot_pareto_s1ti_socmegap.py, external_mutation: false}
+  - {stage_id: S80_VISUALIZE, entrypoint: 06_visualization/generate_molecule_images_with_props.py, external_mutation: false}
+
+dataset:
+  dataset_id: pic16_s1
+  display_label: S1
+  source: meloculardftcal/data/core/pic16_s1/input/pic16.csv
+  td_summary: meloculardftcal/data/core/pic16_s1/intermediate/pic16inpout_tdv2.csv
+  v20: meloculardftcal/data/core/pic16_s1/intermediate/pic16inpdftv20.csv
+  v21: meloculardftcal/data/core/pic16_s1/intermediate/pic16inpdftv21.csv
+  v22: meloculardftcal/data/core/pic16_s1/final/pic16inpdftv22.csv
+  metrics: meloculardftcal/reports/pic16_s1/metrics.json
+  figures_dir: meloculardftcal/results/figures/pic16_s1
+  figures_dir_present: false
+  raw_logs_bundled: false
+
+pipeline_counts:
+  N_input: 222
+  N_td_summary: 222
+  N_v20: 222
+  N_v21: 222
+  N_v22: 222
+  N_complete_v22: 222
+  N_no_imaginary: 191
+  N_opt_normal: null
+  N_td_normal: null
+  normal_termination_note: Raw ORCA logs are intentionally not bundled; normal-termination counts require work/<batch>inp/*.log.
+
+pipeline_rates:
+  complete_v22_rate: 1.0
+  no_imaginary_rate: 0.8603603603603603
+  opt_normal_termination_rate: null
+  td_normal_termination_rate: null
+
+scientific_performance:
+  pareto_gap_vs_soc_ratio:
+    valid_rows: 222
+    nondominated_rows: 2
+    fraction: 0.009009009009009009
+    directions:
+      min_positive_S1-Ti: minimize
+      max_SOCME_over_deltaE_S1_Ti_value: maximize
+  pareto_gap_soc_ratio_3d:
+    valid_rows: 222
+    nondominated_rows: 14
+    fraction: 0.06306306306306306
+    directions:
+      min_positive_S1-Ti: minimize
+      max_SOCME_S1_Ti_value: maximize
+      max_SOCME_over_deltaE_S1_Ti_value: maximize
+  targeting_window:
+    LogP: [1.0, 5.0]
+    TPSA_angstrom2: [20.0, 120.0]
+    matching_rows: 0
+    fraction: 0.0
+    interpretation: Visualization default only; zero hits indicates that this window is not suitable for this chemical space.
+  reference_benchmark:
+    reference_index: pic16
+    reference_imaginary: 'Yes'
+    gap_and_ratio_better_or_equal:
+      all_rows: 175
+      all_fraction: 0.7882882882882883
+      no_imaginary_rows: 156
+      no_imaginary_fraction: 0.8167539267015707
+    gap_soc_and_ratio_better_or_equal:
+      all_rows: 155
+      all_fraction: 0.6981981981981982
+      no_imaginary_rows: 138
+      no_imaginary_fraction: 0.7225130890052356
+    warning: The selected reference has an imaginary frequency and is an electronic-property benchmark, not a validated minimum.
+
+derived_threshold_counts:
+  wavelength_600_800:
+    count: 126
+    denominator: 222
+  wavelength_650_750:
+    count: 38
+    denominator: 222
+  T1_energy_gt_0_98:
+    count: 218
+    denominator: 222
+  T1_energy_gt_1_13:
+    count: 207
+    denominator: 222
+  min_positive_S1_Ti_lt_0_4:
+    count: 210
+    denominator: 222
+  no_imaginary_and_wavelength_600_800:
+    count: 115
+    denominator: 222
+  no_imaginary_and_min_positive_S1_Ti_lt_0_4:
+    count: 180
+    denominator: 222
+  logp_1_5_and_tpsa_20_120:
+    count: 0
+    denominator: 222
+
+property_summary_selected:
+  S1_wavelength_nm:
+    median: 622.85
+    mean: 614.3072072072072
+    min: 558.5
+    max: 943.2
+  S1_fosc_D2:
+    median: 0.0741224375
+    mean: 0.11456067622072073
+    max: 0.930822343
+  min_positive_S1-Ti:
+    median: 0.109815
+    mean: 0.13506512162162163
+    min: 0.002361
+  max_SOCME_S1_Ti_value:
+    median: 1.590424
+    mean: 1.4331716981981983
+    max: 3.528399
+  max_SOCME_over_deltaE_S1_Ti_value:
+    median: 3.4576535
+    mean: 6.2595640495495495
+    max: 110.164632
+  LogP:
+    median: 14.0835
+    mean: 14.556454954954956
+    min: 3.767
+    max: 28.006
+  TPSA:
+    median: 72.88
+    mean: 96.60153153153153
+    min: 57.36
+    max: 301.68
+  SA_Score:
+    median: 6.2455
+    mean: 6.310540540540541
+    min: 5.022
+    max: 7.935
+  Molecular_Weight:
+    median: 987.2679999999996
+    mean: 1005.4555855855853
+    min: 638.8680000000002
+    max: 1467.9719999999993
+
+next_step_recommendations:
+  - recommendation_id: PE-R2-R001
+    action: Filter final ranking to records with Imaginary == No.
+    basis: 31 of 222 records have imaginary frequencies.
+    target: ranking_and_shortlist_scripts
+  - recommendation_id: PE-R2-R002
+    action: Use Pareto selection over min_positive_S1-Ti, max_SOCME_S1_Ti_value, and max_SOCME_over_deltaE_S1_Ti_value instead of an undocumented scalar.
+    basis: meloculardftcal optimization interface and Pareto metrics.
+    target: 05_analysis/plotters and shortlist generation
+  - recommendation_id: PE-R2-R003
+    action: Retune LogP/TPSA windows or add solubility/aggregation pressure to next molecule generation.
+    basis: zero hits in default LogP/TPSA window and median LogP 14.08.
+    target: SDPD reward constraints or post-generation filters
+  - recommendation_id: PE-R2-R004
+    action: Add explicit red-shift pressure if 650-750 nm is the preferred PDT window.
+    basis: only 38 of 222 candidates fall in 650-750 nm.
+    target: molecular design rules and reward targets
+  - recommendation_id: PE-R2-R005
+    action: Preserve raw ORCA logs and write reports/runs/<run_id>.json for future production batches.
+    basis: normal termination counts are null in committed metrics.
+    target: workflow execution policy
+  - recommendation_id: PE-R2-R006
+    action: Join SDPD diversity_memory outputs to meloculardftcal v22 descriptors for KA-GNN and reward calibration.
+    basis: no matched SDPD-vs-ORCA calibration table was found.
+    target: model calibration analysis
+
+open_limitations:
+  - raw ORCA logs and Slurm outputs are not bundled
+  - figures for pic16_s1 are not present in this checkout
+  - local environment lacks ORCA and Slurm commands
+  - default LogP/TPSA feasibility window is unsuitable for this chemical space
+  - reference benchmark has Imaginary=Yes
+  - SDPD predictor calibration remains pending

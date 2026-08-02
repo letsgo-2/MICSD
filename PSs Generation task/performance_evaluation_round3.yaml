@@ -1,0 +1,149 @@
+project:
+  stage: performance_evaluation
+  evaluation_round: round3
+  language: en-US
+  generated: '2026-07-25'
+  status: synthesizability_constraint_added
+  based_on:
+    - performance_evaluation_report_round2.md
+    - performance_evaluation_round2.yaml
+    - performance_review_queue_round2.yaml
+    - meloculardftcal/reports/pic16_s1/metrics.json
+    - meloculardftcal/data/core/pic16_s1/final/pic16inpdftv22.csv
+  new_expert_input:
+    expert: materials_scientist
+    recommendation: add_synthesizability_constraint
+    status: integrated_as_initial_constraint_pending_threshold_confirmation
+
+evidence:
+  - evidence_id: PE-R3-E001
+    source_type: expert_input
+    source_ref: user_message_round3
+    extracted_claim: Materials scientist recommends adding a synthesizability constraint.
+    verification_status: accepted_as_user_provided_expert_input
+  - evidence_id: PE-R3-E002
+    source_type: metrics_report
+    source_ref: meloculardftcal/reports/pic16_s1/metrics.json
+    extracted_claim: SA_Score is available for all 222 records with median 6.2455, mean 6.3105, p75 6.5463, p90 6.963, and max 7.935.
+    verification_status: parsed
+  - evidence_id: PE-R3-E003
+    source_type: final_dataset
+    source_ref: meloculardftcal/data/core/pic16_s1/final/pic16inpdftv22.csv
+    extracted_claim: Synthesizability threshold counts were computed from the existing v22 table; no new DFT run was required.
+    verification_status: computed
+
+synthesizability_constraint:
+  primary_metric:
+    column: SA_Score
+    direction: minimize
+    interpretation: computational synthetic-accessibility proxy, not a route guarantee
+  secondary_metric:
+    column: Molecular_Weight
+    direction: minimize_or_cap
+    interpretation: practicality proxy for large photosensitizer candidates
+  proposed_default_rule:
+    expression: Imaginary == "No" AND SA_Score <= 6.5 AND Molecular_Weight <= 1100
+    status: initial_round3_recommendation_pending_materials_expert_confirmation
+  preferred_tier:
+    expression: SA_Score <= 6.0
+    use: annotate_as_more_synthesizable_when_photophysical_metrics_remain_competitive
+  relaxed_tier:
+    expression: SA_Score <= 7.0 AND Molecular_Weight <= 1200
+    use: retain_broader_candidate_pool_for_sensitivity_or_exception_review
+  exception_policy:
+    expression: SA_Score > 6.5 OR Molecular_Weight > 1100
+    requirement: explicit_materials_expert_route_review_before_promotion
+
+threshold_counts:
+  total_records: 222
+  no_imaginary_records: 191
+  SA_Score_lte_6_0:
+    all_records: 51
+    no_imaginary_records: 43
+  SA_Score_lte_6_5:
+    all_records: 163
+    no_imaginary_records: 143
+  SA_Score_lte_7_0:
+    all_records: 203
+    no_imaginary_records: 177
+  Molecular_Weight_lte_900:
+    all_records: 58
+    no_imaginary_records: 47
+  Molecular_Weight_lte_1000:
+    all_records: 118
+    no_imaginary_records: 100
+  Molecular_Weight_lte_1100:
+    all_records: 164
+    no_imaginary_records: 140
+  Molecular_Weight_lte_1200:
+    all_records: 197
+    no_imaginary_records: 169
+  no_imaginary_SA_lte_6_5_MW_lte_1100: 120
+  no_imaginary_SA_lte_7_0_MW_lte_1200: 161
+  no_imaginary_SA_lte_6_5_wavelength_600_800: 84
+  no_imaginary_SA_lte_6_5_wavelength_600_800_min_positive_S1_Ti_lt_0_4: 76
+
+updated_ranking_workflow:
+  - step_id: PE-R3-W001
+    action: retain only validated minima for final ranking
+    rule: Imaginary == "No"
+  - step_id: PE-R3-W002
+    action: apply default synthesizability gate
+    rule: SA_Score <= 6.5
+  - step_id: PE-R3-W003
+    action: apply molecular-size practicality cap
+    rule: Molecular_Weight <= 1100
+  - step_id: PE-R3-W004
+    action: apply selected PDT wavelength window
+    rule_options:
+      broad: 600 <= S1_wavelength_nm <= 800
+      preferred: 650 <= S1_wavelength_nm <= 750
+  - step_id: PE-R3-W005
+    action: apply ISC proximity filter
+    rule: min_positive_S1-Ti < 0.4
+  - step_id: PE-R3-W006
+    action: compute constrained Pareto front
+    objectives:
+      - {column: min_positive_S1-Ti, direction: minimize}
+      - {column: max_SOCME_S1_Ti_value, direction: maximize}
+      - {column: max_SOCME_over_deltaE_S1_Ti_value, direction: maximize}
+  - step_id: PE-R3-W007
+    action: select diverse strict shortlist and expert-exception shortlist
+    method: fingerprint_diversity_sampling_after_constraints
+
+updated_recommendations:
+  - recommendation_id: PE-R3-R001
+    action: Add SA_Score <= 6.5 as the default hard gate for initial shortlist generation.
+    basis: 143 of 191 no-imaginary candidates pass, preserving enough search space while removing high-complexity tail.
+  - recommendation_id: PE-R3-R002
+    action: Use SA_Score <= 6.0 as a preferred annotation tier rather than a mandatory first filter.
+    basis: only 43 of 191 no-imaginary candidates pass, so it may be too restrictive.
+  - recommendation_id: PE-R3-R003
+    action: Pair SA Score with Molecular_Weight <= 1100 for strict shortlist generation.
+    basis: 120 candidates pass no-imaginary, SA<=6.5, and MW<=1100.
+  - recommendation_id: PE-R3-R004
+    action: Keep a route-review exception list for high-performance candidates that fail SA or MW gates.
+    basis: SA Score is a proxy and cannot replace expert retrosynthetic review.
+  - recommendation_id: PE-R3-R005
+    action: Add synthesizability as a SDPD reward penalty or post-generation filter in the next execution round after threshold confirmation.
+    basis: materials expert requested synthesizability and v22 provides complete SA Score values.
+
+open_questions:
+  - object_id: PE-R3-Q001
+    question: Should SA_Score <= 6.5 be accepted as the initial hard synthesizability gate?
+    required_expert: materials scientist
+    priority: high
+  - object_id: PE-R3-Q002
+    question: Should Molecular_Weight <= 1100 or <=1200 be used for this photosensitizer class?
+    required_expert: materials scientist / medicinal chemistry expert
+    priority: high
+  - object_id: PE-R3-Q003
+    question: Should synthesizability enter SDPD as a hard filter, soft reward penalty, or two-stage post-generation filter?
+    required_expert: materials scientist / computer scientist
+    priority: high
+
+limitations:
+  - SA_Score is a proxy and does not prove route feasibility
+  - no retrosynthetic route scoring or building-block availability screen is present
+  - no expert-labeled route-feasible candidate set is present
+  - no new SDPD run with synthesizability reward has been executed

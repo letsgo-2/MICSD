@@ -1,0 +1,41 @@
+review_items:
+  - object_id: PE-R3-Q001
+    question: Should `SA_Score <= 6.5` be accepted as the initial hard synthesizability gate for the strict shortlist?
+    required_expert: materials scientist
+    reason: It keeps 143/191 no-imaginary candidates and aligns near the observed p75, but it is still a proxy threshold.
+    priority: high
+  - object_id: PE-R3-Q002
+    question: Should `SA_Score <= 6.0` define a preferred high-synthesizability tier rather than a hard requirement?
+    required_expert: materials scientist
+    reason: Only 43/191 no-imaginary records pass `SA_Score <= 6.0`, so making it mandatory may remove too much chemical diversity.
+    priority: medium
+  - object_id: PE-R3-Q003
+    question: Should the strict shortlist use `Molecular_Weight <= 1100`, `<=1200`, or no hard molecular-weight cap?
+    required_expert: materials scientist / medicinal chemistry expert
+    reason: 120 candidates pass no-imaginary, SA<=6.5, and MW<=1100; 161 pass the relaxed SA<=7.0 and MW<=1200 rule.
+    priority: high
+  - object_id: PE-R3-Q004
+    question: Should candidates that fail SA/MW gates but are electronically exceptional be retained in a separate route-review exception list?
+    required_expert: materials scientist / computational chemistry expert
+    reason: SA Score is a proxy and may penalize scaffold-specific routes that are feasible in practice.
+    priority: high
+  - object_id: PE-R3-Q005
+    question: Should synthesizability be implemented in SDPD as a hard generation filter, a soft reward penalty, or a post-generation selection filter?
+    required_expert: computer scientist / materials scientist
+    reason: The implementation choice changes exploration pressure and may trade off photophysical performance against route feasibility.
+    priority: high
+  - object_id: PE-R3-Q006
+    question: Can the materials team provide route-feasibility labels for the top strict candidates and the exception candidates?
+    required_expert: materials scientist
+    reason: Expert-labeled route feasibility is needed to calibrate SA Score thresholds and avoid overtrusting a proxy.
+    priority: high
+  - object_id: PE-R3-Q007
+    question: Should a retrosynthesis or purchasable-building-block screen be added as a second synthesizability layer?
+    required_expert: materials scientist / computer scientist
+    reason: SA Score alone does not capture actual route length, precursor availability, cost, or protecting-group burden.
+    priority: medium
+  - object_id: PE-R3-Q008
+    question: Should next visualizations mark SA Score cutoffs on Pareto, wavelength, and candidate-summary plots?
+    required_expert: project owner / materials scientist
+    reason: The expert recommendation changes figure interpretation and shortlist selection.
+    priority: medium

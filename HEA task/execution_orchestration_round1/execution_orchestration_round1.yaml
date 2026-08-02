@@ -1,0 +1,545 @@
+metadata:
+  artifact: execution_orchestration
+  round: round1
+  output_language: English
+  created_from_skill: scientific-execution-orchestrator
+  status: draft
+  model_or_algorithm_locked: false
+
+upstream_inputs:
+  knowledge_alignment_yaml: knowledge_alignment_round2/knowledge_alignment_round2.yaml
+  knowledge_alignment_report: knowledge_alignment_round2/knowledge_alignment_report_round2.md
+  expert_review_queue: knowledge_alignment_round2/expert_review_queue_round2.yaml
+  input_status: loaded
+
+execution_context:
+  project_goal: "Iteratively optimize octonary Pd-Pt-Au-Cr-Ir-Ce-Cu-Nb high-entropy alloy catalyst formulations using existing composition-performance data, balancing peak power density, material cost, and composition constraints."
+  canonical_element_order_proposed: [Pd, Pt, Cu, Au, Ir, Ce, Nb, Cr]
+  user_element_set: [Pd, Pt, Au, Cr, Ir, Ce, Cu, Nb]
+  element_order_conflict_note: "The user listed the same eight elements in a different order than the Round 2 data contract. Execution must freeze one canonical order before data exchange."
+  composition_type: mass_fraction_vector
+  sample_unit: catalyst_formulation_record
+  formal_execution_allowed: false
+  reason_not_active: "Element order, target unit/protocol, synthesis bounds, cost basis, and model access level still require confirmation."
+
+metric_candidates:
+  - metric_id: I018
+    name: Simplex validity
+    aliases: [composition_validity]
+    definition: "Finite, nonnegative eight-element vector summing to 1."
+    proposed_roles: [hard_constraint]
+    direction: target_range
+    threshold:
+      value: null
+      range: [0, 1]
+      unit: fraction
+      status: proposed
+      tolerance: 1.0e-6
+    conditions: [all_candidates, all_training_rows]
+    acquisition: [derive]
+    evidence_refs: [EO-E007]
+    expert_status: proposed
+    unresolved_fields: []
+  - metric_id: I019
+    name: Element-wise synthesis bounds validity
+    aliases: [element_bounds]
+    definition: "Every element fraction lies within synthesis-feasible min/max/resolution bounds."
+    proposed_roles: [hard_constraint]
+    direction: target_range
+    threshold:
+      value: null
+      range: [0, 1]
+      unit: fraction
+      status: unresolved
+    conditions: [robotic_or_manual_synthesis]
+    acquisition: [derive, expert_only]
+    evidence_refs: [Round2_review_queue]
+    expert_status: pending
+    unresolved_fields: [per_element_lower_bounds, per_element_upper_bounds, resolution]
+  - metric_id: I001
+    name: Peak / maximum power density
+    aliases: [power_density, maximum_power_density, peak_power_density]
+    definition: "Maximum device power density or approved proxy for catalyst ranking."
+    proposed_roles: [primary_objective]
+    direction: maximize
+    threshold:
+      value: null
+      range: [0.02709, 75.45]
+      unit: local_target_unit_pending
+      status: provisional_from_local_virtual_oracle_sample
+      improvement_guidance: current_best_plus_5_to_10_percent_per_iteration
+    conditions: [protocol_id_required, evidence_type_required]
+    acquisition: [measure, predict]
+    evidence_refs: [EO-E001, EO-E002, EO-E004]
+    expert_status: pending_unit_protocol
+    unresolved_fields: [unit, protocol_merge_rule]
+  - metric_id: I002
+    name: Cost-specific performance
+    aliases: [cost_normalized_performance]
+    definition: "Power density normalized by catalyst material cost."
+    proposed_roles: [secondary_objective]
+    direction: maximize
+    threshold:
+      value: "above pure Pd benchmark"
+      range: []
+      unit: relative_or_index
+      status: proposed_from_primary_paper
+      benchmark_guidance: "Primary paper reports 9.3x cost-specific improvement."
+    conditions: [cost_formula_certified, benchmark_specified]
+    acquisition: [derive, predict]
+    evidence_refs: [EO-E001, EO-E003]
+    expert_status: pending_cost_formula
+    unresolved_fields: [cost_formula, price_date]
+  - metric_id: I003
+    name: Normalized catalyst cost
+    aliases: [material_cost_index]
+    definition: "Local weighted material cost normalized to Pd price = 100."
+    proposed_roles: [soft_constraint, pareto_objective]
+    direction: minimize
+    threshold:
+      value: null
+      range: []
+      unit: dimensionless_index
+      status: unresolved
+      reference: pure_Pd_equals_100_in_local_formula
+    conditions: [price_basis_required]
+    acquisition: [derive]
+    evidence_refs: [EO-E007, EO-E003]
+    expert_status: pending_price_basis
+    unresolved_fields: [price_source, hard_upper_bound]
+  - metric_id: I015
+    name: Precious-metal fraction
+    aliases: [noble_metal_fraction]
+    definition: "Pd + Pt + Au + Ir fraction."
+    proposed_roles: [soft_constraint, diagnostic]
+    direction: minimize
+    threshold:
+      value: null
+      range: [0, 1]
+      unit: fraction
+      status: proposed
+      guidance: "Report always; impose only after expert approval."
+    conditions: [normalized_composition]
+    acquisition: [derive]
+    evidence_refs: [Round2_yaml]
+    expert_status: pending_threshold
+    unresolved_fields: [hard_or_soft_policy]
+
+metric_decisions:
+  - metric_id: I018
+    final_role: hard_constraint
+    rank: 1
+    ranking_basis: ["Invalid compositions cannot be used for synthesis, training, or prediction."]
+    direction: target_range
+    threshold: {sum_tolerance: 1.0e-6, nonnegative: true, finite: true, length: 8}
+    evaluator_id: MODEL-001
+    decision_status: proposed
+    evidence_refs: [EO-E007]
+    expert_feedback_refs: []
+  - metric_id: I019
+    final_role: hard_constraint
+    rank: 2
+    ranking_basis: ["Synthesis feasibility must precede objective scoring.", "Bounds are not yet expert-certified."]
+    direction: target_range
+    threshold: {status: unresolved, provisional_each_element: [0, 1]}
+    evaluator_id: MODEL-001
+    decision_status: proposed_blocking
+    evidence_refs: [Round2_review_queue]
+    expert_feedback_refs: []
+  - metric_id: I001
+    final_role: primary_objective
+    rank: 3
+    ranking_basis: ["Direct scientific goal.", "Primary paper optimized maximum power density.", "Target can distinguish candidates after protocol confirmation."]
+    direction: maximize
+    threshold: {range_from_local_virtual_oracle_sample: [0.02709, 75.45], improvement_guidance: "current_best + 5-10% per iteration", unit_status: pending}
+    evaluator_id: MODEL-003_or_MODEL-007
+    decision_status: proposed
+    evidence_refs: [EO-E001, EO-E004]
+    expert_feedback_refs: []
+  - metric_id: I002
+    final_role: secondary_objective
+    rank: 4
+    ranking_basis: ["Captures cost/performance tradeoff.", "Primary paper reports 9.3x cost-specific improvement."]
+    direction: maximize
+    threshold: {benchmark: pure_Pd, target_guidance: "exceed benchmark; exact index pending"}
+    evaluator_id: MODEL-002
+    decision_status: proposed
+    evidence_refs: [EO-E001, EO-E003]
+    expert_feedback_refs: []
+  - metric_id: I003
+    final_role: soft_constraint
+    rank: 5
+    ranking_basis: ["Cost matters but price table is not certified.", "Use Pareto handling before scalarizing." ]
+    direction: minimize
+    threshold: {reference: "pure Pd = 100 local", hard_upper_bound: null, status: unresolved}
+    evaluator_id: MODEL-002
+    decision_status: proposed
+    evidence_refs: [EO-E007]
+    expert_feedback_refs: []
+
+model_interfaces:
+  - model_id: MODEL-001
+    name: Composition validator
+    role: constraint_checker
+    status: proposed
+    source: {type: local, location: AL/catalyst_active_learning_runnable/catalyst_al/costs.py, version: unknown}
+    entrypoint: {command: "", script: "", environment: "", working_directory: AL/catalyst_active_learning_runnable}
+    human_provision:
+      model_information_provided: true
+      script_location_provided: true
+      executable_interface_exposed: false
+      parameter_interface_exposed: false
+      access_level: inspect_only
+      authorized_parameters: []
+      prohibited_actions: [modify_original_code, auto_adjust_parameters]
+      provided_by: local_workspace
+      confirmation_ref: this_session_inspection
+    input_schema: [Pd, Pt, Cu, Au, Ir, Ce, Nb, Cr]
+    output_schema: [validity_flag, normalized_composition, error_message]
+    supported_metrics: [I018, I019]
+    parameters: {sum_tolerance: 1.0e-6}
+    validation: {test_data: "not executed for orchestration", metrics: {}, applicability_domain: "8D nonnegative finite composition vectors", known_failures: [missing_bounds]}
+    evidence_refs: [EO-E007]
+  - model_id: MODEL-002
+    name: Normalized cost calculator
+    role: constraint_checker
+    status: proposed
+    source: {type: local, location: AL/catalyst_active_learning_runnable/catalyst_al/costs.py, version: unknown}
+    entrypoint: {command: "", script: "", environment: "", working_directory: AL/catalyst_active_learning_runnable}
+    human_provision:
+      model_information_provided: true
+      script_location_provided: true
+      executable_interface_exposed: false
+      parameter_interface_exposed: false
+      access_level: inspect_only
+      authorized_parameters: []
+      prohibited_actions: [treat_uncertified_prices_as_final]
+      provided_by: local_workspace
+      confirmation_ref: this_session_inspection
+    input_schema: [Pd, Pt, Cu, Au, Ir, Ce, Nb, Cr]
+    output_schema: [normalized_cost]
+    supported_metrics: [I003, I002]
+    parameters:
+      local_prices: {Pd: 26393.0, Pt: 20325.0, Cu: 4.53, Au: 29298.0, Ir: 23926.0, Ce: 5.37, Nb: 32.22, Cr: 5.86}
+      reference: Pd
+    validation: {test_data: "not executed for orchestration", metrics: {}, applicability_domain: "relative screening only until price basis certified", known_failures: [uncertified_price_source]}
+    evidence_refs: [EO-E007]
+  - model_id: MODEL-003
+    name: Performance predictor
+    role: predictor
+    status: proposed
+    source: {type: local_or_package_or_paper, location: "to be selected", version: unknown}
+    entrypoint: {command: "", script: "", environment: "", working_directory: ""}
+    human_provision:
+      model_information_provided: false
+      script_location_provided: false
+      executable_interface_exposed: false
+      parameter_interface_exposed: false
+      access_level: none
+      authorized_parameters: []
+      prohibited_actions: [claim_final_algorithm, train_on_unlabeled_predictions_as_experiments]
+      provided_by: ""
+      confirmation_ref: ""
+    input_schema: [composition_features, protocol_metadata_optional]
+    output_schema: [predicted_power_density, uncertainty_optional, applicability_domain_flag]
+    supported_metrics: [I001, I014]
+    parameters: {}
+    validation: {test_data: "required", metrics: {required: [holdout_error_or_cv_error, calibration_or_uncertainty_check]}, applicability_domain: "must be reported", known_failures: []}
+    evidence_refs: [EO-E004, EO-E005]
+  - model_id: MODEL-004
+    name: Candidate generator
+    role: generator
+    status: proposed
+    source: {type: method_family, location: "simplex sampling | BO | MOEA | expert-guided generation", version: unknown}
+    entrypoint: {command: "", script: "", environment: "", working_directory: ""}
+    human_provision:
+      model_information_provided: false
+      script_location_provided: false
+      executable_interface_exposed: false
+      parameter_interface_exposed: false
+      access_level: none
+      authorized_parameters: []
+      prohibited_actions: [generate_outside_simplex, assume_algorithm_is_confirmed]
+      provided_by: ""
+      confirmation_ref: ""
+    input_schema: [search_space, constraints, target_guidance]
+    output_schema: [candidate_compositions]
+    supported_metrics: [I018, I001, I003]
+    parameters: {}
+    validation: {test_data: "small pilot candidate batch required", metrics: {constraint_pass_rate: "must be 100%"}, applicability_domain: "expert-certified bounds", known_failures: []}
+    evidence_refs: [EO-E003, EO-E004, EO-E006]
+  - model_id: MODEL-006
+    name: Pareto selector
+    role: constraint_checker
+    status: proposed
+    source: {type: local, location: AL/catalyst_active_learning_runnable/catalyst_al/pareto.py, version: unknown}
+    entrypoint: {command: "", script: "", environment: "", working_directory: AL/catalyst_active_learning_runnable}
+    human_provision:
+      model_information_provided: true
+      script_location_provided: true
+      executable_interface_exposed: false
+      parameter_interface_exposed: false
+      access_level: inspect_only
+      authorized_parameters: []
+      prohibited_actions: [use_as_final_decision_without_expert_review]
+      provided_by: local_workspace
+      confirmation_ref: this_session_inspection
+    input_schema: [candidate_id, predicted_or_measured_power_density, normalized_cost]
+    output_schema: [pareto_status, rank_or_selection_flag]
+    supported_metrics: [I001, I003, I002]
+    parameters: {default_mode: Pareto_first}
+    validation: {test_data: "not executed for orchestration", metrics: {}, applicability_domain: "two-objective screening", known_failures: [missing_cost_basis]}
+    evidence_refs: [EO-E006, EO-E007]
+  - model_id: MODEL-007
+    name: Experimental evaluator
+    role: evaluator
+    status: proposed
+    source: {type: human_lab, location: "not provided", version: unknown}
+    entrypoint: {command: "", script: "", environment: "", working_directory: ""}
+    human_provision:
+      model_information_provided: false
+      script_location_provided: false
+      executable_interface_exposed: false
+      parameter_interface_exposed: false
+      access_level: none
+      authorized_parameters: []
+      prohibited_actions: [fabricate_measurements]
+      provided_by: ""
+      confirmation_ref: ""
+    input_schema: [approved_candidate_recipes]
+    output_schema: [measured_power_density, unit, protocol_id, conditions, evidence_type]
+    supported_metrics: [I001]
+    parameters: {}
+    validation: {test_data: "requires lab protocol", metrics: {}, applicability_domain: "direct formate fuel-cell or approved proxy", known_failures: [missing_protocol]}
+    evidence_refs: [EO-E001, EO-E002]
+
+reward_components:
+  - component_id: RC-001
+    metric_id: I018
+    evaluator_id: MODEL-001
+    role: hard_constraint
+    direction: target_range
+    threshold: {finite: true, nonnegative: true, sum_tolerance: 1.0e-6, length: 8}
+    normalization: none
+    weight: null
+    uncertainty_penalty: "not applicable"
+    missing_policy: reject
+    status: proposed
+    evidence_refs: [EO-E007]
+  - component_id: RC-002
+    metric_id: I019
+    evaluator_id: MODEL-001
+    role: hard_constraint
+    direction: target_range
+    threshold: {status: unresolved, provisional_each_element: [0, 1]}
+    normalization: none
+    weight: null
+    uncertainty_penalty: "manual review until bounds certified"
+    missing_policy: manual_review
+    status: proposed_blocking
+    evidence_refs: [Round2_review_queue]
+  - component_id: RC-003
+    metric_id: I001
+    evaluator_id: MODEL-003_or_MODEL-007
+    role: objective
+    direction: maximize
+    threshold: {improvement_guidance: "current best + 5-10%", unit_status: pending}
+    normalization: minmax_or_rank
+    weight: null
+    uncertainty_penalty: "penalize or diversify high uncertainty depending exploration mode"
+    missing_policy: manual_review
+    status: proposed
+    evidence_refs: [EO-E001, EO-E004]
+  - component_id: RC-004
+    metric_id: I003
+    evaluator_id: MODEL-002
+    role: soft_constraint
+    direction: minimize
+    threshold: {hard_upper_bound: null, reference: pure_Pd_equals_100_local}
+    normalization: minmax_or_rank
+    weight: null
+    uncertainty_penalty: "not applicable; price basis uncertainty requires review"
+    missing_policy: manual_review
+    status: proposed
+    evidence_refs: [EO-E003, EO-E007]
+
+workflow:
+  workflow_id: WF-001
+  name: Iterative octonary catalyst formulation optimization
+  status: draft
+  search_space:
+    definition: "Eight-dimensional mass-fraction simplex over Pd, Pt, Cu, Au, Ir, Ce, Nb, Cr."
+    allowed_regions:
+      - "all finite nonnegative vectors summing to 1"
+      - "expert-certified synthesis bounds once provided"
+    forbidden_regions:
+      - "negative fractions"
+      - "non-finite values"
+      - "wrong element order or row length"
+      - "records without target protocol metadata for formal training"
+    expert_rules:
+      - "Do not merge measured, proxy, virtual-oracle, and predicted values without labels."
+      - "Return Pareto candidates while power/cost weights remain unresolved."
+  nodes:
+    - node_id: WF-N01
+      action: load
+      model_id: ""
+      inputs: [knowledge_alignment_round2_files]
+      outputs: [metric_candidates, unresolved_issues]
+      retry_policy: fail_fast
+      stop_on_failure: true
+    - node_id: WF-N02
+      action: load
+      model_id: ""
+      inputs: [composition_performance_table]
+      outputs: [raw_data_table]
+      retry_policy: request_missing_file
+      stop_on_failure: true
+    - node_id: WF-N03
+      action: check
+      model_id: MODEL-001
+      inputs: [raw_data_table]
+      outputs: [validated_compositions, rejected_rows]
+      retry_policy: manual_review_invalid_rows
+      stop_on_failure: true
+    - node_id: WF-N04
+      action: check
+      model_id: ""
+      inputs: [validated_compositions, metadata]
+      outputs: [measured_dataset, proxy_dataset, prediction_dataset]
+      retry_policy: request_metadata
+      stop_on_failure: true
+    - node_id: WF-N05
+      action: calculate
+      model_id: MODEL-002
+      inputs: [validated_compositions]
+      outputs: [normalized_cost, precious_metal_fraction]
+      retry_policy: manual_review_if_price_basis_unapproved
+      stop_on_failure: false
+    - node_id: WF-N06
+      action: predict
+      model_id: MODEL-003
+      inputs: [approved_training_set]
+      outputs: [validated_predictor, validation_report]
+      retry_policy: change_model_family_or_pause
+      stop_on_failure: true
+    - node_id: WF-N07
+      action: generate
+      model_id: MODEL-004
+      inputs: [search_space, constraints, target_guidance]
+      outputs: [candidate_pool]
+      retry_policy: regenerate_until_constraints_pass
+      stop_on_failure: true
+    - node_id: WF-N08
+      action: calculate
+      model_id: MODEL-003_and_MODEL-002
+      inputs: [candidate_pool]
+      outputs: [candidate_metrics]
+      retry_policy: manual_review_unmapped_outputs
+      stop_on_failure: true
+    - node_id: WF-N09
+      action: select
+      model_id: MODEL-006
+      inputs: [candidate_metrics]
+      outputs: [pareto_or_ranked_candidate_batch]
+      retry_policy: return_pareto_if_weights_unresolved
+      stop_on_failure: false
+    - node_id: WF-N10
+      action: review
+      model_id: ""
+      inputs: [candidate_batch]
+      outputs: [expert_approved_experimental_batch]
+      retry_policy: revise_batch
+      stop_on_failure: true
+    - node_id: WF-N11
+      action: export
+      model_id: MODEL-007
+      inputs: [expert_approved_experimental_batch]
+      outputs: [lab_request_table]
+      retry_policy: pause_if_lab_interface_missing
+      stop_on_failure: true
+    - node_id: WF-N12
+      action: load
+      model_id: ""
+      inputs: [new_experimental_results]
+      outputs: [updated_training_table, run_history_entry]
+      retry_policy: validate_and_append
+      stop_on_failure: false
+  budget:
+    max_candidates: null
+    max_evaluations: null
+    max_runtime: "not set"
+    compute_limit: "not set"
+  stopping_conditions:
+    - "expert pauses workflow"
+    - "target unit/protocol conflict discovered"
+    - "no valid candidates after constraints"
+    - "model validation fails or output cannot map to metric"
+    - "budget exhausted"
+    - "no Pareto improvement for expert-defined number of rounds"
+
+parameter_controls:
+  - parameter_id: PARAM-001
+    target: reward
+    name: performance_weight
+    current_value: null
+    allowed_range: [0.6, 0.8]
+    allowed_values: []
+    adjustment_mode: manual
+    trigger: "expert approves scalar score instead of Pareto-only selection"
+    max_change_per_round: 0.1
+    rollback_value: null
+    change_history: []
+  - parameter_id: PARAM-002
+    target: workflow
+    name: candidate_batch_size
+    current_value: null
+    allowed_range: []
+    allowed_values: []
+    adjustment_mode: manual
+    trigger: "lab budget and model uncertainty reviewed"
+    max_change_per_round: null
+    rollback_value: null
+    change_history: []
+  - parameter_id: PARAM-003
+    target: generator
+    name: exploration_exploitation_policy
+    current_value: Pareto_first_with_uncertainty_reporting
+    allowed_range: []
+    allowed_values: [Pareto_first_with_uncertainty_reporting, exploit_current_best, explore_high_uncertainty, balanced_acquisition]
+    adjustment_mode: manual
+    trigger: "expert selects optimization scenario"
+    max_change_per_round: null
+    rollback_value: Pareto_first_with_uncertainty_reporting
+    change_history: []
+
+expert_feedback_history: []
+
+expert_activity_log:
+  - activity_id: EA-001
+    expert_role: domain_expert
+    action_type: provide
+    target_type: search_space
+    target_id: C006
+    contribution: "Catalyst consists of Pd, Pt, Au, Cr, Ir, Ce, Cu, and Nb and is represented as a fixed-order mass-fraction vector; fractions are nonnegative and sum to 1."
+    decision_or_effect: "Composition simplex is a hard workflow constraint."
+    evidence_refs: [user_request]
+    timestamp: ""
+    status: recorded
+  - activity_id: EA-002
+    expert_role: computer_expert
+    action_type: recommend
+    target_type: workflow
+    target_id: WF-001
+    contribution: "Requested iterative model process from existing composition-performance data."
+    decision_or_effect: "Workflow includes data preparation, model training, candidate generation, evaluation, screening, and feedback."
+    evidence_refs: [user_request]
+    timestamp: ""
+    status: recorded
+
+run_history: []
+
+version_history:
+  - version: round1
+    change_summary: "Initial execution orchestration from Round 2 knowledge alignment; workflow draft only, no final model selected."
+    evidence_refs: [EO-E001, EO-E002, EO-E003, EO-E004, EO-E005, EO-E006, EO-E007]

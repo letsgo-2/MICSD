@@ -1,0 +1,61 @@
+review_items:
+  - object_id: PE-R1-B001
+    question: Should `SDPD/rl_runs/20251014-113340/diversity_memory.csv` be treated as a formal baseline for performance statistics, or only as a parser/plotting dry-run file?
+    required_expert: computer scientist / project owner
+    reason: Round3 states that no new SDPD run was executed, but SDPD contains an older example run whose provenance must be confirmed before formal comparison.
+    priority: high
+  - object_id: PE-R1-B002
+    question: Should the active reward weights remain `[0.1, 0.3, 0.6]` for `[ES1-ET1, charge, symmetric]` during the evaluated SDPD run?
+    required_expert: computer scientist / materials scientist
+    reason: The implemented priority strongly favors symmetry, which may dominate molecular selection and reduce photophysical optimization pressure.
+    priority: high
+  - object_id: PE-R1-B003
+    question: Is the installed KA-GNN runtime checkpoint at `SDPD/data_preparation/prediction_model/pretrained_models/best.pth` approved for model-performance calibration against ORCA?
+    required_expert: computational chemistry expert / computer scientist
+    reason: The SDPD wrapper hard-codes this checkpoint path, so calibration statistics must be tied to this exact model unless the code is changed and revalidated.
+    priority: high
+  - object_id: PE-R1-B004
+    question: Which ORCA version, module path, and license constraints apply on the Slurm cluster?
+    required_expert: computer scientist / cluster administrator
+    reason: Slurm scripts and array concurrency must match the available ORCA installation and license/core limits.
+    priority: high
+  - object_id: PE-R1-B005
+    question: Should the first-pass ORCA protocol use `B3LYP-D3BJ/def2-SVP/CPCM(water)` for geometry and `CAM-B3LYP/def2-SVP/CPCM(water)` for TD-DFT, or should another locked method be used?
+    required_expert: materials scientist / computational chemistry expert
+    reason: DFT/TD-DFT outputs can only be compared statistically when method, basis, and solvent are fixed.
+    priority: high
+  - object_id: PE-R1-B006
+    question: What charge and multiplicity protocol should be used for cationic, zwitterionic, metallated, or radical candidates?
+    required_expert: computational chemistry expert
+    reason: Incorrect charge/multiplicity makes ORCA geometry, excitation, redox, and SOC descriptors invalid.
+    priority: high
+  - object_id: PE-R1-B007
+    question: Are Re(I), Gd, Cu, ZnPc, and other metal-containing candidates allowed in the same evaluation batch as organic molecules, or should they be split into a separate method branch?
+    required_expert: materials scientist / computational chemistry expert / toxicology expert
+    reason: Metal systems require element-specific basis/ECP/relativistic treatment and may not be statistically comparable with organic candidates.
+    priority: high
+  - object_id: PE-R1-B008
+    question: What Slurm partition, memory limit, wall time, scratch directory policy, and maximum job-array concurrency should be used for ORCA production runs?
+    required_expert: computer scientist / cluster administrator
+    reason: The current report provides a template, but cluster-specific parameters are required before submission.
+    priority: high
+  - object_id: PE-R1-B009
+    question: "How many molecules should enter the first ORCA batch: 20, 50, or another number?"
+    required_expert: materials scientist / computer scientist
+    reason: The batch size controls the tradeoff between diversity coverage, compute cost, and statistical reliability.
+    priority: medium
+  - object_id: PE-R1-B010
+    question: Should the mechanism branch be Type-II PDT, hypoxia Type-I PDT, or a split evaluation with separate thresholds?
+    required_expert: materials scientist / experimental expert
+    reason: T1-S0 and electron-transfer thresholds have opposite or context-dependent interpretation across mechanism branches.
+    priority: high
+  - object_id: PE-R1-B011
+    question: Which donor, acceptor, solvent, and redox reference should be used for Rehm-Weller-style DeltaG_ET calculations?
+    required_expert: computational chemistry expert / experimental expert
+    reason: DeltaG_ET cannot be computed reproducibly without fixed thermodynamic definitions.
+    priority: high
+  - object_id: PE-R1-B012
+    question: Should aggregation-risk proxy be used only for annotation, or should it become an exclusion criterion for the shortlist?
+    required_expert: materials scientist / experimental expert
+    reason: Aggregation risk is critical for photosensitizer performance but the proposed RDKit proxy is heuristic and should be calibrated by domain experts.
+    priority: medium

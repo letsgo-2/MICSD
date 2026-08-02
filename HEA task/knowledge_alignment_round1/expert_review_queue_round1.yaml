@@ -1,0 +1,56 @@
+review_items:
+  - object_id: C002
+    question: "Should this project use \"high-entropy alloy\", \"multi-principal element alloy\", or \"complex concentrated alloy\" as the certified top-level term, and is a configurational-entropy threshold required?"
+    required_expert: materials/electrocatalysis expert
+    reason: "The primary paper uses HEA, while review literature warns HEA/MPEA/CCA terminology can imply different entropy or phase assumptions."
+    priority: high
+  - object_id: I001
+    question: "What is the exact unit, measurement protocol, and comparability rule for local `power_density` values?"
+    required_expert: experimental electrochemistry expert
+    reason: "The paper figure reports W cm^-2_geo, but local CSV does not declare a unit and may mix proxy/surrogate values."
+    priority: high
+  - object_id: I001
+    question: "Can three-electrode LSV-derived performance proxies and direct formate fuel-cell peak power densities be used in a single ranking/model target?"
+    required_expert: experimental electrochemistry expert
+    reason: "The paper uses a proxy under an assumed constant ORR overpotential and says the ranking is relatively consistent, but this needs certification for downstream optimization."
+    priority: high
+  - object_id: I002
+    question: "Should downstream optimization maximize absolute peak power density, cost-specific performance, or use cost-specific performance as a secondary objective/constraint?"
+    required_expert: materials expert and computer expert
+    reason: "User goal emphasizes peak power density, while the primary paper highlights a 9.3-fold cost-specific improvement."
+    priority: high
+  - object_id: I003
+    question: "What metal price basis/date and cost formula should be certified for Pd, Pt, Cu, Au, Ir, Ce, Nb, and Cr?"
+    required_expert: materials economics or project owner
+    reason: "Local code has a price table, but source/date are not documented."
+    priority: high
+  - object_id: I004
+    question: "What are the synthesis bounds and resolution for each element fraction in Pd, Pt, Cu, Au, Ir, Ce, Nb, Cr?"
+    required_expert: experimental synthesis expert
+    reason: "Local code only enforces non-negative sum-normalized ratios; real robotic synthesis may have lower/upper limits and resolution."
+    priority: high
+  - object_id: I005
+    question: "Should total catalyst loading and precious-metal loading be fixed, minimized, or reported only as normalization variables?"
+    required_expert: experimental electrochemistry expert
+    reason: "Primary evidence uses different loadings for fast screening and literature-comparable fuel-cell tests."
+    priority: high
+  - object_id: I009
+    question: "Is single FCC solid-solution phase a hard candidate constraint or a diagnostic/post-synthesis quality indicator?"
+    required_expert: materials/electrocatalysis expert
+    reason: "The optimized catalyst shows single FCC phase, but evidence does not prove all high performers must satisfy it."
+    priority: medium
+  - object_id: I012
+    question: "Which scalar should represent poisoning tolerance if used computationally: adsorption energy, activation barrier, CO/H binding strength, durability decay, or expert label?"
+    required_expert: computational chemistry and electrocatalysis experts
+    reason: "The paper provides mechanistic qualitative claims and DFT barriers, but no single optimization-ready poisoning-tolerance metric."
+    priority: medium
+  - object_id: C005
+    question: "What exact electrochemical device class should be used for ontology alignment: direct formate fuel cell, formate oxidation half-cell, or broader electrochemical device?"
+    required_expert: electrochemistry domain expert
+    reason: "The project goal says electrochemical device; the primary paper uses both half-cell proxy and direct formate fuel-cell validation."
+    priority: medium
+  - object_id: E014
+    question: "Which exact EMMO/ECHO class IRIs should be used for fuel cell, electrocatalyst, power density, LSV/CV, and active mass loading?"
+    required_expert: ontology/data expert
+    reason: "The EMMO ontology index was found, but exact class-page extraction was not reliable enough to mark mappings exact."
+    priority: medium

@@ -1,0 +1,47 @@
+metadata:
+  artifact: performance_review_queue
+  round: round2
+  output_language: English
+  created_from_skill: scientific-performance-evaluator
+  status: pending_expert_review
+
+review_items:
+  - item_id: PE-R2-RQ-001
+    priority: high
+    assigned_expert_role: materials_expert
+    question: Do the top-decile composition features support focusing the next search on Pd-rich, Ce-supported formulations with low Au and Ir?
+    evidence_paths:
+      - tables/high_performance_composition_features_round2.csv
+      - figures/high_performance_composition_features_round2.png
+    status: open
+  - item_id: PE-R2-RQ-002
+    priority: high
+    assigned_expert_role: computer_expert
+    question: Can the next AL output include explicit iteration, source, prediction mean, prediction standard deviation, UCB score, observed value, and residual columns?
+    evidence_paths:
+      - tables/prediction_model_accuracy_status_round2.csv
+      - performance_evaluation_report_round2.md
+    status: open
+  - item_id: PE-R2-RQ-003
+    priority: high
+    assigned_expert_role: optimization_expert
+    question: Should the next candidate shortlist be selected from the Pareto front rather than from peak power density ranking alone?
+    evidence_paths:
+      - tables/pareto_front_candidates_round2.csv
+      - figures/power_density_vs_normalized_cost_round2.png
+    status: open
+  - item_id: PE-R2-RQ-004
+    priority: medium
+    assigned_expert_role: electrochemistry_expert
+    question: What are the physical units and test conditions for `power_density` in this output file?
+    evidence_paths:
+      - tables/performance_cost_summary_round2.csv
+    status: open
+  - item_id: PE-R2-RQ-005
+    priority: medium
+    assigned_expert_role: project_owner
+    question: Should the inferred iteration grouping used in this report be accepted for retrospective analysis, or should only explicit future `iteration_log.csv` files be used?
+    evidence_paths:
+      - tables/iteration_process_summary_round2.csv
+      - figures/iteration_cumulative_best_power_density_round2.png
+    status: open

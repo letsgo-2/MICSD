@@ -1,0 +1,536 @@
+project:
+  project_goal: "optimize elemental ratios of an eight-component high-entropy alloy electrocatalyst to improve peak power density"
+  domain: "high-entropy alloy electrocatalysts for direct formate fuel-cell-related electrochemical performance"
+  output_language: English
+  round: round1
+  primary_evidence:
+    - evidence_id: E001
+      source: literature_markdown/26_Zhang_2025_Multimodal_robotic_electrocatalyst_discovery.md
+      doi: https://doi.org/10.1038/s41586-025-09640-5
+  web_search_allowed: true
+  web_search_note: "Exa search was rate-limited; direct web fetch was used for IUPAC, EMMO, and DOI metadata."
+
+concepts:
+  - concept_id: C001
+    name: Eight-component HEA electrocatalyst
+    definition: "Project-level octonary Pd-Pt-Cu-Au-Ir-Ce-Nb-Cr multi-element alloy catalyst used for formate oxidation electrocatalysis."
+    synonyms: [octonary catalyst, HEA-8D, Pd-Pt-Cu-Au-Ir-Ce-Nb-Cr catalyst]
+    parent_concept: high-entropy alloy electrocatalyst
+    ontology_source: {name: project local concept, iri_or_url: null, version_or_access_date: 2026-07-30}
+    mapping_status: local
+    evidence: [E001, E004, E012]
+    expert_status: pending
+  - concept_id: C002
+    name: High-entropy alloy
+    definition: "Multi-principal-element / complex concentrated alloy concept used here for compositionally complex alloy electrocatalysts; exact entropy threshold not fixed by the primary paper."
+    synonyms: [HEA, multi-principal element alloy, complex concentrated alloy]
+    parent_concept: alloy
+    ontology_source: {name: literature-derived terminology, iri_or_url: null, version_or_access_date: 2026-07-30}
+    mapping_status: close
+    evidence: [E006, E007]
+    expert_status: pending
+  - concept_id: C003
+    name: Catalyst
+    definition: "A substance that increases the rate of a reaction without modifying the overall standard Gibbs energy change."
+    synonyms: [accelerator, kinetic synergist]
+    parent_concept: chemical substance
+    ontology_source: {name: IUPAC Gold Book, iri_or_url: https://doi.org/10.1351/goldbook.C00876, version_or_access_date: Version 5.0.0 accessed 2026-07-30}
+    mapping_status: exact
+    evidence: [E008]
+    expert_status: pending
+  - concept_id: C004
+    name: Electrode reaction
+    definition: "Interfacial electrode process including at least one elementary charge-transfer step, with current controlled by kinetics and transport at a given potential."
+    synonyms: []
+    parent_concept: electrochemical process
+    ontology_source: {name: IUPAC Gold Book, iri_or_url: https://doi.org/10.1351/goldbook.E01960, version_or_access_date: Version 5.0.0 accessed 2026-07-30}
+    mapping_status: exact
+    evidence: [E009]
+    expert_status: pending
+  - concept_id: C005
+    name: Direct formate fuel cell
+    definition: "Electrochemical device context used to validate selected catalysts via polarization curves with formate electrolyte."
+    synonyms: [DFFC]
+    parent_concept: electrochemical device
+    ontology_source: {name: EMMO Domain Electrochemistry Ontology, iri_or_url: https://w3id.org/emmo/domain/electrochemistry, version_or_access_date: accessed 2026-07-30}
+    mapping_status: close
+    evidence: [E003, E004, E014]
+    expert_status: pending
+  - concept_id: C006
+    name: Composition vector
+    definition: "Eight-dimensional non-negative vector ordered Pd, Pt, Cu, Au, Ir, Ce, Nb, Cr and normalized to sum to 1 in local data/code."
+    synonyms: [elemental ratio vector, catalyst ratio]
+    parent_concept: compositional data
+    ontology_source: {name: project local concept, iri_or_url: null, version_or_access_date: 2026-07-30}
+    mapping_status: local
+    evidence: [E011, E012, E013]
+    expert_status: pending
+  - concept_id: C007
+    name: Single FCC solid-solution phase
+    definition: "Structural state reported by XRD/Rietveld for the optimized octonary catalyst."
+    synonyms: [single face-centered-cubic phase]
+    parent_concept: crystalline phase
+    ontology_source: {name: project local concept, iri_or_url: null, version_or_access_date: 2026-07-30}
+    mapping_status: local
+    evidence: [E005]
+    expert_status: pending
+  - concept_id: C008
+    name: Poisoning tolerance
+    definition: "Resistance to hydrogen poisoning and CO poisoning relative to pure Pd in formate oxidation mechanism."
+    synonyms: [CO poisoning resistance, hydrogen poisoning resistance]
+    parent_concept: catalyst durability/mechanism descriptor
+    ontology_source: {name: project local concept, iri_or_url: null, version_or_access_date: 2026-07-30}
+    mapping_status: local
+    evidence: [E005]
+    expert_status: pending
+
+indicators:
+  - indicator_id: I001
+    name: Maximum / peak power density
+    definition: "Maximum device power density or consistent proxy ranking derived from current-potential data."
+    unit: W cm^-2_geo in paper figure; local CSV unit pending
+    conditions: [three-electrode proxy, direct formate fuel-cell validation, 60 C, 2.0 M KOH, 1.0 M HCOOK, 2.0 mg cm^-2 loading for comparison]
+    domain_meaning: "Core device-level power-output target."
+    audience: shared
+    obtainable_by: [measure, machine_learn]
+    optimization_role: primary_objective
+    optimization_direction: maximize
+    importance: 5
+    computability: 4
+    data_readiness: 4
+    priority: P0
+    methods: [fuel-cell polarization, three-electrode LSV proxy, supervised model after protocol certification]
+    related_indicators: [I006, I007, I013]
+    evidence: [E002, E003, E004, E011]
+    expert_status: pending
+  - indicator_id: I002
+    name: Cost-specific performance
+    definition: "Power density normalized by catalyst cost."
+    unit: relative fold or normalized performance
+    conditions: [fixed benchmark, certified cost formula, certified metal prices]
+    domain_meaning: "Balances power output and expensive noble-metal usage."
+    audience: shared
+    obtainable_by: [derive, machine_learn]
+    optimization_role: secondary_objective
+    optimization_direction: maximize
+    importance: 5
+    computability: 4
+    data_readiness: 3
+    priority: P0
+    methods: [derive from power density and catalyst cost]
+    related_indicators: [I001, I003]
+    evidence: [E001, E004, E013]
+    expert_status: pending
+  - indicator_id: I003
+    name: Normalized catalyst cost
+    definition: "Weighted elemental price of composition normalized by Pd price times 100 in local code."
+    unit: dimensionless cost index
+    conditions: [metal price table, normalized composition]
+    domain_meaning: "Constraint or secondary objective for material cost."
+    audience: computer_expert
+    obtainable_by: [derive]
+    optimization_role: constraint
+    optimization_direction: minimize
+    importance: 4
+    computability: 5
+    data_readiness: 3
+    priority: P1
+    methods: [dot product of normalized ratio and metal prices]
+    related_indicators: [I002, I004]
+    evidence: [E013]
+    expert_status: pending
+  - indicator_id: I004
+    name: Elemental fraction vector
+    definition: "Normalized fractions of Pd, Pt, Cu, Au, Ir, Ce, Nb, Cr."
+    unit: fractions summing to 1
+    conditions: [non-negative, eight-dimensional, fixed order]
+    domain_meaning: "Primary controllable design variable."
+    audience: computer_expert
+    obtainable_by: [derive]
+    optimization_role: feature_only
+    optimization_direction: none
+    importance: 5
+    computability: 5
+    data_readiness: 5
+    priority: P0
+    methods: [normalization, compositional data transform]
+    related_indicators: [I001, I002, I003]
+    evidence: [E011, E012]
+    expert_status: pending
+  - indicator_id: I005
+    name: Precious-metal loading
+    definition: "Mass loading of precious metals or total catalyst per geometric area."
+    unit: mg cm^-2_geo
+    conditions: [0.05 mg cm^-2 for fast pure-Pd-equivalent screening, 2.0 mg cm^-2 for fuel-cell comparison]
+    domain_meaning: "Controls fair comparison and material usage."
+    audience: shared
+    obtainable_by: [measure, derive]
+    optimization_role: constraint
+    optimization_direction: minimize or fixed target
+    importance: 4
+    computability: 4
+    data_readiness: 3
+    priority: P1
+    methods: [sample preparation metadata]
+    related_indicators: [I001, I002]
+    evidence: [E003]
+    expert_status: pending
+  - indicator_id: I006
+    name: Current density
+    definition: "Current per geometric electrode area."
+    unit: A cm^-2_geo
+    conditions: [potential-dependent, scan-rate-dependent, device/proxy dependent]
+    domain_meaning: "Intermediate electrochemical response determining power density."
+    audience: shared
+    obtainable_by: [measure]
+    optimization_role: intermediate
+    optimization_direction: maximize at relevant potentials
+    importance: 4
+    computability: 4
+    data_readiness: 3
+    priority: P1
+    methods: [CV, LSV, polarization curve]
+    related_indicators: [I001, I007]
+    evidence: [E003]
+    expert_status: pending
+  - indicator_id: I007
+    name: Cell voltage / potential
+    definition: "Device cell voltage or electrode potential versus Hg/HgO depending on experiment."
+    unit: V
+    conditions: [do not merge device voltage and electrode potential without mapping]
+    domain_meaning: "Intermediate electrochemical variable used with current density to compute power."
+    audience: shared
+    obtainable_by: [measure]
+    optimization_role: intermediate
+    optimization_direction: context_dependent
+    importance: 4
+    computability: 4
+    data_readiness: 3
+    priority: P1
+    methods: [polarization curve, three-electrode measurement]
+    related_indicators: [I001, I006]
+    evidence: [E002, E003]
+    expert_status: pending
+  - indicator_id: I008
+    name: Activation barrier
+    definition: "DFT-computed reaction barrier for direct or indirect formate oxidation pathway."
+    unit: eV
+    conditions: [specific active site, pathway, surface model]
+    domain_meaning: "Mechanistic descriptor connected to activity and poisoning tolerance."
+    audience: domain_expert
+    obtainable_by: [physics_compute]
+    optimization_role: intermediate
+    optimization_direction: minimize
+    importance: 4
+    computability: 3
+    data_readiness: 2
+    priority: P1
+    methods: [DFT reaction pathway calculation]
+    related_indicators: [I001, I012]
+    evidence: [E005]
+    expert_status: pending
+  - indicator_id: I009
+    name: Single FCC phase status
+    definition: "Whether catalyst is a singular FCC solid solution by XRD/Rietveld or equivalent phase analysis."
+    unit: boolean/categorical
+    conditions: [post-synthesis characterization or validated phase prediction]
+    domain_meaning: "Candidate structure/stability eligibility descriptor."
+    audience: shared
+    obtainable_by: [measure, physics_compute, machine_learn]
+    optimization_role: constraint
+    optimization_direction: target_range
+    importance: 4
+    computability: 3
+    data_readiness: 2
+    priority: P1
+    methods: [XRD, Rietveld refinement, phase prediction]
+    related_indicators: [I001]
+    evidence: [E005]
+    expert_status: pending
+  - indicator_id: I010
+    name: Metallic Pd/Pt state
+    definition: "Whether Pd and Pt retain metallic states during formate oxidation."
+    unit: categorical/spectral feature
+    conditions: [in situ XAS, OCV and applied potential]
+    domain_meaning: "Diagnostic of active catalytic state."
+    audience: domain_expert
+    obtainable_by: [measure]
+    optimization_role: diagnostic
+    optimization_direction: target_range
+    importance: 3
+    computability: 2
+    data_readiness: 1
+    priority: P2
+    methods: [XANES, EXAFS]
+    related_indicators: [I001, I012]
+    evidence: [E005]
+    expert_status: pending
+  - indicator_id: I011
+    name: Morphology descriptors
+    definition: "SEM-derived particle distribution slope, distribution bias, particle coverage ratio, and particle count per unit area."
+    unit: numeric image features
+    conditions: [comparable SEM imaging workflow]
+    domain_meaning: "Multi-modal feature potentially explaining performance."
+    audience: computer_expert
+    obtainable_by: [image_compute, machine_learn]
+    optimization_role: intermediate
+    optimization_direction: context_dependent
+    importance: 3
+    computability: 3
+    data_readiness: 2
+    priority: P2
+    methods: [SEM image processing]
+    related_indicators: [I001]
+    evidence: [E002]
+    expert_status: pending
+  - indicator_id: I012
+    name: Poisoning tolerance
+    definition: "Resistance to hydrogen and CO poisoning relative to pure Pd."
+    unit: qualitative or derived scalar pending
+    conditions: [operational scalar not yet defined]
+    domain_meaning: "Mechanistic explanation for improved activity and durability."
+    audience: domain_expert
+    obtainable_by: [physics_compute, expert_only]
+    optimization_role: diagnostic
+    optimization_direction: maximize
+    importance: 4
+    computability: 2
+    data_readiness: 1
+    priority: P2
+    methods: [DFT pathway analysis, adsorption-energy analysis, expert labels]
+    related_indicators: [I008, I010]
+    evidence: [E005]
+    expert_status: pending
+  - indicator_id: I014
+    name: AL surrogate predicted power density
+    definition: "GBR virtual-oracle or LLM committee prediction used for candidate screening."
+    unit: follows training target if calibrated
+    conditions: [not a real experiment]
+    domain_meaning: "Computational screening diagnostic only."
+    audience: computer_expert
+    obtainable_by: [machine_learn]
+    optimization_role: diagnostic
+    optimization_direction: maximize for screening only
+    importance: 3
+    computability: 5
+    data_readiness: 4
+    priority: P2
+    methods: [GBR, UCB, Pareto screening]
+    related_indicators: [I001]
+    evidence: [E011, E013]
+    expert_status: pending
+
+claims:
+  - claim_id: K001
+    subject: Pd-Pt-Cu-Au-Ir-Ce-Nb-Cr elemental ratio optimization
+    relation: increases
+    object: maximum power density and cost-specific performance
+    claim_type: causal
+    conditions: [CRESt formate oxidation experiments, pure Pd benchmark]
+    evidence: [E001, E002, E004]
+    confidence: high
+    expert_status: pending
+  - claim_id: K002
+    subject: three-electrode current-potential data
+    relation: is_proxy_for
+    object: fuel-cell catalyst performance ranking
+    claim_type: hypothesis
+    conditions: [constant ORR overpotential assumption, validation against fuel-cell experiments]
+    evidence: [E002]
+    confidence: medium
+    expert_status: pending
+  - claim_id: K003
+    subject: Pd and Pt
+    relation: promotes
+    object: formate oxidation activity in optimized octonary catalyst
+    claim_type: mechanism
+    conditions: [primary paper context]
+    evidence: [E005]
+    confidence: medium
+    expert_status: pending
+  - claim_id: K004
+    subject: Cu Ce Nb Cr additions
+    relation: promotes
+    object: tailored coordination environments and cost reduction
+    claim_type: hypothesis
+    conditions: [alloying with primary elements]
+    evidence: [E005]
+    confidence: low
+    expert_status: pending
+  - claim_id: K005
+    subject: optimized octonary HEA
+    relation: decreases
+    object: direct and indirect pathway activation barriers versus pure Pd
+    claim_type: mechanism
+    conditions: [DFT pathway models]
+    evidence: [E005]
+    confidence: medium
+    expert_status: pending
+  - claim_id: K006
+    subject: local AL surrogate outputs
+    relation: is_proxy_for
+    object: experimental power density
+    claim_type: expert_rule
+    conditions: [screening only, not real experiments]
+    evidence: [E011, E013]
+    confidence: high
+    expert_status: pending
+
+evidence:
+  - evidence_id: E001
+    source_type: paper
+    source_name: Zhang et al. 2025 Nature
+    identifier_or_url: https://doi.org/10.1038/s41586-025-09640-5
+    location: literature_markdown/26_Zhang_2025...md lines 11, 21, 244
+    content_summary: "CRESt found an octonary Pd-Pt-Cu-Au-Ir-Ce-Nb-Cr catalyst with 9.3-fold cost-specific improvement after more than 900 chemistries and 3500 tests."
+    evidence_use: relationship
+    quality: high
+  - evidence_id: E002
+    source_type: paper
+    source_name: Zhang et al. 2025 Nature
+    identifier_or_url: https://doi.org/10.1038/s41586-025-09640-5
+    location: line 395
+    content_summary: "Maximum power density was selected as target; three-electrode data used as proxy with constant ORR overpotential assumption."
+    evidence_use: method
+    quality: high
+  - evidence_id: E003
+    source_type: paper
+    source_name: Zhang et al. 2025 Nature
+    identifier_or_url: https://doi.org/10.1038/s41586-025-09640-5
+    location: lines 531-533
+    content_summary: "CV and fuel-cell testing conditions including nitrogen sparging, scan rate, electrolyte, temperature, and loading."
+    evidence_use: condition
+    quality: high
+  - evidence_id: E004
+    source_type: paper
+    source_name: Zhang et al. 2025 Nature
+    identifier_or_url: https://doi.org/10.1038/s41586-025-09640-5
+    location: lines 397-399 and 533
+    content_summary: "Optimized ternary and octonary compositions and benchmark-relative improvements."
+    evidence_use: value
+    quality: high
+  - evidence_id: E005
+    source_type: paper
+    source_name: Zhang et al. 2025 Nature
+    identifier_or_url: https://doi.org/10.1038/s41586-025-09640-5
+    location: lines 539-543 and 693-701
+    content_summary: "Mechanistic evidence: Pd/Pt active elements, single FCC phase, metallic state, lower barriers, poisoning resistance."
+    evidence_use: relationship
+    quality: high
+  - evidence_id: E006
+    source_type: paper
+    source_name: Zhang et al. 2022 Small review
+    identifier_or_url: local literature_markdown/07_Zhang_2022_High_entropy_alloys_for_electrocatalysis.md
+    location: lines 11-13
+    content_summary: "HEA electrocatalysts have adjustable composition and unique physicochemical properties."
+    evidence_use: definition
+    quality: medium
+  - evidence_id: E007
+    source_type: paper
+    source_name: Miracle and Senkov 2017 Acta Materialia review
+    identifier_or_url: http://dx.doi.org/10.1016/j.actamat.2016.08.081
+    location: local lines 31, 2031
+    content_summary: "HEA/MPEA/CCA terms and configurational entropy require careful usage."
+    evidence_use: definition
+    quality: medium
+  - evidence_id: E008
+    source_type: ontology
+    source_name: IUPAC Gold Book catalyst
+    identifier_or_url: https://doi.org/10.1351/goldbook.C00876
+    location: web fetched 2026-07-30
+    content_summary: "Catalyst definition."
+    evidence_use: definition
+    quality: high
+  - evidence_id: E009
+    source_type: ontology
+    source_name: IUPAC Gold Book electrode reaction
+    identifier_or_url: https://doi.org/10.1351/goldbook.E01960
+    location: web fetched 2026-07-30
+    content_summary: "Electrode reaction definition."
+    evidence_use: definition
+    quality: high
+  - evidence_id: E010
+    source_type: ontology
+    source_name: IUPAC Gold Book electron transfer
+    identifier_or_url: https://doi.org/10.1351/goldbook.E02011
+    location: web fetched 2026-07-30
+    content_summary: "Electron transfer definition."
+    evidence_use: definition
+    quality: high
+  - evidence_id: E011
+    source_type: experiment_report
+    source_name: Local AL data README
+    identifier_or_url: AL/catalyst_active_learning_runnable/data/README.md
+    location: lines 3-13
+    content_summary: "Local data columns, normalized eight-metal ratios, and warning that sampled rows train a virtual oracle, not new experiments."
+    evidence_use: method
+    quality: high
+  - evidence_id: E012
+    source_type: calculation_report
+    source_name: Local AL code and README
+    identifier_or_url: AL/catalyst_active_learning_runnable/README.md and catalyst_al/costs.py
+    location: README lines 44-48; costs.py lines 6-34
+    content_summary: "Metal order and non-negative normalized composition constraint."
+    evidence_use: condition
+    quality: high
+  - evidence_id: E013
+    source_type: calculation_report
+    source_name: Local cost/Pareto implementation
+    identifier_or_url: AL/catalyst_active_learning_runnable/catalyst_al/costs.py and pareto.py
+    location: costs.py lines 7-34; pareto.py lines 22-58
+    content_summary: "Normalized cost and Pareto scoring use power_density and normalized_cost."
+    evidence_use: method
+    quality: medium
+  - evidence_id: E014
+    source_type: ontology
+    source_name: EMMO Domain Electrochemistry Ontology
+    identifier_or_url: https://w3id.org/emmo/domain/electrochemistry
+    location: web fetched 2026-07-30
+    content_summary: "Electrochemistry ontology/class index for future exact mappings."
+    evidence_use: definition
+    quality: medium
+
+expert_reviews:
+  - review_id: R001
+    object_id: C002
+    expert_discipline: materials/electrocatalysis
+    action: request_more_evidence
+    comment: "Confirm whether HEA, MPEA, or CCA is the preferred project term and whether an entropy threshold is required."
+    status_after_review: pending
+    date: null
+  - review_id: R002
+    object_id: I001
+    expert_discipline: experimental electrochemistry
+    action: request_more_evidence
+    comment: "Confirm exact unit/protocol for local power_density and whether proxy/direct fuel-cell values can be merged."
+    status_after_review: pending
+    date: null
+  - review_id: R003
+    object_id: I003
+    expert_discipline: materials economics/computer expert
+    action: request_more_evidence
+    comment: "Certify price basis and cost formula."
+    status_after_review: pending
+    date: null
+  - review_id: R004
+    object_id: I009
+    expert_discipline: materials/electrocatalysis
+    action: request_more_evidence
+    comment: "Decide whether single FCC phase is a hard constraint or diagnostic."
+    status_after_review: pending
+    date: null
+  - review_id: R005
+    object_id: I012
+    expert_discipline: computational chemistry
+    action: request_more_evidence
+    comment: "Define operational scalar for poisoning tolerance before optimization."
+    status_after_review: pending
+    date: null
+
+optimization_targets:
+  primary: [I001]
+  secondary: [I002, I013]
+  constraints: [I003, I005, I009]
+  intermediate: [I006, I007, I008, I011]
+  diagnostic: [I010, I012, I014]
+  not_ready: [I010, I012]

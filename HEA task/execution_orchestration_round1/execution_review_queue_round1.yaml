@@ -1,0 +1,101 @@
+review_items:
+  - issue_id: EO-ISSUE-001
+    category: constraint
+    question: "Which fixed element order is authoritative for execution files: Round 2 order [Pd, Pt, Cu, Au, Ir, Ce, Nb, Cr] or the user-stated order [Pd, Pt, Au, Cr, Ir, Ce, Cu, Nb]?"
+    affected_ids: [C006, WF-001, MODEL-001]
+    recommendation: "Use the Round 2/local data order unless experts explicitly revise all schemas and files."
+    evidence_refs: [Round2_yaml, user_request]
+    required_expert: domain_expert_and_computer_expert
+    priority: critical
+    blocking: true
+    status: open
+  - issue_id: EO-ISSUE-002
+    category: metric
+    question: "What is the certified unit and protocol for `power_density` in existing data?"
+    affected_ids: [I001, MODEL-003, WF-N06]
+    recommendation: "Do not train a final predictor across mixed sources until unit/protocol/evidence_type are explicit."
+    evidence_refs: [Round2_review_queue, EO-E001]
+    required_expert: experimental_electrochemistry_expert
+    priority: critical
+    blocking: true
+    status: open
+  - issue_id: EO-ISSUE-003
+    category: metric
+    question: "Can three-electrode proxy-derived rankings and direct formate fuel-cell peak power densities be merged into one target?"
+    affected_ids: [I001, WF-N04, WF-N06]
+    recommendation: "Keep separate target datasets until expert approval; if merged, record protocol mapping."
+    evidence_refs: [EO-E001]
+    required_expert: experimental_electrochemistry_expert
+    priority: high
+    blocking: true
+    status: open
+  - issue_id: EO-ISSUE-004
+    category: constraint
+    question: "What are the lower bounds, upper bounds, and mass-fraction resolution for Pd, Pt, Cu, Au, Ir, Ce, Nb, and Cr?"
+    affected_ids: [I019, MODEL-001, WF-N07]
+    recommendation: "Use only mathematical simplex for dry-run candidate generation; do not send to lab before synthesis bounds are certified."
+    evidence_refs: [Round2_review_queue]
+    required_expert: synthesis_or_robotic_experimentation_expert
+    priority: high
+    blocking: true
+    status: open
+  - issue_id: EO-ISSUE-005
+    category: threshold
+    question: "What cost formula and price basis should be used for normalized catalyst cost and cost-specific performance?"
+    affected_ids: [I002, I003, MODEL-002, RC-004]
+    recommendation: "Use local cost calculation only as a provisional screening index; certify price source/date before formal optimization."
+    evidence_refs: [EO-E007, Round2_review_queue]
+    required_expert: cost_expert_or_project_owner
+    priority: high
+    blocking: false
+    status: open
+  - issue_id: EO-ISSUE-006
+    category: model
+    question: "Which predictor families should be tested first, and what validation thresholds authorize model-guided candidate selection?"
+    affected_ids: [MODEL-003, WF-N06]
+    recommendation: "Compare candidate model families under the same split/CV and require validation plus uncertainty/applicability-domain reporting before selection."
+    evidence_refs: [EO-E004, EO-E005]
+    required_expert: computer_expert
+    priority: high
+    blocking: true
+    status: open
+  - issue_id: EO-ISSUE-007
+    category: model
+    question: "May the local runnable AL package be executed, or is it inspect-only?"
+    affected_ids: [MODEL-001, MODEL-002, MODEL-006, WF-001]
+    recommendation: "Treat as inspect-only until the project owner authorizes execution and parameter scope."
+    evidence_refs: [EO-E007]
+    required_expert: project_owner_or_computer_expert
+    priority: high
+    blocking: false
+    status: open
+  - issue_id: EO-ISSUE-008
+    category: reward
+    question: "Should Round 1 use Pareto-first selection or an expert-approved scalar score for power-density/cost tradeoff?"
+    affected_ids: [RC-003, RC-004, MODEL-006]
+    recommendation: "Use Pareto-first by default; scalar score only after weight approval."
+    evidence_refs: [EO-E003, EO-E006]
+    required_expert: domain_expert_and_computer_expert
+    priority: medium
+    blocking: false
+    status: open
+  - issue_id: EO-ISSUE-009
+    category: workflow
+    question: "What pilot budget should be used: maximum candidate pool, selected batch size, experimental evaluations per round, and stop condition?"
+    affected_ids: [WF-001, PARAM-002]
+    recommendation: "Set a small pilot budget after lab throughput is known; log all rejected and selected candidates."
+    evidence_refs: [EO-E004, EO-E007]
+    required_expert: domain_expert_and_lab_manager
+    priority: medium
+    blocking: false
+    status: open
+  - issue_id: EO-ISSUE-010
+    category: evidence
+    question: "Should single FCC phase, activation barrier, and poisoning tolerance remain diagnostics or become constraints/intermediate objectives?"
+    affected_ids: [I008, I009, I012]
+    recommendation: "Keep deferred diagnostics in Round 1 unless experts provide evaluators and thresholds."
+    evidence_refs: [EO-E002]
+    required_expert: materials_expert_and_computational_chemistry_expert
+    priority: medium
+    blocking: false
+    status: open

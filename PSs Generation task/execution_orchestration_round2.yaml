@@ -1,0 +1,466 @@
+project:
+  orchestration_round: round2
+  language: en-US
+  based_on:
+    - execution_orchestration_report_round1.md
+    - execution_orchestration_round1.yaml
+    - execution_review_queue_round1.yaml
+  goal: "Update the RL execution workflow by strongly prioritizing the materials expert metrics: SOCME, HOMO-LUMO, Es1-Et1, Es1, charge, symmetry, SA, logP, TPSA, and WM."
+  molecular_representation: SMILES
+  fragmentation_rule: RECAP
+  scaffold_policy: porphyrin_scaffold_first
+  status: proposed_pending_expert_review
+
+metric_candidates:
+  - metric_id: M-VALID
+    name: "Valid and sanitized SMILES"
+    aliases: ["RDKit validity", "chemical validity"]
+    definition: "The generated SMILES must parse to an RDKit molecule and pass sanitization."
+    proposed_roles: [hard_constraint]
+    direction: pass_fail
+    threshold:
+      value: true
+      unit: boolean
+      status: active_proposed
+    conditions: ["RDKit parser", "RDKit sanitization"]
+    acquisition: ["rdkit.Chem.MolFromSmiles", "rdkit.Chem.SanitizeMol"]
+    evidence_refs: [RDKit-DOC]
+    expert_status: pending
+    unresolved_fields: []
+  - metric_id: M-SCAFFOLD
+    name: "Porphyrin scaffold preservation"
+    aliases: ["scaffold gate", "porphyrin core constraint"]
+    definition: "Candidate must retain a domain-approved porphyrin or porphyrinoid scaffold in the active branch."
+    proposed_roles: [hard_constraint]
+    direction: pass_fail
+    threshold:
+      value: "approved scaffold SMARTS/SMILES required"
+      unit: structure_rule
+      status: unresolved_until_expert_scaffold_provided
+    conditions: ["round2 active branch"]
+    acquisition: ["substructure search", "scaffold similarity"]
+    evidence_refs: [USER-PORPHYRIN]
+    expert_status: pending
+    unresolved_fields: ["exact scaffold representation"]
+  - metric_id: M-SOCME
+    name: "Spin-orbit coupling matrix element"
+    aliases: ["SOCME", "SOC(S1,Tn)", "SOC"]
+    definition: "Spin-orbit coupling matrix element relevant to intersystem crossing between excited singlet and triplet states."
+    proposed_roles: [primary_objective]
+    direction: maximize
+    threshold:
+      value: 0.24
+      unit: cm^-1
+      status: scaffold_and_method_specific_soft_threshold
+    conditions: ["same computational method", "same state definition"]
+    acquisition: [physics_compute]
+    evidence_refs: [PORPHYRIN-PDI-SOCME, R2-O001]
+    expert_status: pending
+    unresolved_fields: ["exact state pair", "software and method", "hard vs soft threshold"]
+  - metric_id: M-HL-GAP
+    name: "HOMO-LUMO gap"
+    aliases: ["HOMO-LUMO", "frontier orbital gap"]
+    definition: "Energy gap between HOMO and LUMO, used as an electronic-structure proxy for absorption and transfer behavior."
+    proposed_roles: [secondary_objective, prefilter_feature]
+    direction: context_dependent
+    threshold:
+      value: "no universal threshold"
+      unit: eV
+      status: ranking_only_initially
+    conditions: ["same DFT method", "same charge/spin state"]
+    acquisition: [physics_compute, surrogate]
+    evidence_refs: [PORPHYRIN-PDI-SOCME, R2-I007]
+    expert_status: pending
+    unresolved_fields: ["preferred range for this scaffold family"]
+  - metric_id: M-DELTAE-S1-T1
+    name: "S1-T1 energy gap"
+    aliases: ["Es1-Et1", "DeltaE_S1_T1", "DeltaEST"]
+    definition: "Energy difference between the first excited singlet state and the first triplet state."
+    proposed_roles: [primary_objective]
+    direction: minimize_to_favorable_range
+    threshold:
+      value: "smaller is favorable for ISC, but not unbounded"
+      unit: eV
+      status: evidence_backed_direction_threshold_unresolved
+    conditions: ["same TD-DFT/TDA method", "same solvent model"]
+    acquisition: [physics_compute, surrogate]
+    evidence_refs: [PORPHYRIN-PDI-SOCME, ORGANIC-PS-REVIEW]
+    expert_status: pending
+    unresolved_fields: ["acceptable lower/upper range"]
+  - metric_id: M-ES1
+    name: "S1 excitation energy"
+    aliases: ["Es1", "S1 energy"]
+    definition: "Excitation energy of the first singlet excited state."
+    proposed_roles: [primary_objective]
+    direction: target_range
+    threshold:
+      value: "map to desired wavelength window via lambda=1240/E"
+      unit: eV
+      status: derived_target_range
+    conditions: ["same TD-DFT method", "target transition selected"]
+    acquisition: [physics_compute, surrogate]
+    evidence_refs: [R2-I001, R2-O001]
+    expert_status: pending
+    unresolved_fields: ["exact preferred energy range"]
+  - metric_id: M-CHARGE
+    name: "Charge profile"
+    aliases: ["charge", "formal charge", "charge distribution"]
+    definition: "Net charge and/or spatial charge distribution relevant to amphiphilicity, uptake, and localization."
+    proposed_roles: [soft_constraint, intermediate]
+    direction: target_range
+    threshold:
+      value: "branch-specific, avoid extremes"
+      unit: "charge / descriptor"
+      status: unresolved
+    conditions: ["porphyrin branch", "application-dependent biological context"]
+    acquisition: [derive, physics_compute]
+    evidence_refs: [PORPHYRIN-CHARGE-LOGP, R2-I014]
+    expert_status: pending
+    unresolved_fields: ["target formal charge", "charge-distribution descriptor"]
+  - metric_id: M-SYMMETRY
+    name: "Symmetry score"
+    aliases: ["symmetry", "molecular symmetry proxy"]
+    definition: "A structural or electronic symmetry proxy used as a regularizer for charge distribution, conjugation, and reproducibility."
+    proposed_roles: [intermediate, design_regularizer]
+    direction: context_dependent
+    threshold:
+      value: "moderate preference, not strict extremum"
+      unit: score
+      status: unresolved
+    conditions: ["must not override charge or photophysics objectives"]
+    acquisition: [derive]
+    evidence_refs: [PORPHYRIN-CHARGE-LOGP]
+    expert_status: pending
+    unresolved_fields: ["operational definition of symmetry"]
+  - metric_id: M-SA
+    name: "Synthetic accessibility"
+    aliases: ["SA", "SA score"]
+    definition: "Numerical estimate of synthetic accessibility or synthetic complexity."
+    proposed_roles: [soft_constraint]
+    direction: minimize_difficulty
+    threshold:
+      value: "project threshold unresolved"
+      unit: score
+      status: unresolved
+    conditions: ["fragment RL branch", "RECAP-compatible workflow"]
+    acquisition: [estimate]
+    evidence_refs: [RL-FRAGMENT-REF]
+    expert_status: pending
+    unresolved_fields: ["SA cutoff", "soft vs hard usage"]
+  - metric_id: M-LOGP
+    name: "logP"
+    aliases: ["octanol/water partition coefficient"]
+    definition: "Lipophilicity descriptor used to balance uptake, amphiphilicity, and aggregation risk."
+    proposed_roles: [soft_constraint]
+    direction: target_range
+    threshold:
+      value: "moderate range preferred; exact limits unresolved"
+      unit: unitless
+      status: evidence_backed_direction_threshold_unresolved
+    conditions: ["porphyrin branch", "biological environment dependent"]
+    acquisition: [estimate]
+    evidence_refs: [PORPHYRIN-CHARGE-LOGP]
+    expert_status: pending
+    unresolved_fields: ["target range for this project"]
+  - metric_id: M-TPSA
+    name: "Topological polar surface area"
+    aliases: ["TPSA"]
+    definition: "Topological polar surface area used as a polarity and transport control descriptor."
+    proposed_roles: [soft_constraint]
+    direction: target_range
+    threshold:
+      value: "avoid extremes; exact range unresolved"
+      unit: A^2
+      status: unresolved
+    conditions: ["paired with logP and charge"]
+    acquisition: [estimate]
+    evidence_refs: [STANDARD-DEVELOPABILITY]
+    expert_status: pending
+    unresolved_fields: ["target range"]
+  - metric_id: M-MW
+    name: "Molecular weight"
+    aliases: ["WM", "MW"]
+    definition: "Molecular weight used to control size growth and practical developability."
+    proposed_roles: [soft_constraint]
+    direction: target_range
+    threshold:
+      value: "avoid monotonic size growth; exact limit unresolved"
+      unit: g/mol
+      status: unresolved
+    conditions: ["paired with scaffold-preserving branch"]
+    acquisition: [estimate]
+    evidence_refs: [STANDARD-DEVELOPABILITY]
+    expert_status: pending
+    unresolved_fields: ["exact upper/lower bounds"]
+
+metric_decisions:
+  - metric_id: M-VALID
+    final_role: hard_constraint
+    rank: 1
+    ranking_basis: ["Foundational validity gate", "lowest computational cost"]
+    direction: pass_fail
+    threshold: {value: true, unit: boolean}
+    evaluator_id: MODEL-001
+    decision_status: proposed
+    evidence_refs: [RDKit-DOC]
+    expert_feedback_refs: []
+  - metric_id: M-SCAFFOLD
+    final_role: hard_constraint
+    rank: 2
+    ranking_basis: ["Porphyrin remains the common scaffold", "keeps RL search relevant"]
+    direction: pass_fail
+    threshold: {value: "approved scaffold required"}
+    evaluator_id: MODEL-003
+    decision_status: proposed
+    evidence_refs: [USER-PORPHYRIN]
+    expert_feedback_refs: []
+  - metric_id: M-SOCME
+    final_role: primary_objective
+    rank: 3
+    ranking_basis: ["Explicitly requested by materials expert", "directly linked to ISC and ROS generation"]
+    direction: maximize
+    threshold: {value: 0.24, unit: cm^-1, status: soft_scaffold_specific}
+    evaluator_id: MODEL-006
+    decision_status: proposed
+    evidence_refs: [PORPHYRIN-PDI-SOCME, ORGANIC-PS-REVIEW]
+    expert_feedback_refs: []
+  - metric_id: M-DELTAE-S1-T1
+    final_role: primary_objective
+    rank: 4
+    ranking_basis: ["Explicitly requested by materials expert", "small DeltaEST commonly promotes ISC"]
+    direction: minimize_to_favorable_range
+    threshold: {value: "smaller favorable", status: unresolved_range}
+    evaluator_id: MODEL-006
+    decision_status: proposed
+    evidence_refs: [PORPHYRIN-PDI-SOCME, ORGANIC-PS-REVIEW]
+    expert_feedback_refs: []
+  - metric_id: M-ES1
+    final_role: primary_objective
+    rank: 5
+    ranking_basis: ["Directly controls optical window via excitation energy", "explicitly requested as Es1"]
+    direction: target_range
+    threshold: {value: "convert to wavelength window", status: derived}
+    evaluator_id: MODEL-006
+    decision_status: proposed
+    evidence_refs: [R2-O001]
+    expert_feedback_refs: []
+  - metric_id: M-HL-GAP
+    final_role: secondary_objective
+    rank: 6
+    ranking_basis: ["Fast electronic proxy", "useful before expensive excited-state calculations"]
+    direction: context_dependent
+    threshold: {value: "ranking only"}
+    evaluator_id: MODEL-005
+    decision_status: proposed
+    evidence_refs: [PORPHYRIN-PDI-SOCME]
+    expert_feedback_refs: []
+  - metric_id: M-CHARGE
+    final_role: soft_constraint
+    rank: 7
+    ranking_basis: ["Important for uptake, amphiphilicity, localization, and biointeraction"]
+    direction: target_range
+    threshold: {value: "avoid extremes", status: unresolved}
+    evaluator_id: MODEL-005
+    decision_status: proposed
+    evidence_refs: [PORPHYRIN-CHARGE-LOGP]
+    expert_feedback_refs: []
+  - metric_id: M-SYMMETRY
+    final_role: design_regularizer
+    rank: 8
+    ranking_basis: ["Can modulate charge distribution and conjugation, but weaker evidence than core photophysics"]
+    direction: context_dependent
+    threshold: {value: "moderate regularizer"}
+    evaluator_id: MODEL-005
+    decision_status: proposed
+    evidence_refs: [PORPHYRIN-CHARGE-LOGP]
+    expert_feedback_refs: []
+  - metric_id: M-SA
+    final_role: soft_constraint
+    rank: 9
+    ranking_basis: ["Prevents drift into unsynthesizable structures", "important for RECAP workflow"]
+    direction: minimize_difficulty
+    threshold: {value: "project-specific cutoff unresolved"}
+    evaluator_id: MODEL-005
+    decision_status: proposed
+    evidence_refs: [RL-FRAGMENT-REF]
+    expert_feedback_refs: []
+  - metric_id: M-LOGP
+    final_role: soft_constraint
+    rank: 10
+    ranking_basis: ["Balances amphiphilicity, uptake, and aggregation risk"]
+    direction: target_range
+    threshold: {value: "moderate range", status: unresolved}
+    evaluator_id: MODEL-005
+    decision_status: proposed
+    evidence_refs: [PORPHYRIN-CHARGE-LOGP]
+    expert_feedback_refs: []
+  - metric_id: M-TPSA
+    final_role: soft_constraint
+    rank: 11
+    ranking_basis: ["Complements logP and charge in transport/polarity control"]
+    direction: target_range
+    threshold: {value: "avoid extremes", status: unresolved}
+    evaluator_id: MODEL-005
+    decision_status: proposed
+    evidence_refs: [STANDARD-DEVELOPABILITY]
+    expert_feedback_refs: []
+  - metric_id: M-MW
+    final_role: soft_constraint
+    rank: 12
+    ranking_basis: ["Prevents oversized molecules and reward hacking by size growth"]
+    direction: target_range
+    threshold: {value: "upper/lower bound unresolved"}
+    evaluator_id: MODEL-005
+    decision_status: proposed
+    evidence_refs: [STANDARD-DEVELOPABILITY]
+    expert_feedback_refs: []
+
+model_interfaces:
+  - model_id: MODEL-001
+    name: "RDKit SMILES validator"
+    role: constraint_checker
+    status: proposed
+    input_schema: {smiles: string}
+    output_schema: {valid: boolean, canonical_smiles: string}
+    supported_metrics: [M-VALID]
+    evidence_refs: [RDKit-DOC]
+  - model_id: MODEL-002
+    name: "RDKit RECAP fragmenter"
+    role: constraint_checker
+    status: proposed
+    input_schema: {smiles: string, min_fragment_size: integer}
+    output_schema: {fragment_tree: object, leaf_fragments: list}
+    supported_metrics: [M-SA]
+    evidence_refs: [RDKit-DOC]
+  - model_id: MODEL-003
+    name: "Porphyrin scaffold checker"
+    role: constraint_checker
+    status: proposed
+    input_schema: {smiles: string, scaffold_smarts: string}
+    output_schema: {has_scaffold: boolean}
+    supported_metrics: [M-SCAFFOLD]
+    evidence_refs: [USER-PORPHYRIN]
+  - model_id: MODEL-004
+    name: "SMILES/RECAP RL generator"
+    role: generator
+    status: proposed
+    input_schema: {prior_model: string, fragment_vocabulary: list, reward_profile: string}
+    output_schema: {candidate_smiles: list, trajectories: object}
+    supported_metrics: [M-VALID, M-SCAFFOLD, M-SA]
+    evidence_refs: [RL-REINVENT-REF, RL-FRAGMENT-REF]
+  - model_id: MODEL-005
+    name: "Cheap descriptor evaluator"
+    role: constraint_checker
+    status: proposed
+    input_schema: {smiles: string}
+    output_schema: {mw: number, logp: number, tpsa: number, formal_charge: number, symmetry_score: number, sa_score: number, homo_lumo_proxy: number}
+    supported_metrics: [M-HL-GAP, M-CHARGE, M-SYMMETRY, M-SA, M-LOGP, M-TPSA, M-MW]
+    evidence_refs: [PORPHYRIN-CHARGE-LOGP, STANDARD-DEVELOPABILITY]
+  - model_id: MODEL-006
+    name: "Excited-state DFT/TD-DFT evaluator"
+    role: physics_calculator
+    status: proposed
+    input_schema: {smiles: string, conformer: string, method: object}
+    output_schema: {socme: number, es1_eV: number, deltae_s1_t1_eV: number, homo_lumo_gap_eV: number}
+    supported_metrics: [M-SOCME, M-DELTAE-S1-T1, M-ES1, M-HL-GAP]
+    evidence_refs: [PORPHYRIN-PDI-SOCME, ORGANIC-PS-REVIEW]
+
+reward_profiles:
+  round2_photophysics_centered_porphyrin:
+    status: proposed_primary_profile
+    gates:
+      - {metric_id: M-VALID, behavior: score_zero_if_failed}
+      - {metric_id: M-SCAFFOLD, behavior: score_zero_if_failed}
+    components:
+      - {metric_id: M-SOCME, weight: 0.22, transform: sigmoid_rank_with_soft_reference_0_24}
+      - {metric_id: M-DELTAE-S1-T1, weight: 0.20, transform: favorable_low_gap_not_unbounded}
+      - {metric_id: M-ES1, weight: 0.18, transform: target_visible_nir_window}
+      - {metric_id: M-HL-GAP, weight: 0.10, transform: rank_or_target_range}
+      - {metric_id: M-CHARGE, weight: 0.08, transform: target_range}
+      - {metric_id: M-SYMMETRY, weight: 0.05, transform: moderate_regularizer}
+      - {metric_id: M-SA, weight: -0.07, transform: penalty_for_poor_accessibility}
+      - {metric_id: M-LOGP, weight: -0.04, transform: penalty_outside_moderate_range}
+      - {metric_id: M-TPSA, weight: -0.03, transform: penalty_outside_moderate_range}
+      - {metric_id: M-MW, weight: -0.03, transform: penalty_for_size_growth}
+    aggregation: weighted_sum_after_hard_gates
+    decision_status: proposed
+
+execution_workflow:
+  stages:
+    - stage_id: STAGE-0
+      name: "Input and scaffold normalization"
+      steps:
+        - "Load round1 orchestration artifacts and round2 metric priorities."
+        - "Load approved porphyrin scaffold representation."
+        - "Canonicalize and sanitize seed SMILES."
+      outputs: ["seed_registry"]
+    - stage_id: STAGE-1
+      name: "Cheap developability prefilter"
+      steps:
+        - "Apply scaffold gate."
+        - "Compute MW, logP, TPSA, charge, SA, and optional symmetry proxy."
+        - "Drop candidates outside hard invalidity or expert-defined impossible ranges."
+      outputs: ["prefiltered_pool"]
+    - stage_id: STAGE-2
+      name: "Electronic-structure main evaluation"
+      steps:
+        - "Compute Es1 and HOMO-LUMO gap for surviving candidates."
+        - "Compute DeltaE_S1_T1."
+        - "Compute SOCME for top candidates or calibrated batches."
+      outputs: ["photophysics_scored_pool"]
+    - stage_id: STAGE-3
+      name: "RL policy update"
+      steps:
+        - "Use the round2 photophysics-centered reward profile."
+        - "Bias actions toward donor/acceptor, conjugation, charge, and peripheral substitutions."
+        - "Keep RECAP-compatible edits where possible."
+      outputs: ["updated_agent"]
+    - stage_id: STAGE-4
+      name: "Expert review and threshold tightening"
+      steps:
+        - "Review high-scoring candidates and failures with materials and computation experts."
+        - "Tighten SOCME, DeltaE_S1_T1, logP, TPSA, MW, and SA ranges."
+      outputs: ["approved_thresholds_next_round"]
+
+evidence:
+  - evidence_id: RDKit-DOC
+    source_type: documentation
+    source_name: "RDKit documentation"
+    identifier_or_url: "https://github.com/rdkit/rdkit/blob/master/Docs/Book/source/rdkit.Chem.Recap.md"
+    content_summary: "RECAP decomposition and molecule sanitization interfaces."
+  - evidence_id: RL-REINVENT-REF
+    source_type: literature_and_software
+    source_name: "REINVENT and REINVENT 4"
+    identifier_or_url: "https://doi.org/10.1186/s13321-017-0235-x ; https://doi.org/10.1186/s13321-024-00812-5"
+    content_summary: "SMILES RL, staged learning, multi-component scoring."
+  - evidence_id: RL-FRAGMENT-REF
+    source_type: literature
+    source_name: "Fragment-based RL references"
+    identifier_or_url: "https://doi.org/10.1021/acs.jcim.3c00735 ; fragment-based RL references from web search"
+    content_summary: "Fragment-level RL helps preserve chemical realism and synthesizability."
+  - evidence_id: PORPHYRIN-PDI-SOCME
+    source_type: literature
+    source_name: "Porphyrin photosensitizer molecules as effective medicine candidates for PDT"
+    identifier_or_url: "https://pubs.rsc.org/en/content/articlelanding/2024/ra/d4ra05585c"
+    content_summary: "SOCME, HOMO-LUMO gap, excitation energies, S1-T1, porphyrin-PDI electronic structure design evidence."
+  - evidence_id: PORPHYRIN-CHARGE-LOGP
+    source_type: literature
+    source_name: "Photodynamic Inactivation of Bacteria with Porphyrin Derivatives"
+    identifier_or_url: "https://www.mdpi.com/1422-0067/21/22/8716"
+    content_summary: "Charge distribution, symmetry effects, and logP relevance in porphyrin photosensitizer behavior."
+  - evidence_id: ORGANIC-PS-REVIEW
+    source_type: review
+    source_name: "Organic photosensitizers: from molecular design to phototheranostics"
+    identifier_or_url: "https://pubs.rsc.org/en/content/articlelanding/2025/cs/d5cs00599j"
+    content_summary: "SOC and DeltaEST jointly control ISC; smaller DeltaEST or stronger SOC promote ROS generation."
+  - evidence_id: STANDARD-DEVELOPABILITY
+    source_type: general_rule
+    source_name: "Standard developability descriptors"
+    identifier_or_url: "local:STANDARD-DEVELOPABILITY"
+    content_summary: "MW, TPSA, SA, and logP are standard practicality constraints and should remain secondary to core photophysics."
+
+blocking_issues:
+  - "Exact operational definition of symmetry_score is not yet approved."
+  - "Target ranges for SA, logP, TPSA, and MW in porphyrin-like photosensitizers are not yet approved."
+  - "SOCME reference value 0.24 cm^-1 is literature-specific and must not be treated as universal until approved."
+  - "Need expert confirmation on whether DeltaE_S1_T1 should be optimized toward a bounded window rather than simple minimization."

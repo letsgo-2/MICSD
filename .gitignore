@@ -1,0 +1,11 @@
+# Keep literature and generated Markdown directories as placeholders only.
+**/literature/**
+!**/literature/.gitkeep
+**/markdown/**
+!**/markdown/.gitkeep
+
+# These directories are maintained as independent GitHub repositories.
+/PSs Generation task/SDPD/**
+!/PSs Generation task/SDPD/.gitkeep
+/PSs Generation task/meloculardftcal/**
+!/PSs Generation task/meloculardftcal/.gitkeep

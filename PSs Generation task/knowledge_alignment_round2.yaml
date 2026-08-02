@@ -1,0 +1,451 @@
+project:
+  round: round2
+  previous_round_files:
+    - knowledge_alignment_report.md
+    - knowledge_alignment.yaml
+    - expert_review_queue.yaml
+  project_goal: "开发具有更高光敏性能的候选分子"
+  update_request:
+    domain_expert: "当前知识基本确认无误；补充光敏剂优势骨架及特性分析。"
+    computer_expert: "明确DFT/数值可计算指标、计算方式、可进入迭代优化框架的性能指标及reward阈值。"
+  status: "round2_draft_pending_expert_review"
+
+concepts:
+  - concept_id: R2-C001
+    name: "优势光敏剂骨架"
+    definition: "在论文证据中反复与长波吸收、高ROS、低聚集、靶向或低氧适用性相关的分子核心或可修饰平台。"
+    synonyms: ["advantaged photosensitizer scaffold", "PS scaffold"]
+    parent_concept: "photosensitizer"
+    ontology_source:
+      name: "local project concept"
+      iri_or_url: "local:R2-C001"
+      version_or_access_date: "created 2026-07-17"
+    mapping_status: local
+    evidence: [R2-E001, R2-E002, R2-E003, R2-E004, R2-E005, R2-E006, R2-E008, R2-E009, R2-E010]
+    expert_status: pending
+  - concept_id: R2-C002
+    name: "DFT/TD-DFT计算代理指标"
+    definition: "由DFT、TD-DFT或相关数值方法得到，用于预测、筛选或解释光敏性能的结构-电子性质指标。"
+    synonyms: ["computational proxy", "DFT descriptor"]
+    parent_concept: "indicator"
+    ontology_source:
+      name: "local project concept based on TD-DFT PDT review"
+      iri_or_url: "local:R2-C002"
+      version_or_access_date: "created 2026-07-17"
+    mapping_status: local
+    evidence: [R2-O001, R2-O002, R2-O003]
+    expert_status: pending
+  - concept_id: R2-C003
+    name: "reward初始阈值"
+    definition: "用于生成式或筛选式迭代优化的初始软打分边界，需后续专家和实验数据校准。"
+    synonyms: ["reward threshold", "initial scoring boundary"]
+    parent_concept: "optimization rule"
+    ontology_source:
+      name: "local project concept"
+      iri_or_url: "local:R2-C003"
+      version_or_access_date: "created 2026-07-17"
+    mapping_status: local
+    evidence: [R2-O001, R2-O002, R2-O003]
+    expert_status: pending
+
+scaffolds:
+  - scaffold_id: R2-S001
+    name: "ZnPc / phthalocyanine"
+    advantages: ["long-wavelength Q-band", "high molar absorption coefficient", "high singlet oxygen potential", "rich substitution chemistry"]
+    risks: ["water aggregation", "low solubility", "PET quenching in some substituent patterns"]
+    tunable_sites: ["central metal", "peripheral/nonperipheral substituents", "cationic bulky groups"]
+    recommended_branch: "type_II_or_mixed_PDT"
+    evidence: [R2-E001, R2-E002]
+    expert_status: pending
+  - scaffold_id: R2-S002
+    name: "AIE D-A / D-A-pi-A"
+    advantages: ["aggregate-state photosensitization", "ICT-tunable absorption/ISC", "cationic anchoring"]
+    risks: ["cationic dark toxicity", "mechanism depends on localization and aggregate state"]
+    tunable_sites: ["donor", "acceptor", "pi bridge", "cationic chain number"]
+    recommended_branch: "hypoxia_type_I_or_localized_PDT"
+    evidence: [R2-E003]
+    expert_status: pending
+  - scaffold_id: R2-S003
+    name: "D-A-D conjugated oligomer / BODIPY acceptor"
+    advantages: ["ICT", "enhanced ISC", "ROS", "low bandgap", "photothermal co-activity"]
+    risks: ["PDT/PTT contribution entanglement", "application context may be antibacterial rather than tumor"]
+    tunable_sites: ["donor strength", "acceptor strength", "conjugation length"]
+    recommended_branch: "scaffold_refinement_or_dual_photoactive"
+    evidence: [R2-E004]
+    expert_status: pending
+  - scaffold_id: R2-S004
+    name: "Nile-blue Type-I photodrug"
+    advantages: ["near-infrared absorption", "Type-I radical generation", "targeting functionalization"]
+    risks: ["narrower scaffold space", "requires radical probe validation"]
+    tunable_sites: ["terminal targeting group", "cationic/lipophilic group"]
+    recommended_branch: "hypoxia_type_I_PDT"
+    evidence: [R2-E005]
+    expert_status: pending
+  - scaffold_id: R2-S005
+    name: "Re(I) or other metal complexes"
+    advantages: ["strong excited-state effects", "targeting ligand integration", "hypoxic Type-I/II activity"]
+    risks: ["metal toxicity", "coordination stability", "translation risk"]
+    tunable_sites: ["metal center", "ligand", "targeting group"]
+    recommended_branch: "separate_metal_complex_branch"
+    evidence: [R2-E006, R2-E007]
+    expert_status: pending
+  - scaffold_id: R2-S006
+    name: "Bacteriochlorin / copper-bacteriochlorin nanosheet"
+    advantages: ["750 nm activation", "multiple ROS routes", "tumor microenvironment activation"]
+    risks: ["nanoplatform not directly comparable to small molecule", "metal release safety"]
+    tunable_sites: ["metal", "assembly", "GSH response"]
+    recommended_branch: "specialized_theranostic_or_pyroptosis"
+    evidence: [R2-E008]
+    expert_status: pending
+  - scaffold_id: R2-S007
+    name: "Porphyrin/metalloporphyrin polymer"
+    advantages: ["established PDT platform", "1O2", "imaging integration", "polymer nanoparticle stability"]
+    risks: ["nanoparticle confounds molecular reward", "requires biodistribution experiments"]
+    tunable_sites: ["metal center", "meso substituent", "polymer/self-assembly"]
+    recommended_branch: "type_II_or_theranostic"
+    evidence: [R2-E009, R2-E010]
+    expert_status: pending
+
+indicators:
+  - indicator_id: R2-I001
+    name: "TD-DFT吸收波长λabs"
+    definition: "由主要电子跃迁激发能换算得到的吸收波长。"
+    unit: "nm"
+    conditions: ["functional", "basis set", "solvent model", "selected transition"]
+    domain_meaning: "光源匹配和组织穿透代理"
+    audience: computer_expert
+    obtainable_by: [physics_compute]
+    optimization_role: primary_objective
+    optimization_direction: target_range
+    importance: 5
+    computability: 5
+    data_readiness: 4
+    priority: P0
+    calculation: "TD-DFT vertical excitation energy E(eV); lambda_nm = 1240 / E"
+    initial_reward_threshold: "600-800 nm high score; 650-750 nm preferred initial PDT window; outside range soft penalty"
+    threshold_status: "literature_supported_initial_threshold"
+    evidence: [R2-O001]
+    expert_status: pending
+  - indicator_id: R2-I002
+    name: "oscillator strength"
+    definition: "电子跃迁积分强度的量度。"
+    unit: "dimensionless"
+    conditions: ["same TD-DFT method", "same transition selection rule"]
+    domain_meaning: "吸光强度/ε趋势代理"
+    audience: computer_expert
+    obtainable_by: [physics_compute]
+    optimization_role: secondary_objective
+    optimization_direction: maximize
+    importance: 4
+    computability: 5
+    data_readiness: 4
+    priority: P0
+    calculation: "TD-DFT oscillator strength f for target absorption transition"
+    initial_reward_threshold: "rank-normalized within scaffold; near-zero f penalized"
+    threshold_status: "ranking_metric_no_universal_absolute_threshold"
+    evidence: [R2-O004]
+    expert_status: pending
+  - indicator_id: R2-I003
+    name: "T1-S0 energy gap"
+    definition: "最低三重态与基态之间的能量差。"
+    unit: "eV"
+    conditions: ["TD-DFT/TDA or DeltaSCF", "solvent model", "consistent method"]
+    domain_meaning: "区分Type-II单线态氧能力和Type-I抑制EET策略"
+    audience: computer_expert
+    obtainable_by: [physics_compute]
+    optimization_role: primary_objective
+    optimization_direction: context_dependent
+    importance: 5
+    computability: 4
+    data_readiness: 3
+    priority: P0
+    calculation: "E(T1)-E(S0) from TD-DFT/TDA or optimized triplet calculation"
+    initial_reward_threshold: "Type-II branch >0.98 eV, conservative solution threshold >1.13 eV; Type-I EET-blocking branch <0.98 eV"
+    threshold_status: "branch_specific_literature_threshold"
+    evidence: [R2-O001, R2-O002, R2-O003]
+    expert_status: pending
+  - indicator_id: R2-I004
+    name: "minimum S1-Tn energy gap"
+    definition: "S1与附近三重态Tn之间最小能量差。"
+    unit: "eV"
+    conditions: ["number of triplet states", "same geometry", "same TD-DFT method"]
+    domain_meaning: "ISC热力学接近性代理"
+    audience: computer_expert
+    obtainable_by: [physics_compute]
+    optimization_role: intermediate
+    optimization_direction: minimize
+    importance: 5
+    computability: 4
+    data_readiness: 3
+    priority: P0
+    calculation: "min(abs(E(S1)-E(Tn))) across low-lying triplet states"
+    initial_reward_threshold: "<0.4 eV favorable heuristic; combine with SOC"
+    threshold_status: "literature_heuristic_needs_calibration"
+    evidence: [R2-O002]
+    expert_status: pending
+  - indicator_id: R2-I005
+    name: "spin-orbit coupling SOC(S1,Tn)"
+    definition: "S1与Tn之间自旋轨道耦合矩阵元。"
+    unit: "cm^-1"
+    conditions: ["software", "relativistic treatment", "state pair"]
+    domain_meaning: "ISC动力学代理"
+    audience: computer_expert
+    obtainable_by: [physics_compute]
+    optimization_role: intermediate
+    optimization_direction: maximize
+    importance: 5
+    computability: 3
+    data_readiness: 2
+    priority: P1
+    calculation: "SOC matrix element for candidate S1->Tn channels"
+    initial_reward_threshold: "no universal absolute threshold; rank within method/scaffold"
+    threshold_status: "ranking_metric_requires_method_lock"
+    evidence: [R2-O001, R2-O002]
+    expert_status: pending
+  - indicator_id: R2-I006
+    name: "electron-transfer Gibbs free energy"
+    definition: "光诱导电子转移过程的吉布斯自由能变化。"
+    unit: "eV or kJ mol^-1"
+    conditions: ["donor/acceptor definition", "redox reference", "solvent", "excited-state energy"]
+    domain_meaning: "Type-I ET热力学可行性"
+    audience: computer_expert
+    obtainable_by: [physics_compute, derive]
+    optimization_role: primary_objective
+    optimization_direction: minimize
+    importance: 5
+    computability: 3
+    data_readiness: 2
+    priority: P1
+    calculation: "Rehm-Weller style estimate from redox potentials and excitation energy"
+    initial_reward_threshold: "DeltaG_ET < 0 favorable; overly negative not automatically better"
+    threshold_status: "thermodynamic_sign_supported_threshold_needs_kinetic_calibration"
+    evidence: [R2-O002, R2-O003, R2-O004]
+    expert_status: pending
+  - indicator_id: R2-I007
+    name: "ICT / charge-transfer descriptor"
+    definition: "描述激发态电荷转移强度与空间分离程度的NTO或hole-electron指标。"
+    unit: "method-dependent"
+    conditions: ["NTO analysis", "same excited state", "same method"]
+    domain_meaning: "红移、ISC、Type-I倾向的解释代理"
+    audience: computer_expert
+    obtainable_by: [physics_compute]
+    optimization_role: intermediate
+    optimization_direction: target_range
+    importance: 4
+    computability: 3
+    data_readiness: 2
+    priority: P1
+    calculation: "NTO participation ratio, hole-electron distance, CT number, HOMO/LUMO overlap"
+    initial_reward_threshold: "moderate CT preferred; high CT with low f penalized"
+    threshold_status: "expert_calibration_required"
+    evidence: [R2-E003, R2-E004, R2-O001]
+    expert_status: pending
+  - indicator_id: R2-I008
+    name: "aggregation-risk proxy"
+    definition: "以平面性、芳香面积、疏水性、取代位阻和形式电荷估算聚集风险。"
+    unit: "score"
+    conditions: ["structure rules", "optional dimer calculation"]
+    domain_meaning: "水相光敏性能保持的约束代理"
+    audience: computer_expert
+    obtainable_by: [derive, physics_compute, estimate]
+    optimization_role: constraint
+    optimization_direction: minimize
+    importance: 4
+    computability: 3
+    data_readiness: 2
+    priority: P1
+    calculation: "rule score from planarity + aromatic surface + cLogP - charge/bulky substituent compensation; optional dimer interaction energy"
+    initial_reward_threshold: "penalize planar hydrophobic macrocycles without bulky/ionic substituents"
+    threshold_status: "heuristic_from_paper_evidence"
+    evidence: [R2-E001, R2-E002]
+    expert_status: pending
+
+claims:
+  - claim_id: R2-K001
+    subject: "ZnPc/phthalocyanine scaffold"
+    relation: promotes
+    object: "long-wavelength absorption and Type-II PDT potential"
+    claim_type: mechanism
+    conditions: ["nonaggregated", "suitable substitution", "water/biological media"]
+    evidence: [R2-E001, R2-E002]
+    confidence: high
+    expert_status: pending
+  - claim_id: R2-K002
+    subject: "AIE D-A scaffold"
+    relation: promotes
+    object: "aggregate-state photosensitization and localization"
+    claim_type: mechanism
+    conditions: ["cationic chains", "membrane/organelle context"]
+    evidence: [R2-E003]
+    confidence: medium
+    expert_status: pending
+  - claim_id: R2-K003
+    subject: "T1-S0 threshold"
+    relation: defines
+    object: "Type-II versus Type-I reward branch"
+    claim_type: expert_rule
+    conditions: ["same computational method", "mechanism-specific reward"]
+    evidence: [R2-O001, R2-O002, R2-O003]
+    confidence: medium
+    expert_status: pending
+  - claim_id: R2-K004
+    subject: "S1-Tn gap and SOC"
+    relation: promotes
+    object: "ISC propensity"
+    claim_type: mechanism
+    conditions: ["near-degenerate states", "nonzero SOC"]
+    evidence: [R2-O001, R2-O002]
+    confidence: medium
+    expert_status: pending
+  - claim_id: R2-K005
+    subject: "DeltaG_ET < 0"
+    relation: correlates_with
+    object: "Type-I electron-transfer feasibility"
+    claim_type: mechanism
+    conditions: ["defined donor/acceptor/substrate", "redox reference fixed"]
+    evidence: [R2-O002, R2-O003, R2-O004]
+    confidence: medium
+    expert_status: pending
+
+evidence:
+  - evidence_id: R2-E001
+    source_type: paper
+    source_name: "Far-Red-Absorbing Cationic Phthalocyanine Photosensitizers"
+    identifier_or_url: "markdown/2015_Machacek_Far-Red-Absorbing-Cationic-Phthalocyanine-Photosensitizers.md"
+    location: "lines 25-31, 96-116, 276-319"
+    content_summary: "Pc Q-band, water aggregation, nonperipheral red shift, PET quenching, epsilon values."
+    evidence_use: relationship
+    quality: high
+  - evidence_id: R2-E002
+    source_type: paper
+    source_name: "Water-soluble non-aggregating zinc phthalocyanine and in vitro studies for PDT"
+    identifier_or_url: "markdown/2013_Makhseed_Water-Soluble-Non-Aggregating-Zinc-Phthalocyanine-for-PDT.md"
+    location: "lines 39-45, 77-107"
+    content_summary: "Water-soluble non-aggregating ZnPc with high epsilon, PhiDelta, EC50/TC50."
+    evidence_use: value
+    quality: high
+  - evidence_id: R2-E003
+    source_type: paper
+    source_name: "Activation of Pyroptosis by Membrane-Anchoring AIE Photosensitizer Design"
+    identifier_or_url: "markdown/2021_Wu_Activation-of-Pyroptosis-by-Membrane-Anchoring-AIE-Photosensitizer.md"
+    location: "lines 39-55, 61"
+    content_summary: "AIE PS, D-A'-pi-A core, cationic chain membrane anchoring."
+    evidence_use: relationship
+    quality: high
+  - evidence_id: R2-E004
+    source_type: paper
+    source_name: "Intramolecular Charge Transfer-Based Conjugated Oligomer"
+    identifier_or_url: "markdown/2021_Peng_Intramolecular-Charge-Transfer-Conjugated-Oligomer-with-Photodynamic-and-Photothermal-Activities.md"
+    location: "lines 9-17"
+    content_summary: "D-A-D CDT-BODIPY oligomer, ICT, enhanced ISC, ROS, low bandgap and photothermal activity."
+    evidence_use: relationship
+    quality: high
+  - evidence_id: R2-E005
+    source_type: paper
+    source_name: "Mitochondria-Targeting Type-I Photodrug for Pyroptotic Oncotherapy"
+    identifier_or_url: "markdown/2024_Yi_Mitochondria-Targeting-Type-I-Photodrug-for-Pyroptotic-Oncotherapy.md"
+    location: "lines 45-58"
+    content_summary: "Nile-blue Type-I photodrug, 660 nm absorption, 640 nm radical generation, mitochondrial targeting."
+    evidence_use: relationship
+    quality: high
+  - evidence_id: R2-E006
+    source_type: paper
+    source_name: "CAIX-Anchored Rhenium(I) Photosensitizer Evokes Pyroptosis"
+    identifier_or_url: "markdown/2022_Su_CAIX-Anchored-Rhenium-Photosensitizer-Evokes-Pyroptosis.md"
+    location: "lines 29-33"
+    content_summary: "Re(I) CAIX anchored PS, hypoxic Type-I/II, nanomolar phototoxicity."
+    evidence_use: relationship
+    quality: high
+  - evidence_id: R2-E007
+    source_type: paper
+    source_name: "CAIX-Anchored Rhenium(I) Photosensitizer SI"
+    identifier_or_url: "markdown/2022_Su_CAIX-Anchored-Rhenium-Photosensitizer-Evokes-Pyroptosis_SI.md"
+    location: "lines 93-99"
+    content_summary: "HPLC photostability and DFT/TDDFT computational setup."
+    evidence_use: method
+    quality: medium
+  - evidence_id: R2-E008
+    source_type: paper
+    source_name: "Copper-Bacteriochlorin Nanosheet as a Specific Pyroptosis Inducer"
+    identifier_or_url: "markdown/2023_Zhang_Copper-Bacteriochlorin-Nanosheet-as-a-Specific-Pyroptosis-Inducer.md"
+    location: "lines 9-21"
+    content_summary: "Cu-TBB nanosheet releases Cu+ and TBB; generates O2.-, OH and 1O2 under 750 nm."
+    evidence_use: relationship
+    quality: high
+  - evidence_id: R2-E009
+    source_type: paper
+    source_name: "Gadolinium-Porphyrin Based Polymer Nanotheranostics"
+    identifier_or_url: "markdown/2021_Chen_Gadolinium-Porphyrin-Polymer-Nanotheranostics-for-Imaging-Guided-PDT.md"
+    location: "lines 15-30"
+    content_summary: "Gd-porphyrin polymer nanoparticles with FL/MR imaging and singlet oxygen production."
+    evidence_use: relationship
+    quality: high
+  - evidence_id: R2-E010
+    source_type: paper
+    source_name: "Targeting Mitochondria by Zn(II)N-Alkylpyridylporphyrins"
+    identifier_or_url: "markdown/2014_Odeh_Targeting-Mitochondria-by-ZnII-N-Alkylpyridylporphyrins.md"
+    location: "lines 3-10"
+    content_summary: "Alkyl chain length affects mitochondrial uptake and photodynamic efficacy."
+    evidence_use: relationship
+    quality: high
+  - evidence_id: R2-O001
+    source_type: review
+    source_name: "Application of TD-DFT Theory to Studying Porphyrinoid-Based Photosensitizers for PDT"
+    identifier_or_url: "https://doi.org/10.3390/molecules26237176"
+    location: "web search result accessed 2026-07-17"
+    content_summary: "TD-DFT descriptors, therapeutic window 600-800 nm, T1-S0 energy threshold, SOC and QSAR descriptors."
+    evidence_use: method
+    quality: high
+  - evidence_id: R2-O002
+    source_type: review
+    source_name: "The Current Advances in Design Strategy for Type-I Photosensitizers"
+    identifier_or_url: "https://doi.org/10.1002/advs.202413365"
+    location: "web search result accessed 2026-07-17"
+    content_summary: "Type-I direct/indirect strategy, S1-Tn <0.4 eV heuristic, T1 energy and ET routes."
+    evidence_use: method
+    quality: high
+  - evidence_id: R2-O003
+    source_type: review
+    source_name: "Rational Design of Type-I Photodynamic Agents"
+    identifier_or_url: "https://doi.org/10.1002/anie.202509416"
+    location: "web search result accessed 2026-07-17"
+    content_summary: "Type-I thermodynamic and kinetic design, redox potential requirements and ET/HAT cautions."
+    evidence_use: method
+    quality: medium
+  - evidence_id: R2-O004
+    source_type: ontology
+    source_name: "IUPAC Gold Book"
+    identifier_or_url: "https://goldbook.iupac.org/terms/view/O04339 ; https://goldbook.iupac.org/terms/view/E02250 ; https://goldbook.iupac.org/terms/view/RT06783 ; https://goldbook.iupac.org/terms/view/I03199 ; https://goldbook.iupac.org/terms/view/E01977 ; https://goldbook.iupac.org/terms/view/RT07472"
+    location: "terms O04339, E02250, RT06783, I03199, E01977, RT07472"
+    content_summary: "Official definitions for oscillator strength, excitation energy, redox potential, ionization energy, electron affinity, Rehm-Weller equation."
+    evidence_use: definition
+    quality: high
+
+expert_reviews:
+  - review_id: R2-REV001
+    object_id: "round1_core_knowledge"
+    expert_discipline: "材料专家"
+    action: approve
+    comment: "用户转述：领域专家提出当前知识基本确认无误。"
+    status_after_review: "approved_for_round2_extension"
+    date: "2026-07-17"
+
+optimization_targets:
+  primary: [R2-I001, R2-I003, R2-I004, R2-I006]
+  secondary: [R2-I002, R2-I005, R2-I007]
+  constraints: [R2-I008]
+  intermediate: [R2-I004, R2-I005, R2-I007]
+  diagnostic: [R2-I008]
+  not_ready: [R2-I006, R2-I007, R2-I008]
+
+reward_profiles:
+  type_II_PDT:
+    primary: [R2-I001, R2-I002, R2-I003, R2-I004]
+    secondary: [R2-I005]
+    constraints: [R2-I008]
+    rule: "maximize absorption in window and Type-II triplet energy while keeping aggregation/toxicity risk controlled"
+  hypoxia_type_I_PDT:
+    primary: [R2-I001, R2-I004, R2-I006]
+    secondary: [R2-I005, R2-I007]
+    constraints: [R2-I008]
+    rule: "favor ET thermodynamics and ISC while avoiding Type-II-only assumptions"

@@ -1,0 +1,62 @@
+{
+  "source_total_pool": "AL/catalyst_active_learning_runnable/outputs/total_pool.csv",
+  "round": "round2",
+  "raw_outputs_modified": false,
+  "al_model_executed": false,
+  "iteration_inference": "Rows after the initial_size are divided into num_iterations equal stages for analysis because total_pool.csv has no explicit iteration column.",
+  "tables": {
+    "expanded": "performance_evaluation_round2/tables/total_pool_expanded_round2.csv",
+    "composition_summary": "performance_evaluation_round2/tables/composition_distribution_summary_round2.csv",
+    "performance_summary": "performance_evaluation_round2/tables/performance_cost_summary_round2.csv",
+    "iteration_summary": "performance_evaluation_round2/tables/iteration_process_summary_round2.csv",
+    "cumulative_best": "performance_evaluation_round2/tables/cumulative_best_process_round2.csv",
+    "high_performance_formulations": "performance_evaluation_round2/tables/high_performance_formulations_round2.csv",
+    "high_performance_features": "performance_evaluation_round2/tables/high_performance_composition_features_round2.csv",
+    "pareto_front": "performance_evaluation_round2/tables/pareto_front_candidates_round2.csv",
+    "prediction_accuracy_status": "performance_evaluation_round2/tables/prediction_model_accuracy_status_round2.csv"
+  },
+  "figures": {
+    "composition_distribution": "performance_evaluation_round2/figures/eight_metal_composition_distribution_round2.png",
+    "composition_trajectory": "performance_evaluation_round2/figures/composition_trajectory_round2.png",
+    "power_density_vs_cost": "performance_evaluation_round2/figures/power_density_vs_normalized_cost_round2.png",
+    "iteration_cumulative_best": "performance_evaluation_round2/figures/iteration_cumulative_best_power_density_round2.png",
+    "high_performance_features": "performance_evaluation_round2/figures/high_performance_composition_features_round2.png"
+  },
+  "summary": {
+    "row_count": 160,
+    "composition_valid_rows": 160,
+    "high_performance_threshold_top10pct": 65.477473377,
+    "high_performance_count": 16,
+    "low_cost_high_performance_count": 9,
+    "pareto_count": 10,
+    "best_candidate": {
+      "id": 132,
+      "process_index": 132,
+      "inferred_iteration": 9,
+      "power_density": 68.58106887,
+      "normalized_cost": 53.76374535,
+      "composition": {
+        "Pd": 0.39129020571980316,
+        "Pt": 0.15790583472139091,
+        "Cu": 0.1159081298431437,
+        "Au": 0.006938169468729498,
+        "Ir": 0.018589882073195983,
+        "Ce": 0.16687310212385884,
+        "Nb": 0.10601752062279259,
+        "Cr": 0.03647715542708525
+      }
+    },
+    "dominant_high_performance_metals": [
+      "Pd",
+      "Pt",
+      "Ce",
+      "Cu"
+    ],
+    "enriched_high_performance_metals": [
+      "Pd",
+      "Ce",
+      "Pt",
+      "Nb"
+    ]
+  }
+}

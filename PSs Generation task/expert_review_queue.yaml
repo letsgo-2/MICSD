@@ -1,0 +1,81 @@
+review_items:
+  - object_id: project.application_context
+    question: "项目最终应用是否限定为肿瘤PDT/焦亡免疫治疗，还是泛化为高光敏分子设计？"
+    required_expert: "材料专家"
+    reason: "上传文献大量来自PDT和焦亡治疗场景；应用场景会影响Type-I、Type-II、靶向和焦亡指标权重。"
+    priority: high
+  - object_id: I001
+    question: "ROS生成能力是否作为总主目标，还是拆分为Type-I自由基和Type-II单线态氧两个主目标？"
+    required_expert: "材料专家/实验专家"
+    reason: "不同探针、氧条件和机制下ROS总分不可直接比较。"
+    priority: high
+  - object_id: I002
+    question: "单线态氧量子产率ΦΔ在本项目中是否仍为P0主目标，还是仅用于Type-II分支？"
+    required_expert: "材料专家"
+    reason: "缺氧场景下Type-I自由基可能比ΦΔ更关键。"
+    priority: high
+  - object_id: I003
+    question: "Type-I自由基/超氧生成能力的推荐实验探针、单位和标准光照/氧条件是什么？"
+    required_expert: "实验专家"
+    reason: "当前证据支持其重要性，但数据准备度不足。"
+    priority: high
+  - object_id: I004
+    question: "λmax/Q-band的目标范围是否采用650-800+ nm？是否存在应用光源或能量下限约束？"
+    required_expert: "材料专家/实验专家"
+    reason: "长波吸收有利穿透，但不能无条件越长越好。"
+    priority: high
+  - object_id: I006
+    question: "水溶性是否设为硬约束？最低阈值应为多少，使用水、PBS还是含血清培养基？"
+    required_expert: "实验专家"
+    reason: "Pc文献显示水溶性和聚集强烈影响性能；阈值未定义。"
+    priority: high
+  - object_id: I007
+    question: "聚集倾向的判据采用UV-vis形状、Beer-Lambert线性、DLS、荧光激发谱还是组合指标？"
+    required_expert: "实验专家/计算专家"
+    reason: "该指标重要但需要可操作化。"
+    priority: high
+  - object_id: I008
+    question: "光毒性EC50/IC50应使用哪些细胞系、孵育时间、光剂量和氧条件作为标准？"
+    required_expert: "实验专家"
+    reason: "不同论文条件不可直接合并，当前只能作为P1。"
+    priority: high
+  - object_id: I009
+    question: "暗毒性阈值或选择指数的最低接受标准是什么？"
+    required_expert: "材料专家/实验专家"
+    reason: "低暗毒性是候选分子的硬安全约束，但项目阈值未给出。"
+    priority: high
+  - object_id: I011
+    question: "计算代理指标优先使用ΦT、SOC、ΔE_ST、S1/Tn能级差还是组合特征？"
+    required_expert: "计算专家"
+    reason: "ISC相关指标可计算，但方法学统一和成本需要确认。"
+    priority: medium
+  - object_id: K008
+    question: "含重原子或金属配合物是否允许进入候选空间？暗毒性风险是否设为硬约束？"
+    required_expert: "材料专家/毒理或实验专家"
+    reason: "重原子可增强SOC/ISC，但论文提示暗毒性风险。"
+    priority: high
+  - object_id: I012
+    question: "本项目是否要求线粒体、细胞膜、CAIX或其他靶向？若要求，靶向能力是否作为优化目标？"
+    required_expert: "材料专家"
+    reason: "靶向指标高度场景依赖。"
+    priority: medium
+  - object_id: I013
+    question: "光稳定性测试采用何种照射波长、时间、温度和判定阈值？"
+    required_expert: "实验专家"
+    reason: "SI提供了Re(I)案例条件，但不能直接推广到所有候选分子。"
+    priority: medium
+  - object_id: I014
+    question: "是否必须优化缺氧适用性？缺氧O2浓度和效果保持率阈值如何定义？"
+    required_expert: "材料专家/实验专家"
+    reason: "若应用为实体瘤PDT，该指标应提升到P0；否则可能为场景约束。"
+    priority: high
+  - object_id: I015
+    question: "焦亡诱导是否为项目目标机制，还是仅用于部分肿瘤免疫文献解释？"
+    required_expert: "材料专家/生物实验专家"
+    reason: "焦亡不是普适光敏性能指标，需避免过度优化。"
+    priority: medium
+  - object_id: C009
+    question: "AIE PS是否作为项目级候选类别保留？是否需要引入外部AIE术语源或本体？"
+    required_expert: "材料专家"
+    reason: "未找到完全等价权威本体，当前为local概念。"
+    priority: medium

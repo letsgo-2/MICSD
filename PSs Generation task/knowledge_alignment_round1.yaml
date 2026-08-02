@@ -1,0 +1,658 @@
+project:
+  project_goal: "开发具有更高光敏性能的候选分子"
+  domain: "光敏剂分子设计 / 光动力治疗相关光敏分子"
+  application_context: "论文证据主要指向肿瘤PDT、缺氧微环境、细胞器/膜靶向和焦亡诱导；需专家确认"
+  evidence_scope:
+    workspace: "/Users/jimmmmmies/Desktop/alignment/markdown"
+    markdown_files_found: 47
+  web_search_allowed: true
+  status: "draft_pending_expert_review"
+
+concepts:
+  - concept_id: C001
+    name_zh: "光敏剂"
+    name_en: "photosensitizer"
+    definition: "在光敏化过程中首先吸收辐射并引发另一分子实体发生光化学或光物理变化的分子；在PDT医学语境中也指被光激活后杀伤细胞的药物。"
+    synonyms: ["photosensitizing agent", "PS"]
+    parent_concept: "sensitizer / functional drug"
+    ontology_source:
+      name: "IUPAC Gold Book; NCI Thesaurus"
+      iri_or_url: "https://goldbook.iupac.org/terms/view/P04652 ; https://evsexplore.semantics.cancer.gov/evsexplore/concept/ncit/C1420"
+      version_or_access_date: "accessed 2026-07-17"
+    mapping_status: close
+    evidence: [E001, O001, O002]
+    expert_status: pending
+  - concept_id: C002
+    name_zh: "光动力效应/光动力治疗"
+    name_en: "photodynamic effect / photodynamic therapy"
+    definition: "光、光敏剂和分子氧同时存在导致的光诱导损伤；医学语境中为使用光激活药物治疗疾病。"
+    synonyms: ["PDT", "photochemotherapy"]
+    parent_concept: "photochemical therapy"
+    ontology_source:
+      name: "IUPAC Gold Book; NCI Thesaurus; MeSH"
+      iri_or_url: "https://goldbook.iupac.org/terms/view/P04600 ; https://evsexplore.semantics.cancer.gov/evsexplore/concept/ncit/C15300 ; http://id.nlm.nih.gov/mesh/D010778"
+      version_or_access_date: "accessed 2026-07-17"
+    mapping_status: close
+    evidence: [E001, O003, O004]
+    expert_status: pending
+  - concept_id: C003
+    name_zh: "活性氧"
+    name_en: "reactive oxygen species"
+    definition: "由氧不完全单电子还原形成的分子或离子。"
+    synonyms: ["ROS"]
+    parent_concept: "oxygen molecular entity"
+    ontology_source:
+      name: "ChEBI"
+      iri_or_url: "http://purl.obolibrary.org/obo/CHEBI_26523"
+      version_or_access_date: "accessed 2026-07-17"
+    mapping_status: exact
+    evidence: [E003, O005]
+    expert_status: pending
+  - concept_id: C004
+    name_zh: "单线态氧"
+    name_en: "singlet dioxygen"
+    definition: "二氧分子的最低激发态，是一种活性氧。"
+    synonyms: ["singlet oxygen", "1O2"]
+    parent_concept: "reactive oxygen species"
+    ontology_source:
+      name: "ChEBI"
+      iri_or_url: "http://purl.obolibrary.org/obo/CHEBI_26689"
+      version_or_access_date: "accessed 2026-07-17"
+    mapping_status: exact
+    evidence: [E001, O006]
+    expert_status: pending
+  - concept_id: C005
+    name_zh: "超氧"
+    name_en: "superoxide"
+    definition: "公式O2、净电荷-1的二原子氧自由基阴离子，是活性氧。"
+    synonyms: ["superoxide radical anion", "O2.-"]
+    parent_concept: "reactive oxygen species"
+    ontology_source:
+      name: "ChEBI"
+      iri_or_url: "http://purl.obolibrary.org/obo/CHEBI_18421"
+      version_or_access_date: "accessed 2026-07-17"
+    mapping_status: exact
+    evidence: [E003, E004, O007]
+    expert_status: pending
+  - concept_id: C006
+    name_zh: "量子产率"
+    name_en: "quantum yield"
+    definition: "系统每吸收一个光子所产生的定义事件数。"
+    synonyms: ["Phi", "Φ"]
+    parent_concept: "photochemical quantity"
+    ontology_source:
+      name: "IUPAC Gold Book"
+      iri_or_url: "https://goldbook.iupac.org/terms/view/Q04991"
+      version_or_access_date: "accessed 2026-07-17"
+    mapping_status: exact
+    evidence: [E002, O008]
+    expert_status: pending
+  - concept_id: C007
+    name_zh: "摩尔吸收系数"
+    name_en: "molar absorption coefficient"
+    definition: "吸光度除以光程和物质的量浓度。"
+    synonyms: ["molar decadic absorption coefficient", "epsilon", "ε"]
+    parent_concept: "spectroscopic quantity"
+    ontology_source:
+      name: "IUPAC Gold Book"
+      iri_or_url: "https://goldbook.iupac.org/terms/view/M03972"
+      version_or_access_date: "accessed 2026-07-17"
+    mapping_status: exact
+    evidence: [E002, O009]
+    expert_status: pending
+  - concept_id: C008
+    name_zh: "系间窜越"
+    name_en: "intersystem crossing"
+    definition: "不同多重度电子态之间的等能无辐射跃迁。"
+    synonyms: ["ISC"]
+    parent_concept: "photophysical process"
+    ontology_source:
+      name: "IUPAC Gold Book"
+      iri_or_url: "https://goldbook.iupac.org/terms/view/I03123"
+      version_or_access_date: "accessed 2026-07-17"
+    mapping_status: exact
+    evidence: [E003, O010]
+    expert_status: pending
+  - concept_id: C009
+    name_zh: "聚集诱导发光光敏剂"
+    name_en: "aggregation-induced emission photosensitizer"
+    definition: "在聚集态仍能发光并有效产生活性氧的光敏剂设计类别。"
+    synonyms: ["AIE PS"]
+    parent_concept: "photosensitizer"
+    ontology_source:
+      name: "local project concept"
+      iri_or_url: "local:C009"
+      version_or_access_date: "created 2026-07-17"
+    mapping_status: local
+    evidence: [E005]
+    expert_status: pending
+
+indicators:
+  - indicator_id: I001
+    name: "ROS生成能力"
+    definition: "光照条件下产生ROS的总体能力，可由探针信号或相对产率表示。"
+    unit: "relative signal or normalized yield"
+    conditions: ["light wavelength", "power density", "oxygen level", "solvent/media"]
+    domain_meaning: "光敏性能核心输出"
+    audience: shared
+    obtainable_by: [measure, estimate, machine_learn]
+    optimization_role: primary_objective
+    optimization_direction: maximize
+    importance: 5
+    computability: 3
+    data_readiness: 3
+    priority: P0
+    methods: ["ROS probe assay", "cellular ROS imaging", "relative yield comparison"]
+    related_indicators: [I002, I003, I011]
+    evidence: [E001, E003, E004]
+    expert_status: pending
+  - indicator_id: I002
+    name: "单线态氧量子产率ΦΔ"
+    definition: "单线态氧生成事件数与吸收光子数之比。"
+    unit: "dimensionless"
+    conditions: ["solvent", "oxygen", "excitation wavelength", "reference photosensitizer"]
+    domain_meaning: "Type-II或混合PDT关键指标"
+    audience: shared
+    obtainable_by: [measure, physics_compute, machine_learn]
+    optimization_role: primary_objective
+    optimization_direction: maximize
+    importance: 5
+    computability: 4
+    data_readiness: 3
+    priority: P0
+    methods: ["singlet oxygen probe", "phosphorescence", "reference-based yield"]
+    related_indicators: [I001, I011]
+    evidence: [E001, E002]
+    expert_status: pending
+  - indicator_id: I003
+    name: "Type-I自由基/超氧生成能力"
+    definition: "经电子转移生成超氧、过氧自由基等Type-I ROS的能力。"
+    unit: "relative signal or normalized yield"
+    conditions: ["hypoxia/normoxia", "light wavelength", "probe", "substrate"]
+    domain_meaning: "缺氧环境下的高优先级光敏性能"
+    audience: shared
+    obtainable_by: [measure, estimate, machine_learn]
+    optimization_role: primary_objective
+    optimization_direction: maximize
+    importance: 5
+    computability: 3
+    data_readiness: 2
+    priority: P1
+    methods: ["superoxide probe", "radical trapping", "cellular ROS imaging"]
+    related_indicators: [I001, I014]
+    evidence: [E003, E004, E006]
+    expert_status: pending
+  - indicator_id: I004
+    name: "长波长吸收峰λmax/Q-band"
+    definition: "主要PDT激发吸收峰位置。"
+    unit: "nm"
+    conditions: ["solvent", "aggregation state", "concentration"]
+    domain_meaning: "关系到组织穿透和光源匹配"
+    audience: shared
+    obtainable_by: [measure, physics_compute, machine_learn]
+    optimization_role: secondary_objective
+    optimization_direction: target_range
+    importance: 4
+    computability: 5
+    data_readiness: 4
+    priority: P0
+    methods: ["UV-vis absorption", "TDDFT"]
+    related_indicators: [I005, I007]
+    evidence: [E001, E002, E004]
+    expert_status: pending
+  - indicator_id: I005
+    name: "摩尔吸收系数ε"
+    definition: "吸光度除以光程和物质的量浓度。"
+    unit: "M^-1 cm^-1"
+    conditions: ["wavelength", "solvent", "aggregation state"]
+    domain_meaning: "吸光效率和光剂量利用效率"
+    audience: shared
+    obtainable_by: [measure, physics_compute, machine_learn]
+    optimization_role: secondary_objective
+    optimization_direction: maximize
+    importance: 4
+    computability: 5
+    data_readiness: 3
+    priority: P0
+    methods: ["Beer-Lambert law", "UV-vis"]
+    related_indicators: [I004]
+    evidence: [E002]
+    expert_status: pending
+  - indicator_id: I006
+    name: "水溶性"
+    definition: "分子在水或生物相关介质中的可溶程度。"
+    unit: "mM or qualitative"
+    conditions: ["water", "buffer", "serum", "pH"]
+    domain_meaning: "生物PDT应用的可操作约束"
+    audience: shared
+    obtainable_by: [measure, estimate, machine_learn]
+    optimization_role: constraint
+    optimization_direction: maximize
+    importance: 4
+    computability: 4
+    data_readiness: 3
+    priority: P0
+    methods: ["solubility assay", "logP/logS prediction"]
+    related_indicators: [I007]
+    evidence: [E001, E002]
+    expert_status: pending
+  - indicator_id: I007
+    name: "聚集倾向"
+    definition: "水相或生物介质中形成聚集体并改变吸收/荧光行为的倾向。"
+    unit: "qualitative/semiquantitative"
+    conditions: ["concentration", "solvent", "pH", "ions", "serum"]
+    domain_meaning: "聚集可降低光动力效应"
+    audience: shared
+    obtainable_by: [measure, derive, machine_learn]
+    optimization_role: constraint
+    optimization_direction: minimize
+    importance: 5
+    computability: 4
+    data_readiness: 3
+    priority: P0
+    methods: ["absorption spectral shape", "Beer-Lambert linearity", "fluorescence excitation comparison"]
+    related_indicators: [I002, I004, I006]
+    evidence: [E001, E002]
+    expert_status: pending
+  - indicator_id: I008
+    name: "光毒性EC50/IC50"
+    definition: "光照条件下达到半数效应/抑制的浓度。"
+    unit: "nM or µM"
+    conditions: ["cell line", "incubation", "light dose", "oxygen level"]
+    domain_meaning: "细胞层面治疗效力"
+    audience: shared
+    obtainable_by: [measure, machine_learn]
+    optimization_role: primary_objective
+    optimization_direction: minimize
+    importance: 5
+    computability: 3
+    data_readiness: 2
+    priority: P1
+    methods: ["cell viability assay"]
+    related_indicators: [I009, I010]
+    evidence: [E002, E006]
+    expert_status: pending
+  - indicator_id: I009
+    name: "暗毒性TC50/IC50_dark"
+    definition: "无光条件下毒性阈值或半数毒性浓度。"
+    unit: "µM"
+    conditions: ["cell line", "incubation", "dark"]
+    domain_meaning: "安全性硬约束"
+    audience: shared
+    obtainable_by: [measure, machine_learn]
+    optimization_role: constraint
+    optimization_direction: maximize
+    importance: 5
+    computability: 3
+    data_readiness: 2
+    priority: P1
+    methods: ["dark cell viability assay"]
+    related_indicators: [I008, I010]
+    evidence: [E002]
+    expert_status: pending
+  - indicator_id: I010
+    name: "光毒性选择指数"
+    definition: "暗毒性阈值与光毒性效力之间的比值。"
+    unit: "dimensionless"
+    conditions: ["matched light/dark assay conditions"]
+    domain_meaning: "安全窗口和光激活选择性"
+    audience: computer_expert
+    obtainable_by: [derive]
+    optimization_role: secondary_objective
+    optimization_direction: maximize
+    importance: 5
+    computability: 3
+    data_readiness: 1
+    priority: P1
+    methods: ["TC50_dark / EC50_light"]
+    related_indicators: [I008, I009]
+    evidence: [E002]
+    expert_status: pending
+  - indicator_id: I011
+    name: "ISC促进能力"
+    definition: "通过ΦT、SOC、ΔE_ST等代理描述分子进入三重态并产生活性氧的能力。"
+    unit: "dimensionless, cm^-1, eV"
+    conditions: ["calculation method", "solvent model", "state selection"]
+    domain_meaning: "结构到ROS的中间机制"
+    audience: computer_expert
+    obtainable_by: [physics_compute, measure, machine_learn]
+    optimization_role: intermediate
+    optimization_direction: context_dependent
+    importance: 4
+    computability: 4
+    data_readiness: 2
+    priority: P1
+    methods: ["TDDFT", "SOC calculation", "triplet quantum yield"]
+    related_indicators: [I001, I002, I003]
+    evidence: [E003, E004]
+    expert_status: pending
+  - indicator_id: I012
+    name: "细胞器/膜靶向能力"
+    definition: "分子定位到特定细胞器或细胞膜的能力。"
+    unit: "colocalization coefficient or class label"
+    conditions: ["cell line", "tracker", "imaging settings"]
+    domain_meaning: "影响局部光损伤和细胞死亡路径"
+    audience: shared
+    obtainable_by: [measure, expert_only, machine_learn]
+    optimization_role: secondary_objective
+    optimization_direction: context_dependent
+    importance: 4
+    computability: 2
+    data_readiness: 2
+    priority: P1
+    methods: ["confocal colocalization", "flow cytometry"]
+    related_indicators: [I015]
+    evidence: [E004, E005]
+    expert_status: pending
+  - indicator_id: I013
+    name: "光稳定性"
+    definition: "光照和后续孵育后分子保持未降解或未转化的能力。"
+    unit: "percent remaining or qualitative"
+    conditions: ["irradiation wavelength", "duration", "temperature", "post-incubation"]
+    domain_meaning: "候选分子稳定性约束"
+    audience: shared
+    obtainable_by: [measure, estimate]
+    optimization_role: constraint
+    optimization_direction: maximize
+    importance: 4
+    computability: 3
+    data_readiness: 1
+    priority: P1
+    methods: ["HPLC", "UV-vis photobleaching"]
+    related_indicators: []
+    evidence: [E007]
+    expert_status: pending
+  - indicator_id: I014
+    name: "缺氧适用性"
+    definition: "缺氧条件下保持PDT/ROS/光毒性效果的能力。"
+    unit: "ratio or relative effect"
+    conditions: ["oxygen concentration", "cell model", "light dose"]
+    domain_meaning: "实体瘤低氧场景关键性能"
+    audience: shared
+    obtainable_by: [measure, derive]
+    optimization_role: primary_objective
+    optimization_direction: maximize
+    importance: 5
+    computability: 2
+    data_readiness: 1
+    priority: P1
+    methods: ["normoxia/hypoxia comparison"]
+    related_indicators: [I003]
+    evidence: [E003, E006]
+    expert_status: pending
+  - indicator_id: I015
+    name: "焦亡诱导能力"
+    definition: "通过LDH、IL-1β、GSDMD/GSDME裂解、膜泡等反映焦亡路径激活。"
+    unit: "relative marker level or class"
+    conditions: ["cell line", "targeting", "light dose"]
+    domain_meaning: "免疫相关治疗机制诊断指标"
+    audience: domain_expert
+    obtainable_by: [measure]
+    optimization_role: diagnostic
+    optimization_direction: context_dependent
+    importance: 3
+    computability: 2
+    data_readiness: 2
+    priority: P2
+    methods: ["LDH release", "IL-1β", "western blot", "morphology"]
+    related_indicators: [I012]
+    evidence: [E004, E005, E006]
+    expert_status: pending
+
+claims:
+  - claim_id: K001
+    subject: "长波长吸收"
+    relation: promotes
+    object: "PDT组织穿透适用性"
+    claim_type: mechanism
+    conditions: ["接近或超过700 nm", "光源匹配"]
+    evidence: [E001]
+    confidence: medium
+    expert_status: pending
+  - claim_id: K002
+    subject: "酞菁聚集"
+    relation: decreases
+    object: "光动力效应"
+    claim_type: causal
+    conditions: ["水相或极性介质"]
+    evidence: [E001, E002]
+    confidence: high
+    expert_status: pending
+  - claim_id: K003
+    subject: "刚性大位阻阳离子取代"
+    relation: inhibits
+    object: "ZnPc水相聚集"
+    claim_type: causal
+    conditions: ["ZnPc", "水相"]
+    evidence: [E002]
+    confidence: high
+    expert_status: pending
+  - claim_id: K004
+    subject: "非外周取代"
+    relation: increases
+    object: "Q-band红移"
+    claim_type: correlation
+    conditions: ["酞菁系列"]
+    evidence: [E001]
+    confidence: medium
+    expert_status: pending
+  - claim_id: K005
+    subject: "aza替换"
+    relation: decreases
+    object: "Q-band波长"
+    claim_type: correlation
+    conditions: ["Pc类比体系"]
+    evidence: [E001]
+    confidence: medium
+    expert_status: pending
+  - claim_id: K006
+    subject: "高ISC效率"
+    relation: increases
+    object: "ROS生成"
+    claim_type: mechanism
+    conditions: ["光照", "氧或底物存在"]
+    evidence: [E003]
+    confidence: high
+    expert_status: pending
+  - claim_id: K007
+    subject: "重原子引入"
+    relation: increases
+    object: "SOC/ISC"
+    claim_type: mechanism
+    conditions: ["卤素/硒等"]
+    evidence: [E003]
+    confidence: medium
+    expert_status: pending
+  - claim_id: K008
+    subject: "重原子引入"
+    relation: increases
+    object: "暗毒性风险"
+    claim_type: hypothesis
+    conditions: ["PDT应用"]
+    evidence: [E003]
+    confidence: medium
+    expert_status: pending
+  - claim_id: K009
+    subject: "ICT增强/ΔE_ST降低"
+    relation: promotes
+    object: "ISC和ROS生成"
+    claim_type: mechanism
+    conditions: ["D-A分子"]
+    evidence: [E003, E005]
+    confidence: medium
+    expert_status: pending
+  - claim_id: K010
+    subject: "Type-I电子转移"
+    relation: promotes
+    object: "缺氧下ROS/PDT效率"
+    claim_type: mechanism
+    conditions: ["低氧环境"]
+    evidence: [E003, E004, E006]
+    confidence: high
+    expert_status: pending
+  - claim_id: K011
+    subject: "阳离子链数量增加"
+    relation: increases
+    object: "膜锚定能力"
+    claim_type: correlation
+    conditions: ["TBD-1C/2C/3C系列"]
+    evidence: [E005]
+    confidence: medium
+    expert_status: pending
+  - claim_id: K012
+    subject: "膜/线粒体定位"
+    relation: promotes
+    object: "局部光损伤和特定细胞死亡通路"
+    claim_type: mechanism
+    conditions: ["细胞模型依赖"]
+    evidence: [E004, E005]
+    confidence: medium
+    expert_status: pending
+
+evidence:
+  - evidence_id: E001
+    source_type: paper
+    source_name: "Far-Red-Absorbing Cationic Phthalocyanine Photosensitizers"
+    identifier_or_url: "markdown/2015_Machacek_Far-Red-Absorbing-Cationic-Phthalocyanine-Photosensitizers.md"
+    location: "lines 25-31, 96-110"
+    content_summary: "PDT三要素；Pc吸收>680 nm；水溶性和聚集影响PDT；Q-band受取代位置和aza替换影响。"
+    evidence_use: relationship
+    quality: high
+  - evidence_id: E002
+    source_type: paper
+    source_name: "Water-soluble non-aggregating zinc phthalocyanine and in vitro studies for PDT"
+    identifier_or_url: "markdown/2013_Makhseed_Water-Soluble-Non-Aggregating-Zinc-Phthalocyanine-for-PDT.md"
+    location: "lines 39-45, 77-107"
+    content_summary: "十六阳离子咪唑取代ZnPc水溶、非聚集、高ΦΔ，EC50=36.7 nM，TC50=395 µM；ε>200000 M^-1 cm^-1。"
+    evidence_use: value
+    quality: high
+  - evidence_id: E003
+    source_type: paper
+    source_name: "The Current Advances in Design Strategy for Type-I Photosensitizers"
+    identifier_or_url: "markdown/Advanced Science - 2024 - Ma - The Current Advances in Design Strategy  Indirect Strategy and Direct Strategy  for Type‐I.md"
+    location: "lines 19-43"
+    content_summary: "ISC对ROS产率关键；SOC和ICT/ΔE_ST影响ISC；Type-I产生超氧等自由基并更适合缺氧。"
+    evidence_use: relationship
+    quality: high
+  - evidence_id: E004
+    source_type: paper
+    source_name: "Mitochondria-Targeting Type-I Photodrug for Pyroptotic Oncotherapy"
+    identifier_or_url: "markdown/2024_Yi_Mitochondria-Targeting-Type-I-Photodrug-for-Pyroptotic-Oncotherapy.md"
+    location: "lines 45-58"
+    content_summary: "660 nm吸收、700 nm发射；640 nm下生成过氧自由基而非单线态氧；M-TOP线粒体定位并诱导焦亡标志。"
+    evidence_use: relationship
+    quality: high
+  - evidence_id: E005
+    source_type: paper
+    source_name: "Activation of Pyroptosis by Membrane-Anchoring AIE Photosensitizer Design"
+    identifier_or_url: "markdown/2021_Wu_Activation-of-Pyroptosis-by-Membrane-Anchoring-AIE-Photosensitizer.md"
+    location: "lines 39-55, 61"
+    content_summary: "AIE PS解决聚集导致光敏化降低；阳离子链提高膜锚定；D-A'-pi-A结构用于成像和PDT。"
+    evidence_use: relationship
+    quality: high
+  - evidence_id: E006
+    source_type: paper
+    source_name: "CAIX-Anchored Rhenium(I) Photosensitizer Evokes Pyroptosis"
+    identifier_or_url: "markdown/2022_Su_CAIX-Anchored-Rhenium-Photosensitizer-Evokes-Pyroptosis.md"
+    location: "lines 29-33"
+    content_summary: "CA-Re在缺氧下进行高效Type-I/II PDT，纳摩尔光毒性，诱导GSDMD焦亡并增强免疫。"
+    evidence_use: relationship
+    quality: high
+  - evidence_id: E007
+    source_type: paper
+    source_name: "CAIX-Anchored Rhenium(I) Photosensitizer Evokes Pyroptosis Supporting Information"
+    identifier_or_url: "markdown/2022_Su_CAIX-Anchored-Rhenium-Photosensitizer-Evokes-Pyroptosis_SI.md"
+    location: "lines 93-95"
+    content_summary: "HPLC用于光稳定性；50 µM Re(I)，425 nm 10 min或525 nm 1 h，37°C暗孵育24 h和1周。"
+    evidence_use: method
+    quality: medium
+  - evidence_id: O001
+    source_type: ontology
+    source_name: "IUPAC Gold Book photosensitization"
+    identifier_or_url: "https://goldbook.iupac.org/terms/view/P04652"
+    location: "term P04652"
+    content_summary: "photosensitization定义并涉及photosensitizer。"
+    evidence_use: definition
+    quality: high
+  - evidence_id: O002
+    source_type: ontology
+    source_name: "NCI Thesaurus Photosensitizing Agent"
+    identifier_or_url: "https://evsexplore.semantics.cancer.gov/evsexplore/concept/ncit/C1420"
+    location: "NCIt C1420"
+    content_summary: "photosensitizing agent/photosensitizer医学定义。"
+    evidence_use: definition
+    quality: high
+  - evidence_id: O003
+    source_type: ontology
+    source_name: "IUPAC Gold Book photodynamic effect"
+    identifier_or_url: "https://goldbook.iupac.org/terms/view/P04600"
+    location: "term P04600"
+    content_summary: "光、光敏剂和分子氧共同导致的光诱导损伤。"
+    evidence_use: definition
+    quality: high
+  - evidence_id: O004
+    source_type: ontology
+    source_name: "MeSH Photochemotherapy"
+    identifier_or_url: "http://id.nlm.nih.gov/mesh/D010778"
+    location: "MeSH D010778"
+    content_summary: "使用口服或局部光敏剂并随后光照的治疗。"
+    evidence_use: definition
+    quality: high
+  - evidence_id: O005
+    source_type: ontology
+    source_name: "ChEBI reactive oxygen species"
+    identifier_or_url: "http://purl.obolibrary.org/obo/CHEBI_26523"
+    location: "CHEBI:26523"
+    content_summary: "ROS定义及下位概念。"
+    evidence_use: definition
+    quality: high
+  - evidence_id: O006
+    source_type: ontology
+    source_name: "ChEBI singlet dioxygen"
+    identifier_or_url: "http://purl.obolibrary.org/obo/CHEBI_26689"
+    location: "CHEBI:26689"
+    content_summary: "单线态二氧为二氧最低激发态。"
+    evidence_use: definition
+    quality: high
+  - evidence_id: O007
+    source_type: ontology
+    source_name: "ChEBI superoxide"
+    identifier_or_url: "http://purl.obolibrary.org/obo/CHEBI_18421"
+    location: "CHEBI:18421"
+    content_summary: "超氧的化学实体和ROS关系。"
+    evidence_use: definition
+    quality: high
+  - evidence_id: O008
+    source_type: ontology
+    source_name: "IUPAC Gold Book quantum yield"
+    identifier_or_url: "https://goldbook.iupac.org/terms/view/Q04991"
+    location: "term Q04991"
+    content_summary: "每吸收光子产生定义事件数。"
+    evidence_use: definition
+    quality: high
+  - evidence_id: O009
+    source_type: ontology
+    source_name: "IUPAC Gold Book molar absorption coefficient"
+    identifier_or_url: "https://goldbook.iupac.org/terms/view/M03972"
+    location: "term M03972"
+    content_summary: "吸光度除以光程和物质的量浓度。"
+    evidence_use: definition
+    quality: high
+  - evidence_id: O010
+    source_type: ontology
+    source_name: "IUPAC Gold Book intersystem crossing"
+    identifier_or_url: "https://goldbook.iupac.org/terms/view/I03123"
+    location: "term I03123"
+    content_summary: "不同多重度电子态之间等能无辐射跃迁。"
+    evidence_use: definition
+    quality: high
+
+expert_reviews: []
+
+optimization_targets:
+  primary: [I001, I002, I003, I008, I014]
+  secondary: [I004, I005, I010, I012]
+  constraints: [I006, I007, I009, I013]
+  intermediate: [I011]
+  diagnostic: [I015]
+  not_ready: [I010, I014]

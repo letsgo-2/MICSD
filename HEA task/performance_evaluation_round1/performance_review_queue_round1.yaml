@@ -1,0 +1,53 @@
+metadata:
+  artifact: performance_review_queue
+  round: round1
+  output_language: English
+  created_from_skill: scientific-performance-evaluator
+  status: pending_expert_review
+
+review_items:
+  - item_id: PE-R1-RQ-001
+    priority: high
+    assigned_expert_role: catalyst_or_electrochemistry_expert
+    question: What is the physical unit and measurement condition set for `power_density` in the source data?
+    why_needed: Power-density rankings can be computed now, but cross-study or experimental interpretation requires units and conditions.
+    affected_outputs:
+      - performance_evaluation_report_round1.md
+      - performance_evaluation_round1.yaml
+    status: open
+  - item_id: PE-R1-RQ-002
+    priority: high
+    assigned_expert_role: computer_expert
+    question: Should existing `outputs/total_pool.csv` be treated as a historical completed run, a legacy demo artifact, or a current result snapshot?
+    why_needed: The file uses a legacy `ratio` schema, while the current pipeline writes expanded element columns and run metadata.
+    affected_outputs:
+      - tables/pareto_candidates_round1.csv
+      - figures/power_density_vs_cost_round1.png
+    status: open
+  - item_id: PE-R1-RQ-003
+    priority: high
+    assigned_expert_role: project_owner
+    question: Is the team ready to authorize a confirmed AL run to generate current `iteration_log.csv`, `query_log.csv`, `generated_ratios.csv`, and `summary.json`?
+    why_needed: Prediction credibility, uncertainty, and round-by-round stability cannot be fully evaluated without current run logs.
+    affected_outputs:
+      - performance_evaluation_report_round1.md
+      - scripts/evaluate_al_performance_round1.py
+    status: open
+  - item_id: PE-R1-RQ-004
+    priority: medium
+    assigned_expert_role: catalyst_or_materials_expert
+    question: Should the 120-row `oracle_training_sample.csv` be excluded from candidate-performance claims and used only as virtual oracle training evidence?
+    why_needed: The local README says these rows train the GBR virtual experimenter and are not newly measured experiments.
+    affected_outputs:
+      - performance_evaluation_round1.yaml
+      - performance_evaluation_report_round1.md
+    status: open
+  - item_id: PE-R1-RQ-005
+    priority: medium
+    assigned_expert_role: optimization_expert
+    question: "Which cost-performance selection rule should be emphasized for downstream decisions: strict Pareto membership, weighted score, or minimum-cost high-performance threshold?"
+    why_needed: The script can compute all three styles, but the decision rule should be expert-approved before candidate recommendations.
+    affected_outputs:
+      - tables/pareto_candidates_round1.csv
+      - figures/power_density_vs_cost_round1.png
+    status: open

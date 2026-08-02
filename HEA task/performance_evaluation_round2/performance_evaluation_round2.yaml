@@ -1,0 +1,288 @@
+metadata:
+  artifact: performance_evaluation
+  round: round2
+  output_language: English
+  created_from_skill: scientific-performance-evaluator
+  status: completed_local_statistics_and_plots
+  execution_performed_in_this_update: false
+
+input_snapshot:
+  snapshot_id: PE-R2-INPUT-001
+  selected_versions:
+    - AL/catalyst_active_learning_runnable/outputs/total_pool.csv
+    - AL/catalyst_active_learning_runnable/config.json
+  inherited_versions:
+    - execution_orchestration_round2
+    - performance_evaluation_round1
+  execution_status: external_results_only
+  available_artifacts:
+    - ../AL/catalyst_active_learning_runnable/outputs/total_pool.csv
+    - ../AL/catalyst_active_learning_runnable/config.json
+    - tables/total_pool_expanded_round2.csv
+    - tables/composition_distribution_summary_round2.csv
+    - tables/performance_cost_summary_round2.csv
+    - tables/iteration_process_summary_round2.csv
+    - tables/cumulative_best_process_round2.csv
+    - tables/high_performance_formulations_round2.csv
+    - tables/high_performance_composition_features_round2.csv
+    - tables/pareto_front_candidates_round2.csv
+    - tables/prediction_model_accuracy_status_round2.csv
+    - tables/analysis_manifest_round2.json
+  missing_artifacts:
+    - ../AL/catalyst_active_learning_runnable/outputs/iteration_log.csv
+    - ../AL/catalyst_active_learning_runnable/outputs/query_log.csv
+    - ../AL/catalyst_active_learning_runnable/outputs/generated_ratios.csv
+    - ../AL/catalyst_active_learning_runnable/outputs/summary.json
+    - saved_oracle_accuracy_metrics
+  active_run_ids:
+    - total_pool_csv_as_one_iteration_process
+  baseline_run_ids:
+    - initial_rows_1_to_10
+  unresolved_upstream_issues:
+    - physical_unit_for_peak_power_density
+    - explicit_iteration_column_absent
+    - prediction_model_accuracy_not_available_from_total_pool_alone
+  evaluation_scope:
+    - eight_metal_composition_distribution
+    - peak_power_density_statistics
+    - normalized_cost_statistics
+    - high_performance_formulation_features
+    - inferred_iteration_process_statistics
+    - prediction_model_accuracy_availability_check
+    - next_optimization_recommendations
+
+evaluation_subjects:
+  - subject_id: PE-R2-SUBJ-001
+    subject_type: candidate_set
+    source_refs:
+      - ../AL/catalyst_active_learning_runnable/outputs/total_pool.csv
+    run_id: total_pool_csv_as_one_iteration_process
+    version: round2
+    parent_subject_id: ''
+    evaluation_questions:
+      - What are the eight-metal composition distributions?
+      - Which compositions have the highest peak power density?
+      - What are the cost-performance tradeoffs?
+      - What formulation features distinguish high-performance candidates?
+    status: evaluated
+  - subject_id: PE-R2-SUBJ-002
+    subject_type: model
+    source_refs:
+      - ../AL/catalyst_active_learning_runnable/catalyst_al/model.py
+      - ../AL/catalyst_active_learning_runnable/catalyst_al/pipeline.py
+    run_id: total_pool_csv_as_one_iteration_process
+    version: code_inspected_not_executed
+    parent_subject_id: PE-R2-SUBJ-001
+    evaluation_questions:
+      - What can be inferred about model iteration process?
+      - Is prediction model accuracy available?
+    status: partial
+
+metrics:
+  - metric_id: PE-R2-M001
+    name: Peak power density
+    source_column: power_density
+    direction: maximize
+    value_type: existing_output_value
+    unit: pending_expert_confirmation
+  - metric_id: PE-R2-M002
+    name: Normalized cost
+    source_column: normalized_cost
+    direction: minimize
+    value_type: computed_implementation_metric
+    unit: Pd_normalized_index
+  - metric_id: PE-R2-M003
+    name: Composition distribution
+    source_column: ratio_expanded_to_eight_metals
+    direction: descriptive
+    value_type: derived_statistic
+    unit: mass_fraction
+  - metric_id: PE-R2-M004
+    name: High-performance formulation feature
+    source_column: top_10_percent_power_density_group
+    direction: diagnostic
+    value_type: derived_statistic
+    unit: mass_fraction_difference
+  - metric_id: PE-R2-M005
+    name: Inferred iteration process
+    source_column: id_row_order
+    direction: diagnostic
+    value_type: derived_statistic
+    unit: inferred_stage
+  - metric_id: PE-R2-M006
+    name: Prediction model accuracy
+    source_column: not_available
+    direction: diagnostic
+    value_type: missing_record
+    unit: not_available
+
+performance_records:
+  - record_id: PE-R2-PR-001
+    subject_id: PE-R2-SUBJ-001
+    metric_id: PE-R2-M001
+    value:
+      count: 160
+      min: 0.4594
+      median: 60.06957452
+      mean: 54.799770405062496
+      p90: 65.477473377
+      max: 68.58106887
+    unit: pending_expert_confirmation
+    value_type: existing_output_value
+    conditions:
+      source_file: ../AL/catalyst_active_learning_runnable/outputs/total_pool.csv
+    sample_size: 160
+    evaluator_id: scripts/evaluate_total_pool_round2.py
+    source_artifacts:
+      - tables/performance_cost_summary_round2.csv
+    uncertainty: {type: not_recorded, value: null, interval: [], method: not_available}
+    data_quality: medium
+    applicability_status: in_domain
+    missing_reason: ''
+    validation_status: checked
+  - record_id: PE-R2-PR-002
+    subject_id: PE-R2-SUBJ-001
+    metric_id: PE-R2-M002
+    value:
+      count: 160
+      min: 0.017163642
+      median: 58.21930992
+      mean: 58.980215145224996
+      p90: 70.83735751100001
+      max: 111.0067063
+    unit: Pd_normalized_index
+    value_type: computed_implementation_metric
+    conditions:
+      source_file: ../AL/catalyst_active_learning_runnable/outputs/total_pool.csv
+    sample_size: 160
+    evaluator_id: scripts/evaluate_total_pool_round2.py
+    source_artifacts:
+      - tables/performance_cost_summary_round2.csv
+    uncertainty: {type: deterministic_existing_output, value: null, interval: [], method: not_recomputed_from_prices_in_round2}
+    data_quality: medium
+    applicability_status: in_domain
+    missing_reason: ''
+    validation_status: checked
+  - record_id: PE-R2-PR-003
+    subject_id: PE-R2-SUBJ-001
+    metric_id: PE-R2-M003
+    value:
+      composition_valid_rows: 160
+      total_rows: 160
+      all_candidate_means:
+        Pd: 0.3619278502406676
+        Pt: 0.1602399755549651
+        Cu: 0.09797192252548755
+        Au: 0.06286932679261278
+        Ir: 0.038072912386689195
+        Ce: 0.10946797457103803
+        Nb: 0.09507806072717198
+        Cr: 0.07437197720136779
+    unit: mass_fraction
+    value_type: derived_statistic
+    conditions:
+      ratio_expansion_order: [Pd, Pt, Cu, Au, Ir, Ce, Nb, Cr]
+    sample_size: 160
+    evaluator_id: scripts/evaluate_total_pool_round2.py
+    source_artifacts:
+      - tables/composition_distribution_summary_round2.csv
+    uncertainty: {type: deterministic_parse, value: null, interval: [], method: ratio_vector_expansion}
+    data_quality: high
+    applicability_status: in_domain
+    missing_reason: ''
+    validation_status: checked
+  - record_id: PE-R2-PR-004
+    subject_id: PE-R2-SUBJ-001
+    metric_id: PE-R2-M004
+    value:
+      threshold_top10pct_power_density: 65.477473377
+      high_performance_count: 16
+      enriched_metals_by_high_minus_all_mean: [Pd, Ce, Pt, Nb]
+      dominant_metals_by_high_performance_mean: [Pd, Pt, Ce, Cu]
+    unit: mass_fraction_difference
+    value_type: derived_statistic
+    conditions:
+      high_performance_rule: power_density >= 90th_percentile
+    sample_size: 16
+    evaluator_id: scripts/evaluate_total_pool_round2.py
+    source_artifacts:
+      - tables/high_performance_composition_features_round2.csv
+      - tables/high_performance_formulations_round2.csv
+    uncertainty: {type: threshold_definition, value: 0.9, interval: [], method: top_decile}
+    data_quality: medium
+    applicability_status: in_domain
+    missing_reason: ''
+    validation_status: checked
+  - record_id: PE-R2-PR-005
+    subject_id: PE-R2-SUBJ-002
+    metric_id: PE-R2-M006
+    value: null
+    unit: not_available
+    value_type: missing_record
+    conditions:
+      source_file: ../AL/catalyst_active_learning_runnable/outputs/total_pool.csv
+    sample_size: null
+    evaluator_id: scripts/evaluate_total_pool_round2.py
+    source_artifacts:
+      - tables/prediction_model_accuracy_status_round2.csv
+    uncertainty: {type: missing, value: null, interval: [], method: not_available}
+    data_quality: unknown
+    applicability_status: unknown
+    missing_reason: total_pool_csv_has_no_prediction_or_validation_columns
+    validation_status: checked
+
+analysis_outputs:
+  tables:
+    - tables/total_pool_expanded_round2.csv
+    - tables/composition_distribution_summary_round2.csv
+    - tables/performance_cost_summary_round2.csv
+    - tables/iteration_process_summary_round2.csv
+    - tables/cumulative_best_process_round2.csv
+    - tables/high_performance_formulations_round2.csv
+    - tables/high_performance_composition_features_round2.csv
+    - tables/pareto_front_candidates_round2.csv
+    - tables/prediction_model_accuracy_status_round2.csv
+    - tables/analysis_manifest_round2.json
+  figures:
+    - figures/eight_metal_composition_distribution_round2.png
+    - figures/composition_trajectory_round2.png
+    - figures/power_density_vs_normalized_cost_round2.png
+    - figures/iteration_cumulative_best_power_density_round2.png
+    - figures/high_performance_composition_features_round2.png
+  scripts:
+    - scripts/evaluate_total_pool_round2.py
+
+recommendations:
+  - recommendation_id: PE-R2-REC-001
+    priority: high
+    target: next_candidate_generation
+    recommendation: Search locally around the current best candidate id 132 with Pd near 0.36-0.43, Ce near 0.12-0.18, Pt near 0.13-0.18, Cu near 0.09-0.13, Nb near 0.08-0.14, and low Au/Ir.
+    evidence_refs:
+      - tables/high_performance_composition_features_round2.csv
+      - tables/high_performance_formulations_round2.csv
+  - recommendation_id: PE-R2-REC-002
+    priority: high
+    target: candidate_shortlist
+    recommendation: Use Pareto-front candidates for the next shortlist instead of peak-power ranking alone.
+    evidence_refs:
+      - tables/pareto_front_candidates_round2.csv
+      - figures/power_density_vs_normalized_cost_round2.png
+  - recommendation_id: PE-R2-REC-003
+    priority: medium
+    target: cost_reduction
+    recommendation: Test lower Au and Ir regions because both are depleted in the top-decile high-performance group and increase cost pressure.
+    evidence_refs:
+      - tables/composition_distribution_summary_round2.csv
+      - tables/high_performance_composition_features_round2.csv
+  - recommendation_id: PE-R2-REC-004
+    priority: high
+    target: model_evaluation_logging
+    recommendation: Generate explicit iteration logs and prediction/validation fields before claiming model accuracy.
+    evidence_refs:
+      - tables/prediction_model_accuracy_status_round2.csv
+
+limitations:
+  - The iteration process is inferred from row order because total_pool.csv has no explicit iteration column.
+  - Prediction model accuracy is not available from total_pool.csv alone.
+  - Peak power density unit and measurement conditions are still pending expert confirmation.
+  - No raw AL output files were modified.

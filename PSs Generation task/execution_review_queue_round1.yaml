@@ -1,0 +1,61 @@
+review_items:
+  - object_id: M-SCAFFOLD
+    question: "Please provide or approve the exact porphyrin scaffold representation as SMILES/SMARTS for the first RL branch. Which porphyrinoid variants, such as phthalocyanine or chlorin, are allowed?"
+    required_expert: "material expert"
+    reason: "The workflow uses scaffold-constrained generation; an exact scaffold definition is required for the hard gate."
+    priority: high
+  - object_id: reward_profiles.round1_porphyrin_typeII
+    question: "Should the first executable branch be Type-II porphyrin/porphyrinoid PDT, with the Type-I branch deferred?"
+    required_expert: "material expert / computer expert"
+    reason: "Type-I and Type-II use conflicting T1-S0 optimization directions."
+    priority: high
+  - object_id: R2-I001
+    question: "Is the absorption reward range 600-800 nm with 650-750 nm preferred acceptable for this project's light source and application depth?"
+    required_expert: "material expert / experimental expert"
+    reason: "The range is literature-supported but should match the actual irradiation setup."
+    priority: high
+  - object_id: R2-I003-TYPEII
+    question: "Should T1-S0 >0.98 eV be a soft reward threshold or hard filter? Should the conservative solution threshold >1.13 eV be preferred?"
+    required_expert: "computational chemistry expert / material expert"
+    reason: "The threshold determines whether candidates are kept or merely down-ranked."
+    priority: high
+  - object_id: R2-I004
+    question: "How many triplet states should be computed for the minimum S1-Tn gap, and is <0.4 eV accepted as an initial ISC heuristic?"
+    required_expert: "computational chemistry expert"
+    reason: "The heuristic requires method-specific calibration and SOC follow-up."
+    priority: high
+  - object_id: MODEL-006
+    question: "What TD-DFT method stack should be used for geometry, absorption, and triplet-state calculations?"
+    required_expert: "computational chemistry expert"
+    reason: "Mixed functionals or basis sets cannot be compared directly without calibration."
+    priority: high
+  - object_id: MODEL-004
+    question: "Should the RL generator be SMILES-token based, RECAP-fragment based, or staged with SMILES pretraining followed by fragment-level optimization?"
+    required_expert: "computer expert"
+    reason: "SMILES generation is easy to integrate, but RECAP fragment actions better match the material expert's fragmentation rule."
+    priority: high
+  - object_id: M-RECAP-SA
+    question: "What minimum RECAP fragment size, allowed reaction cuts, and synthetic accessibility cutoff should be used?"
+    required_expert: "material expert / synthesis expert"
+    reason: "RECAP compatibility is not enough to prove synthesizability; thresholds need expert calibration."
+    priority: medium
+  - object_id: R2-I008
+    question: "Please approve the aggregation-risk proxy formula or provide preferred aggregation descriptors."
+    required_expert: "material expert / experimental expert / computational expert"
+    reason: "Aggregation strongly affects photosensitization, but the current rule is only a heuristic proxy."
+    priority: medium
+  - object_id: M-RISK
+    question: "Should metal-containing or heavy-atom candidates be allowed in round1, flagged only, softly penalized, or excluded?"
+    required_expert: "material expert / toxicology expert"
+    reason: "Metal/heavy atom motifs may improve SOC but introduce safety and translation risks."
+    priority: high
+  - object_id: MODEL-009
+    question: "What size of initial TD-DFT batch is available to train the first surrogate model?"
+    required_expert: "computer expert / computational chemistry expert"
+    reason: "Surrogate uncertainty and active learning require an initial calibrated dataset."
+    priority: medium
+  - object_id: reward_aggregation
+    question: "Should reward components be combined by weighted sum, weighted geometric mean, or staged hard gates followed by weighted sum?"
+    required_expert: "computer expert"
+    reason: "Aggregation choice controls trade-offs and failure behavior in RL optimization."
+    priority: medium

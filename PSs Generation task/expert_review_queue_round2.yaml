@@ -1,0 +1,61 @@
+review_items:
+  - object_id: R2-S001
+    question: "是否将ZnPc/phthalocyanine列为Type-II或混合PDT的首选优势骨架？是否接受非外周取代和刚性阳离子位阻作为主设计方向？"
+    required_expert: "材料专家"
+    reason: "论文证据强，但不同Pc取代模式会导致聚集或PET淬灭。"
+    priority: high
+  - object_id: R2-S002
+    question: "AIE D-A/D-A-pi-A骨架是否作为缺氧Type-I方向的优先骨架？阳离子链数量是否设置上限？"
+    required_expert: "材料专家/实验专家"
+    reason: "阳离子链增强膜锚定，但可能增加暗毒性和非特异膜损伤。"
+    priority: high
+  - object_id: R2-S005
+    question: "候选空间是否允许Re(I)、Gd、Cu等金属光敏剂或金属纳米平台？是否与有机小分子分支分开优化？"
+    required_expert: "材料专家/毒理专家/计算专家"
+    reason: "金属可增强SOC和功能，但安全性、代谢和可生成性风险不同。"
+    priority: high
+  - object_id: R2-I001
+    question: "吸收波长reward是否采用600-800 nm为高分范围、650-750 nm为初始甜点区？具体光源是否限定？"
+    required_expert: "材料专家/实验专家"
+    reason: "文献支持治疗窗口，但项目光源和应用深度会改变最佳范围。"
+    priority: high
+  - object_id: R2-I003
+    question: "T1-S0阈值是否按机制分支使用：Type-II >0.98/1.13 eV，Type-I EET-blocking <0.98 eV？"
+    required_expert: "计算专家/材料专家"
+    reason: "同一指标在Type-I和Type-II中优化方向相反，必须先确认分支。"
+    priority: high
+  - object_id: R2-I004
+    question: "S1-Tn能隙<0.4 eV是否作为项目初始ISC启发式阈值？需要计算多少个Tn态？"
+    required_expert: "计算专家"
+    reason: "该阈值来自文献启发式，需结合SOC和计算方法校准。"
+    priority: high
+  - object_id: R2-I005
+    question: "SOC采用何种软件、相对论处理和单位？是否只对top candidates计算？"
+    required_expert: "计算专家"
+    reason: "SOC重要但成本高，且无通用绝对阈值。"
+    priority: medium
+  - object_id: R2-I006
+    question: "Type-I电子转移ΔG_ET计算中，donor/acceptor/substrate和参比电极如何定义？"
+    required_expert: "计算专家/实验专家"
+    reason: "ΔG_ET<0只说明热力学可行，必须固定介质和参比。"
+    priority: high
+  - object_id: R2-I007
+    question: "ICT指标使用NTO、hole-electron distance、HOMO/LUMO overlap还是组合指标？过强CT如何惩罚？"
+    required_expert: "计算专家/计算机专家"
+    reason: "ICT不是越强越好，需要与oscillator strength和非辐射衰减风险平衡。"
+    priority: medium
+  - object_id: R2-I008
+    question: "聚集风险代理是否采用平面性+芳香面积+cLogP-阳离子/位阻补偿的规则分？是否需要二聚相互作用能复核？"
+    required_expert: "计算专家/实验专家"
+    reason: "聚集是关键约束，但实验聚集不能完全由规则代理替代。"
+    priority: medium
+  - object_id: reward_profiles
+    question: "后续迭代优化是否必须拆分为type_II_PDT和hypoxia_type_I_PDT两个reward profile？"
+    required_expert: "计算机专家/材料专家"
+    reason: "Type-I和Type-II对T1-S0、ROS类型和实验验证要求不同，单一reward会冲突。"
+    priority: high
+  - object_id: method_setup
+    question: "TD-DFT方法是否采用几何优化B3LYP/M06-2X、光谱CAM-B3LYP、T1-S0用B3LYP/PBE0PBE的分层方案？"
+    required_expert: "计算专家"
+    reason: "文献给出方法建议，但项目需统一以避免不同泛函结果混排。"
+    priority: high

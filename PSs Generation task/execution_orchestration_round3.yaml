@@ -1,0 +1,194 @@
+project:
+  orchestration_round: round3
+  language: en-US
+  based_on:
+    - execution_orchestration_report_round2.md
+    - execution_orchestration_round2.yaml
+    - execution_review_queue_round2.yaml
+    - SDPD/AGENT_INTERFACE.md
+  repository_root: /Users/jimmmmmies/Desktop/alignment/SDPD
+  goal: "Run-confirmation workflow for SDPD RL optimization using the final metrics ES1-ET1, charge, and symmetric."
+  execution_status: confirmation_required_no_execution_performed
+  molecular_representation: SMILES
+  fragmentation_rule: RECAP
+  scaffold_policy: porphyrin_scaffold_first
+
+final_metrics:
+  - metric_id: ES1-ET1
+    implementation_name: st_gap_score
+    predictor_output: "ST Gap = predictor output index 2"
+    raw_source: "KA-GNN S1/T1/ST Gap predictor"
+    transformation: "gap_nonnegative=max(ST_Gap,0); score=1/(1+gap_nonnegative/scale)"
+    direction: maximize_score_minimize_nonnegative_gap
+    scale: 1.0
+    weight_index: 0
+    configured_weight: 0.1
+    role: primary_objective
+    status: active_runtime_contract
+  - metric_id: charge
+    implementation_name: charge_score
+    raw_source: "formal-charge rules in score_function.py"
+    transformation: "single decoration: mixed sign=1.0, one sign=0.5, none=0.0; multi-decoration: total charge zero=0.0, nonzero even=1.0, nonzero odd=0.5"
+    direction: maximize_score
+    weight_index: 1
+    configured_weight: 0.3
+    role: primary_objective
+    status: active_runtime_contract
+  - metric_id: symmetric
+    implementation_name: symmetry_score
+    raw_source: "decoration-pair reward in score_function.py"
+    transformation: "radius-2, 2048-bit Morgan fingerprint and position-pair rules for 3/4/6/8 decorations"
+    direction: maximize_score
+    output_values: [0.0, 0.25, 0.5, 1.0]
+    weight_index: 2
+    configured_weight: 0.6
+    role: primary_objective
+    status: active_runtime_contract
+
+reward_contract:
+  weights_order:
+    - index: 0
+      metric: ES1-ET1
+      key: st_gap_score
+    - index: 1
+      metric: charge
+      key: charge_score
+    - index: 2
+      metric: symmetric
+      key: symmetry_score
+  current_weights: [0.1, 0.3, 0.6]
+  weight_sum: 1.0
+  base_reward: "(0.1*st_gap_score + 0.3*charge_score + 0.6*symmetry_score) / 1.0"
+  invalid_value: 0.0
+  penalties:
+    ring_penalty: "any decoration with RDKit ring count > 3 sets reward to 0"
+    duplicate_penalty: "canonical SMILES repeated in batch or diversity memory sets reward to 0"
+  diversity_memory:
+    minscore: 0.77
+    bucket_size: 25
+    minsimilarity: 0.4
+    implementation_note: "bucket_size and minsimilarity are parsed but not used by current NoFilterWithPenalty implementation"
+
+model_interfaces:
+  - model_id: SDPD-RL
+    name: "DAP reinforcement-learning runner"
+    role: generator
+    entrypoint: data_preparation/run_rl.py
+    working_directory: "."
+    status: available_pending_confirmation
+    command: "python data_preparation/run_rl.py --config configs/rl_configs.json --seed 42"
+    inputs:
+      actor: pretrained_models/rl/best.pt
+      critic: pretrained_models/rl/best.pt
+      scaffolds: configs/rl_configs.json#/scaffolds
+      metric_weights: configs/rl_configs.json#/scoring_strategy/scoring_function/weights
+    outputs:
+      directory: "rl_runs/<YYYYMMDD-HHMMSS>/"
+      file: "rl_runs/<YYYYMMDD-HHMMSS>/diversity_memory.csv"
+    constraints: ["run from repository root", "CUDA currently required by explicit .cuda() calls"]
+  - model_id: SDPD-KAGNN-3OUT
+    name: "KA-GNN three-output runtime predictor"
+    role: predictor
+    entrypoint: data_preparation/prediction_model/rl_compatible_2025/main.py
+    working_directory: data_preparation/prediction_model/rl_compatible_2025
+    config: data_preparation/prediction_model/rl_compatible_2025/config/c_path.yaml
+    status: available_pending_checkpoint_approval
+    outputs: [S1, T1, "ST Gap"]
+    output_index: {S1: 0, T1: 1, "ST Gap": 2}
+    training_command: "cd data_preparation/prediction_model/rl_compatible_2025 && mkdir -p data/processed && python main.py"
+    training_dataset: data_preparation/prediction_model/rl_compatible_2025/data/dft.csv
+    graph_cache: data_preparation/prediction_model/rl_compatible_2025/data/processed/dft.pth
+    checkpoint_install_target: data_preparation/prediction_model/pretrained_models/best.pth
+  - model_id: SDPD-PRIOR
+    name: "DecoratorModel prior"
+    role: prior_model
+    status: available
+    checkpoint: pretrained_models/rl/best.pt
+    note: "Actor and critic must use compatible vocabulary and structure; RL does not automatically save an updated actor checkpoint."
+
+current_rl_parameters:
+  config_file: configs/rl_configs.json
+  actor: ./pretrained_models/rl/best.pt
+  critic: ./pretrained_models/rl/best.pt
+  n_steps: 1000
+  learning_rate: 0.0001
+  batch_size: 128
+  randomize_scaffolds: false
+  output_dir: ./rl_runs
+  learning_strategy:
+    name: dap
+    sigma: 120
+  scoring_strategy:
+    use_kan: true
+    model_path_json: ./data_preparation/prediction_model/pretrained_models/best.pth
+    model_path_runtime_behavior: "kagnn_gap_predictor.py hard-codes ./data_preparation/prediction_model/pretrained_models/best.pth"
+    weights: [0.1, 0.3, 0.6]
+    scale: 1.0
+    invalid_value: 0.0
+    diversity_filter:
+      name: no_filter_with_penalty
+      minscore: 0.77
+      bucket_size: 25
+      minsimilarity: 0.4
+  wandb:
+    project: molecule-rl
+    run_name: md-gd-baseline
+    mode: unresolved
+
+execution_workflow:
+  status: confirmation_only
+  preflight:
+    - "Verify repository root is /Users/jimmmmmies/Desktop/alignment/SDPD."
+    - "Verify pretrained_models/rl/best.pt exists and actor/critic vocabulary is compatible."
+    - "Verify data_preparation/prediction_model/pretrained_models/best.pth exists."
+    - "Verify the checkpoint follows the three-output S1/T1/ST Gap contract."
+    - "Verify porphyrin scaffold attachment points match DecoratorModel vocabulary."
+    - "Verify CUDA-capable PyTorch/DGL environment."
+    - "Run python -m json.tool configs/rl_configs.json only after confirmation and before RL execution."
+    - "Choose a new timestamped output directory and preserve existing RL outputs."
+  optional_predictor_training:
+    command: "cd data_preparation/prediction_model/rl_compatible_2025 && mkdir -p data/processed && python main.py"
+    not_executed: true
+    note: "If CSV, encoder, force field, or split changes, move the old processed/dft.pth cache before training. Back up the installed best.pth before replacement."
+  rl_execution:
+    command: "python data_preparation/run_rl.py --config configs/rl_configs.json --seed 42"
+    working_directory: /Users/jimmmmmies/Desktop/alignment/SDPD
+    not_executed: true
+  post_run_expected:
+    - "rl_runs/<timestamp>/diversity_memory.csv"
+    - "W&B run data if enabled"
+    - "No automatic updated actor checkpoint unless separately implemented"
+
+output_paths:
+  round3_report: /Users/jimmmmmies/Desktop/alignment/execution_orchestration_report_round3.md
+  round3_config: /Users/jimmmmmies/Desktop/alignment/execution_orchestration_round3.yaml
+  round3_review_queue: /Users/jimmmmmies/Desktop/alignment/execution_review_queue_round3.yaml
+  predicted_future_rl_output: "/Users/jimmmmmies/Desktop/alignment/SDPD/rl_runs/<YYYYMMDD-HHMMSS>/diversity_memory.csv"
+  runtime_predictor_checkpoint: /Users/jimmmmmies/Desktop/alignment/SDPD/data_preparation/prediction_model/pretrained_models/best.pth
+
+blocking_issues:
+  - "User confirmation is required before any predictor training, checkpoint replacement, or RL execution."
+  - "W&B mode is not explicitly confirmed; current configuration does not specify a mode."
+  - "The current predictor path is hard-coded in kagnn_gap_predictor.py; JSON model_path is not sufficient to switch checkpoints."
+  - "The RL runner writes diversity_memory.csv but does not automatically save an updated actor checkpoint."
+  - "The current code requires CUDA for formal prior/RL execution."
+
+evidence:
+  - evidence_id: SDPD-AGENT-INTERFACE
+    source_type: repository_documentation
+    source_name: SDPD/AGENT_INTERFACE.md
+    identifier_or_url: /Users/jimmmmmies/Desktop/alignment/SDPD/AGENT_INTERFACE.md
+    location: "sections 7-12"
+    content_summary: "Stable metric weight order, reward formulas, model paths, commands, output paths, cache behavior, CUDA requirement."
+  - evidence_id: SDPD-RL-CONFIG
+    source_type: repository_configuration
+    source_name: configs/rl_configs.json
+    identifier_or_url: /Users/jimmmmmies/Desktop/alignment/SDPD/configs/rl_configs.json
+    location: "full file"
+    content_summary: "Current actor, critic, scaffold, DAP, scoring weights, predictor path, and diversity settings."
+  - evidence_id: SDPD-RUNTIME-PREDICTOR
+    source_type: repository_code
+    source_name: data_preparation/prediction_model/rl_compatible_2025/kagnn_gap_predictor.py
+    identifier_or_url: /Users/jimmmmmies/Desktop/alignment/SDPD/data_preparation/prediction_model/rl_compatible_2025/kagnn_gap_predictor.py
+    location: "lines 35-64"
+    content_summary: "Runtime predictor hard-codes the installed best.pth path."

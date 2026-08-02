@@ -1,0 +1,360 @@
+project:
+  orchestration_round: round1
+  language: en-US
+  upstream_inputs:
+    - knowledge_alignment_round2.yaml
+    - knowledge_alignment_round2_report.md
+    - expert_review_queue_round2.yaml
+  goal: "Design an executable workflow for reinforcement-learning-based generation and optimization of high-performance photosensitizer candidates."
+  molecular_representation: SMILES
+  fragmentation_rule: RECAP
+  initial_scaffold_policy: "porphyrin_scaffold_first"
+  status: proposed_pending_expert_review
+
+metric_candidates:
+  - metric_id: M-VALID
+    name: "Valid and sanitized SMILES"
+    aliases: ["RDKit validity", "chemical validity"]
+    definition: "The generated SMILES must parse to an RDKit molecule and pass sanitization."
+    proposed_roles: [hard_constraint]
+    direction: "pass_fail"
+    threshold:
+      value: true
+      unit: "boolean"
+      status: "active_proposed"
+    conditions: ["RDKit parser", "RDKit sanitization"]
+    acquisition: ["rdkit.Chem.MolFromSmiles", "rdkit.Chem.SanitizeMol"]
+    evidence_refs: [RDKit-DOC]
+    expert_status: pending
+    unresolved_fields: []
+  - metric_id: M-SCAFFOLD
+    name: "Porphyrin scaffold preservation"
+    aliases: ["scaffold constraint", "porphyrin core gate"]
+    definition: "Candidate must retain a domain-approved porphyrin or porphyrinoid scaffold in the first execution branch."
+    proposed_roles: [hard_constraint, soft_constraint]
+    direction: "pass_fail_or_similarity"
+    threshold:
+      value: "approved porphyrin scaffold SMARTS/SMILES required"
+      unit: "structure rule"
+      status: "unresolved_until_expert_scaffold_provided"
+    conditions: ["round1 porphyrin branch"]
+    acquisition: ["substructure search", "scaffold similarity"]
+    evidence_refs: [USER-PORPHYRIN, R2-S001, R2-S007]
+    expert_status: pending
+    unresolved_fields: ["exact scaffold SMARTS", "allowed porphyrinoid variants"]
+  - metric_id: R2-I001
+    name: "TD-DFT absorption wavelength lambda_abs"
+    aliases: ["excitation wavelength", "absorption window"]
+    definition: "Absorption wavelength converted from TD-DFT excitation energy."
+    proposed_roles: [primary_objective]
+    direction: target_range
+    threshold:
+      range: [600, 800]
+      preferred_range: [650, 750]
+      unit: nm
+      status: "literature_supported_initial_threshold"
+    conditions: ["same TD-DFT method", "same solvent model", "target transition selected with nonzero oscillator strength"]
+    acquisition: [physics_compute, surrogate]
+    evidence_refs: [R2-I001, R2-O001]
+    expert_status: pending
+    unresolved_fields: ["final light source", "method calibration error"]
+  - metric_id: R2-I003-TYPEII
+    name: "T1-S0 energy gap for Type-II PDT"
+    aliases: ["triplet energy", "Type-II oxygen sensitization threshold"]
+    definition: "Lowest triplet-state energy gap used to judge whether singlet oxygen generation is energetically allowed."
+    proposed_roles: [primary_objective]
+    direction: "maximize_above_threshold"
+    threshold:
+      minimum: 0.98
+      preferred_minimum: 1.13
+      unit: eV
+      status: "branch_specific_literature_threshold"
+    conditions: ["Type-II branch only", "consistent DFT method"]
+    acquisition: [physics_compute, surrogate]
+    evidence_refs: [R2-I003, R2-O001]
+    expert_status: pending
+    unresolved_fields: ["whether 0.98 or 1.13 eV is used as hard gate"]
+  - metric_id: R2-I004
+    name: "Minimum S1-Tn energy gap"
+    aliases: ["ISC gap", "DeltaE_S1_Tn"]
+    definition: "Minimum energy separation between S1 and nearby triplet states."
+    proposed_roles: [intermediate, secondary_objective]
+    direction: minimize
+    threshold:
+      maximum: 0.4
+      unit: eV
+      status: "literature_heuristic_needs_calibration"
+    conditions: ["low-lying triplet states", "combine with SOC if possible"]
+    acquisition: [physics_compute, surrogate]
+    evidence_refs: [R2-I004, R2-O002]
+    expert_status: pending
+    unresolved_fields: ["number of triplet states to compute"]
+  - metric_id: R2-I002
+    name: "Oscillator strength"
+    aliases: ["transition intensity", "f"]
+    definition: "Measure of integrated intensity of electronic transitions."
+    proposed_roles: [secondary_objective]
+    direction: maximize
+    threshold:
+      value: "rank-normalized; near-zero values penalized"
+      unit: dimensionless
+      status: "ranking_metric_no_universal_absolute_threshold"
+    conditions: ["same method", "same transition selection"]
+    acquisition: [physics_compute, surrogate]
+    evidence_refs: [R2-I002, R2-O004]
+    expert_status: pending
+    unresolved_fields: []
+  - metric_id: R2-I008
+    name: "Aggregation-risk proxy"
+    aliases: ["planarity hydrophobic aggregation risk"]
+    definition: "Rule or calculation-based estimate of aggregation risk from planarity, aromatic surface, hydrophobicity, bulky substitution, and charge."
+    proposed_roles: [soft_constraint, diagnostic]
+    direction: minimize
+    threshold:
+      value: "penalize planar hydrophobic macrocycles without bulky or ionic substituent compensation"
+      unit: score
+      status: "heuristic_from_paper_evidence"
+    conditions: ["aqueous or biological media", "porphyrinoid/Pc branch"]
+    acquisition: [derive, estimate, physics_compute]
+    evidence_refs: [R2-I008, R2-E001, R2-E002]
+    expert_status: pending
+    unresolved_fields: ["exact score formula"]
+  - metric_id: M-RECAP-SA
+    name: "RECAP compatibility and synthetic accessibility"
+    aliases: ["fragment feasibility", "SA proxy"]
+    definition: "Preference for candidates generated through RECAP-compatible fragment operations and not excessively synthetically complex."
+    proposed_roles: [soft_constraint]
+    direction: maximize
+    threshold:
+      value: "generated by approved RECAP actions; SA threshold unresolved"
+      unit: "rule/score"
+      status: "partially_resolved"
+    conditions: ["fragment RL branch"]
+    acquisition: ["rdkit.Chem.Recap.RecapDecompose", "SA score or expert synthesis checker"]
+    evidence_refs: [RDKit-DOC, RL-FRAGMENT-REF]
+    expert_status: pending
+    unresolved_fields: ["SA score cutoff", "approved reactions/fragments"]
+
+metric_decisions:
+  - metric_id: M-VALID
+    final_role: hard_constraint
+    rank: 1
+    ranking_basis: ["Prerequisite for all downstream calculations", "low cost", "official RDKit support"]
+    direction: pass_fail
+    threshold: {value: true, unit: boolean}
+    evaluator_id: MODEL-001
+    decision_status: proposed
+    evidence_refs: [RDKit-DOC]
+    expert_feedback_refs: []
+  - metric_id: M-SCAFFOLD
+    final_role: hard_constraint
+    rank: 2
+    ranking_basis: ["User states porphyrin is common scaffold", "scaffold-constrained generation improves relevance", "supports lead-optimization style search"]
+    direction: pass_fail_or_similarity
+    threshold: {value: "expert-approved porphyrin SMARTS/SMILES", status: unresolved}
+    evaluator_id: MODEL-003
+    decision_status: proposed
+    evidence_refs: [USER-PORPHYRIN, SCAFFOLD-RL-REF]
+    expert_feedback_refs: []
+  - metric_id: R2-I001
+    final_role: primary_objective
+    rank: 3
+    ranking_basis: ["Directly tied to photosensitizer activation", "TD-DFT computable", "literature-supported therapeutic window"]
+    direction: target_range
+    threshold: {range: [600, 800], preferred_range: [650, 750], unit: nm}
+    evaluator_id: MODEL-006
+    decision_status: proposed
+    evidence_refs: [R2-O001]
+    expert_feedback_refs: []
+  - metric_id: R2-I003-TYPEII
+    final_role: primary_objective
+    rank: 4
+    ranking_basis: ["Critical for Type-II singlet oxygen energetics", "DFT computable", "branch-specific threshold exists"]
+    direction: maximize_above_threshold
+    threshold: {minimum: 0.98, preferred_minimum: 1.13, unit: eV}
+    evaluator_id: MODEL-006
+    decision_status: proposed
+    evidence_refs: [R2-O001]
+    expert_feedback_refs: []
+  - metric_id: R2-I004
+    final_role: secondary_objective
+    rank: 5
+    ranking_basis: ["Connects structure to triplet population", "computable", "heuristic threshold available but requires SOC validation"]
+    direction: minimize
+    threshold: {maximum: 0.4, unit: eV, status: heuristic}
+    evaluator_id: MODEL-006
+    decision_status: proposed
+    evidence_refs: [R2-O002]
+    expert_feedback_refs: []
+  - metric_id: R2-I002
+    final_role: secondary_objective
+    rank: 6
+    ranking_basis: ["Absorption-intensity proxy", "available from TD-DFT", "no universal threshold"]
+    direction: maximize
+    threshold: {value: "rank-normalized", unit: dimensionless}
+    evaluator_id: MODEL-006
+    decision_status: proposed
+    evidence_refs: [R2-O004]
+    expert_feedback_refs: []
+  - metric_id: R2-I008
+    final_role: soft_constraint
+    rank: 7
+    ranking_basis: ["Aggregation lowers photodynamic effect", "especially relevant for porphyrinoid macrocycles", "proxy is cheap but imperfect"]
+    direction: minimize
+    threshold: {value: "heuristic penalty", status: expert_calibration_required}
+    evaluator_id: MODEL-005
+    decision_status: proposed
+    evidence_refs: [R2-E001, R2-E002]
+    expert_feedback_refs: []
+
+model_interfaces:
+  - model_id: MODEL-001
+    name: "RDKit SMILES validator"
+    role: constraint_checker
+    status: proposed
+    input_schema: {smiles: string}
+    output_schema: {valid: boolean, canonical_smiles: string, sanitize_error: string}
+    supported_metrics: [M-VALID]
+    evidence_refs: [RDKit-DOC]
+  - model_id: MODEL-002
+    name: "RDKit RECAP fragmenter"
+    role: constraint_checker
+    status: proposed
+    input_schema: {smiles: string, min_fragment_size: integer}
+    output_schema: {fragment_tree: object, leaf_fragment_smiles: list}
+    supported_metrics: [M-RECAP-SA]
+    evidence_refs: [RDKit-DOC]
+  - model_id: MODEL-003
+    name: "Porphyrin scaffold checker"
+    role: constraint_checker
+    status: proposed
+    input_schema: {smiles: string, scaffold_smarts: string}
+    output_schema: {has_scaffold: boolean, scaffold_match_atoms: list}
+    supported_metrics: [M-SCAFFOLD]
+    evidence_refs: [USER-PORPHYRIN]
+  - model_id: MODEL-004
+    name: "SMILES/fragment reinforcement-learning generator"
+    role: generator
+    status: proposed
+    input_schema: {prior_model: string, fragment_vocabulary: list, reward_profile: string}
+    output_schema: {candidate_smiles: list, generation_trace: object}
+    supported_metrics: [M-VALID, M-SCAFFOLD, M-RECAP-SA]
+    evidence_refs: [RL-REINVENT-REF, SCAFFOLD-RL-REF, RL-FRAGMENT-REF]
+  - model_id: MODEL-005
+    name: "Cheap descriptor and risk checker"
+    role: constraint_checker
+    status: proposed
+    input_schema: {smiles: string}
+    output_schema: {formal_charge: number, clogp: number, aromatic_ring_count: number, aggregation_risk: number, risk_flags: list}
+    supported_metrics: [R2-I008]
+    evidence_refs: [R2-E001, R2-E002]
+  - model_id: MODEL-006
+    name: "TD-DFT excited-state calculator"
+    role: physics_calculator
+    status: proposed
+    input_schema: {smiles: string, conformer: string, method: object}
+    output_schema: {lambda_abs_nm: number, oscillator_strength: number, T1_S0_eV: number, min_S1_Tn_gap_eV: number}
+    supported_metrics: [R2-I001, R2-I002, R2-I003-TYPEII, R2-I004]
+    evidence_refs: [R2-O001, R2-O002]
+  - model_id: MODEL-009
+    name: "Surrogate model for TD-DFT properties"
+    role: surrogate
+    status: proposed_after_initial_batch
+    input_schema: {smiles: string, descriptors: object}
+    output_schema: {predictions: object, uncertainties: object}
+    supported_metrics: [R2-I001, R2-I002, R2-I003-TYPEII, R2-I004]
+    evidence_refs: [R2-O001]
+
+reward_profiles:
+  round1_porphyrin_typeII:
+    status: proposed_primary_profile
+    gates:
+      - {metric_id: M-VALID, behavior: "score_zero_if_failed"}
+      - {metric_id: M-SCAFFOLD, behavior: "score_zero_if_failed_in_strict_scaffold_mode"}
+    components:
+      - {metric_id: R2-I001, weight: 0.25, transform: "trapezoid_600_800_peak_650_750"}
+      - {metric_id: R2-I003-TYPEII, weight: 0.25, transform: "sigmoid_min_0.98_preferred_1.13"}
+      - {metric_id: R2-I004, weight: 0.15, transform: "decreasing_high_below_0.4"}
+      - {metric_id: R2-I002, weight: 0.10, transform: "rank_normalized"}
+      - {metric_id: R2-I008, weight: -0.10, transform: "aggregation_penalty"}
+      - {metric_id: M-RECAP-SA, weight: -0.10, transform: "synthetic_complexity_penalty"}
+      - {metric_id: M-RISK, weight: -0.05, transform: "heavy_atom_metal_charge_diagnostic_penalty"}
+    aggregation: "weighted_sum_after_hard_gates"
+    decision_status: proposed
+  deferred_hypoxia_typeI:
+    status: suspended_until_expert_approval
+    reason: "T1-S0 direction conflicts with Type-II branch; DeltaG_ET definitions unresolved."
+    proposed_components: [R2-I001, R2-I004, R2-I005, R2-I006, R2-I007, R2-I008]
+
+execution_workflow:
+  stages:
+    - stage_id: STAGE-0
+      name: "Input normalization"
+      steps:
+        - "Load upstream round2 files."
+        - "Load expert-provided porphyrin scaffold SMILES/SMARTS."
+        - "Canonicalize and sanitize seed SMILES."
+      outputs: ["seed_registry", "invalid_seed_queue"]
+    - stage_id: STAGE-1
+      name: "RECAP fragment vocabulary"
+      steps:
+        - "Run RDKit RECAP decomposition on valid seed molecules."
+        - "Store fragment leaf SMILES and attachment metadata."
+        - "Tag fragments by scaffold source and chemical role."
+      outputs: ["recap_fragment_vocabulary"]
+    - stage_id: STAGE-2
+      name: "RL environment setup"
+      steps:
+        - "Define state as current molecule, open attachment sites, scaffold status, and cheap descriptors."
+        - "Define actions as fragment add, replace, delete, and terminate."
+        - "Apply RDKit sanitization after every graph edit."
+      outputs: ["rl_environment_spec"]
+    - stage_id: STAGE-3
+      name: "Cheap RL optimization pass"
+      steps:
+        - "Generate porphyrin-scaffold candidates."
+        - "Score validity, scaffold preservation, RECAP compatibility, and cheap risk proxies."
+        - "Apply diversity buckets to avoid mode collapse."
+      outputs: ["prefiltered_candidate_pool"]
+    - stage_id: STAGE-4
+      name: "TD-DFT evaluation and surrogate update"
+      steps:
+        - "Select diverse top candidates for TD-DFT."
+        - "Calculate lambda_abs, oscillator strength, T1-S0, and min S1-Tn gap."
+        - "Update rewards and train surrogate with uncertainty estimates."
+      outputs: ["dft_scored_candidates", "surrogate_model_v1"]
+    - stage_id: STAGE-5
+      name: "Expert review and branch control"
+      steps:
+        - "Review top candidates and failed candidates."
+        - "Decide whether to activate Type-I branch."
+        - "Update thresholds and constraints for the next orchestration round."
+      outputs: ["expert_feedback", "next_round_update_plan"]
+
+evidence:
+  - evidence_id: RDKit-DOC
+    source_type: documentation
+    source_name: "RDKit documentation"
+    identifier_or_url: "https://github.com/rdkit/rdkit/blob/master/Docs/Book/source/rdkit.Chem.Recap.md"
+    content_summary: "RECAP decomposition API and molecule sanitization workflow."
+  - evidence_id: RL-REINVENT-REF
+    source_type: literature_and_software
+    source_name: "REINVENT / REINVENT 4"
+    identifier_or_url: "https://doi.org/10.1186/s13321-017-0235-x ; https://doi.org/10.1186/s13321-024-00812-5"
+    content_summary: "SMILES-based RL, staged learning, scalar multi-component scoring functions, and scoring subsystem."
+  - evidence_id: SCAFFOLD-RL-REF
+    source_type: literature
+    source_name: "Scaffold-constrained molecular generation"
+    identifier_or_url: "https://ar5iv.labs.arxiv.org/html/2009.07778"
+    content_summary: "Scaffold-constrained SMILES generation supports lead optimization and can use RL scoring."
+  - evidence_id: RL-FRAGMENT-REF
+    source_type: literature
+    source_name: "Fragment-based reinforcement learning references"
+    identifier_or_url: "https://doi.org/10.1021/acs.jcim.3c00735 ; SHARP/FREED literature from web search"
+    content_summary: "Fragment-level actions improve chemical realism, synthesizability, and controlled optimization."
+
+blocking_issues:
+  - "Exact porphyrin scaffold SMARTS/SMILES must be provided or approved."
+  - "DFT method stack and computational budget must be approved."
+  - "Decide whether Type-II is the active first branch or whether Type-I should be activated."
+  - "Define whether metal-containing candidates are allowed in round1."

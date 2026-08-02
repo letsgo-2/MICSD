@@ -1,0 +1,12 @@
+{
+  "round": "round3",
+  "artifact": "adjusted_starting_compositions",
+  "output_csv": "performance_evaluation_round3/tables/adjusted_starting_compositions_round3.csv",
+  "source_evidence": [
+    "performance_evaluation_round2/tables/high_performance_composition_features_round2.csv",
+    "performance_evaluation_round2/tables/pareto_front_candidates_round2.csv",
+    "performance_evaluation_round2/tables/analysis_manifest_round2.json"
+  ],
+  "proposal_count": 10,
+  "provenance": "Proposed adjustment set derived from Round 2 statistics and materials-expert suggestion; not experimental measurements."
+}

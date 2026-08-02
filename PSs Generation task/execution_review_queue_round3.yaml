@@ -1,0 +1,41 @@
+review_items:
+  - object_id: reward_contract.weights
+    question: "Please confirm that the current priority [ES1-ET1, charge, symmetric] should remain [0.1, 0.3, 0.6]."
+    required_expert: "computer scientist / materials scientist"
+    reason: "SDPD treats the weight order as a stable interface and the current values strongly prioritize symmetry over charge and ES1-ET1."
+    priority: high
+  - object_id: SDPD-KAGNN-3OUT.checkpoint
+    question: "Please approve the currently installed runtime predictor checkpoint at data_preparation/prediction_model/pretrained_models/best.pth."
+    required_expert: "computational chemistry expert"
+    reason: "The predictor wrapper hard-codes this path; changing JSON model_path alone does not change runtime weights."
+    priority: high
+  - object_id: SDPD-RL.wandb.mode
+    question: "Should the confirmed run use W&B online, offline, or disabled mode?"
+    required_expert: "computer scientist"
+    reason: "Current configuration does not explicitly set a W&B mode and credentials/network availability are unknown."
+    priority: medium
+  - object_id: SDPD-RL.output_dir
+    question: "Please confirm that a new timestamped directory under rl_runs/ is the required output location and that prior outputs must remain untouched."
+    required_expert: "computer scientist"
+    reason: "The runner creates rl_runs/<timestamp>/ and writes diversity_memory.csv there."
+    priority: medium
+  - object_id: SDPD-RL.cuda
+    question: "Please confirm that an NVIDIA CUDA environment is available for the formal prior/RL run."
+    required_expert: "computer scientist"
+    reason: "Current DecoratorModel/model code contains explicit .cuda() calls."
+    priority: high
+  - object_id: SDPD-RL.actor_checkpoint
+    question: "After RL, is a separately saved actor checkpoint required, given that the current runner only writes diversity_memory.csv automatically?"
+    required_expert: "computer scientist"
+    reason: "The current output contract does not automatically persist the updated actor."
+    priority: medium
+  - object_id: SDPD-RL.scaffold
+    question: "Please confirm that the scaffold currently in configs/rl_configs.json is the approved porphyrin scaffold and that its attachment-point vocabulary is compatible with the actor checkpoint."
+    required_expert: "materials scientist / computer scientist"
+    reason: "A scaffold/checkpoint vocabulary mismatch can invalidate sampling or produce unusable decorations."
+    priority: high
+  - object_id: SDPD-RL.execution_confirmation
+    question: "Please explicitly confirm whether the optional predictor training and the RL command may be executed."
+    required_expert: "project owner"
+    reason: "This round intentionally did not run training, checkpoint replacement, prediction, or RL."
+    priority: high

@@ -1,0 +1,344 @@
+metadata:
+  artifact: performance_evaluation
+  round: round1
+  output_language: English
+  created_from_skill: scientific-performance-evaluator
+  created_date: '2026-07-31'
+  status: draft_reproducible_workflow_created
+  execution_performed_in_this_update: false
+
+upstream_inputs:
+  execution_orchestration_yaml: ../execution_orchestration_round2/execution_orchestration_round2.yaml
+  execution_orchestration_report: ../execution_orchestration_round2/execution_orchestration_report_round2.md
+  al_implementation_path: ../AL/catalyst_active_learning_runnable
+  input_status: loaded_and_inspected
+
+input_snapshot:
+  snapshot_id: PE-R1-INPUT-001
+  selected_versions:
+    - execution_orchestration_round2
+    - AL/catalyst_active_learning_runnable
+  inherited_versions:
+    - knowledge_alignment_round2
+    - execution_orchestration_round1
+  execution_status: partially_executed
+  available_artifacts:
+    - ../AL/catalyst_active_learning_runnable/data/initial_examples.csv
+    - ../AL/catalyst_active_learning_runnable/data/oracle_training_sample.csv
+    - ../AL/catalyst_active_learning_runnable/outputs/total_pool.csv
+    - ../AL/catalyst_active_learning_runnable/outputs/total_examples_pool.csv
+  missing_artifacts:
+    - ../AL/catalyst_active_learning_runnable/outputs/iteration_log.csv
+    - ../AL/catalyst_active_learning_runnable/outputs/query_log.csv
+    - ../AL/catalyst_active_learning_runnable/outputs/generated_ratios.csv
+    - ../AL/catalyst_active_learning_runnable/outputs/summary.json
+  active_run_ids: []
+  baseline_run_ids:
+    - existing_outputs_directory_snapshot
+  unresolved_upstream_issues:
+    - physical_unit_for_power_density
+    - status_of_legacy_total_pool_artifact
+    - confirmed_permission_for_new_AL_execution
+  evaluation_scope:
+    - candidate_pool_data_integrity
+    - power_density_summary
+    - normalized_cost_summary
+    - composition_validity
+    - performance_cost_pareto
+    - candidate_novelty_distance
+    - prediction_credibility_if_query_log_available
+
+evaluation_subjects:
+  - subject_id: PE-R1-SUBJ-001
+    subject_type: workflow
+    source_refs:
+      - ../execution_orchestration_round2/execution_orchestration_round2.yaml
+      - ../AL/catalyst_active_learning_runnable
+    run_id: existing_artifact_snapshot
+    version: round1_evaluation_of_round2_execution_context
+    parent_subject_id: ''
+    evaluation_questions:
+      - Are available AL artifacts internally valid and traceable?
+      - What performance-cost diagnostics can be computed without running the optimizer?
+    status: partial
+  - subject_id: PE-R1-SUBJ-002
+    subject_type: dataset
+    source_refs:
+      - ../AL/catalyst_active_learning_runnable/data/initial_examples.csv
+      - ../AL/catalyst_active_learning_runnable/data/oracle_training_sample.csv
+    run_id: data_snapshot
+    version: inspected_local_csvs
+    parent_subject_id: PE-R1-SUBJ-001
+    evaluation_questions:
+      - Are composition vectors valid under the canonical octonary element order?
+      - What is the observed range of local power-density labels?
+    status: evaluated
+  - subject_id: PE-R1-SUBJ-003
+    subject_type: candidate_set
+    source_refs:
+      - ../AL/catalyst_active_learning_runnable/outputs/total_pool.csv
+      - ../AL/catalyst_active_learning_runnable/outputs/total_examples_pool.csv
+    run_id: existing_outputs_directory_snapshot
+    version: mixed_legacy_and_expanded_schema
+    parent_subject_id: PE-R1-SUBJ-001
+    evaluation_questions:
+      - Which candidate summaries and tradeoffs are computable from existing outputs?
+      - Which current-pipeline logs are missing?
+    status: partial
+
+registered_metrics:
+  - metric_id: PE-R1-M001
+    name: Peak power density
+    aliases: [power_density, peak_power_density]
+    direction: maximize
+    unit: local_power_density_unit_pending
+    value_type_boundary: measured_virtual_or_predicted_must_be_separated
+  - metric_id: PE-R1-M002
+    name: Composition validity
+    aliases: [simplex_validity, ratio_validity]
+    direction: target_range
+    unit: mass_fraction_vector
+    value_type_boundary: computed_constraint_check
+  - metric_id: PE-R1-M003
+    name: Normalized cost
+    aliases: [normalized_cost]
+    direction: minimize
+    unit: Pd_normalized_index
+    value_type_boundary: computed_implementation_metric
+  - metric_id: PE-R1-M004
+    name: Performance-cost Pareto status
+    aliases: [pareto_front, nondominated_set]
+    direction: derived_tradeoff
+    unit: boolean_membership
+    value_type_boundary: derived_analysis_metric
+  - metric_id: PE-R1-M005
+    name: Candidate novelty distance
+    aliases: [clr_distance, aitchison_distance]
+    direction: diagnose
+    unit: clr_euclidean_distance
+    value_type_boundary: derived_analysis_metric
+  - metric_id: PE-R1-M006
+    name: Prediction credibility
+    aliases: [llm_mean, llm_std, ucb_score]
+    direction: diagnose
+    unit: model_output_units
+    value_type_boundary: predicted_or_implementation_score_only
+
+performance_records:
+  - record_id: PE-R1-PR-001
+    subject_id: PE-R1-SUBJ-002
+    metric_id: PE-R1-M001
+    value:
+      min: 0.545
+      max: 39.61
+      mean: 20.9985
+      rows: 10
+    unit: local_power_density_unit_pending
+    value_type: measured
+    conditions:
+      dataset: initial_examples.csv
+    sample_size: 10
+    evaluator_id: local_round1_summary
+    environment_id: PE-R1-ENV-001
+    source_artifacts:
+      - ../AL/catalyst_active_learning_runnable/data/initial_examples.csv
+    uncertainty: {type: none_recorded, value: null, interval: [], method: not_available}
+    data_quality: medium
+    applicability_status: in_domain
+    missing_reason: ''
+    validation_status: checked
+  - record_id: PE-R1-PR-002
+    subject_id: PE-R1-SUBJ-002
+    metric_id: PE-R1-M001
+    value:
+      min: 0.02709
+      max: 75.45
+      mean: 45.3405434167
+      rows: 120
+    unit: local_power_density_unit_pending
+    value_type: virtual_training_label
+    conditions:
+      dataset: oracle_training_sample.csv
+      caveat: virtual_oracle_training_data_not_new_real_experiments
+    sample_size: 120
+    evaluator_id: local_round1_summary
+    environment_id: PE-R1-ENV-001
+    source_artifacts:
+      - ../AL/catalyst_active_learning_runnable/data/oracle_training_sample.csv
+    uncertainty: {type: none_recorded, value: null, interval: [], method: not_available}
+    data_quality: medium
+    applicability_status: in_domain
+    missing_reason: ''
+    validation_status: checked
+  - record_id: PE-R1-PR-003
+    subject_id: PE-R1-SUBJ-003
+    metric_id: PE-R1-M001
+    value:
+      min: 0.4594
+      max: 68.58106887
+      mean: 54.7997704051
+      rows: 160
+    unit: local_power_density_unit_pending
+    value_type: mixed_existing_output_label
+    conditions:
+      dataset: outputs/total_pool.csv
+      schema: legacy_ratio_column
+    sample_size: 160
+    evaluator_id: local_round1_summary
+    environment_id: PE-R1-ENV-001
+    source_artifacts:
+      - ../AL/catalyst_active_learning_runnable/outputs/total_pool.csv
+    uncertainty: {type: none_recorded, value: null, interval: [], method: not_available}
+    data_quality: medium
+    applicability_status: unknown
+    missing_reason: legacy_artifact_run_status_pending_confirmation
+    validation_status: checked
+  - record_id: PE-R1-PR-004
+    subject_id: PE-R1-SUBJ-003
+    metric_id: PE-R1-M003
+    value:
+      min: 0.017163642
+      max: 111.0067063
+      mean: 58.9802151452
+      rows: 160
+    unit: Pd_normalized_index
+    value_type: computed
+    conditions:
+      dataset: outputs/total_pool.csv
+      formula: dot(normalized_ratio, metal_prices) / Pd_price * 100
+    sample_size: 160
+    evaluator_id: local_round1_summary
+    environment_id: PE-R1-ENV-001
+    source_artifacts:
+      - ../AL/catalyst_active_learning_runnable/outputs/total_pool.csv
+      - ../AL/catalyst_active_learning_runnable/catalyst_al/costs.py
+    uncertainty: {type: deterministic_formula, value: null, interval: [], method: formula_recompute_possible}
+    data_quality: medium
+    applicability_status: in_domain
+    missing_reason: ''
+    validation_status: checked
+
+analysis_evidence:
+  - evidence_id: PE-R1-AE-001
+    source_type: execution_configuration
+    source_ref: ../execution_orchestration_round2/execution_orchestration_round2.yaml
+    title_or_description: Locked AL execution context and canonical element order
+    domain_id: computer_science
+    supported_questions:
+      - Which workflow and element order should Round 1 evaluation use?
+    supported_metrics: [PE-R1-M001, PE-R1-M002, PE-R1-M003]
+    extracted_claim: The implemented canonical order is Pd, Pt, Cu, Au, Ir, Ce, Nb, Cr and formal execution was not authorized.
+    applicability_conditions:
+      - local_AL_package_unchanged
+    retrieval_or_extraction_method: inherited_and_read_locally
+  - evidence_id: PE-R1-AE-002
+    source_type: run_artifact
+    source_ref: ../AL/catalyst_active_learning_runnable/data/README.md
+    title_or_description: Local data README for initial examples and oracle training sample
+    domain_id: data_provenance
+    supported_questions:
+      - Which rows are virtual oracle training data?
+    supported_metrics: [PE-R1-M001]
+    extracted_claim: The 120-row oracle sample is for GBR virtual oracle training and is not newly measured experimental data.
+    applicability_conditions:
+      - data_README_matches_current_csvs
+    retrieval_or_extraction_method: read_locally
+  - evidence_id: PE-R1-AE-003
+    source_type: software_documentation
+    source_ref: ../AL/catalyst_active_learning_runnable/catalyst_al/pipeline.py
+    title_or_description: Pipeline output writer
+    domain_id: computer_science
+    supported_questions:
+      - Which logs should a current confirmed run produce?
+    supported_metrics: [PE-R1-M001, PE-R1-M003, PE-R1-M006]
+    extracted_claim: Current pipeline code writes total_pool.csv, iteration_log.csv, query_log.csv, and generated_ratios.csv.
+    applicability_conditions:
+      - current_code_path_executed_with_valid_configuration
+    retrieval_or_extraction_method: read_locally
+
+analysis_requests:
+  - request_id: PE-R1-AR-001
+    requested_by: skill_inference
+    priority: high
+    question: Evaluate data integrity and composition validity for all available AL CSV artifacts.
+    planned_tool_id: PE-R1-TOOL-001
+    output_targets:
+      - tables/data_integrity_round1.csv
+      - tables/performance_summary_round1.csv
+  - request_id: PE-R1-AR-002
+    requested_by: skill_inference
+    priority: high
+    question: Compute power-density and normalized-cost summaries, Pareto membership, and cost-performance plots.
+    planned_tool_id: PE-R1-TOOL-001
+    output_targets:
+      - tables/pareto_candidates_round1.csv
+      - figures/power_density_vs_cost_round1.png
+  - request_id: PE-R1-AR-003
+    requested_by: skill_inference
+    priority: medium
+    question: Compute candidate novelty distances against initial examples when compositions are available.
+    planned_tool_id: PE-R1-TOOL-001
+    output_targets:
+      - tables/novelty_summary_round1.csv
+      - figures/novelty_distribution_round1.png
+
+registered_tools:
+  - tool_id: PE-R1-TOOL-001
+    tool_type: script
+    path: scripts/evaluate_al_performance_round1.py
+    invocation_status: written_not_invoked_for_analysis
+    permitted_actions:
+      - read_local_csv_json_artifacts
+      - write_derived_tables_and_figures_under_performance_evaluation_round1
+    forbidden_actions:
+      - modify_AL_source
+      - overwrite_raw_outputs
+      - execute_active_learning_pipeline
+      - train_oracle_model
+    dependencies:
+      required: [python3, pandas, numpy]
+      optional: [matplotlib, pyyaml]
+
+compute_environments:
+  - environment_id: PE-R1-ENV-001
+    owner_expert_id: computer_expert
+    location: local_workspace
+    platform: workstation
+    operating_system: macOS shell observed; upstream runtime may be Ubuntu
+    runtime: python3
+    dependencies: [pandas, numpy, optional_matplotlib, optional_pyyaml]
+    hardware: {cpu: unknown, gpu: unknown, memory: unknown, accelerator: none_registered}
+    scheduler: none
+    access_status: available_for_file_and_syntax_validation
+    reproducibility_status: partially_locked
+    data_access:
+      - ../AL/catalyst_active_learning_runnable/data
+      - ../AL/catalyst_active_learning_runnable/outputs
+    output_locations:
+      - tables
+      - figures
+    restrictions:
+      - no_AL_execution_without_user_confirmation
+
+outputs:
+  report: performance_evaluation_report_round1.md
+  yaml: performance_evaluation_round1.yaml
+  review_queue: performance_review_queue_round1.yaml
+  scripts:
+    - scripts/evaluate_al_performance_round1.py
+    - scripts/README_round1.md
+  expected_derived_outputs:
+    - tables/data_integrity_round1.csv
+    - tables/performance_summary_round1.csv
+    - tables/pareto_candidates_round1.csv
+    - tables/novelty_summary_round1.csv
+    - figures/power_density_vs_cost_round1.png
+    - figures/power_density_distribution_round1.png
+    - figures/novelty_distribution_round1.png
+
+limitations:
+  - No new AL run was executed in this update.
+  - Existing output files have mixed legacy and current schemas.
+  - Physical units and experimental conditions for power_density remain unresolved.
+  - Prediction credibility metrics require query_log.csv from a confirmed current run.
+  - Virtual oracle training labels must not be reported as new measured experimental results.

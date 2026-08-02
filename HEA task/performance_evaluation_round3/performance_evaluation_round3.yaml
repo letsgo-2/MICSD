@@ -1,0 +1,154 @@
+metadata:
+  artifact: performance_evaluation
+  round: round3
+  output_language: English
+  created_from_skill: scientific-performance-evaluator
+  status: adjustment_plan_created_pending_execution
+  execution_performed_in_this_update: false
+
+input_snapshot:
+  snapshot_id: PE-R3-INPUT-001
+  selected_versions:
+    - ../performance_evaluation_round2/tables/high_performance_composition_features_round2.csv
+    - ../performance_evaluation_round2/tables/pareto_front_candidates_round2.csv
+    - ../performance_evaluation_round2/tables/analysis_manifest_round2.json
+  inherited_versions:
+    - performance_evaluation_round2
+  execution_status: external_results_only
+  available_artifacts:
+    - tables/adjusted_starting_compositions_round3.csv
+    - tables/adjustment_manifest_round3.json
+    - scripts/generate_round3_starting_compositions.py
+  missing_artifacts:
+    - round3_execution_results
+    - round3_measured_power_density
+    - round3_prediction_accuracy_records
+  active_run_ids: []
+  baseline_run_ids:
+    - round2_total_pool_analysis
+  unresolved_upstream_issues:
+    - materials_expert_approval_for_adjusted_starts
+    - execution_method_for_injecting_starting_ratios
+    - practical_rounding_or_synthesis_constraints
+  evaluation_scope:
+    - expert_adjustment_request_registration
+    - proposed_starting_composition_generation
+    - provenance_boundary_for_non_measured_values
+    - next_execution_logging_requirements
+
+evaluation_subjects:
+  - subject_id: PE-R3-SUBJ-001
+    subject_type: candidate_set
+    source_refs:
+      - tables/adjusted_starting_compositions_round3.csv
+    run_id: proposed_round3_starting_set
+    version: round3
+    parent_subject_id: ''
+    evaluation_questions:
+      - Which adjusted starting ratios should seed the next experiment?
+      - How should the Round 2 high-performance composition features guide Round 3?
+    status: registered
+  - subject_id: PE-R3-SUBJ-002
+    subject_type: adjustment_plan
+    source_refs:
+      - performance_evaluation_report_round3.md
+      - tables/adjustment_manifest_round3.json
+    run_id: proposed_round3_adjustment
+    version: round3
+    parent_subject_id: PE-R3-SUBJ-001
+    evaluation_questions:
+      - What must be confirmed before running another experiment?
+      - Which logging fields are required for later model-accuracy evaluation?
+    status: registered
+
+performance_records:
+  - record_id: PE-R3-PR-001
+    subject_id: PE-R3-SUBJ-001
+    metric_id: PE-R3-M001
+    value:
+      proposal_count: 10
+      composition_sum_rule: exactly_1_after_normalization
+      element_order: [Pd, Pt, Cu, Au, Ir, Ce, Nb, Cr]
+    unit: mass_fraction
+    value_type: proposed_starting_ratio
+    conditions:
+      source_basis:
+        - round2_best_candidate_id_132
+        - round2_high_performance_top_decile_features
+        - round2_pareto_front_neighbors
+    sample_size: 10
+    evaluator_id: scripts/generate_round3_starting_compositions.py
+    source_artifacts:
+      - tables/adjusted_starting_compositions_round3.csv
+      - tables/adjustment_manifest_round3.json
+    uncertainty: {type: not_applicable, value: null, interval: [], method: proposal_not_measurement}
+    data_quality: medium
+    applicability_status: pending_expert_review
+    missing_reason: ''
+    validation_status: checked
+  - record_id: PE-R3-PR-002
+    subject_id: PE-R3-SUBJ-002
+    metric_id: PE-R3-M002
+    value: null
+    unit: not_available
+    value_type: missing_record
+    conditions:
+      reason: no_round3_experiment_or_model_run_executed
+    sample_size: null
+    evaluator_id: scientific-performance-evaluator
+    source_artifacts: []
+    uncertainty: {type: missing, value: null, interval: [], method: not_available}
+    data_quality: unknown
+    applicability_status: unknown
+    missing_reason: Round 3 performance results do not exist yet.
+    validation_status: checked
+
+metrics:
+  - metric_id: PE-R3-M001
+    name: Proposed starting composition ratio
+    direction: proposed_input
+    value_type: proposed_starting_ratio
+    unit: mass_fraction
+  - metric_id: PE-R3-M002
+    name: Round 3 performance result
+    direction: maximize_peak_power_density_minimize_cost
+    value_type: missing_record
+    unit: pending_future_execution
+
+adjustment_recommendations:
+  - recommendation_id: PE-R3-REC-001
+    target: starting_composition_set
+    priority: high
+    recommendation: Use the 10 proposed starting ratios in adjusted_starting_compositions_round3.csv as a reviewed Round 3 starting set.
+    evidence_refs:
+      - tables/adjusted_starting_compositions_round3.csv
+      - ../performance_evaluation_round2/tables/high_performance_composition_features_round2.csv
+  - recommendation_id: PE-R3-REC-002
+    target: materials_design_direction
+    priority: high
+    recommendation: Focus the local search on Pd-rich, Ce-supported compositions with low Au and Ir, while perturbing Pt, Cu, Nb, and Cr for mechanism and cost sensitivity.
+    evidence_refs:
+      - ../performance_evaluation_round2/tables/high_performance_composition_features_round2.csv
+      - ../performance_evaluation_round2/tables/pareto_front_candidates_round2.csv
+  - recommendation_id: PE-R3-REC-003
+    target: execution_logging
+    priority: high
+    recommendation: Persist proposal_id, iteration, source, predicted value, uncertainty, observed value, residual, normalized cost, and full composition columns in the next run.
+    evidence_refs:
+      - ../performance_evaluation_round2/tables/prediction_model_accuracy_status_round2.csv
+
+outputs:
+  report: performance_evaluation_report_round3.md
+  yaml: performance_evaluation_round3.yaml
+  review_queue: performance_review_queue_round3.yaml
+  tables:
+    - tables/adjusted_starting_compositions_round3.csv
+    - tables/adjustment_manifest_round3.json
+  scripts:
+    - scripts/generate_round3_starting_compositions.py
+
+limitations:
+  - Round 3 files are proposed adjustment artifacts, not new experimental results.
+  - No model accuracy, new peak power density, or new normalized-cost measurements are available yet.
+  - Starting ratios may need practical rounding or synthesis feasibility review before execution.
+  - Raw AL data and Round 2 outputs were not modified.

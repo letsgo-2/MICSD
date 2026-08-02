@@ -1,0 +1,56 @@
+review_items:
+  - object_id: M-SOCME
+    question: "Please confirm whether SOCME should be the highest-priority photophysics reward and whether the reference value around 0.24 cm^-1 should be used only as a soft guideline."
+    required_expert: "materials expert / computational chemistry expert"
+    reason: "The materials expert explicitly elevated SOCME, but the evidence is scaffold- and method-specific rather than universal."
+    priority: high
+  - object_id: M-DELTAE-S1-T1
+    question: "Please define the preferred operating range for DeltaE(S1,T1). Should the workflow optimize for a small gap, or a bounded small-to-moderate window?"
+    required_expert: "materials expert / computational chemistry expert"
+    reason: "Smaller DeltaE_S1_T1 generally improves ISC, but unconstrained minimization may produce unwanted excited-state behavior."
+    priority: high
+  - object_id: M-ES1
+    question: "Please specify the preferred Es1 target region or wavelength-equivalent region for this porphyrin branch."
+    required_expert: "materials expert / experimental expert"
+    reason: "Es1 is now a primary objective and needs a concrete target window."
+    priority: high
+  - object_id: M-HL-GAP
+    question: "Should HOMO-LUMO gap be used only as a prescreening/ranking feature, or should it be assigned a hard target range?"
+    required_expert: "materials expert / computational chemistry expert"
+    reason: "It is a useful electronic proxy but not a direct photosensitizer endpoint."
+    priority: medium
+  - object_id: M-CHARGE
+    question: "What charge regime is preferred in this project: neutral, cationic, zwitterionic, or branch-dependent? Should formal charge and charge distribution be scored separately?"
+    required_expert: "materials expert"
+    reason: "Charge strongly affects uptake, amphiphilicity, and localization."
+    priority: high
+  - object_id: M-SYMMETRY
+    question: "How should symmetry be operationalized: topological symmetry, electronic symmetry, or substitution symmetry?"
+    required_expert: "materials expert / computational chemistry expert"
+    reason: "Symmetry is now explicitly prioritized but currently lacks a stable computational definition."
+    priority: high
+  - object_id: M-SA
+    question: "What synthetic accessibility cutoff or grading rule should be used in the RECAP-constrained workflow?"
+    required_expert: "materials expert / synthesis expert"
+    reason: "SA is now explicitly prioritized and needs an operational threshold."
+    priority: medium
+  - object_id: M-LOGP
+    question: "What logP window is acceptable for porphyrin-like photosensitizers in this project?"
+    required_expert: "materials expert / experimental expert"
+    reason: "logP affects amphiphilicity, uptake, and aggregation."
+    priority: medium
+  - object_id: M-TPSA
+    question: "What TPSA range should be considered acceptable for this scaffold class?"
+    required_expert: "materials expert / experimental expert"
+    reason: "TPSA complements charge and logP but is currently unbounded."
+    priority: medium
+  - object_id: M-MW
+    question: "What molecular-weight range should be enforced to prevent overgrowth while keeping porphyrin functionalization feasible?"
+    required_expert: "materials expert / computer expert"
+    reason: "MW must control reward hacking by oversized molecules."
+    priority: medium
+  - object_id: reward_profiles.round2_photophysics_centered_porphyrin
+    question: "Please confirm whether the new metric order should replace the round1 order entirely, or whether round1 and round2 profiles should coexist as alternative orchestration modes."
+    required_expert: "materials expert / computer expert"
+    reason: "Round2 strongly changes the ranking from branch-property-first to photophysics-core-first."
+    priority: high

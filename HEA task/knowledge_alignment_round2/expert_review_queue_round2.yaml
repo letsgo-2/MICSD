@@ -1,0 +1,56 @@
+review_items:
+  - object_id: element_role_profiles
+    question: "Are the Round 2 per-element role descriptions for Pd, Pt, Cu, Au, Ir, Ce, Nb, and Cr acceptable as optimization priors, or should any role be revised?"
+    required_expert: materials/electrocatalysis expert
+    reason: "The primary paper supports broad roles, but isolated monotonic element-content effects are not proven."
+    priority: high
+  - object_id: Pd_Pt_backbone
+    question: "Should Pd and Pt be treated as mandatory active backbone elements with lower-bound constraints, or may low-Pd/low-Pt regions remain open for exploration?"
+    required_expert: materials/electrocatalysis expert
+    reason: "The paper states Pd and Pt serve as primary active elements, while optimization may otherwise sample very low active-metal regions."
+    priority: high
+  - object_id: element_bounds
+    question: "What are the experimentally feasible lower bound, upper bound, and resolution for each of Pd, Pt, Cu, Au, Ir, Ce, Nb, and Cr?"
+    required_expert: synthesis/robotic experimentation expert
+    reason: "Local code only enforces the mathematical simplex; real precursor dispensing and synthesis may impose tighter constraints."
+    priority: high
+  - object_id: I001
+    question: "What is the certified unit and protocol identity for `power_density` in the local CSV files?"
+    required_expert: experimental electrochemistry expert
+    reason: "The primary paper figure uses W cm^-2_geo, but local CSV target values do not declare units."
+    priority: high
+  - object_id: I001_proxy_merge
+    question: "Can three-electrode proxy-derived power-density rankings and direct formate fuel-cell peak power densities be used in one modeling target?"
+    required_expert: experimental electrochemistry expert
+    reason: "The paper says the proxy gave relatively consistent rankings under an ORR overpotential assumption, but downstream supervised learning needs an explicit rule."
+    priority: high
+  - object_id: I003
+    question: "Should the local normalized-cost formula and price table be used for optimization, or should it be replaced with a dated procurement/market/USGS-based table?"
+    required_expert: cost expert or project owner
+    reason: "Local costs are computable but their source/date are undocumented."
+    priority: high
+  - object_id: I015
+    question: "Should precious-metal fraction Pd+Pt+Au+Ir have a hard upper bound, a soft penalty, or only diagnostic reporting?"
+    required_expert: materials expert and cost expert
+    reason: "Peak power density may favor noble metals, while project constraints require material-cost awareness."
+    priority: medium
+  - object_id: I009
+    question: "Should single FCC phase be a hard composition filter, soft constraint, or diagnostic characterization result?"
+    required_expert: materials characterization expert
+    reason: "The optimized catalyst is single FCC, but the evidence does not prove this is required for every high-power formulation."
+    priority: medium
+  - object_id: I012
+    question: "Which computable scalar should represent hydrogen/CO poisoning tolerance in future optimization: adsorption energy, pathway barrier, CO/H binding strength, durability decay, or expert label?"
+    required_expert: computational chemistry expert
+    reason: "The mechanism is important but not yet a single computable optimization indicator."
+    priority: medium
+  - object_id: Au_Ir_policy
+    question: "Should Au and Ir be restricted to low fractions unless performance gain is experimentally justified?"
+    required_expert: materials/electrocatalysis expert and cost expert
+    reason: "Primary optimized recipes use low Au/Ir, and local cost weights make them expensive."
+    priority: medium
+  - object_id: data_contract
+    question: "Is the proposed canonical input/output schema sufficient for downstream iterative optimization and task orchestration?"
+    required_expert: computer expert
+    reason: "Round 2 defines element order, numeric format, constraints, target columns, optional outputs, and non-merge rules."
+    priority: high

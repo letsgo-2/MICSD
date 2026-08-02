@@ -1,0 +1,46 @@
+metadata:
+  artifact: performance_review_queue
+  round: round3
+  output_language: English
+  created_from_skill: scientific-performance-evaluator
+  status: pending_expert_review
+
+review_items:
+  - item_id: PE-R3-RQ-001
+    priority: high
+    assigned_expert_role: materials_expert
+    question: Should all 10 proposed Round 3 starting ratios be accepted for the next experimental round?
+    evidence_paths:
+      - tables/adjusted_starting_compositions_round3.csv
+      - performance_evaluation_report_round3.md
+    status: open
+  - item_id: PE-R3-RQ-002
+    priority: high
+    assigned_expert_role: materials_expert
+    question: Are the low Au and low Ir constraints chemically acceptable for the next round?
+    evidence_paths:
+      - ../performance_evaluation_round2/tables/high_performance_composition_features_round2.csv
+      - tables/adjusted_starting_compositions_round3.csv
+    status: open
+  - item_id: PE-R3-RQ-003
+    priority: high
+    assigned_expert_role: computer_expert
+    question: How should the adjusted starting ratios be injected into the AL workflow without overwriting Round 2 raw artifacts?
+    evidence_paths:
+      - tables/adjusted_starting_compositions_round3.csv
+      - scripts/generate_round3_starting_compositions.py
+    status: open
+  - item_id: PE-R3-RQ-004
+    priority: medium
+    assigned_expert_role: experimental_expert
+    question: Do any proposed ratios require practical rounding or feasibility adjustment before synthesis?
+    evidence_paths:
+      - tables/adjusted_starting_compositions_round3.csv
+    status: open
+  - item_id: PE-R3-RQ-005
+    priority: high
+    assigned_expert_role: computer_expert
+    question: Can the next execution record proposal_id, prediction, uncertainty, observed result, residual, normalized cost, and full composition columns?
+    evidence_paths:
+      - performance_evaluation_round3.yaml
+    status: open

@@ -1,0 +1,61 @@
+review_items:
+  - object_id: PE-R2-Q001
+    question: Is `meloculardftcal/data/core/pic16_s1/final/pic16inpdftv22.csv` the project-approved batch for next photosensitizer optimization, or only a reference workflow snapshot?
+    required_expert: project owner / computer scientist
+    reason: Round2 recommendations depend on treating `pic16_s1` as either a production batch or a demonstration baseline.
+    priority: high
+  - object_id: PE-R2-Q002
+    question: Should final scientific ranking exclude all records where `Imaginary != No`, or should selected imaginary-frequency records be reoptimized first?
+    required_expert: computational chemistry expert
+    reason: 31 of 222 records are not validated minima; including them can distort ranking.
+    priority: high
+  - object_id: PE-R2-Q003
+    question: Should next optimization use Type-II PDT thresholds, Type-I/hypoxia thresholds, or separate mechanism-specific rankings?
+    required_expert: materials scientist / experimental expert
+    reason: T1 energy, S1-Ti gap, SOCME, and electron-transfer metrics have mechanism-dependent interpretation.
+    priority: high
+  - object_id: PE-R2-Q004
+    question: What LogP/TPSA/MW/SA Score feasibility windows should be used for this macrocycle-like photosensitizer space?
+    required_expert: materials scientist / medicinal chemistry expert
+    reason: The current default LogP 1-5 and TPSA 20-120 window has zero hits, while median LogP is 14.08 and median molecular weight is 987.27 g/mol.
+    priority: high
+  - object_id: PE-R2-Q005
+    question: Is the 650-750 nm preferred wavelength window mandatory, or is the broader 600-800 nm window acceptable for the next optimization round?
+    required_expert: materials scientist / experimental expert
+    reason: 126/222 candidates fall in 600-800 nm, but only 38/222 fall in 650-750 nm.
+    priority: high
+  - object_id: PE-R2-Q006
+    question: Should next candidate selection use the 2-objective Pareto set, the 3-objective Pareto set, or a filtered diverse subset sampled around the Pareto front?
+    required_expert: computer scientist / materials scientist
+    reason: The 2-objective Pareto set has only 2 candidates, while the 3-objective set has 14; diversity sampling may be needed for robust chemistry choices.
+    priority: medium
+  - object_id: PE-R2-Q007
+    question: Should top Pareto candidates be recalculated with a higher-level or alternative DFT/TD-DFT protocol before synthesis recommendations?
+    required_expert: computational chemistry expert
+    reason: The interface recommends rank-stability checks before proposing new chemistry.
+    priority: high
+  - object_id: PE-R2-Q008
+    question: What private Slurm/ORCA configuration should be recorded for future production runs, including `ORCA_BIN`, `ORCA_MODULE`, partition, rank counts, scratch policy, and log retention?
+    required_expert: computer scientist / cluster administrator
+    reason: Local `config/cluster.env` is absent, and environment report shows ORCA, sbatch, and squeue unavailable in the checked environment.
+    priority: high
+  - object_id: PE-R2-Q009
+    question: Should raw ORCA logs, normal-termination summaries, and per-run manifests be archived outside Git for auditability?
+    required_expert: computer scientist / computational chemistry expert
+    reason: Current committed metrics cannot reconstruct `N_opt_normal` or `N_td_normal` because raw logs are intentionally excluded.
+    priority: high
+  - object_id: PE-R2-Q010
+    question: How should SDPD reward outputs and KA-GNN predictions be matched to `meloculardftcal` ORCA descriptors for calibration?
+    required_expert: computer scientist
+    reason: Round2 found ORCA descriptor evidence, but no explicit SDPD-vs-ORCA calibration table.
+    priority: high
+  - object_id: PE-R2-Q011
+    question: Should high LogP/high molecular weight be handled by generation-time reward penalties, decoration-vocabulary changes, or post-generation filtering?
+    required_expert: materials scientist / computer scientist
+    reason: The current set has high LogP and high molecular weight, which may create aggregation or formulation risks.
+    priority: high
+  - object_id: PE-R2-Q012
+    question: Should figure generation be treated as a blocking deliverable before expert review?
+    required_expert: project owner
+    reason: No `results/figures/pic16_s1/` directory is present in the checkout, so current observations are table-derived only.
+    priority: medium

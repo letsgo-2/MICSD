@@ -1,0 +1,23 @@
+{
+  "$schema": "https://fallow.tools/schema.json",
+  "entry": [
+    "src/viewer/assets/viewer.js",
+    "scripts/copy-viewer-assets.mjs"
+  ],
+  "ignorePatterns": [
+    "docs/**",
+    "src/viewer/assets/index.html",
+    "src/viewer/assets/viewer.css"
+  ],
+  "ignoreExports": [
+    { "file": "src/utils/output.ts", "exports": ["getQuiet"] }
+  ],
+  "overrides": [
+    {
+      "files": ["src/providers/*.ts", "src/utils/provider-guard.ts"],
+      "rules": {
+        "unused-class-members": "off"
+      }
+    }
+  ]
+}

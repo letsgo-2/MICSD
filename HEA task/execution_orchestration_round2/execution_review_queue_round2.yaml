@@ -1,0 +1,101 @@
+review_items:
+  - issue_id: EO2-ISSUE-001
+    category: workflow
+    question: "Do you confirm that I should run the implemented AL workflow later, starting with the one-iteration API check?"
+    affected_ids: [WF-AL-R2, run_procedure_for_confirmation]
+    recommendation: "Confirm before any execution. Recommended first run: python run.py --iterations 1 --candidate-pool-size 2000 --output-dir outputs/api_check"
+    evidence_refs: [EO2-E003]
+    required_expert: project_owner
+    priority: critical
+    blocking: true
+    status: open
+  - issue_id: EO2-ISSUE-002
+    category: constraint
+    question: "Do all downstream files and human communications accept the AL fixed order [Pd, Pt, Cu, Au, Ir, Ce, Nb, Cr]?"
+    affected_ids: [M003, MODEL-CONSTRAINTS, MODEL-LLM-PROVIDER]
+    recommendation: "Use the AL order because it is implemented in README, METAL_ORDER, prompts, data loading, and output writing."
+    evidence_refs: [EO2-E003, EO2-E005, EO2-E007]
+    required_expert: materials_expert_and_computer_expert
+    priority: high
+    blocking: true
+    status: open
+  - issue_id: EO2-ISSUE-003
+    category: model
+    question: "Are the API credentials and model name ready in `.env`, and are API cost/rate limits acceptable for the first check run?"
+    affected_ids: [MODEL-LLM-PROVIDER, MODEL-LLM-COMMITTEE]
+    recommendation: "Run only the 1-iteration check first after credentials are confirmed. Default run uses about 31 API calls per iteration."
+    evidence_refs: [EO2-E003, EO2-E007]
+    required_expert: project_owner_or_computer_expert
+    priority: high
+    blocking: true
+    status: open
+  - issue_id: EO2-ISSUE-004
+    category: evidence
+    question: "May the current `power_density` values be used as the core target for the simulated AL path, despite unit/protocol uncertainty?"
+    affected_ids: [M001, MODEL-GBR-ORACLE]
+    recommendation: "Use them for simulated AL only; do not claim GBR outputs are real measurements."
+    evidence_refs: [EO2-E003, EO2-E006]
+    required_expert: materials_expert_and_experimental_expert
+    priority: high
+    blocking: false
+    status: open
+  - issue_id: EO2-ISSUE-005
+    category: threshold
+    question: "Should the implemented `performance_threshold = 200.0` remain active for this AL run?"
+    affected_ids: [M001, WF-AL-R2]
+    recommendation: "Keep for code compatibility unless experts choose a lower pilot threshold; note that local training range is 0.02709-75.45."
+    evidence_refs: [EO2-E004, EO2-E003]
+    required_expert: computer_expert_and_materials_expert
+    priority: medium
+    blocking: false
+    status: open
+  - issue_id: EO2-ISSUE-006
+    category: threshold
+    question: "Is the local normalized-cost price table acceptable as a provisional cost metric?"
+    affected_ids: [M005, MODEL-COST, RC2-004]
+    recommendation: "Use as provisional screening metric only; replace or certify before publication-level claims."
+    evidence_refs: [EO2-E005]
+    required_expert: cost_expert_or_project_owner
+    priority: medium
+    blocking: false
+    status: open
+  - issue_id: EO2-ISSUE-007
+    category: constraint
+    question: "Are additional element-specific content bounds needed beyond nonnegative fractions and sum-to-one normalization?"
+    affected_ids: [M004, MODEL-CONSTRAINTS]
+    recommendation: "Current AL code does not encode synthesis-specific min/max/resolution; provide bounds if needed before real experimental transfer."
+    evidence_refs: [EO2-E005]
+    required_expert: synthesis_expert
+    priority: medium
+    blocking: false
+    status: open
+  - issue_id: EO2-ISSUE-008
+    category: metric
+    question: "How should high-performance formulation stability be computed in post-processing?"
+    affected_ids: [M008, MODEL-POSTPROCESS-STABILITY]
+    recommendation: "Initial option: analyze `total_pool.csv`, `iteration_log.csv`, and `query_log.csv` for repeated high-power nearby compositions and global-best persistence; no code change made yet."
+    evidence_refs: [EO2-E008]
+    required_expert: materials_expert_and_computer_expert
+    priority: medium
+    blocking: false
+    status: open
+  - issue_id: EO2-ISSUE-009
+    category: workflow
+    question: "Should outputs be written to `outputs/api_check`, `outputs/full_run`, or a new timestamped directory to avoid overwriting existing files?"
+    affected_ids: [workflow.output_paths]
+    recommendation: "Use `outputs/api_check` for first run unless preserving previous API checks requires a timestamped path."
+    evidence_refs: [EO2-E003, EO2-E008]
+    required_expert: project_owner
+    priority: high
+    blocking: true
+    status: open
+  - issue_id: EO2-ISSUE-010
+    category: parameter
+    question: "Are the implemented run parameters acceptable: candidate_pool_size=20000, kdas_select_size=10, query_top_k=8, retain_top_k=3, committee_size=3, performance_weight=0.6?"
+    affected_ids: [PARAM2-001, PARAM2-002, PARAM2-003, WF-AL-R2]
+    recommendation: "Use README recommendation for first run: iterations=1 and candidate_pool_size=2000; keep other parameters unchanged unless experts request changes."
+    evidence_refs: [EO2-E003, EO2-E004]
+    required_expert: computer_expert
+    priority: medium
+    blocking: false
+    status: open

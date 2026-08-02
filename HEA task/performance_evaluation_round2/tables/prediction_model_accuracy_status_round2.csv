@@ -1,0 +1,2 @@
+item,status,reason,available_code_path
+prediction_model_accuracy,not_available_from_total_pool_csv,"total_pool.csv contains power_density and normalized_cost only; no prediction, ground-truth split, residual, query_log, or saved oracle metrics are present.","AL/catalyst_active_learning_runnable/catalyst_al/model.py can report test_r2, test_rmse, and test_mae when train_oracle is executed, but this evaluation did not train or run the model."

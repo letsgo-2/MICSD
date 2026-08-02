@@ -1,0 +1,537 @@
+project:
+  round: round2
+  output_language: English
+  project_goal: "Optimize elemental ratios of an eight-component Pd-Pt-Cu-Au-Ir-Ce-Nb-Cr high-entropy alloy electrocatalyst to improve peak power density while considering noble-metal material cost."
+  domain: "High-entropy alloy electrocatalysts for formate oxidation / direct formate fuel-cell performance."
+  round2_update_reason: "Domain experts confirmed Round 1 base knowledge and requested element role/synergy supplementation; computer experts requested clearer data representation, optimization indicators, constraints, calculation methods, ranges, and input/output forms."
+  primary_evidence:
+    - E001-R2
+  supporting_evidence:
+    - E002-R2
+    - E003-R2
+    - E004-R2
+    - E005-R2
+    - E006-R2
+
+concepts:
+  - concept_id: C001
+    name: Octonary Pd-Pt-Cu-Au-Ir-Ce-Nb-Cr electrocatalyst
+    definition: "Eight-element alloy catalyst composition space used for formate oxidation performance optimization."
+    synonyms: [octonary catalyst, HEA-8D, eight-component HEA catalyst]
+    parent_concept: high-entropy alloy electrocatalyst
+    ontology_source:
+      name: project local concept grounded in Zhang et al. 2025
+      iri_or_url: https://doi.org/10.1038/s41586-025-09640-5
+      version_or_access_date: 2026-07-30
+    mapping_status: local
+    evidence: [E001-R2]
+    expert_status: approved_base_pending_round2_details
+  - concept_id: C006
+    name: Eight-element composition vector
+    definition: "Fixed-order numeric vector [Pd, Pt, Cu, Au, Ir, Ce, Nb, Cr] with finite non-negative fractions normalized to sum to 1."
+    synonyms: [composition vector, elemental ratio vector, catalyst_ratio]
+    parent_concept: compositional data
+    ontology_source:
+      name: local AL code and CSV schema
+      iri_or_url: AL/catalyst_active_learning_runnable/catalyst_al/costs.py
+      version_or_access_date: 2026-07-30
+    mapping_status: local
+    evidence: [E002-R2]
+    expert_status: approved_for_computer_representation
+  - concept_id: C011
+    name: Element role profile
+    definition: "Round 2 per-element knowledge object recording catalytic role, possible synergy, cost role, and plausible content-effect direction."
+    synonyms: [element contribution profile, metal role profile]
+    parent_concept: catalyst design knowledge
+    ontology_source:
+      name: project local concept
+      iri_or_url: null
+      version_or_access_date: 2026-07-30
+    mapping_status: local
+    evidence: [E001-R2, E003-R2, E004-R2]
+    expert_status: pending
+  - concept_id: C012
+    name: Formula-design objective system
+    definition: "Separation of primary performance objective, secondary cost-specific objective, cost constraints, and composition feasibility constraints in catalyst formulation optimization."
+    synonyms: [optimization objective system]
+    parent_concept: optimization task definition
+    ontology_source:
+      name: project local concept
+      iri_or_url: null
+      version_or_access_date: 2026-07-30
+    mapping_status: local
+    evidence: [E001-R2, E002-R2]
+    expert_status: pending
+  - concept_id: C013
+    name: Virtual-oracle prediction
+    definition: "GBR or LLM-derived predicted performance used for candidate screening; not an experimental measurement."
+    synonyms: [surrogate prediction, model prediction]
+    parent_concept: computational estimate
+    ontology_source:
+      name: local AL README/model/pipeline
+      iri_or_url: AL/catalyst_active_learning_runnable/
+      version_or_access_date: 2026-07-30
+    mapping_status: local
+    evidence: [E002-R2]
+    expert_status: approved_as_non_experimental
+
+element_role_profiles:
+  - element: Pd
+    name: Palladium
+    atomic_number: 46
+    input_index: 0
+    identity_source: PubChem element record
+    primary_role: "Primary active element for formate oxidation; pure Pd benchmark."
+    possible_synergy: "Pd-Pt active backbone; coordination/electronic tuning by Cu/Ce/Nb/Cr alloying."
+    plausible_content_effect: "Increasing Pd from very low values is likely beneficial; excessive Pd may raise cost and reduce alloy-tuning benefit."
+    local_data_trend:
+      corr_with_power_density: 0.816935
+      top10_mean_fraction: 0.484445
+    cost_role: precious_metal_reference
+    evidence: [E001-R2, E003-R2, E004-R2]
+    confidence: medium_high
+    expert_status: pending
+  - element: Pt
+    name: Platinum
+    atomic_number: 78
+    input_index: 1
+    identity_source: PubChem element record
+    primary_role: "Primary active element for formate oxidation, investigated by in situ XAS."
+    possible_synergy: "Pd-Pt coordination and electronic interaction."
+    plausible_content_effect: "Moderate Pt appears favorable; optimize jointly with Pd and cost."
+    local_data_trend:
+      corr_with_power_density: 0.082803
+      top10_mean_fraction: 0.190515
+    cost_role: precious_metal
+    evidence: [E001-R2, E003-R2, E004-R2]
+    confidence: medium
+    expert_status: pending
+  - element: Cu
+    name: Copper
+    atomic_number: 29
+    input_index: 2
+    identity_source: PubChem element record
+    primary_role: "Secondary alloying and cost-reduction modifier."
+    possible_synergy: "Tailors coordination/electronic environment around Pd/Pt."
+    plausible_content_effect: "Likely low-level modifier; high Cu fractions are not supported by current top compositions."
+    local_data_trend:
+      corr_with_power_density: -0.16088
+      top10_mean_fraction: 0.0170066
+    cost_role: low_cost_base_metal
+    evidence: [E001-R2, E003-R2, E004-R2]
+    confidence: low_medium
+    expert_status: pending
+  - element: Au
+    name: Gold
+    atomic_number: 79
+    input_index: 3
+    identity_source: PubChem element record
+    primary_role: "Minor noble-metal additive with prior direct formate fuel-cell use."
+    possible_synergy: "May modify surface adsorption/electronic state with Pd/Pt."
+    plausible_content_effect: "Use sparingly unless predicted performance gain justifies high cost; paper cost-specific recipe uses Au 0.004."
+    local_data_trend:
+      corr_with_power_density: -0.230974
+      top10_mean_fraction: 0.0255
+    cost_role: very_high_cost_precious_metal
+    evidence: [E001-R2, E003-R2, E004-R2]
+    confidence: low_medium
+    expert_status: pending
+  - element: Ir
+    name: Iridium
+    atomic_number: 77
+    input_index: 4
+    identity_source: PubChem element record
+    primary_role: "Minor noble-metal additive with prior direct formate fuel-cell use."
+    possible_synergy: "Possible electronic/durability modifier in Pd/Pt alloy."
+    plausible_content_effect: "Likely low-level modifier; paper optimized recipes use Ir about 0.020-0.037."
+    local_data_trend:
+      corr_with_power_density: -0.387481
+      top10_mean_fraction: 0.0290984
+    cost_role: high_cost_platinum_group_metal
+    evidence: [E001-R2, E003-R2, E004-R2]
+    confidence: low_medium
+    expert_status: pending
+  - element: Ce
+    name: Cerium
+    atomic_number: 58
+    input_index: 5
+    identity_source: PubChem element record
+    primary_role: "Secondary alloying and cost-reduction modifier."
+    possible_synergy: "May tailor coordination environment and contribute to alloy complexity."
+    plausible_content_effect: "Moderate Ce near 0.09-0.11 appears in paper/local top rows; high Ce-only or Pd-poor use is not supported."
+    local_data_trend:
+      corr_with_power_density: -0.326347
+      top10_mean_fraction: 0.105816
+    cost_role: low_cost_rare_earth_context
+    evidence: [E001-R2, E003-R2, E004-R2, E005-R2]
+    confidence: medium_low
+    expert_status: pending
+  - element: Nb
+    name: Niobium
+    atomic_number: 41
+    input_index: 6
+    identity_source: PubChem element record
+    primary_role: "Secondary alloying and cost-reduction modifier; high fraction in cost-specific optimized recipe."
+    possible_synergy: "May tune coordination while replacing noble-metal fraction."
+    plausible_content_effect: "Moderate Nb appears compatible with high power; higher Nb supports cost-specific performance in paper but excess without Pd/Pt is poor."
+    local_data_trend:
+      corr_with_power_density: 0.0733192
+      top10_mean_fraction: 0.147619
+    cost_role: low_cost_modifier
+    evidence: [E001-R2, E003-R2, E004-R2]
+    confidence: medium
+    expert_status: pending
+  - element: Cr
+    name: Chromium
+    atomic_number: 24
+    input_index: 7
+    identity_source: PubChem element record
+    primary_role: "Secondary alloying and cost-reduction modifier."
+    possible_synergy: "May contribute to alloy complexity and coordination tuning; isolated role not proven."
+    plausible_content_effect: "Optional low-level modifier; local top-10 mean is 0 but paper cost-specific recipe uses Cr 0.082."
+    local_data_trend:
+      corr_with_power_density: -0.28385
+      top10_mean_fraction: 0.0
+    cost_role: low_cost_base_metal
+    evidence: [E001-R2, E003-R2, E004-R2]
+    confidence: low_medium
+    expert_status: pending
+
+indicators:
+  - indicator_id: I001
+    name: Peak / maximum power density
+    definition: "Maximum fuel-cell power density or expert-approved proxy ranking from current-potential data."
+    unit: "W cm^-2_geo in paper figure; local CSV unit pending"
+    conditions: [direct formate fuel-cell protocol, proxy protocol must be flagged]
+    audience: shared
+    obtainable_by: [measure, machine_learn]
+    optimization_role: primary_objective
+    optimization_direction: maximize
+    importance: 5
+    computability: 4
+    data_readiness: 4
+    priority: P0
+    calculation_method: "Measured from polarization curve; local model target column is power_density."
+    reasonable_range_round2: "Local virtual-oracle sample: 0.02709 to 75.45; use unit only after expert certification."
+    data_source: [primary_paper, local_csv]
+    expert_status: pending_unit_protocol
+  - indicator_id: I002
+    name: Cost-specific performance
+    definition: "Power density normalized by catalyst material cost."
+    unit: relative or normalized index
+    conditions: [certified cost formula, benchmark specified]
+    audience: shared
+    obtainable_by: [derive, machine_learn]
+    optimization_role: secondary_objective
+    optimization_direction: maximize
+    importance: 5
+    computability: 4
+    data_readiness: 3
+    priority: P0
+    calculation_method: "power_density / catalyst_cost_index or paper-certified cost-normalized metric."
+    reasonable_range_round2: "Target should exceed pure Pd benchmark; primary paper reports 9.3x cost-specific improvement."
+    data_source: [primary_paper, local_cost_formula]
+    expert_status: pending_cost_formula
+  - indicator_id: I003
+    name: Normalized catalyst cost
+    definition: "Local weighted cost index normalized to Pd price times 100."
+    unit: dimensionless index
+    conditions: [fixed price table, normalized composition]
+    audience: computer_expert
+    obtainable_by: [derive]
+    optimization_role: constraint
+    optimization_direction: minimize
+    importance: 4
+    computability: 5
+    data_readiness: 3
+    priority: P1
+    calculation_method: "dot([Pd,Pt,Cu,Au,Ir,Ce,Nb,Cr], [26393,20325,4.53,29298,23926,5.37,32.22,5.86]) / 26393 * 100"
+    reasonable_range_round2: "Use pure Pd = 100 as local reference; impose upper bound only after cost expert certification."
+    data_source: [local_costs_py, USGS_cost_context]
+    expert_status: pending_price_basis
+  - indicator_id: I015
+    name: Precious-metal fraction
+    definition: "Sum of Pd, Pt, Au, and Ir fractions."
+    unit: fraction
+    conditions: [normalized composition]
+    audience: computer_expert
+    obtainable_by: [derive]
+    optimization_role: constraint
+    optimization_direction: minimize subject to performance
+    importance: 4
+    computability: 5
+    data_readiness: 5
+    priority: P1
+    calculation_method: "Pd + Pt + Au + Ir"
+    reasonable_range_round2: "Local top-10 mean about 0.7296; paper cost-specific recipe about 0.505. Treat as soft cost lever, not hard threshold."
+    data_source: [local_csv_audit, primary_paper]
+    expert_status: pending_threshold
+  - indicator_id: I017
+    name: Low-cost modifier fraction
+    definition: "Sum of Cu, Ce, Nb, and Cr fractions."
+    unit: fraction
+    conditions: [normalized composition]
+    audience: computer_expert
+    obtainable_by: [derive]
+    optimization_role: diagnostic
+    optimization_direction: context_dependent
+    importance: 3
+    computability: 5
+    data_readiness: 5
+    priority: P2
+    calculation_method: "Cu + Ce + Nb + Cr"
+    reasonable_range_round2: "Local top-10 mean about 0.2704; paper cost-specific recipe about 0.515."
+    data_source: [local_csv_audit, primary_paper]
+    expert_status: pending
+  - indicator_id: I018
+    name: Simplex validity
+    definition: "Whether a candidate is finite, non-negative, length 8, and sums to 1."
+    unit: boolean
+    conditions: [candidate generation, data ingestion]
+    audience: computer_expert
+    obtainable_by: [derive]
+    optimization_role: constraint
+    optimization_direction: target_range
+    importance: 5
+    computability: 5
+    data_readiness: 5
+    priority: P0
+    calculation_method: "len(x)=8 and all finite and all x_i >= 0 and abs(sum(x)-1)<=tolerance."
+    reasonable_range_round2: "Tolerance <= 1e-6 after normalization; raw rows may be normalized if sum > 0."
+    data_source: [local_data_py, local_costs_py]
+    expert_status: approved_for_computer_representation
+  - indicator_id: I019
+    name: Element-wise synthesis bounds validity
+    definition: "Whether every element fraction lies inside expert-certified synthesis bounds."
+    unit: boolean
+    conditions: [robotic synthesis or constrained candidate generation]
+    audience: computer_expert
+    obtainable_by: [derive, expert_only]
+    optimization_role: constraint
+    optimization_direction: target_range
+    importance: 5
+    computability: 4
+    data_readiness: 2
+    priority: P1
+    calculation_method: "lower_i <= x_i <= upper_i for each element."
+    reasonable_range_round2: "Provisional computational range 0 to 1 for each element; experimental bounds pending."
+    data_source: [local_code, expert_review_needed]
+    expert_status: pending_synthesis_bounds
+  - indicator_id: I020
+    name: UCB acquisition score
+    definition: "Candidate screening score using predicted mean plus exploration-weighted uncertainty."
+    unit: model score
+    conditions: [within-batch ranking only]
+    audience: computer_expert
+    obtainable_by: [machine_learn]
+    optimization_role: diagnostic
+    optimization_direction: maximize
+    importance: 3
+    computability: 5
+    data_readiness: 4
+    priority: P2
+    calculation_method: "llm_mean + ucb_exploration_weight * llm_std; local config weight = 1.0."
+    reasonable_range_round2: "Relative within candidate batch, not globally calibrated."
+    data_source: [local_pipeline_py, local_config_json]
+    expert_status: pending
+  - indicator_id: I021
+    name: Final retained score
+    definition: "Batch-local selection score balancing normalized power and normalized cost."
+    unit: model score
+    conditions: [queried batch only]
+    audience: computer_expert
+    obtainable_by: [derive]
+    optimization_role: diagnostic
+    optimization_direction: maximize
+    importance: 3
+    computability: 5
+    data_readiness: 4
+    priority: P2
+    calculation_method: "performance_weight * normalized_power - (1-performance_weight) * normalized_cost; local performance_weight = 0.6."
+    reasonable_range_round2: "Relative within queried batch."
+    data_source: [local_pipeline_py, local_config_json]
+    expert_status: pending
+
+data_contract:
+  canonical_element_order: [Pd, Pt, Cu, Au, Ir, Ce, Nb, Cr]
+  numeric_format: float64
+  canonical_input_columns: [Pd, Pt, Cu, Au, Ir, Ce, Nb, Cr]
+  supervised_training_columns: [Pd, Pt, Cu, Au, Ir, Ce, Nb, Cr, power_density]
+  optional_evaluation_columns: [normalized_cost, precious_metal_fraction, low_cost_modifier_fraction, llm_mean, llm_std, ucb_score, final_score]
+  hard_constraints:
+    - all_values_finite
+    - all_values_non_negative
+    - sum_equals_1
+    - row_length_equals_8
+  provisional_bounds:
+    Pd: [0.0, 1.0]
+    Pt: [0.0, 1.0]
+    Cu: [0.0, 1.0]
+    Au: [0.0, 1.0]
+    Ir: [0.0, 1.0]
+    Ce: [0.0, 1.0]
+    Nb: [0.0, 1.0]
+    Cr: [0.0, 1.0]
+  local_dataset_audit:
+    initial_examples:
+      rows: 10
+      power_density_min: 0.545
+      power_density_max: 39.61
+    oracle_training_sample:
+      rows: 120
+      power_density_min: 0.02709
+      power_density_max: 75.45
+      top_row:
+        Pd: 0.486513
+        Pt: 0.184815
+        Cu: 0.017982
+        Au: 0.0
+        Ir: 0.036963
+        Ce: 0.105894
+        Nb: 0.167832
+        Cr: 0.0
+        power_density: 75.45
+      top10_mean_composition:
+        Pd: 0.484445
+        Pt: 0.190515
+        Cu: 0.0170066
+        Au: 0.0255
+        Ir: 0.0290984
+        Ce: 0.105816
+        Nb: 0.147619
+        Cr: 0.0
+  output_files_from_local_pipeline:
+    - total_pool.csv
+    - iteration_log.csv
+    - query_log.csv
+    - generated_ratios.csv
+  non_merge_rules:
+    - "Do not merge three-electrode potential with fuel-cell voltage without explicit mapping."
+    - "Do not treat virtual-oracle or LLM predictions as experimental measurements."
+    - "Do not treat simple composition correlations as causal element-content effects."
+
+optimization_targets:
+  primary: [I001]
+  secondary: [I002]
+  constraints: [I003, I018, I019]
+  intermediate: [I008, I009, I011]
+  diagnostic: [I015, I017, I020, I021]
+  not_ready: [I019_without_synthesis_bounds, I012_poisoning_tolerance_scalar]
+
+claims:
+  - claim_id: K001-R2
+    subject: Pd-Pt-Cu-Au-Ir-Ce-Nb-Cr composition optimization
+    relation: increases
+    object: peak power density and cost-specific performance
+    claim_type: causal
+    conditions: [primary_paper_CRESt_experiments, pure_Pd_benchmark]
+    evidence: [E001-R2]
+    confidence: high_for_reported_recipes_medium_for_generalization
+    expert_status: pending_round2_details
+  - claim_id: K009-R2
+    subject: Pd and Pt
+    relation: promotes
+    object: formate oxidation active-site performance
+    claim_type: mechanism
+    conditions: [octonary_HEA_context]
+    evidence: [E001-R2]
+    confidence: medium_high
+    expert_status: pending
+  - claim_id: K010-R2
+    subject: Cu Ce Nb Cr
+    relation: promotes
+    object: coordination-environment tuning and cost reduction
+    claim_type: hypothesis
+    conditions: [alloying_with_primary_elements]
+    evidence: [E001-R2]
+    confidence: medium
+    expert_status: pending
+  - claim_id: K011-R2
+    subject: local composition correlations
+    relation: correlates_with
+    object: local power_density
+    claim_type: correlation
+    conditions: [oracle_training_sample_csv, compositional_data_constraint]
+    evidence: [E003-R2]
+    confidence: low_for_causality_medium_for_descriptive_trend
+    expert_status: pending
+
+evidence:
+  - evidence_id: E001-R2
+    source_type: paper
+    source_name: Zhang et al. 2025 Nature
+    identifier_or_url: https://doi.org/10.1038/s41586-025-09640-5
+    location: "literature_markdown/26_Zhang_2025... lines 11, 395, 397-399, 531-543, 693-701"
+    content_summary: "Primary evidence for octonary system, maximum power-density target, optimized compositions, testing conditions, element roles, single FCC phase, metallic Pd/Pt states, and poisoning/barrier mechanism."
+    evidence_use: relationship
+    quality: high
+  - evidence_id: E002-R2
+    source_type: calculation_report
+    source_name: Local AL code/data package
+    identifier_or_url: AL/catalyst_active_learning_runnable/
+    location: "data/README.md, data.py, costs.py, pipeline.py, model.py, config.json"
+    content_summary: "Defines CSV columns, fixed metal order, normalization, cost formula, virtual-oracle training status, and output logs."
+    evidence_use: method
+    quality: high
+  - evidence_id: E003-R2
+    source_type: calculation_report
+    source_name: Local CSV audit computed in Round 2
+    identifier_or_url: AL/catalyst_active_learning_runnable/data/oracle_training_sample.csv
+    location: "computed audit in this run"
+    content_summary: "120 rows; power_density 0.02709 to 75.45; top row and top-10 mean compositions; simple correlations with target."
+    evidence_use: diagnostic
+    quality: medium
+  - evidence_id: E004-R2
+    source_type: database
+    source_name: PubChem element PUG-View records
+    identifier_or_url: "https://pubchem.ncbi.nlm.nih.gov/rest/pug_view/data/element/{atomic_number}/JSON"
+    location: "atomic numbers 46, 78, 29, 79, 77, 58, 41, 24 fetched 2026-07-30"
+    content_summary: "Authoritative element identity records for Pd, Pt, Cu, Au, Ir, Ce, Nb, and Cr."
+    evidence_use: definition
+    quality: high
+  - evidence_id: E005-R2
+    source_type: database
+    source_name: USGS mineral information pages
+    identifier_or_url: "https://www.usgs.gov/centers/national-minerals-information-center/"
+    location: "platinum-group metals, copper, rare earths pages fetched 2026-07-30"
+    content_summary: "Official cost/supply context source category; exact full eight-element price table still requires certification."
+    evidence_use: condition
+    quality: medium
+  - evidence_id: E006-R2
+    source_type: ontology
+    source_name: IUPAC Gold Book / EMMO ECHO
+    identifier_or_url: "IUPAC Gold Book catalyst/electrode reaction/electron transfer; EMMO Domain Electrochemistry Ontology"
+    location: Round 1 web fetches
+    content_summary: "Terminology grounding for catalyst, electrode reaction, and electrochemical concepts."
+    evidence_use: definition
+    quality: high
+
+expert_reviews:
+  - review_id: R006-R2
+    object_id: element_role_profiles
+    expert_discipline: materials/electrocatalysis
+    action: request_more_evidence
+    comment: "Confirm or revise per-element content-effect hypotheses and synergy descriptions before using them as optimization priors."
+    status_after_review: pending
+    date: null
+  - review_id: R007-R2
+    object_id: I019
+    expert_discipline: experimental synthesis
+    action: request_more_evidence
+    comment: "Provide real synthesis min/max/resolution bounds for each element."
+    status_after_review: pending
+    date: null
+  - review_id: R008-R2
+    object_id: I003
+    expert_discipline: cost/project owner
+    action: request_more_evidence
+    comment: "Certify whether local price table is acceptable or replace with dated procurement/USGS/market values."
+    status_after_review: pending
+    date: null
+  - review_id: R009-R2
+    object_id: I001
+    expert_discipline: experimental electrochemistry
+    action: request_more_evidence
+    comment: "Confirm power_density unit/protocol and whether proxy and direct fuel-cell targets may be merged."
+    status_after_review: pending
+    date: null
