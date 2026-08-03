@@ -1,0 +1,33 @@
+Knowledge Alignment Agent:
+Round 1 Dialogue
+Please run the Scientific Knowledge Alignment Skill. The experimental objective is to develop candidate molecules with improved photosensitizing performance, using the papers I uploaded as the primary evidence. Extract concepts, metrics, experimental conditions, and structure-performance relationships from the papers. For important terms whose definitions are unclear, search authoritative ontologies or standardized terminology online. Generate separate domain-expert and computer-expert views. For each candidate metric, label its optimization role, optimization direction, importance, computability, data readiness, and priority. Do not resolve uncertain content on your own; place it in the expert-validation checklist.
+
+Round 2 Dialogue
+The domain expert states that the current knowledge is essentially correct, but an analysis of advantageous photosensitizer scaffolds and their characteristics should be added. In addition, most current metrics require biological experiments, so the computer expert should be provided with metrics that can be calculated numerically using DFT, together with their meanings. The computer expert states that the current description of metric computability is insufficiently clear and needs to identify the performance metrics that can genuinely be used in an iterative optimization framework, their calculation methods, and threshold information for designing rewards from selected performance metrics. Next, update and confirm the knowledge-alignment report according to the domain expert's requirements, using evidence from the papers and authoritative online sources. Produce clearer supplements to the domain-expert view and the computer-expert optimization metrics.
+
+
+
+Execution Orchestration Agent:
+Round 1 Dialogue
+Please run the Execution Orchestration Skill. Based on the three output files from the knowledge-alignment stage, design a task-execution workflow. Provide necessary recommendations, especially recommendations for metric ranking and corresponding threshold guidance, preferably supported by evidence. The materials expert provides the following information: molecules are generally represented using SMILES, RECAP is used as the molecular fragmentation rule, and porphyrin is a commonly used scaffold. The computer expert intends to construct a reinforcement-learning framework for molecular-generation optimization. Add the suffix `round1` to the output filenames.
+
+Round 2 Dialogue
+The materials scientist requests an updated priority ranking for the following metrics: SOCME, HOMO–LUMO gap, E(S1)−E(T1), E(S1), charge, symmetry, SA, logP, TPSA, and molecular weight (MW). Update the output files and add the suffix `round2`.
+
+Round 3 Dialogue (clone https://github.com/letsgo-2/SDPD.git into the project folder)
+The computer scientist ultimately selects E(S1)−E(T1), charge, and symmetry as the three metrics. The training framework's metric-configuration files, predictive-model execution paths, and other parameters can be obtained from `SDPD/AGENT_INTERFACE.md`. Inspect and update the model information and interfaces independently, improve the workflow, and report the proposed execution procedure to me for confirmation. Do not run it without authorization. Clearly specify all output paths. Update the previous round's output files and add the suffix `round3`.
+
+
+
+
+Performance Evaluation Agent:
+Round 1 Dialogue
+Please run the Performance Evaluation Skill. Performance analysis and statistics are now required for the generated photosensitizer molecules and the model. Based on the previous stage's output files and the `SDPD` directory in the project, establish a workflow and provide the necessary tool parameters and plotting-script plan. The computer expert has provided a runtime environment with a Slurm cluster. The materials expert requests the use of RDKit and ORCA for DFT calculations and statistical analysis. Add the suffix `round1` to the output filenames.
+
+Round 2 Dialogue (clone https://github.com/letsgo-2/meloculardftcal.git)
+The evaluation-pipeline scripts have been constructed according to the planned workflow, and the entire workflow has been executed in the `meloculardftcal` folder. Its `AGENT_INTERFACE.md` records the basic configuration. Inspect it and update the relevant toolchain, parameters, and other information in the output files. In addition, provide recommendations for the next optimization step based on the various analysis results. Add the suffix `round2` to the output filenames.
+
+Round 3 Dialogue
+The materials scientist recommends adding a synthesizability constraint. Please update the output files and add the suffix `round3`.
+
+Reference to core optimization methods
