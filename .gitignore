@@ -9,3 +9,8 @@
 !/PSs Generation task/SDPD/.gitkeep
 /PSs Generation task/meloculardftcal/**
 !/PSs Generation task/meloculardftcal/.gitkeep
+
+# Never commit local environment files or API credentials.
+**/.env
+/PSs Generation task/ka-wiki/compile_ka_wiki.ps1
+/PSs Generation task/ka-wiki/compile_ka_wiki_review.ps1

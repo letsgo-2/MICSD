@@ -1,0 +1,71 @@
+review_items:
+  - object_id: PROJECT.application_context
+    question: "最终应用场景是肿瘤 PDT、光焦亡免疫治疗、抗菌 PDT，还是更一般的光敏材料筛选？不同场景会改变主目标和约束权重。"
+    required_expert: "材料/应用领域专家"
+    reason: "当前论文证据覆盖多个应用域，不能自动合并成单一优化任务。"
+    priority: high
+  - object_id: I001
+    question: "光毒性主指标应采用细胞 IC50/EC50、抗菌 MIC、肿瘤抑制率，还是按应用场景拆分多个目标？"
+    required_expert: "材料专家 + 实验专家 + 计算机专家"
+    reason: "不同 assay 的数值不可直接比较，跨论文条件差异很大。"
+    priority: high
+  - object_id: I003
+    question: "是否将 TC50/IC50 或 dark IC50/light IC50 作为统一的主目标？需要确认同一细胞系、同一条件下配对计算。"
+    required_expert: "实验专家"
+    reason: "该指标很有用，但跨细胞系、跨光照条件会造成虚高或不可比。"
+    priority: high
+  - object_id: I004
+    question: "单线态氧量子产率是否作为主优化目标还是诊断指标？对于 Type-I 或低氧目标，它可能不是主导机制。"
+    required_expert: "材料/光化学专家"
+    reason: "证据中既有 type-II singlet oxygen 主导体系，也有 type-I/hypoxia-active 体系。"
+    priority: high
+  - object_id: I005
+    question: "Type-I ROS 生成能力应如何标准化？采用 EPR、DHE/HPF/DCFH-DA、清除剂实验，还是多指标组合？"
+    required_expert: "光化学专家 + 实验专家"
+    reason: "ROS 探针特异性有限，不同论文报告方式不同。"
+    priority: high
+  - object_id: I006
+    question: "是否把低氧保留光毒性设为 P0？若目标是实体瘤低氧 PDT，应升为硬主目标。"
+    required_expert: "材料/肿瘤应用专家"
+    reason: "当前项目目标只写“更高光敏性能”，没有明确是否优先低氧场景。"
+    priority: high
+  - object_id: I007
+    question: "治疗窗口目标范围应设为红光、近红外，还是由实际设备决定？是否要求 extinction coefficient 下限？"
+    required_expert: "材料专家 + 实验平台负责人"
+    reason: "论文中波长从 425/520/525/570/640 nm 到白光 LED 不等，不能自动统一。"
+    priority: high
+  - object_id: I008
+    question: "聚集行为应优化为非聚集，还是允许 AIE/自组装型聚集？请按分子类别区分规则。"
+    required_expert: "材料/光物理专家"
+    reason: "化合物 5 证据支持非聚集，D1/TBD 系列证据支持生产性聚集或 AIE。"
+    priority: high
+  - object_id: I010
+    question: "目标亚细胞定位是线粒体、细胞膜、溶酶体、肿瘤膜/CAIX，还是按机制多路线保留？"
+    required_expert: "材料专家 + 生物机制专家"
+    reason: "不同定位对应不同死亡机制、ROS 半径、实验读出和结构规则。"
+    priority: medium
+  - object_id: I011
+    question: "阳离子强度/脂溶性是否作为可计算设计变量？需要确认毒性、膜破坏和组织分布的上限约束。"
+    required_expert: "材料专家 + 计算专家"
+    reason: "阳离子和脂溶性有利定位，但可能增加暗毒性或非特异结合。"
+    priority: medium
+  - object_id: I012
+    question: "光热转换效率是否进入优化目标？仅当目标包含 PDT/PTT 协同时建议保留。"
+    required_expert: "材料专家"
+    reason: "D1 证据强，但并非所有高光敏分子都需要光热效应。"
+    priority: medium
+  - object_id: I013
+    question: "是否把 photopyroptosis efficiency 作为终端性能，还是仅作为免疫治疗场景的机制指标？"
+    required_expert: "材料专家 + 免疫/细胞死亡专家"
+    reason: "焦亡有免疫激活价值，但也可能与单纯 cytotoxicity 或安全性产生权衡。"
+    priority: high
+  - object_id: K005
+    question: "CA-Re 的 hypoxia-active 机制是否应概括为 type-I 主导、mixed type-I/type-II，还是 membrane-localized lipid peroxidation 主导？"
+    required_expert: "光化学专家"
+    reason: "wiki 证据显示 singlet oxygen/hydroxyl radical较小而 superoxide/peroxynitrite/lipid peroxidation 更强，需要专家确认机制表述。"
+    priority: medium
+  - object_id: DATA.comparability
+    question: "是否需要建立统一数据表，将分子、细胞/菌株、光照条件、氧条件、浓度、时间和 assay 拆成 long-format records？"
+    required_expert: "计算机专家 + 实验专家"
+    reason: "进入建模前必须避免把不同条件下的 IC50/MIC/PI 直接混为同一标签。"
+    priority: high

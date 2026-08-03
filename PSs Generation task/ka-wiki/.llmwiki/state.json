@@ -1,0 +1,605 @@
+{
+  "version": 1,
+  "indexHash": "",
+  "sources": {
+    "2022-su-caix-anchored-rhenium-photosensitizer-evokes-pyroptosis-si.md": {
+      "hash": "8d80ed3e0044d6cb47b854f3b65f1104be1e67b6dbd388589f1d1fa6383fad5e",
+      "concepts": [
+        "abscopal-anti-tumor-immunity-in-a-bilateral-4t1-mouse-model",
+        "caix-anchoring-through-sulfonamide-based-carbonic-anhydrase-inhibition",
+        "ca-re-carbonic-anhydrase-anchored-rheniumi-photosensitizer",
+        "dual-reactive-oxygen-species-photogeneration-by-ca-re",
+        "pyroptosis-associated-and-immunogenic-cell-death-signaling-induced-by-photoactivated-ca-re",
+        "solvent-dependent-excited-state-behavior-of-ca-re"
+      ],
+      "compiledAt": "2026-07-17T06:16:08.205Z"
+    },
+    "2021-chen-gadolinium-porphyrin-polymer-nanotheranostics-for-imaging-guided-pdt-si.md": {
+      "hash": "61929e9f7d18981bee218e0c97e320c086297de975b52b3a5c960a3f723da055",
+      "concepts": [
+        "biocompatibility-and-toxicity-evaluation-workflow-for-gd-pnps",
+        "gadolinium-porphyrin-polymer-nanotheranostics-gd-pnps",
+        "gd3-leakage-and-serum-stability-of-gd-pnps",
+        "gd-tcpp-chelation-chemistry",
+        "mri-tumor-signal-time-course-comparison-with-gadobutrol",
+        "singlet-oxygen-detection-via-imidazole-rno-bleaching-assay",
+        "supramolecular-nanoparticle-synthesis-optimization"
+      ],
+      "compiledAt": "2026-07-17T06:16:10.182Z"
+    },
+    "a-bibliometric-analysis-of-pyroptosis-from-2001-to-2021.md": {
+      "hash": "3fb295f18941f4c3d91594cb4840c39c83ff6373119b6e8e8dfa709b82d172fb",
+      "concepts": [
+        "canonical-and-noncanonical-inflammasome-pathways-in-pyroptosis",
+        "crosstalk-between-pyroptosis-and-other-programmed-cell-death-pathways",
+        "gasdermin-d-as-the-executor-of-pyroptosis",
+        "nlrp3-inflammasome-as-a-central-research-hotspot-in-pyroptosis",
+        "pyroptosis-as-an-inflammatory-programmed-cell-death",
+        "pyroptosis-in-disease-pathogenesis-and-therapy",
+        "rapid-growth-and-global-concentration-of-pyroptosis-research-from-2001-to-2021"
+      ],
+      "compiledAt": "2026-07-17T06:16:02.166Z"
+    },
+    "2021-li-photodynamic-therapy-induces-esophageal-carcinoma-pyroptosis-via-pkm2-caspase-gsdme.md": {
+      "hash": "ab1efde042267c2fb95a2323579fadd1537ce9dfc63eba5000a7430df3dd3e5a",
+      "concepts": [
+        "caspase-8-acts-upstream-of-caspase-3-in-pdt-induced-pyroptosis",
+        "glycolysis-inhibition-with-2-dg-reduces-pyroptosis-while-enhancing-pdt-cytotoxicity",
+        "gsdme-dependent-rather-than-gsdmd-dependent-pyroptosis-in-pdt-treated-escc",
+        "gsdme-overexpression-in-esophageal-squamous-cell-carcinoma",
+        "photodynamic-therapy-induces-gsdme-mediated-pyroptosis-in-esophageal-squamous-cell-carcinoma",
+        "pkm2caspase-8caspase-3gsdme-signaling-axis",
+        "pkm2-overexpression-suppresses-pdt-induced-pyroptosis"
+      ],
+      "compiledAt": "2026-07-17T06:15:52.547Z"
+    },
+    "2021-wu-activation-of-pyroptosis-by-membrane-anchoring-aie-photosensitizer-si.md": {
+      "hash": "eff1f6dff63d35f2c010b228868e09da57bda22e3ae9799375567b46017a5fd7",
+      "concepts": [
+        "discrimination-between-pyroptosis-and-apoptosis-by-annexin-vpi-flow-cytometry",
+        "gasdermin-d-and-caspase-1-signaling-as-pyroptosis-markers",
+        "membrane-anchoring-aie-photosensitizers-for-photodynamic-therapy",
+        "membrane-localization-correlates-with-pyroptotic-morphology-after-irradiation",
+        "pyroptosis-assessment-using-ldh-il-18-and-il-1β-release",
+        "ros-generation-measured-by-abda-photobleaching-assay",
+        "tbd-1c-tbd-2c-and-tbd-3c-as-a-comparative-photosensitizer-series"
+      ],
+      "compiledAt": "2026-07-17T06:16:12.106Z"
+    },
+    "aesculin-suppresses-the-nlrp3-inflammasome-mediated-pyroptosis-via-the-aktgsk3ampx03b2nf-ampx03bab-pathway-to-mitigate-myocardial-ischemiareperfusion-injury.md": {
+      "hash": "61de4ee41eb7b9edbb49b39a0022e7ea9016ffb263b8487b0577e724e098c841",
+      "concepts": [
+        "aesculin-mitigates-myocardial-ischemiareperfusion-injury",
+        "aesculin-suppresses-nlrp3-inflammasome-activation-and-downstream-pyroptosis",
+        "aktgsk3βnf-κb-signaling-mediates-aesculins-anti-pyroptotic-effect",
+        "mk-2206-reverses-aesculin-mediated-cardiomyocyte-protection",
+        "nlrp3-inflammasome-mediated-pyroptosis-in-myocardial-ischemiareperfusion-injury",
+        "rat-miri-and-neonatal-cardiomyocyte-ogdr-as-a-paired-validation-model-for-aesculin"
+      ],
+      "compiledAt": "2026-07-17T07:44:28.930Z"
+    },
+    "a-bioorthogonal-system-reveals-antitumour-immune-function-of-pyroptosis.md": {
+      "hash": "38cd3b265a3c8c6359a00bbd0f8c41c611c55c83438a2251bb85e4a26e63f886",
+      "concepts": [
+        "bioorthogonal-activation-of-nanoparticle-conjugated-gsdma3-induces-pyroptosis",
+        "limited-pyroptosis-fraction-can-eradicate-whole-4t1-tumours",
+        "phe-bf3-triggered-desilylation-as-an-in-vivo-bioorthogonal-release-system",
+        "pyroptosis-converts-cold-4t1-tumours-to-anti-pd1-responsive-tumours",
+        "pyroptosis-driven-tumour-clearance-depends-on-adaptive-t-cell-immunity",
+        "pyroptosis-remodels-the-tumour-microenvironment-toward-an-inflamed-antitumour-state",
+        "tes-silyl-ether-as-the-optimized-linker-for-phe-bf3-mediated-uncaging",
+        "tumour-selective-nanoparticle-protein-release-via-overlapping-np-and-phe-bf3-biodistribution"
+      ],
+      "compiledAt": "2026-07-17T07:45:29.566Z"
+    },
+    "a-carbonic-anhydrase-ix-caixanchored-rheniumi-photosensitizer-evokes-pyroptosis-for-enhanced-antitumor-immunity.md": {
+      "hash": "a2e5c976c209d5044bdf34d1f52651741d7964b67c2c27d586537b0d79e63340",
+      "concepts": [
+        "ca-re-as-the-first-metal-complex-based-pyroptosis-inducer",
+        "ca-re-driven-immunogenic-cell-death-hallmarks",
+        "dendritic-cell-maturation-and-t-cell-activation-downstream-of-ca-re-pdt",
+        "hypoxia-active-photodynamic-efficacy-of-ca-re",
+        "membrane-rupture-self-reporting-by-caix-anchored-ca-re",
+        "superoxide-and-lipid-peroxidation-dominate-ca-re-phototoxicity"
+      ],
+      "compiledAt": "2026-07-17T07:44:48.818Z"
+    },
+    "activation-of-pyroptosis-by-membraneanchoring-aie-photosensitizer-design-new-prospect-for-photodynamic-cancer-cell-ablation.md": {
+      "hash": "8cbff9f42a7fef1c2b313b12d54a57af7879ba0eef370c6a9fc5f64c3e40191b",
+      "concepts": [
+        "cationic-chain-dependent-membrane-anchoring-in-tbd-r-photosensitizers",
+        "membrane-localized-ros-drives-direct-plasma-membrane-photodamage",
+        "photoactivated-pyroptosis-as-a-noninvasive-alternative-to-chemotherapy-induced-pyroptosis",
+        "pyroptosis-dominance-increases-with-membrane-anchoring-strength-during-pdt",
+        "tbd-3c-as-the-lead-membrane-anchoring-aie-photosensitizer",
+        "tbd-r-series-as-donor-acceptor-aie-photosensitizers-with-strong-aggregate-state-ros-activity"
+      ],
+      "compiledAt": "2026-07-17T07:45:08.922Z"
+    },
+    "a-general-molecular-structural-design-for-highly-efficient-photopyroptosis-that-can-be-activated-within-10-s-irradiation.md": {
+      "hash": "9db6557f038c59308973564066f6e4bff0a5f495c2487996354145e1b7b56f32",
+      "concepts": [
+        "compound-1d-as-a-red-light-photopyroptosis-lead-photosensitizer",
+        "dual-inner-and-outer-mitochondrial-membrane-targeting-via-strong-electrostatic-interactions",
+        "general-cation-clamping-structural-design-for-efficient-photopyroptosis-photosensitizers",
+        "photopyroptosis-driven-antitumor-immunity-without-added-immunoadjuvants",
+        "ros-caspase-3-gsdme-pathway-in-mitochondrial-targeted-photopyroptosis",
+        "ultra-rapid-photopyroptosis-triggered-within-10-seconds-at-low-light-dose"
+      ],
+      "compiledAt": "2026-07-17T07:45:40.204Z"
+    },
+    "apaf-1-pyroptosome-senses-mitochondrial-permeability-transition.md": {
+      "hash": "ff5778b0f3c8cac692c2e8c6fd5ec6e1a6f7d9eb19533a026e49fa32b9feb83e",
+      "concepts": [
+        "ant1-facilitated-mitochondrial-permeability-transition-in-bile-acid-and-lonidamine-pyroptosis",
+        "apaf-1caspase-4-pyroptosome-stoichiometry-of-72",
+        "apaf-1-pyroptosome",
+        "caspase-11gsdme-mediated-pyroptosis-in-cholestatic-liver-injury",
+        "caspase-411-caspase-3-gsdme-signaling-pathway-downstream-of-mpt",
+        "differential-mitochondrial-control-of-apoptosome-versus-pyroptosome-assembly",
+        "mitochondrial-permeability-transition-as-a-trigger-for-caspase-411-dependent-sterile-pyroptosis"
+      ],
+      "compiledAt": "2026-07-17T08:14:44.881Z"
+    },
+    "bacterial-gasdermins-reveal-an-ancient-mechanism-of-cell-death.md": {
+      "hash": "3b3f791ce0eea226cb781277390b8409bab0017d914ef8b76028a1563deb7022",
+      "concepts": [
+        "bacterial-gasdermins-as-phage-defense-cell-death-effectors",
+        "bacterial-gasdermins-form-large-heterogeneous-membrane-pores-after-activation",
+        "evolutionary-conservation-of-pyroptotic-pore-forming-death-across-bacteria-and-animals",
+        "n-terminal-palmitoylation-stabilizes-inactive-bacterial-gasdermins-and-supports-membrane-disruption",
+        "protease-mediated-activation-of-bacterial-gasdermins-by-cleavage-of-an-inhibitory-c-terminal-peptide",
+        "short-c-terminal-peptide-autoinhibition-in-bacterial-gasdermins"
+      ],
+      "compiledAt": "2026-07-17T08:16:17.079Z"
+    },
+    "benzimidazoles-induce-concurrent-apoptosis-and-pyroptosis-of-human-glioblastoma-cells-via-arresting-cell-cycle.md": {
+      "hash": "6c69a601acb36fc38eef32ff4b44a1e1b0befcfed93826a096841d402b550a12",
+      "concepts": [
+        "benzimidazole-induced-g2m-arrest-through-the-p53p21cyclin-b1-pathway",
+        "concurrent-mitochondria-dependent-apoptosis-and-pyroptosis-induced-by-benzimidazoles",
+        "emt-suppression-and-reduced-migrationinvasion-by-benzimidazoles-in-glioblastoma",
+        "flubendazole-suppresses-u87-glioblastoma-xenograft-growth-with-limited-observable-toxicity",
+        "nf-kappabnlrp3gsdmd-mediated-pyroptosis-in-benzimidazole-treated-gbm-cells",
+        "selective-anti-glioblastoma-activity-of-benzimidazole-azoles",
+        "wgcna-and-cmap-based-drug-repurposing-pipeline-for-glioblastoma"
+      ],
+      "compiledAt": "2026-07-17T08:16:58.209Z"
+    },
+    "biw8o30-exerts-antitumor-effect-by-triggering-pyroptosis-and-upregulating-reactive-oxygen-species.md": {
+      "hash": "8f452679f7be9044e402b44c183a90afd2cf5605fe081b5555e1c090e49b4d5a",
+      "concepts": [
+        "biw8-as-a-10-nuclear-heteroatom-modified-polyoxometalate-antitumor-compound",
+        "biw8-associated-suppression-of-dna-repair-and-replication-programs",
+        "biw8-driven-glutathione-depletion-elevates-intracellular-ros",
+        "pom-induced-pyroptosis-in-mg63-osteosarcoma-cells",
+        "pyroptosis-associated-gene-signature-induced-by-biw8",
+        "transcriptional-repression-of-glutathione-metabolism-by-biw8"
+      ],
+      "compiledAt": "2026-07-17T08:16:37.975Z"
+    },
+    "cancercellactivated-insitu-synthesis-of-mitochondriatargeting-aie-photosensitizer-for-precise-photodynamic-therapy.md": {
+      "hash": "e6ef351eb9a00e9398bfdb67dc8b05d57c312228c19fc076316d831c868a8f02",
+      "concepts": [
+        "cancer-cell-activated-in-situ-synthesis-of-a-photosensitizer-for-precise-pdt",
+        "cancer-cell-selective-mitochondrial-accumulation-and-phototoxicity-of-in-situ-generated-tpatrzpy-3",
+        "glutathione-triggered-collapse-of-pmof-nanoparticles-drives-selective-precursor-and-catalyst-release",
+        "intracellular-glutathione-as-a-cancer-associated-trigger-for-selective-bioorthogonal-synthesis",
+        "mof-199-as-a-dual-carrier-and-intracellular-cui-click-catalyst-source",
+        "tpatrzpy-3-as-a-mitochondria-targeting-aie-photosensitizer-synthesized-from-inert-precursors",
+        "tumor-restricted-photosensitizer-generation-reduces-off-target-phototoxicity-in-zebrafish"
+      ],
+      "compiledAt": "2026-07-17T08:16:48.146Z"
+    },
+    "debpone0108238-19.md": {
+      "hash": "4ada4dd70a4b89e935a1001282871abcdcd30cf6c2774b609bf6f68690729585",
+      "concepts": [
+        "alkyl-chain-length-dependent-mitochondrial-targeting-of-znii-n-alkylpyridylporphyrins",
+        "hexyl-substituted-zn-porphyrin-produces-stronger-respiration-suppression-and-phototoxicity-than-shorter-chain-analogs",
+        "rational-design-principle-for-mitochondria-targeted-photosensitizers-combines-cationic-charge-with-tuned-lipophilicity",
+        "selective-mitochondrial-photodamage-spares-glutamate-dehydrogenase-despite-complex-iv-inactivation",
+        "sub-mitochondrial-partition-determines-photodynamic-efficacy-of-zn-porphyrins",
+        "zntnhex-2-pyp-localizes-near-cytochrome-c-oxidase-and-photoinactivates-complex-iv"
+      ],
+      "compiledAt": "2026-07-17T08:43:55.204Z"
+    },
+    "cell-death-mediated-by-the-pyroptosis-pathway-with-the-aid-of-nanotechnology-prospects-for-cancer-therapy.md": {
+      "hash": "32c3c7d88b7d5066868ea83cd71f888442760036f0a7dc8617b7097cdca01d4c",
+      "concepts": [
+        "biomimetic-plgacell-membrane-nanoparticles-combining-decitabine-and-indocyanine-green-for-photoactivated-pyroptotic-immunotherapy",
+        "bioorthogonal-nanoparticle-release-of-gsdma3-links-pyroptosis-to-antitumor-immunity-and-checkpoint-blockade",
+        "decitabine-mediated-restoration-of-gsdme-sensitizes-tumors-to-nanoparticle-triggered-pyroptosis",
+        "lipid-coated-mil-100fe-mof-nanoparticles-trigger-iron-overload-pyroptosis-in-acidic-tumor-conditions",
+        "magnetic-intra-lysosomal-hyperthermia-induces-cathepsin-b-and-caspase-1-dependent-pyroptosis",
+        "nanotechnology-enabled-pyroptosis-for-cancer-therapy",
+        "pyroptosis-as-a-nanotoxicology-mechanism-and-safety-assessment-readout-for-nanoparticles",
+        "ros-responsive-glucose-oxidase-picsomes-as-self-boosting-pyroptosis-nanoreactors"
+      ],
+      "compiledAt": "2026-07-17T08:42:17.523Z"
+    },
+    "d1nr04489c-110.md": {
+      "hash": "c9801b1ab54832b91c4556f0af709e6788f695df1d0f8e3c203b5f0e94be4051",
+      "concepts": [
+        "broad-biocompatibility-profile-of-gd-pnps-across-cell-blood-zebrafish-and-mouse-models",
+        "enhanced-tumor-accumulation-and-retention-of-gd-pnps-versus-free-gd-tcpp",
+        "flmr-dual-modal-imaging-guided-photodynamic-therapy-with-gd-pnps",
+        "high-longitudinal-relaxivity-of-gd-pnps-for-t1-weighted-mri",
+        "non-covalent-electrostatic-self-assembly-of-gd-pnp-nanotheranostics",
+        "singlet-oxygen-mediated-photodynamic-activity-of-gd-pnps",
+        "triple-functional-role-of-gd-tcpp-within-gd-pnps"
+      ],
+      "compiledAt": "2026-07-17T08:43:10.678Z"
+    },
+    "chloride-sensing-by-wnk1-regulates-nlrp3-inflammasome-activation-and-pyroptosis.md": {
+      "hash": "b73580b65aa3f8998e97bdefef06abd044da845bc1c4e2ca90f265bc3615ca45",
+      "concepts": [
+        "chloride-sensing-by-wnk1-restrains-nlrp3-through-cation-chloride-cotransporters",
+        "combined-intracellular-k-and-cl-loss-drives-stronger-nlrp3-activation",
+        "myeloid-wnk1-deficiency-amplifies-msu-induced-nlrp3-inflammation-in-vivo",
+        "potential-pro-inflammatory-liability-of-antihypertensive-wnk-pathway-inhibition",
+        "wnk1-as-a-negative-regulator-of-nlrp3-inflammasome-activation",
+        "wnk1oxsr1stk39-signaling-pathway-controls-nlrp3-activation",
+        "wnk4-is-dispensable-for-wnk1-mediated-control-of-nlrp3"
+      ],
+      "compiledAt": "2026-07-17T08:43:44.815Z"
+    },
+    "copperbacteriochlorin-nanosheet-as-a-specific-pyroptosis-inducer-for-robust-tumor-immunotherapy.md": {
+      "hash": "6d7e8e5313ff48737e9adb4e2b2b3e7eb6637bf3fcd7356a2e2750cc6d94b182",
+      "concepts": [
+        "cu-driven-ros-cascade-chemistry-in-cu-tbb",
+        "cu-tbb-copper-bacteriochlorin-nanosheet",
+        "dual-cu-catalysis-and-750-nm-photodynamic-ros-generation-by-activated-cu-tbb",
+        "glutathione-activatable-off-to-on-switching-of-cu-tbb-in-the-tumor-microenvironment",
+        "gsdmdcaspase-1-mediated-classical-pyroptosis-induced-by-cu-tbb",
+        "pyroptosis-linked-immunogenic-signaling-and-dendritic-cell-maturation-downstream-of-cu-tbb",
+        "systemic-antitumor-immunity-from-cu-tbb-treatment-in-bilateral-4t1-tumors"
+      ],
+      "compiledAt": "2026-07-17T08:42:59.956Z"
+    },
+    "jm5014852-114.md": {
+      "hash": "82094d4d2204d71ce7d2ac1800a789423abdcad5451acd335aa0f16de62a91a2",
+      "concepts": [
+        "1zn-et-combines-exceptionally-low-dark-toxicity-with-strong-photodynamic-selectivity",
+        "aza-substitution-and-octacationic-substitution-pattern-reduce-phthalocyanine-aggregation-in-water",
+        "executioner-caspase-activation-occurs-without-strong-initiator-caspase-signaling-after-lysosomal-pdt-damage",
+        "lysosomal-localization-and-photodamage-drive-necrosis-like-death-after-1zn-et-and-2zn-et-pdt",
+        "nonperipheral-substitution-red-shifts-phthalocyanine-absorption-beyond-750-nm",
+        "octacationic-far-red-absorbing-phthalocyanine-photosensitizers",
+        "pdt-with-1zn-et-and-2zn-et-generates-ros-through-both-type-i-and-type-ii-photoprocess-contributions",
+        "zinc-centered-phthalocyanines-outperform-magnesium-analogs-in-photodynamic-cytotoxicity"
+      ],
+      "compiledAt": "2026-07-17T09:12:47.915Z"
+    },
+    "gasdermin-d-kills-bacteria.md": {
+      "hash": "870d81c859c12d0a66d570346182f88d5c823394005424ab45662dcee7993da1",
+      "concepts": [
+        "alternative-inflammasome-pathway-uncouples-il-1β-release-from-pyroptosis-in-human-monocytes",
+        "direct-bacteriolysis-of-cytosolic-francisella-novicida-by-gsdmd-n",
+        "extracellular-bactericidal-activity-of-gsdmd-n-against-staphylococcus-aureus",
+        "gasdermin-d-as-a-double-edged-antibacterial-effector",
+        "gsdmd-mediated-pyroptosis-exacerbates-streptococcus-pneumoniae-lung-infection",
+        "gsdmd-pore-forming-activation-mechanism",
+        "mitochondrial-gsdmd-ros-axis-restricts-burkholderia-cenocepacia"
+      ],
+      "compiledAt": "2026-07-17T09:10:23.748Z"
+    },
+    "intramolecular-charge-transfer-based-conjugated-oligomer-with-fluorescence-efficient-photodynamics-and-photothermal-activities.md": {
+      "hash": "23a64523976236ad9f9f280010ce818dd114d82648b303e8bf6ff3ecc61922d4",
+      "concepts": [
+        "broad-spectrum-biocidal-activity-of-cdt-bodipy",
+        "dual-emission-fluorescence-of-cdt-bodipy",
+        "fluorescence-guided-antimicrobial-phototherapy-with-cdt-bodipy",
+        "intramolecular-charge-transfer-in-cdt-bodipy",
+        "photodynamic-ros-generation-by-cdt-bodipy",
+        "photothermal-conversion-by-cdt-bodipy",
+        "water-soluble-quaternary-ammonium-conjugated-oligomer-design"
+      ],
+      "compiledAt": "2026-07-17T09:12:36.451Z"
+    },
+    "microsoft-word-supporting-information-reversion.md": {
+      "hash": "f1d2a8875bc620c1d60bfc22d7e140209d82177b57fcf93fbb31dc6ef2211c8e",
+      "concepts": [
+        "caspase-3gsdme-mediated-pyroptosis",
+        "c-top-n-top-e-top-and-m-top-comparative-photodrug-series",
+        "dendritic-cell-maturation-and-inflammatory-cytokine-release-after-photopyroptosis",
+        "in-vivo-antitumor-efficacy-in-hepa1-6-mouse-xenograft-models",
+        "mitochondrial-localization-of-the-photodrugs",
+        "mitochondria-targeting-type-i-photodrug-for-pyroptotic-oncotherapy",
+        "m-top-as-the-lead-mitochondrial-targeting-photodrug",
+        "ros-generation-by-type-i-photodrugs-under-640-nm-irradiation"
+      ],
+      "compiledAt": "2026-07-17T09:12:25.312Z"
+    },
+    "inflammasome-induced-osmotic-pressure-and-the-mechanical-mechanisms-underlying-astrocytic-swelling-and-membrane-blebbing-in-pyroptosis.md": {
+      "hash": "503cbc8973491269d1b100e4d1ea4244eb2645bbbcb2c97af817a26135fa8a03",
+      "concepts": [
+        "cytoskeletal-depolymerization-contributes-to-astrocyte-swelling-and-blebbing-but-is-not-required-for-pyroptotic-permeabilization",
+        "endoplasmic-reticulum-calcium-release-amplifies-astrocyte-pyroptosis-through-osmotic-pressure-and-inflammasome-regulation",
+        "gsdmd-n-terminal-fragment-promotes-calcium-and-caspase-1-dependent-osmotic-swelling-and-blebbing",
+        "inflammasome-protein-nanoparticles-drive-osmotic-pressure-increases-in-pyroptotic-astrocytes",
+        "nlrp3-inflammasome-assembly-controls-protein-nanoparticle-accumulation-and-mechanical-deformation-in-astrocyte-pyroptosis",
+        "nonselective-pore-blockade-uncouples-membrane-permeabilization-from-upstream-inflammasome-production"
+      ],
+      "compiledAt": "2026-07-17T09:11:29.890Z"
+    },
+    "oxidative-photocatalysis-on-membranes-triggers-non-canonical-pyroptosis.md": {
+      "hash": "9cba03e31ff77238681ad040aa9e36cc60f2e42cc5572b30026f41637afd29d0",
+      "concepts": [
+        "btp-as-an-intracellular-membrane-localized-amphiphilic-organic-photocatalyst",
+        "btp-induced-cell-death-is-caspase-dependent-pyroptosis-rather-than-lipid-peroxidation-driven-ferroptosis",
+        "btp-photocatalysis-triggers-maladaptive-upr-associated-ca2-mobilization-mitochondrial-dysfunction-and-k-efflux",
+        "hypoxia-accelerated-water-oxidation-photocatalysis-by-btp-generates-h2o2-and-hydroxyl-radicals",
+        "intracellular-membrane-oxidation-triggers-caspase-45-dependent-non-canonical-pyroptosis",
+        "membrane-protein-oxidation-by-btp-preferentially-targets-protein-quality-control-networks",
+        "single-molecule-magnetic-tweezers-reveal-irreversible-photocatalytic-destabilization-of-membrane-protein-folding"
+      ],
+      "compiledAt": "2026-07-17T09:38:02.205Z"
+    },
+    "omcl1552127-125.md": {
+      "hash": "263c2cb1741ad087a5aabe7e743120a5c782665e153f3754919cddf2735d7d8d",
+      "concepts": [
+        "curcumin-ameliorates-post-stroke-white-matter-injury-and-sensorimotor-deficits",
+        "curcumin-suppresses-microgliamacrophage-pyroptosis-after-ischemic-stroke",
+        "microglial-pyroptosis-contributes-to-secondary-white-matter-damage-after-ischemic-stroke",
+        "nf-kappabnlrp3-signaling-mediates-curcumins-anti-pyroptotic-effect-in-microglia",
+        "nlrp3-knockdown-enhances-curcumin-mediated-suppression-of-microglial-pyroptosis"
+      ],
+      "compiledAt": "2026-07-17T09:37:30.511Z"
+    },
+    "mitochondria-targeting-type-i-photodrug-harnessing-caspase-3-activity-for-pyroptotic-oncotherapy.md": {
+      "hash": "21c51a81f85928b6448c19dd1b55e53de71b3309090e73e8e84ea0dde0591137",
+      "concepts": [
+        "dose-dependent-caspase-3-activity-switches-m-top-treated-cells-between-apoptosis-and-pyroptosis",
+        "immunogenic-cell-death-hallmarks-accompany-the-abscopal-effect-of-m-top-phototreatment",
+        "m-top-phototreatment-suppresses-tumor-recurrence-through-effector-memory-t-cell-responses",
+        "m-top-remodels-the-tumor-microenvironment-toward-activated-t-cells-mature-dendritic-cells-and-reduced-immunosuppression",
+        "peroxygen-radical-generation-underlies-the-type-i-hypoxia-tolerant-activity-of-m-top"
+      ],
+      "compiledAt": "2026-07-17T09:37:51.388Z"
+    },
+    "optogenetic-control-of-nonapoptotic-cell-death.md": {
+      "hash": "7eec266349a504299d85d8611a11270a30813eadf3bf256de6b030aad7b3d528",
+      "concepts": [
+        "fluorofurimazine-as-an-improved-nanoluc-substrate-for-in-vivo-optogenetics",
+        "light-driven-reconstruction-of-the-ripk1ripk3mlkl-necroptosis-cascade",
+        "lipop1-as-a-photoswitchable-mlkl-nt-necroptosis-effector",
+        "lipop2a-and-lipop2b-as-optogenetic-pyroptosis-actuators-based-on-gsdmd-uncaging",
+        "lipop2-enabled-light-controlled-bactericidal-activity-and-car-t-suicide-switching",
+        "lipops-optogenetic-toolkit-for-non-apoptotic-cell-death-control",
+        "nanologs-bioluminescence-platform-for-chemo-optogenetic-activation-of-lipops",
+        "nano-optogenetic-necroptosis-using-upconversion-nanoparticles"
+      ],
+      "compiledAt": "2026-07-17T09:37:05.982Z"
+    },
+    "oxidative-stress-related-canonical-pyroptosis-pathway-as-a-target-of-liver-toxicity-triggered-by-zinc-oxide-nanoparticles.md": {
+      "hash": "42120569d4c251eabd16446c6c7208bbd9f2818aa94a2175dc22f7f86042daf0",
+      "concepts": [
+        "liver-is-the-primary-organ-of-zinc-accumulation-after-repeated-zno-nanoparticle-exposure-in-rats",
+        "n-acetyl-l-cysteine-attenuates-zno-nanoparticle-triggered-oxidative-stress-and-pyroptosis",
+        "oxidative-stress-drives-zno-nanoparticle-induced-hepatocyte-pyroptosis",
+        "vx-765-confirms-caspase-1-dependence-of-zno-nanoparticle-induced-hepatocyte-pyroptosis",
+        "zno-nanoparticle-hepatotoxicity-couples-inflammatory-liver-injury-with-disrupted-zinc-and-redox-homeostasis",
+        "zno-nanoparticles-trigger-canonical-nlrp3caspase-1gsdmd-pyroptosis-in-hepatocytes"
+      ],
+      "compiledAt": "2026-07-17T09:38:35.022Z"
+    },
+    "photo-damage-promoted-by-tetra-cationic-palladiumii-porphyrins-in-rapidly-growing-mycobacteria.md": {
+      "hash": "337c6abffb0101d010ceab5ccf25666b34b86d2b06c129a5f094ebd8292b95c4",
+      "concepts": [
+        "3-pdtpyp-as-the-lead-antimycobacterial-photodynamic-sensitizer",
+        "atomic-force-microscopy-reveals-porphyrin-induced-mycobacterial-cell-wall-damage",
+        "cationic-porphyrin-charge-and-aqueous-solubility-govern-antimicrobial-photodynamic-activity",
+        "isomer-dependent-photoinactivation-of-rapidly-growing-mycobacteria-by-pdii-porphyrins",
+        "singlet-oxygen-as-the-main-reactive-oxygen-species-in-3-pdtpyp-photodamage",
+        "visible-light-antimicrobial-photodynamic-therapy-for-rapidly-growing-mycobacterial-infections"
+      ],
+      "compiledAt": "2026-07-17T10:05:48.216Z"
+    },
+    "photocatalytic-superoxide-radical-generator-that-induces-pyroptosis-in-cancer-cells.md": {
+      "hash": "9d65b0bc169986db6d1d908d2ff35ac6f73d6eda8e057e14efa548c7ad214d3c",
+      "concepts": [
+        "aggregation-induced-emission-and-aggregation-induced-photosensitization-of-ni-ta",
+        "antitumor-activity-in-t47d-3d-multicellular-spheroids-and-stemness-inhibition",
+        "caspase-3gsdme-mediated-pyroptosis-induced-by-ni-ta",
+        "d-b-a-molecular-design-with-a-triphenylamine-donor-and-naphthalimide-acceptor-enables-superoxide-photogeneration",
+        "ni-ta-as-a-photocatalytic-superoxide-radical-generator",
+        "partial-oxygen-recycling-enables-hypoxia-tolerant-pyroptosis",
+        "type-i-photochemistry-yields-superoxide-while-suppressing-singlet-oxygen-generation"
+      ],
+      "compiledAt": "2026-07-17T10:05:36.907Z"
+    },
+    "polaritysensitive-ratiometric-fluorescence-probe-for-monitoring-lipid-dropletsnucleus-change-during-ferroptosis.md": {
+      "hash": "d57010e7e70882907deb0b4c3fad5351cf869b17963cef2ef5320665eb92fadf",
+      "concepts": [
+        "cqpp-as-a-lipid-dropletnucleus-dual-targeted-ratiometric-fluorescence-probe",
+        "distinguishing-ferroptosis-from-apoptosis-by-organelle-morphology-and-cqpp-imaging",
+        "dna-minor-groove-binding-and-nucleus-targeting-by-cqpp",
+        "fluorescence-lifetime-imaging-of-cqpp-for-polarity-measurement",
+        "lipid-droplet-polarity-increase-during-ferroptosis",
+        "polarity-sensitive-donor-acceptor-fluorescence-of-cqpp"
+      ],
+      "compiledAt": "2026-07-17T10:03:40.281Z"
+    },
+    "oxylipins-and-metabolites-from-pyroptotic-cells-act-as-promoters-of-tissue-repair.md": {
+      "hash": "2bb87f243daad331a34100495f35ea2abf92bb651e0e32d09f6324e8a1cfc63a",
+      "concepts": [
+        "de-novo-pge2-synthesis-during-pyroptosis",
+        "gsdmd-pore-dependent-release-of-pge2",
+        "il-27-producing-cd301-macrophages-mediate-repair-downstream-of-pyroptotic-secretome",
+        "metabolites-in-pyroptotic-secretome-promote-cd301-macrophage-polarization",
+        "oxylipins-in-pyroptotic-secretome-support-wound-healing",
+        "pyroptosis-can-occur-without-il-1beta-or-il-1alpha-release",
+        "pyroptotic-secretome-promotes-tissue-repair"
+      ],
+      "compiledAt": "2026-07-17T10:04:29.315Z"
+    },
+    "polyrl-reinforcement-learning-guided-polymer-generation-for-multi-objective-polymer-discovery.md": {
+      "hash": "883a53234c5c3d2100c7ce165dd694ab3e0f32ebd92bcf6b24a2b2d41e195994",
+      "concepts": [
+        "molecular-dynamics-validation-of-rl-generated-polymers",
+        "multi-objective-optimization-of-gas-separation-polymers",
+        "polyrl-closed-loop-reinforcement-learning-framework-for-polymer-discovery",
+        "p-smiles-representation-for-polymer-generation",
+        "reinforcement-learning-algorithms-for-molecular-generation",
+        "reward-design-based-on-robeson-upper-bound-for-co2n2-separation",
+        "silicon-containing-cyclic-polymer-motifs-improve-gas-separation-performance",
+        "transformer-based-generative-models-outperform-simpler-sequence-models-in-polyrl"
+      ],
+      "compiledAt": "2026-07-17T10:05:25.953Z"
+    },
+    "pyroptosis-a-new-breakthrough-in-cancer-treatment.md": {
+      "hash": "cb838c9de85290c8fcd74906235cb355b121dfe67bf659cb63da48bbb3e339cf",
+      "concepts": [
+        "a-small-fraction-of-pyroptotic-tumor-cells-can-remodel-the-tumor-immune-microenvironment",
+        "canonical-inflammasome-induced-pyroptosis-via-caspase-1-and-gsdmd",
+        "car-t-cell-induced-gsdme-mediated-pyroptosis-contributes-to-cytokine-release-syndrome",
+        "caspase-3gsdme-functions-as-an-apoptosis-to-pyroptosis-switch-in-chemotherapy-treated-cancer-cells",
+        "gasdermin-family-pore-formation-defines-pyroptosis",
+        "noncanonical-lps-sensing-pyroptosis-via-caspase-4511",
+        "pd-l1-driven-gsdmc-expression-switches-tnfalpha-induced-apoptosis-to-pyroptosis-under-hypoxia",
+        "pyroptosis-induced-antitumor-immunity-depends-on-lymphocyte-granzyme-signaling-and-gasdermins"
+      ],
+      "compiledAt": "2026-07-17T10:37:40.016Z"
+    },
+    "pyroptosis-at-the-forefront-of-anticancer-immunity.md": {
+      "hash": "838bf9b869e1f72932c73035aca7aaa1a98977bd5eb540a29496cde9bded0600",
+      "concepts": [
+        "canonical-inflammasome-mediated-pyroptosis-pathway",
+        "context-dependent-dual-role-of-pyroptosis-and-its-components-in-cancer",
+        "cytotoxic-lymphocyte-induced-tumor-pyroptosis-via-gasdermins-and-granzymes",
+        "gasdermin-autoinhibition-and-pore-forming-activation-mechanism",
+        "non-canonical-lps-caspase-4511-gsdmd-pyroptosis-pathway",
+        "pyroptosis-as-a-strategy-to-overcome-apoptosis-resistance-and-stimulate-anticancer-immunity",
+        "pyroptosis-can-convert-immune-cold-tumors-into-inflamed-immune-hot-tumors",
+        "therapeutic-strategies-to-harness-pyroptosis-in-cancer-treatment"
+      ],
+      "compiledAt": "2026-07-17T10:38:58.843Z"
+    },
+    "pyroptosis-and-inflammasomes-in-cancer-and-inflammation.md": {
+      "hash": "2baee0105535f3123feea22ca32dcd2b84bd6c35ce1df2d6481b79b5f0fdc7db",
+      "concepts": [
+        "canonical-noncanonical-apoptotic-caspase-and-granzyme-mediated-pyroptosis-pathways",
+        "dual-tumor-promoting-and-tumor-suppressive-roles-of-il-1β-il-18-and-hmgb1-in-pyroptotic-tumor-microenvironments",
+        "gsdme-expression-and-methylation-state-govern-pyroptosis-competence-therapy-sensitivity-and-prognosis-in-cancer",
+        "inflammasome-receptor-architectures-and-activation-logic",
+        "nanodelivery-systems-as-a-strategy-to-induce-tumor-selective-pyroptosis",
+        "pyroptosis-is-a-context-dependent-double-edged-regulator-of-the-tumor-microenvironment",
+        "pyroptosis-related-gene-signatures-as-diagnostic-prognostic-and-treatment-response-biomarkers-in-cancer"
+      ],
+      "compiledAt": "2026-07-17T10:38:02.542Z"
+    },
+    "pyroptosismediated-synergistic-photodynamic-and-photothermal-immunotherapy-enabled-by-a-tumormembranetargeted-photosensitive-dimer.md": {
+      "hash": "8485b129d89c6bb20651b1c350dbc48e53a0b18850077e57b20a79132815d2c9",
+      "concepts": [
+        "d1-as-a-tumor-membrane-targeted-aggregation-induced-emission-photosensitive-dimer",
+        "d1-phototherapy-generates-systemic-antitumor-immunity-with-distant-tumor-suppression-and-memory-t-cell-responses-in-bilateral-4t1-tumors",
+        "d1-triggered-pyroptosis-elicits-immunogenic-cell-death-hallmarks-and-dendritic-cell-maturation",
+        "dimerization-improves-d1-over-monomer-m1-for-self-assembly-ros-generation-photothermal-conversion-and-tumor-retention",
+        "photothermal-reinforcement-increases-membrane-permeability-and-dna-damage-responses-during-d1-phototherapy",
+        "type-i-ros-plus-photothermal-membrane-damage-drives-d1-induced-caspase-1gsdmd-pyroptosis"
+      ],
+      "compiledAt": "2026-07-17T10:39:10.017Z"
+    },
+    "pyroptosis-remodeling-tumor-microenvironment-to-enhance-pancreatic-cancer-immunotherapy-driven-by-membrane-anchoring-photosensitizer.md": {
+      "hash": "05731a99a114abab2b02b3507b7ee18b36f47f75011c2dcc8ecbfcf81b45c2fd",
+      "concepts": [
+        "local-tbd-3c-photopyroptosis-generates-systemic-control-of-distant-orthotopic-pancreatic-tumors",
+        "pancreatic-cancer-immunotherapy-driven-by-membrane-anchored-tbd-3c-photopyroptosis",
+        "photopyroptosis-by-tbd-3c-triggers-calreticulin-hmgb1-and-atp-immunogenic-cell-death-signals",
+        "pyroptotic-pancreatic-tumor-cells-drive-macrophage-m1-polarization-dendritic-cell-maturation-and-cd8-t-cell-activation",
+        "tbd-3c-induces-canonical-gsdmdcaspase-1-pyroptosis-in-pancreatic-cancer-cells",
+        "tbd-3c-photopyroptosis-converts-pancreatic-tumors-from-immunosuppressive-cold-tme-to-immunogenic-hot-tme",
+        "tbd-3c-photopyroptosis-lowers-pd-1-on-ctls-and-pd-l1-tim3-and-lag3-in-the-pancreatic-tumor-microenvironment"
+      ],
+      "compiledAt": "2026-07-17T10:38:47.782Z"
+    },
+    "silver-nanoparticles-induce-degradation-of-the-endoplasmic-reticulum-stress-sensor-activating-transcription-factor-6-leading-to-activation-of-the-nlrp-3-inflammasome.md": {
+      "hash": "acab317278b4427bddf5cf6cbcad89f4d098047128db816a82ee94a09640dff2",
+      "concepts": [
+        "agnp15-induced-atf6-degradation-links-er-stress-to-nlrp3-inflammasome-activation",
+        "caspase-4-shapes-agnp15-driven-inflammasome-priming-and-activation",
+        "concentration-dependent-bifurcation-of-agnp15-er-stress-responses-and-cytotoxicity",
+        "primary-human-monocytes-show-stronger-baseline-readiness-for-agnp15-induced-il-1beta-release-than-thp-1-cells-or-macrophages",
+        "silver-nanoparticles-induce-nlrp3-inflammasome-dependent-pyroptosis-in-human-thp-1-monocytes",
+        "site-2-protease-inhibition-blocks-agnp15-triggered-pyroptosis-and-il-1beta-release"
+      ],
+      "compiledAt": "2026-07-17T11:01:55.590Z"
+    },
+    "simultaneous-activation-of-pyroptosis-and-cgassting-pathway-with-epigenetic-photodynamic-nanotheranostic-for-enhanced-tumor-photoimmunotherapy.md": {
+      "hash": "ecb823d0b5f50204b7cdb58ca4d175d601c7405b30c44cebdb7e78ed4d48c0e9",
+      "concepts": [
+        "concurrent-pyroptosis-and-cgas-sting-activation-promote-dendritic-cell-maturation-and-broad-antitumor-immunity",
+        "decitabine-restores-gsdme-and-sting-expression-to-enable-combined-pyroptosis-and-cgas-sting-activation",
+        "decitabine-switches-np1-photodynamic-killing-from-apoptosis-toward-gsdme-mediated-pyroptosis",
+        "epigeneticphotodynamic-nanotheranostic-co-delivering-tbe-and-decitabine-for-photoimmunotherapy",
+        "promoter-hypermethylation-suppresses-gsdme-and-sting-in-breast-cancer-and-limits-inducible-innate-immune-signaling",
+        "tbe-loaded-ros-responsive-np1-drives-mitochondrial-photodamage-mtdna-release-and-caspase-3-activation-under-808-nm-irradiation"
+      ],
+      "compiledAt": "2026-07-17T11:02:40.681Z"
+    },
+    "rscccc3cc44609c-35.md": {
+      "hash": "f25cc66c3b654804654cdd8efd2bcab8617d4dba08e86a201df161211d2862d9",
+      "concepts": [
+        "exceptional-photodynamic-selectivity-of-compound-5-in-vitro",
+        "hexadeca-cationic-non-aggregating-zinc-phthalocyanine-5",
+        "high-singlet-oxygen-generation-by-compound-5-in-water-despite-solvent-dependent-quantum-yield-reduction",
+        "predominant-lysosomal-localization-of-compound-5-in-hela-cells",
+        "rigid-charged-substituent-architecture-suppresses-phthalocyanine-aggregation-in-water",
+        "spectroscopic-validation-of-aggregation-free-behavior-of-compound-5-across-aqueous-conditions"
+      ],
+      "compiledAt": "2026-07-17T11:02:18.554Z"
+    },
+    "sodium-bicarbonate-nanoparticles-for-amplified-cancer-immunotherapy-by-inducing-pyroptosis-and-regulating-lactic-acid-metabolism.md": {
+      "hash": "ab2d8f0b3c89c9e14768ca7df8c37b8a8ab82aa61b6e908339228030cc55df69",
+      "concepts": [
+        "intracellular-na-overload-from-nahco3-nanoparticles-drives-osmotic-stress-and-ros",
+        "nahco3-nanoparticles-induce-caspase-1gsdmd-dependent-pyroptosis",
+        "nahco3-nanoparticles-regulate-lactic-acid-metabolism-by-neutralizing-tumor-acidity",
+        "nahco3-nanoparticles-remodel-tumor-immunity-toward-an-antitumor-state",
+        "nahco3-nanoparticles-suppress-primary-tumors-distant-tumors-and-lung-metastasis-in-4t1-models",
+        "nahco3-nanoparticle-treatment-also-triggers-immunogenic-cell-death-signals",
+        "sodium-bicarbonate-nanoparticles-nahco3-nps-as-drug-free-pyroptosis-and-metabolism-immunoadjuvants"
+      ],
+      "compiledAt": "2026-07-17T11:02:07.273Z"
+    },
+    "pyroptosis-targeting-via-mitochondria-an-educated-guess-to-innovate-covid19-therapies.md": {
+      "hash": "3cdea71ffabc58222decff22ac3b2db16bfc15bad6d6c296cc2829708c867b72",
+      "concepts": [
+        "mavs-and-traf3-link-mitochondria-to-asc-ubiquitination-during-inflammasome-activation",
+        "mitochondrial-dysfunction-is-an-upstream-trigger-of-sars-cov-2-associated-nlrp3-inflammasome-assembly",
+        "mitophagy-restrains-nlrp3-inflammasome-activation-by-clearing-damaged-mitochondria",
+        "nlrp3-inflammasome-activation-as-a-biomarker-of-covid-19-severity",
+        "sars-cov-2-viral-proteins-e-orf3a-and-orf8b-activate-the-nlrp3-inflammasome-through-distinct-mechanisms",
+        "targeting-mitochondrial-upstream-events-is-proposed-as-a-therapeutic-strategy-to-limit-covid-19-pyroptosis"
+      ],
+      "compiledAt": "2026-07-17T11:02:29.578Z"
+    },
+    "targeted-photodynamic-therapy-enhancing-efficacy-through-specific-organelle-engagement.md": {
+      "hash": "72eee28175d32290b91dd8b83f7850bddd8ee21b3c209d2278fc519bee1b9717",
+      "concepts": [
+        "autophagy-modulation-is-an-enabling-axis-for-autophagosome-related-pdt-sensitization",
+        "cell-membrane-targeted-pdt-exploits-lipid-peroxidation-for-rapid-membrane-damage-and-immunogenic-death",
+        "endoplasmic-reticulum-targeted-pdt-promotes-er-stress-and-immunogenic-cell-death",
+        "golgi-targeted-pdt-can-suppress-immunosuppressive-secretion-and-activate-inflammatory-death-signaling",
+        "lysosome-targeted-pdt-leverages-lysosomal-membrane-permeabilization-and-cathepsin-signaling",
+        "mitochondrial-targeting-enhances-pdt-through-redox-disruption-oxygen-management-and-respiration-control",
+        "nucleus-targeted-pdt-couples-local-dna-damage-to-innate-antitumor-immunity",
+        "organelle-targeted-photodynamic-therapy-as-a-precision-strategy"
+      ],
+      "compiledAt": "2026-07-17T11:14:22.510Z"
+    },
+    "the-current-advances-in-design-strategy-indirect-strategy-and-direct-strategy-for-typei-photosensitizers.md": {
+      "hash": "534d4bfbc930aee1a414a681402cdc05f99d6ca0cb72d2180b2f9213b0400a93",
+      "concepts": [
+        "direct-strategy-for-type-i-photosensitizer-design-by-enhancing-electron-transfer",
+        "electron-deficient-intermediate-transmitters-for-promoting-type-i-photosensitization",
+        "electron-rich-microenvironment-as-a-construction-method-for-type-i-photosensitizers",
+        "indirect-strategy-for-type-i-photosensitizer-design-via-triplet-state-energy-suppression",
+        "quinone-and-quinone-derivative-motifs-as-enhanced-electron-transfer-primitives-in-type-i-photosensitizers",
+        "triplet-state-tuning-must-be-balanced-with-intersystem-crossing-efficiency-in-indirect-type-i-photosensitizer-design",
+        "type-i-photodynamic-therapy-is-less-oxygen-dependent-because-oxygen-is-recycled-through-superoxide-and-peroxide-intermediates"
+      ],
+      "compiledAt": "2026-07-17T11:14:56.592Z"
+    }
+  }
+}

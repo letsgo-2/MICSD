@@ -1,61 +1,111 @@
 review_items:
-  - object_id: R2-S001
-    question: "是否将ZnPc/phthalocyanine列为Type-II或混合PDT的首选优势骨架？是否接受非外周取代和刚性阳离子位阻作为主设计方向？"
+  - object_id: PROJECT.application_context
+    question: "最终应用场景是肿瘤 PDT、光焦亡免疫治疗、抗菌 PDT，还是更一般的光敏材料筛选？不同场景会改变主目标和约束权重。"
+    required_expert: "材料/应用领域专家"
+    reason: "当前论文证据覆盖多个应用域，不能自动合并成单一优化任务。"
+    priority: high
+  - object_id: I001
+    question: "光毒性主指标应采用细胞 IC50/EC50、抗菌 MIC、肿瘤抑制率，还是按应用场景拆分多个目标？"
+    required_expert: "材料专家 + 实验专家 + 计算机专家"
+    reason: "不同 assay 的数值不可直接比较，跨论文条件差异很大。"
+    priority: high
+  - object_id: I003
+    question: "是否将 TC50/IC50 或 dark IC50/light IC50 作为统一的主目标？需要确认同一细胞系、同一条件下配对计算。"
+    required_expert: "实验专家"
+    reason: "该指标很有用，但跨细胞系、跨光照条件会造成虚高或不可比。"
+    priority: high
+  - object_id: I004
+    question: "单线态氧量子产率是否作为主优化目标还是诊断指标？对于 Type-I 或低氧目标，它可能不是主导机制。"
+    required_expert: "材料/光化学专家"
+    reason: "证据中既有 type-II singlet oxygen 主导体系，也有 type-I/hypoxia-active 体系。"
+    priority: high
+  - object_id: I005
+    question: "Type-I ROS 生成能力应如何标准化？采用 EPR、DHE/HPF/DCFH-DA、清除剂实验，还是多指标组合？"
+    required_expert: "光化学专家 + 实验专家"
+    reason: "ROS 探针特异性有限，不同论文报告方式不同。"
+    priority: high
+  - object_id: I006
+    question: "是否把低氧保留光毒性设为 P0？若目标是实体瘤低氧 PDT，应升为硬主目标。"
+    required_expert: "材料/肿瘤应用专家"
+    reason: "当前项目目标只写“更高光敏性能”，没有明确是否优先低氧场景。"
+    priority: high
+  - object_id: I007
+    question: "治疗窗口目标范围应设为红光、近红外，还是由实际设备决定？是否要求 extinction coefficient 下限？"
+    required_expert: "材料专家 + 实验平台负责人"
+    reason: "论文中波长从 425/520/525/570/640 nm 到白光 LED 不等，不能自动统一。"
+    priority: high
+  - object_id: I008
+    question: "聚集行为应优化为非聚集，还是允许 AIE/自组装型聚集？请按分子类别区分规则。"
+    required_expert: "材料/光物理专家"
+    reason: "化合物 5 证据支持非聚集，D1/TBD 系列证据支持生产性聚集或 AIE。"
+    priority: high
+  - object_id: I010
+    question: "目标亚细胞定位是线粒体、细胞膜、溶酶体、肿瘤膜/CAIX，还是按机制多路线保留？"
+    required_expert: "材料专家 + 生物机制专家"
+    reason: "不同定位对应不同死亡机制、ROS 半径、实验读出和结构规则。"
+    priority: medium
+  - object_id: I011
+    question: "阳离子强度/脂溶性是否作为可计算设计变量？需要确认毒性、膜破坏和组织分布的上限约束。"
+    required_expert: "材料专家 + 计算专家"
+    reason: "阳离子和脂溶性有利定位，但可能增加暗毒性或非特异结合。"
+    priority: medium
+  - object_id: I012
+    question: "光热转换效率是否进入优化目标？仅当目标包含 PDT/PTT 协同时建议保留。"
     required_expert: "材料专家"
-    reason: "论文证据强，但不同Pc取代模式会导致聚集或PET淬灭。"
-    priority: high
-  - object_id: R2-S002
-    question: "AIE D-A/D-A-pi-A骨架是否作为缺氧Type-I方向的优先骨架？阳离子链数量是否设置上限？"
-    required_expert: "材料专家/实验专家"
-    reason: "阳离子链增强膜锚定，但可能增加暗毒性和非特异膜损伤。"
-    priority: high
-  - object_id: R2-S005
-    question: "候选空间是否允许Re(I)、Gd、Cu等金属光敏剂或金属纳米平台？是否与有机小分子分支分开优化？"
-    required_expert: "材料专家/毒理专家/计算专家"
-    reason: "金属可增强SOC和功能，但安全性、代谢和可生成性风险不同。"
-    priority: high
-  - object_id: R2-I001
-    question: "吸收波长reward是否采用600-800 nm为高分范围、650-750 nm为初始甜点区？具体光源是否限定？"
-    required_expert: "材料专家/实验专家"
-    reason: "文献支持治疗窗口，但项目光源和应用深度会改变最佳范围。"
-    priority: high
-  - object_id: R2-I003
-    question: "T1-S0阈值是否按机制分支使用：Type-II >0.98/1.13 eV，Type-I EET-blocking <0.98 eV？"
-    required_expert: "计算专家/材料专家"
-    reason: "同一指标在Type-I和Type-II中优化方向相反，必须先确认分支。"
-    priority: high
-  - object_id: R2-I004
-    question: "S1-Tn能隙<0.4 eV是否作为项目初始ISC启发式阈值？需要计算多少个Tn态？"
-    required_expert: "计算专家"
-    reason: "该阈值来自文献启发式，需结合SOC和计算方法校准。"
-    priority: high
-  - object_id: R2-I005
-    question: "SOC采用何种软件、相对论处理和单位？是否只对top candidates计算？"
-    required_expert: "计算专家"
-    reason: "SOC重要但成本高，且无通用绝对阈值。"
+    reason: "D1 证据强，但并非所有高光敏分子都需要光热效应。"
     priority: medium
-  - object_id: R2-I006
-    question: "Type-I电子转移ΔG_ET计算中，donor/acceptor/substrate和参比电极如何定义？"
-    required_expert: "计算专家/实验专家"
-    reason: "ΔG_ET<0只说明热力学可行，必须固定介质和参比。"
+  - object_id: I013
+    question: "是否把 photopyroptosis efficiency 作为终端性能，还是仅作为免疫治疗场景的机制指标？"
+    required_expert: "材料专家 + 免疫/细胞死亡专家"
+    reason: "焦亡有免疫激活价值，但也可能与单纯 cytotoxicity 或安全性产生权衡。"
     priority: high
-  - object_id: R2-I007
-    question: "ICT指标使用NTO、hole-electron distance、HOMO/LUMO overlap还是组合指标？过强CT如何惩罚？"
-    required_expert: "计算专家/计算机专家"
-    reason: "ICT不是越强越好，需要与oscillator strength和非辐射衰减风险平衡。"
+  - object_id: K005
+    question: "CA-Re 的 hypoxia-active 机制是否应概括为 type-I 主导、mixed type-I/type-II，还是 membrane-localized lipid peroxidation 主导？"
+    required_expert: "光化学专家"
+    reason: "wiki 证据显示 singlet oxygen/hydroxyl radical较小而 superoxide/peroxynitrite/lipid peroxidation 更强，需要专家确认机制表述。"
     priority: medium
-  - object_id: R2-I008
-    question: "聚集风险代理是否采用平面性+芳香面积+cLogP-阳离子/位阻补偿的规则分？是否需要二聚相互作用能复核？"
-    required_expert: "计算专家/实验专家"
-    reason: "聚集是关键约束，但实验聚集不能完全由规则代理替代。"
-    priority: medium
-  - object_id: reward_profiles
-    question: "后续迭代优化是否必须拆分为type_II_PDT和hypoxia_type_I_PDT两个reward profile？"
-    required_expert: "计算机专家/材料专家"
-    reason: "Type-I和Type-II对T1-S0、ROS类型和实验验证要求不同，单一reward会冲突。"
+  - object_id: DATA.comparability
+    question: "是否需要建立统一数据表，将分子、细胞/菌株、光照条件、氧条件、浓度、时间和 assay 拆成 long-format records？"
+    required_expert: "计算机专家 + 实验专家"
+    reason: "进入建模前必须避免把不同条件下的 IC50/MIC/PI 直接混为同一标签。"
     priority: high
-  - object_id: method_setup
-    question: "TD-DFT方法是否采用几何优化B3LYP/M06-2X、光谱CAM-B3LYP、T1-S0用B3LYP/PBE0PBE的分层方案？"
-    required_expert: "计算专家"
-    reason: "文献给出方法建议，但项目需统一以避免不同泛函结果混排。"
+  - object_id: SCAFFOLD.routing
+    question: "后续候选分子生成优先走哪类优势骨架：锌酞菁/卟啉、D-A/D-B-A 有机 I 型骨架、AIE 膜锚定骨架、CA-Re 类金属配合物，还是并行保留多路线？"
+    required_expert: "领域专家 + 计算机专家"
+    reason: "不同骨架对应不同 reward 方向，例如普通酞菁偏非聚集和高单线态氧，AIE 体系则可能需要生产性聚集，I 型 D-B-A 则需要电子转移代理指标。"
+    priority: high
+  - object_id: CP001_CP002
+    question: "TD-DFT 吸收 reward 的初始阈值是否采用 lambda_max >= 650 nm、700-800 nm 强奖励、oscillator strength f > 0.05 通过？是否需要按现有光源设备改成 520/525/640 nm 等固定窗口？"
+    required_expert: "计算专家 + 实验平台负责人 + 计算机专家"
+    reason: "吸收窗口和振子强度是最容易进入迭代优化的 DFT 指标，但阈值必须匹配实验光源和应用场景。"
+    priority: high
+  - object_id: CP003_CP004
+    question: "ISC 代理指标是否采用 min DeltaE(S1-Tn) < 0.4 eV 作为软阈值，并将 SOC 作为同骨架内相对最大化指标？"
+    required_expert: "计算化学专家"
+    reason: "综述证据支持 S1-Tn 能隙小有利 ISC，但 SOC 的绝对阈值跨骨架不稳定，尤其金属配合物和纯有机分子不可直接比较。"
+    priority: high
+  - object_id: CP005
+    question: "当前优化路线应选择 II 型 PDT 的 E(T1) > 0.98 eV，还是 I 型/低氧 PDT 的 E(T1) < 0.98 eV 或方法特异阈值？是否允许 type-I/type-II 双路线并行但分开打分？"
+    required_expert: "领域专家 + 计算专家 + 计算机专家"
+    reason: "E(T1) 阈值方向依机制相反，不能在同一候选 reward 中同时作为硬目标。"
+    priority: high
+  - object_id: CP008
+    question: "电子转移自由能 DeltaG_ET 的供体、受体、氧/中继体和溶剂环境如何定义？初始 reward 是否采用 DeltaG_ET < 0 eV，通过区间 -0.1 到 -0.5 eV？"
+    required_expert: "计算化学专家 + 光化学专家"
+    reason: "Type-I ROS 设计依赖电子转移热力学，但 Rehm-Weller 型计算需要明确参照环境，过强驱动力也可能带来副反应。"
+    priority: high
+  - object_id: CP009
+    question: "阳离子电荷、偶极矩、ESP 和 cLogP/logD 是否作为暗毒性/定位/水相行为的软约束？不同骨架的允许范围如何设定？"
+    required_expert: "材料专家 + 计算专家"
+    reason: "阳离子和脂溶性可提高定位，但也可能增加非特异结合、暗毒性和聚集风险，不能简单最大化。"
+    priority: medium
+  - object_id: REWARD.weights
+    question: "初始 reward 权重是否按四种场景分别保存：通用高光敏、II 型 PDT、I 型/低氧 PDT、光焦亡免疫治疗？当前项目实际应启用哪一套？"
+    required_expert: "计算机专家 + 领域专家"
+    reason: "不同场景的 W_abs/W_ISC/W_ROS/W_design/W_risk 权重不同，直接影响候选生成方向。"
+    priority: high
+  - object_id: COMPUTE.protocol
+    question: "DFT/TD-DFT 的计算协议如何固定：泛函、基组、溶剂模型、TDA 与否、构象采样、金属配合物处理、SOC 软件、是否需要 benchmark 已知分子？"
+    required_expert: "计算化学专家"
+    reason: "同一指标在不同计算协议下可能数值漂移；进入迭代优化前必须固定协议和校准集。"
     priority: high
