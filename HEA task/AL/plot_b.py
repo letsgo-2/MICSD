@@ -12,7 +12,7 @@ CSV_EXPERIENCED_RANDOM = r"round1 plot/total_examples_pool.csv"
 LABEL_ARBITRARY_INIT = "Experience-based suggestions"
 LABEL_EXPERIENCED_RANDOM = "Trad settings"
 
-OUTDIR = str(ROOT / "experinced plot")
+OUTDIR = str(ROOT / "round2 plot")
 
 
 N_INIT = 10          # 初始点

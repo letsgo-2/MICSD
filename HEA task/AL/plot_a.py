@@ -45,7 +45,7 @@ def set_paper_style():
 # 读取数据
 # =========================
 ROOT = Path(__file__).resolve().parent
-FIGURES = ROOT / 'experinced plot'
+FIGURES = ROOT / 'round2 plot'
 FIGURES.mkdir(exist_ok=True)
 a = pd.read_excel(ROOT / 'Data.xlsx')
 

@@ -14,7 +14,7 @@ def main():
             [sys.executable, "-B", str(root / script)],
             cwd=root, env=env, check=True,
         )
-    print(f"三个子图已生成: {root / 'experinced plot'}")
+    print(f"三个子图已生成: {root / 'round2 plot'}")
 
 
 if __name__ == "__main__":

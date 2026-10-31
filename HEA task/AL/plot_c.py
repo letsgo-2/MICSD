@@ -128,7 +128,7 @@ ax.set_xlim(-0.5, len(METALS) - 0.5)
 ax.legend(loc='upper right')
 
 # --- E. 保存 ---
-outdir = Path(__file__).resolve().parent / "experinced plot"
+outdir = Path(__file__).resolve().parent / "round2 plot"
 outdir.mkdir(exist_ok=True)
 save_path = outdir / "Fig8_c.png"
 plt.savefig(save_path, dpi=600, bbox_inches='tight')
