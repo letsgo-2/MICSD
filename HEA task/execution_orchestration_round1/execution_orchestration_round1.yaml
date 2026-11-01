@@ -54,7 +54,7 @@ metric_candidates:
     conditions: [robotic_or_manual_synthesis]
     acquisition: [derive, expert_only]
     evidence_refs: [Round2_review_queue]
-    expert_status: pending
+    expert_status: "constraint_role_confirmed_numeric_bounds_and_presence_unconfirmed"
     unresolved_fields: [per_element_lower_bounds, per_element_upper_bounds, resolution]
   - metric_id: I001
     name: Peak / maximum power density
@@ -71,7 +71,7 @@ metric_candidates:
     conditions: [protocol_id_required, evidence_type_required]
     acquisition: [measure, predict]
     evidence_refs: [EO-E001, EO-E002, EO-E004]
-    expert_status: pending_unit_protocol
+    expert_status: "core_objective_confirmed_unit_and_protocol_unconfirmed"
     unresolved_fields: [unit, protocol_merge_rule]
   - metric_id: I002
     name: Cost-specific performance
@@ -88,7 +88,7 @@ metric_candidates:
     conditions: [cost_formula_certified, benchmark_specified]
     acquisition: [derive, predict]
     evidence_refs: [EO-E001, EO-E003]
-    expert_status: pending_cost_formula
+    expert_status: "cost_performance_role_accepted_exact_formula_unconfirmed"
     unresolved_fields: [cost_formula, price_date]
   - metric_id: I003
     name: Normalized catalyst cost
@@ -105,7 +105,7 @@ metric_candidates:
     conditions: [price_basis_required]
     acquisition: [derive]
     evidence_refs: [EO-E007, EO-E003]
-    expert_status: pending_price_basis
+    expert_status: "cost_proxy_selected_price_and_formula_unconfirmed"
     unresolved_fields: [price_source, hard_upper_bound]
   - metric_id: I015
     name: Precious-metal fraction
@@ -122,7 +122,7 @@ metric_candidates:
     conditions: [normalized_composition]
     acquisition: [derive]
     evidence_refs: [Round2_yaml]
-    expert_status: pending_threshold
+    expert_status: "precious_metal_cost_descriptor_accepted_threshold_unconfirmed"
     unresolved_fields: [hard_or_soft_policy]
 
 metric_decisions:
@@ -543,3 +543,44 @@ version_history:
   - version: round1
     change_summary: "Initial execution orchestration from Round 2 knowledge alignment; workflow draft only, no final model selected."
     evidence_refs: [EO-E001, EO-E002, EO-E003, EO-E004, EO-E005, EO-E006, EO-E007]
+
+dialogue_status_reconciliation:
+  annotation_date: '2026-10-30'
+  basis: Retrospective inference from the supplied dialogue; broad acceptance of task roles and working knowledge, not
+    newly performed expert validation.
+  source_file: multi_round_dialogue_example_EN.txt
+  source_sha256: 759f71d407a9bb2c542208a75279b8477e0833f2f54ee566e3e990870f96a994
+  independent_itemwise_verification_recorded: false
+  quantitative_thresholds_or_prices_approved: false
+  execution_authorized: false
+  composition_basis_caution: Dialogue specifies mass fractions. Atomic-/molar-fraction entries are not upgraded by this
+    annotation; conversion and schema reconciliation remain necessary.
+  feedback:
+  - id: EO1
+    line: 12
+    statement: 'Please run the Execution Orchestration Skill. Based on the three output files from the knowledge-alignment
+      stage and the research methods used in this field, which may be identified from the literature or through online
+      research, design a basic task-execution workflow for optimizing the formulation of an eight-component high-entropy
+      alloy catalyst. Provide necessary recommendations, especially recommendations for metric ranking and corresponding
+      threshold guidance, preferably supported by evidence. Starting from existing experimental data, the workflow should
+      explain how to perform data organization, model training, candidate-composition generation, performance evaluation,
+      candidate screening, and result feedback, but it must not assume a specific model or algorithm that has not yet
+      been confirmed. The materials expert provides the following information: the catalyst consists of eight metals—Pd,
+      Pt, Au, Cr, Ir, Ce, Cu, and Nb—and is generally represented as a mass-fraction vector with a fixed element order;
+      each element''s mass fraction must be nonnegative, and the fractions must sum to 1. The optimization problem therefore
+      involves trade-offs among peak power density, cost, and composition constraints. The computer expert would like
+      to construct a model workflow capable of iterative optimization from existing composition-performance data. Add
+      the suffix `round1` to the output filenames.'
+  - id: EO2
+    line: 16
+    statement: The materials scientist notes that the organization of metrics in the current workflow still needs adjustment.
+      In addition to peak power density, the workflow may consider normalized cost, composition validity, element-content
+      ranges, differences between candidate compositions and existing experimental samples, model-prediction confidence,
+      and the stability of high-performance formulations. The computer expert confirms that peak power density will be
+      the core performance metric for formulation optimization, while nonnegative mass fractions for the eight elements,
+      a total fraction of 1, and a fixed element order will serve as composition constraints. The `AL` folder is now
+      provided as the implemented model execution path. The model architecture, training method, metric-configuration
+      files, runtime parameters, data interfaces, and candidate-result format must be obtained from the code, documentation,
+      and interface documents in the `AL` folder. Inspect and update the model information and interfaces independently,
+      improve the workflow, and report the proposed execution procedure to me for confirmation. Do not run it without
+      authorization. Clearly specify all output paths. Update the previous round's output files and add the suffix `round2`.

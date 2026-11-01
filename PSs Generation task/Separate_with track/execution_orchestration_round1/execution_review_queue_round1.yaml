@@ -1,0 +1,122 @@
+round: 1
+status: "task_inputs_confirmed_technical_review_items_unresolved"
+source_round: knowledge_alignment_round2
+items:
+  - id: EXR1-001
+    inherited_id: R2RQ001
+    object: scaffold_family_ranking
+    issue: "Approve multi-family Pareto search with porphyrin as a required seed branch, or provide a justified single-family scope."
+    requested_expert: domain_chemist
+    action: approve_or_revise
+    blocking: true
+  - id: EXR1-002
+    inherited_id: R2RQ002
+    object: illumination_window
+    issue: "Select the active application window: 600-800 nm or broader 600-850 nm. Until approved, both remain contextual soft branches."
+    requested_expert: photophysics_and_application
+    action: approve_or_revise
+    blocking: true
+  - id: EXR1-003
+    inherited_id: R2RQ003
+    object: triplet_protocol
+    issue: "Fix vertical versus adiabatic triplet definitions, functional/reference protocol, solvent, and state-selection rule."
+    requested_expert: computational_photochemistry
+    action: request_test
+    blocking: true
+  - id: EXR1-004
+    inherited_id: R2RQ005
+    object: Type_I_redox_protocol
+    issue: "Specify electron-transfer partner, solvent, reference electrode, and target radical pathway before activating D006/D007 reward components."
+    requested_expert: photochemistry
+    action: request_evidence
+    blocking: true
+  - id: EXR1-005
+    inherited_id: R2RQ006
+    object: aggregation_protocol
+    issue: "Specify representative dimer geometries, solvent model, conformer ensemble, and family-control baseline before activating D008."
+    requested_expert: materials_chemistry
+    action: request_test
+    blocking: true
+  - id: EXR1-006
+    inherited_id: R2RQ004
+    object: SOC
+    issue: "Confirm whether SOC is affordable and calibrated for each heavy-atom family; keep it diagnostic until then."
+    requested_expert: computational_photochemistry
+    action: revise
+    blocking: false
+  - id: EXR1-007
+    inherited_id: R2RQ007
+    object: PhiDelta_threshold
+    issue: "Confirm that reported ΦΔ values are labels with assay metadata, never universal thresholds."
+    requested_expert: photochemistry
+    action: approve_or_revise
+    blocking: false
+  - id: EXR1-008
+    inherited_id: R2RQ008
+    object: biological_surrogate_activation
+    issue: "Define held-out performance, uncertainty calibration, and applicability-domain requirements before adding cellular potency, dark toxicity, localization, or pyroptosis to reward."
+    requested_expert: computer_expert_and_biologist
+    action: request_evidence
+    blocking: true
+  - id: EXR1-009
+    inherited_id: R2RQ009
+    object: heavy_atom_proxy_scope
+    issue: "Do not transfer AHAC-like or related heavy-atom proxies outside calibrated chromophore families without validation."
+    requested_expert: computational_photochemistry
+    action: revise
+    blocking: false
+  - id: EXR1-010
+    object: model_execution_authorization
+    issue: "Provide generator, DFT, and RL model locations, versions, executable entrypoints, parameter interfaces, and explicit adjustment authorization."
+    requested_expert: computer_expert
+    action: request_evidence
+    blocking: true
+  - id: EXR1-011
+    object: RECAP_chemistry_rules
+    issue: "Approve allowed RECAP fragment edits, protected motifs, charge/metal rules, stereochemistry policy, and forbidden regions."
+    requested_expert: materials_chemist_and_chemist
+    action: request_evidence
+    blocking: true
+  - id: EXR1-012
+    object: pilot_budget
+    issue: "Approve the proposed 20–50 candidate pilot, family quotas, compute budget, and invalid-rate pause rule."
+    requested_expert: project_owner
+    action: approve_or_revise
+    blocking: false
+
+expert_feedback_reconciliation:
+  annotation_date: '2026-10-31'
+  annotation_type: dialogue_based_stage_status_reconciliation
+  requested_by: user
+  source_dialogue: ../../multi_round_dialogue_example_EN.txt
+  source_sha256: ebb57f5513ccd2ee131a9971088e81acaa8e6b610f46e7df5afea5890dbc12d8
+  interpretation: Stage-scoped working acceptance from the saved dialogue and subsequent adoption, following the earlier
+    PS reconciliation rules.
+  itemwise_scientific_validation_completed_by_this_update: false
+  numerical_values_units_and_thresholds_certified_by_this_update: false
+  execution_authorized_by_this_update: false
+  existing_disputed_entries_preserved: true
+  unanswered_review_items_and_blocking_flags_preserved: true
+  historical_execution_trace_events_modified: false
+  source_feedback_records:
+  - feedback_id: PS-EO-R1-INPUTS
+    source_line: 12
+    excerpt: 'Please run the Execution Orchestration Skill. Based on the three output files from the knowledge-alignment
+      stage, design a task-execution workflow. Provide necessary recommendations, especially recommendations for metric
+      ranking and corresponding threshold guidance, preferably supported by evidence. The materials expert provides the
+      following information: molecules are generally represented using SMILES, RECAP is used as the molecular fragmentation
+      rule, and porphyrin is a commonly used scaffold. The computer expert intends to construct a reinforcement-learning
+      framework for molecular-generation optimization. Add the suffix `round1` to the output filenames.'
+  - feedback_id: PS-EO-R2-METRICS
+    source_line: 15
+    excerpt: 'The materials scientist requests an updated priority ranking for the following metrics: SOCME, HOMO–LUMO
+      gap, E(S1)−E(T1), E(S1), charge, symmetry, SA, logP, TPSA, and molecular weight (MW). Update the output files and
+      add the suffix `round2`.'
+  updates:
+  - path: status
+    status: task_inputs_confirmed_technical_review_items_unresolved
+    feedback_refs:
+    - PS-EO-R1-INPUTS
+    - PS-EO-R2-METRICS
+    scope: Stage-level intent is confirmed; existing review questions, blocking flags and unanswered details are retained,
+      not marked resolved.

@@ -21,7 +21,8 @@ concepts:
       version_or_access_date: "MeSH 2026; accessed 2026-07-17"
       mapping_status: exact
     evidence: [E001, E002]
-    expert_status: pending
+    expert_status: "confirmed_in_principle_from_dialogue"
+    expert_feedback_refs: [PS-KA-R2-BASE]
   - concept_id: C002
     name: "Photosensitizing agent"
     definition: "A drug or compound that becomes active after exposure to light and is used to produce a therapeutic photochemical response."
@@ -33,7 +34,8 @@ concepts:
       version_or_access_date: "MeSH 2026; accessed 2026-07-17"
       mapping_status: close
     evidence: [E003]
-    expert_status: pending
+    expert_status: "confirmed_in_principle_from_dialogue"
+    expert_feedback_refs: [PS-KA-R2-BASE]
   - concept_id: C003
     name: "Reactive oxygen species"
     definition: "Molecules or ions formed by incomplete one-electron reduction of oxygen, including species relevant to PDT such as singlet oxygen, superoxide, hydrogen peroxide, and hydroxyl radical."
@@ -45,7 +47,8 @@ concepts:
       version_or_access_date: "accessed 2026-07-17"
       mapping_status: exact
     evidence: [E004]
-    expert_status: pending
+    expert_status: "confirmed_in_principle_from_dialogue"
+    expert_feedback_refs: [PS-KA-R2-BASE]
   - concept_id: C004
     name: "Singlet oxygen"
     definition: "An electronically excited form of molecular oxygen; in PDT literature it is the principal type-II cytotoxic species and is often measured by singlet-oxygen quantum yield."
@@ -57,7 +60,8 @@ concepts:
       version_or_access_date: "accessed 2026-07-17"
       mapping_status: close
     evidence: [E005, E006, E011]
-    expert_status: pending
+    expert_status: "confirmed_in_principle_from_dialogue"
+    expert_feedback_refs: [PS-KA-R2-BASE]
   - concept_id: C005
     name: "Quantum yield"
     definition: "Number of defined events per photon absorbed by the system."
@@ -69,7 +73,8 @@ concepts:
       version_or_access_date: "Gold Book online 5.0.0; accessed 2026-07-17"
       mapping_status: exact
     evidence: [E005]
-    expert_status: pending
+    expert_status: "confirmed_in_principle_from_dialogue"
+    expert_feedback_refs: [PS-KA-R2-BASE]
   - concept_id: C006
     name: "Type-I photosensitization"
     definition: "Electron-transfer-dominated photosensitization in which excited photosensitizers generate superoxide and downstream peroxide/hydroxyl-radical chemistry, often less oxygen-dependent than type-II PDT."
@@ -81,7 +86,8 @@ concepts:
       version_or_access_date: "2026-07-17"
       mapping_status: local
     evidence: [E007]
-    expert_status: pending
+    expert_status: "confirmed_in_principle_from_dialogue"
+    expert_feedback_refs: [PS-KA-R2-BASE]
   - concept_id: C007
     name: "Photopyroptosis"
     definition: "Light-triggered photosensitizer-induced pyroptotic cell death, often linked in the wiki evidence to ROS-caspase-gasdermin pathways and immunogenic cell-death signals."
@@ -93,7 +99,8 @@ concepts:
       version_or_access_date: "2026-07-17"
       mapping_status: local
     evidence: [E008, E009]
-    expert_status: pending
+    expert_status: "confirmed_in_principle_from_dialogue"
+    expert_feedback_refs: [PS-KA-R2-BASE]
 
 indicators:
   - indicator_id: I001
@@ -113,7 +120,8 @@ indicators:
     methods: ["CCK-8/MTT/cell viability IC50", "MIC/time-kill assay", "light/dark matched controls"]
     related_indicators: [I002, I003, I004, I008]
     evidence: [E006, E010, E012]
-    expert_status: pending
+    expert_status: "confirmed_in_principle_from_dialogue"
+    expert_feedback_refs: [PS-KA-R2-BASE]
   - indicator_id: I002
     name: "Dark toxicity"
     definition: "Toxicity of the molecule without illumination, often reported as TC50 or dark IC50."
@@ -131,7 +139,8 @@ indicators:
     methods: ["dark cytotoxicity assay"]
     related_indicators: [I001, I003]
     evidence: [E006, E011, E012]
-    expert_status: pending
+    expert_status: "confirmed_in_principle_from_dialogue"
+    expert_feedback_refs: [PS-KA-R2-BASE]
   - indicator_id: I003
     name: "Phototoxicity index / therapeutic ratio"
     definition: "Ratio of dark toxicity threshold to illuminated toxicity threshold, e.g. TC50/IC50."
@@ -149,7 +158,8 @@ indicators:
     methods: ["derive from paired dark and light IC50/TC50"]
     related_indicators: [I001, I002]
     evidence: [E006, E011, E012]
-    expert_status: pending
+    expert_status: "confirmed_in_principle_from_dialogue"
+    expert_feedback_refs: [PS-KA-R2-BASE]
   - indicator_id: I004
     name: "Singlet-oxygen quantum yield"
     definition: "Quantum yield for producing singlet oxygen after light absorption."
@@ -167,7 +177,8 @@ indicators:
     methods: ["1270 nm luminescence", "chemical probe bleaching", "reference-standard quantum yield"]
     related_indicators: [I001, I005, I007]
     evidence: [E005, E011, E013]
-    expert_status: pending
+    expert_status: "confirmed_in_principle_from_dialogue"
+    expert_feedback_refs: [PS-KA-R2-BASE]
   - indicator_id: I005
     name: "Type-I ROS generation capacity"
     definition: "Ability to generate superoxide, hydrogen peroxide, hydroxyl radicals, lipid peroxidation, or related electron-transfer ROS under irradiation."
@@ -185,7 +196,8 @@ indicators:
     methods: ["DHE/HPF/DCFH-DA probes", "EPR spin trapping", "ROS scavenger controls"]
     related_indicators: [I001, I006, I010]
     evidence: [E007, E010, E012]
-    expert_status: pending
+    expert_status: "confirmed_in_principle_from_dialogue"
+    expert_feedback_refs: [PS-KA-R2-BASE]
   - indicator_id: I006
     name: "Hypoxia-retained phototoxicity"
     definition: "Phototoxic potency and phototoxicity index measured under low oxygen, such as 1% O2."
@@ -203,7 +215,8 @@ indicators:
     methods: ["hypoxic cell viability assay", "paired normoxia/hypoxia comparison"]
     related_indicators: [I001, I003, I005]
     evidence: [E012]
-    expert_status: pending
+    expert_status: "confirmed_in_principle_from_dialogue"
+    expert_feedback_refs: [PS-KA-R2-BASE]
   - indicator_id: I007
     name: "Absorption in therapeutic wavelength window"
     definition: "Absorption maximum and extinction/absorption strength in red or near-infrared ranges suitable for deeper tissue penetration."
@@ -221,7 +234,8 @@ indicators:
     methods: ["UV-vis absorption spectrum", "TD-DFT prediction"]
     related_indicators: [I001, I004]
     evidence: [E008, E011]
-    expert_status: pending
+    expert_status: "confirmed_in_principle_from_dialogue"
+    expert_feedback_refs: [PS-KA-R2-BASE]
   - indicator_id: I008
     name: "Aggregation / aqueous monomericity"
     definition: "Whether the molecule remains non-aggregated or productively emissive/active in aqueous biological conditions."
@@ -239,7 +253,8 @@ indicators:
     methods: ["Beer-Lambert linearity", "UV-vis Q-band shape", "DLS/TEM/SEM", "NMR", "AIE fluorescence"]
     related_indicators: [I004, I009, I012]
     evidence: [E011, E013, E014]
-    expert_status: pending
+    expert_status: "confirmed_in_principle_from_dialogue"
+    expert_feedback_refs: [PS-KA-R2-BASE]
   - indicator_id: I009
     name: "Water solubility / dispersibility"
     definition: "Ability to dissolve or disperse in aqueous biological media without losing photodynamic activity."
@@ -257,7 +272,8 @@ indicators:
     methods: ["solubility assay", "spectral stability", "DLS"]
     related_indicators: [I008, I001]
     evidence: [E010, E011, E013]
-    expert_status: pending
+    expert_status: "confirmed_in_principle_from_dialogue"
+    expert_feedback_refs: [PS-KA-R2-BASE]
   - indicator_id: I010
     name: "Subcellular targeting / localization score"
     definition: "Degree of localization to therapeutically relevant organelles or membranes, measured by colocalization or targeting assays."
@@ -275,7 +291,8 @@ indicators:
     methods: ["confocal colocalization", "HIS-SIM", "competition assay", "organelle probes"]
     related_indicators: [I001, I005, I011]
     evidence: [E008, E009, E012, E015]
-    expert_status: pending
+    expert_status: "confirmed_in_principle_from_dialogue"
+    expert_feedback_refs: [PS-KA-R2-BASE]
   - indicator_id: I011
     name: "Electrostatic interaction / cationic targeting strength"
     definition: "Strength of interaction between cationic photosensitizer motifs and anionic model or biological targets."
@@ -293,7 +310,8 @@ indicators:
     methods: ["binding assay", "zeta potential", "formal charge descriptors", "electrostatic potential calculation"]
     related_indicators: [I010, I002, I009]
     evidence: [E008, E014, E015]
-    expert_status: pending
+    expert_status: "confirmed_in_principle_from_dialogue"
+    expert_feedback_refs: [PS-KA-R2-BASE]
   - indicator_id: I012
     name: "Photothermal conversion efficiency"
     definition: "Fraction of absorbed optical energy converted to heat under a defined irradiation condition."
@@ -311,7 +329,8 @@ indicators:
     methods: ["photothermal heating curve", "cooling-time constant calculation"]
     related_indicators: [I001, I008]
     evidence: [E014]
-    expert_status: pending
+    expert_status: "confirmed_in_principle_from_dialogue"
+    expert_feedback_refs: [PS-KA-R2-BASE]
   - indicator_id: I013
     name: "Photopyroptosis efficiency"
     definition: "Extent and speed of pyroptotic cell death after photosensitizer irradiation, measured by morphology, LDH release, gasdermin cleavage, caspase activation, or Annexin V/PI flow cytometry."
@@ -329,7 +348,8 @@ indicators:
     methods: ["LDH", "GSDME/GSDMD cleavage", "caspase-1/3 activity", "live-cell imaging", "Annexin V/PI"]
     related_indicators: [I001, I005, I010]
     evidence: [E008, E009]
-    expert_status: pending
+    expert_status: "confirmed_in_principle_from_dialogue"
+    expert_feedback_refs: [PS-KA-R2-BASE]
   - indicator_id: I014
     name: "In vivo tumor retention / accumulation"
     definition: "Persistence or enrichment of the photosensitizer in tumor tissue relative to other tissues before irradiation."
@@ -347,7 +367,8 @@ indicators:
     methods: ["in vivo fluorescence imaging", "biodistribution"]
     related_indicators: [I001, I002, I008]
     evidence: [E008, E014]
-    expert_status: pending
+    expert_status: "confirmed_in_principle_from_dialogue"
+    expert_feedback_refs: [PS-KA-R2-BASE]
 
 claims:
   - claim_id: K001
@@ -358,7 +379,8 @@ claims:
     conditions: ["HeLa and 3T3 cells", "lambda > 570 nm", "12.4 mW cm^-2", "15 min", "11.2 J cm^-2"]
     evidence: [E006]
     confidence: high
-    expert_status: pending
+    expert_status: "confirmed_in_principle_from_dialogue"
+    expert_feedback_refs: [PS-KA-R2-BASE]
   - claim_id: K002
     subject: "Meta-substituted tetra-cationic Pd(II) porphyrin 3-PdTPyP"
     relation: "increases"
@@ -367,7 +389,8 @@ claims:
     conditions: ["white LED 400-800 nm", "50 mW/cm^2", "270 J/cm^2", "rapidly growing mycobacteria"]
     evidence: [E010]
     confidence: high
-    expert_status: pending
+    expert_status: "confirmed_in_principle_from_dialogue"
+    expert_feedback_refs: [PS-KA-R2-BASE]
   - claim_id: K003
     subject: "Reduced aqueous solubility and greater aggregation tendency"
     relation: "decreases"
@@ -376,7 +399,8 @@ claims:
     conditions: ["3-PdTPyP vs 4-PdTPyP study"]
     evidence: [E010]
     confidence: medium
-    expert_status: pending
+    expert_status: "confirmed_in_principle_from_dialogue"
+    expert_feedback_refs: [PS-KA-R2-BASE]
   - claim_id: K004
     subject: "Rigid charged hexadeca-cationic phthalocyanine architecture"
     relation: "inhibits"
@@ -385,7 +409,8 @@ claims:
     conditions: ["water, D2O, DMF, pH/ions/buffer/serum tests"]
     evidence: [E011, E013]
     confidence: high
-    expert_status: pending
+    expert_status: "confirmed_in_principle_from_dialogue"
+    expert_feedback_refs: [PS-KA-R2-BASE]
   - claim_id: K005
     subject: "CA-Re membrane anchoring plus mixed type-I/type-II ROS"
     relation: "promotes"
@@ -394,7 +419,8 @@ claims:
     conditions: ["MDA-MB-231 at 1% O2", "425 or 525 nm irradiation"]
     evidence: [E012]
     confidence: medium
-    expert_status: pending
+    expert_status: "confirmed_in_principle_from_dialogue"
+    expert_feedback_refs: [PS-KA-R2-BASE]
   - claim_id: K006
     subject: "Cation-clamping with pyridinium or imidazolium groups"
     relation: "promotes"
@@ -403,7 +429,8 @@ claims:
     conditions: ["1a-1d series; 1d representative; 640 nm irradiation"]
     evidence: [E008]
     confidence: medium
-    expert_status: pending
+    expert_status: "confirmed_in_principle_from_dialogue"
+    expert_feedback_refs: [PS-KA-R2-BASE]
   - claim_id: K007
     subject: "Cationic charge plus tuned lipophilicity"
     relation: "promotes"
@@ -412,7 +439,8 @@ claims:
     conditions: ["Zn(II) N-alkylpyridylporphyrin series"]
     evidence: [E015]
     confidence: medium
-    expert_status: pending
+    expert_status: "confirmed_in_principle_from_dialogue"
+    expert_feedback_refs: [PS-KA-R2-BASE]
   - claim_id: K008
     subject: "Dimerization of M1 to D1"
     relation: "increases"
@@ -421,7 +449,8 @@ claims:
     conditions: ["D1 vs M1; 520 nm irradiation for photothermal assay"]
     evidence: [E014]
     confidence: high
-    expert_status: pending
+    expert_status: "confirmed_in_principle_from_dialogue"
+    expert_feedback_refs: [PS-KA-R2-BASE]
   - claim_id: K009
     subject: "Enhanced electron transfer design"
     relation: "promotes"
@@ -430,7 +459,8 @@ claims:
     conditions: ["review evidence; direct strategy categories"]
     evidence: [E007]
     confidence: medium
-    expert_status: pending
+    expert_status: "confirmed_in_principle_from_dialogue"
+    expert_feedback_refs: [PS-KA-R2-BASE]
 
 evidence:
   - evidence_id: E001
@@ -563,3 +593,39 @@ optimization_targets:
   intermediate: [I010, I011]
   diagnostic: [I004, I005, I008, I010, I013]
   not_ready: []
+
+expert_feedback_reconciliation:
+  annotation_date: '2026-10-30'
+  annotation_type: retrospective_dialogue_based_status_reconciliation
+  scope: General knowledge, task inputs, candidate metrics, selected optimization metrics and constraint requirements
+    may be confirmed at their own stage. This is retrospective interpretation, not newly completed independent itemwise
+    validation.
+  source_file: multi_round_dialogue_example_EN.txt
+  source_sha256: ebb57f5513ccd2ee131a9971088e81acaa8e6b610f46e7df5afea5890dbc12d8
+  itemwise_expert_verification_completed: false
+  numerical_values_units_and_thresholds_certified: false
+  execution_authorized_by_this_annotation: false
+  note: No original-status fields or new original-file backup are retained in this update. Source dialogue and confirmation
+    scope remain recorded. Unanswered review items, quantitative settings, checkpoint approval and run authorization
+    remain unresolved.
+  feedback_records:
+  - feedback_id: PS-KA-R2-BASE
+    source_file: multi_round_dialogue_example_EN.txt
+    source_line: 6
+    source_excerpt: The domain expert states that the current knowledge is essentially correct, but an analysis of advantageous
+      photosensitizer scaffolds and their characteristics should be added. In addition, most current metrics require
+      biological experiments, so the computer expert should be provided with metrics that can be calculated numerically
+      using DFT, together with their meanings. The computer expert states that the current description of metric computability
+      is insufficiently clear and needs to identify the performance metrics that can genuinely be used in an iterative
+      optimization framework, their calculation methods, and threshold information for designing rewards from selected
+      performance metrics. Next, update and confirm the knowledge-alignment report according to the domain expert's requirements,
+      using evidence from the papers and authoritative online sources. Produce clearer supplements to the domain-expert
+      view and the computer-expert optimization metrics.
+    attributed_expert_role: domain expert
+    action: general_endorsement
+    confirmed_scope: Overall existing domain knowledge is essentially correct.
+    not_confirmed: No itemwise certification of values, units, conditions, mechanisms, metric computability, reward thresholds,
+      or scientific accuracy.
+    original_expert_review_date: null
+    provenance: User-provided dialogue example; no independent signature or original execution log is supplied.
+  status_interpretation: Stage-scoped confirmation inferred from supplied dialogue and subsequent workflow use.

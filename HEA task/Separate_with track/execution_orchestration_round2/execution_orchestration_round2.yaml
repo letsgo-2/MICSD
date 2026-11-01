@@ -1,0 +1,350 @@
+metadata:
+  title: "Execution orchestration: HEA formulation optimization with AL implementation"
+  round: 2
+  language: English
+  status: proposed_paused
+  created_date: "2026-10-27"
+  approval_status: "core_metric_and_constraints_confirmed_procedure_requires_authorization"
+  execution_performed: false
+  upstream: "../execution_orchestration_round1/"
+  implementation_root: "../AL/catalyst_active_learning_runnable/"
+  design_principle: "Use implemented AL interfaces as inspected; do not execute until explicitly authorized."
+execution_context:
+  goal: "Maximize device peak power density for eight-metal catalyst formulation; use other metrics as constraints, trade-off views, or diagnostics as approved."
+  composition_contract:
+    project_order: [Pd, Pt, Au, Cr, Ir, Ce, Cu, Nb]
+    project_basis: mass_fraction
+    hard_constraints: ["all x_i >= 0", "sum(x_i) = 1", "fixed named order"]
+    upstream_AL_order: [Pd, Pt, Cu, Au, Ir, Ce, Nb, Cr]
+    conflict_status: blocking
+    handling: "Named-element adapter required; preserve raw data and reject invalid inputs. No positional pass-through and no silent normalization."
+  execution_status: "Not run; no API, model, training, inference, candidate generation, tests, or environment-check command invoked."
+  conditions: {device_protocol: null, power_density_unit: null, fraction_assay_basis: null}
+implementation_inventory:
+  - {component_id: AL-ENTRY, type: entrypoint, path: "AL/catalyst_active_learning_runnable/run.py", interface: "--config, --iterations, --candidate-pool-size, --output-dir", behavior: "Loads config, validates, invokes pipeline; can call live API and auto-train if oracle artifact missing.", status: inspected_not_run}
+  - {component_id: AL-PIPELINE, type: pipeline, path: "AL/catalyst_active_learning_runnable/catalyst_al/pipeline.py", interface: "CatalystActiveLearningPipeline(config, provider=None).run()", behavior: "LLM recipe -> Dirichlet pool -> AK-DAS -> LLM committee -> Pareto selection -> GBR virtual oracle -> weighted retention -> CSV/JSON outputs.", status: inspected_not_run}
+  - {component_id: AL-LLM, type: provider, path: "AL/catalyst_active_learning_runnable/catalyst_al/providers.py", interface: "DesignProvider.generate_ratio(target_pd,target_cost,references); predict_committee(ratio,similar_examples,size)", behavior: "OpenAI-compatible chat completions; model, key, base URL via environment; temperature 0.2; generated fractions normalized; committee values constrained to [0,500].", status: live_external_dependency_not_authorized}
+  - {component_id: AL-ORACLE, type: predictor, path: "AL/catalyst_active_learning_runnable/catalyst_al/model.py", interface: "train_oracle(path,model_path,random_seed); load_or_train_oracle(...) ", behavior: "GradientBoostingRegressor, 512 estimators, learning_rate .03, max_depth 3, squared_error; random 80/20 split; outputs virtual power labels; auto-trains if artifact absent.", status: virtual_oracle_not_measurement}
+  - {component_id: AL-SAMPLER, type: generator_and_selector, path: "AL/catalyst_active_learning_runnable/catalyst_al/sampling.py", interface: "Dirichlet sampling in pipeline; AKDAS(target_point,lambda_param,sigma).select_points(candidates,count)", behavior: "CLR with epsilon 1e-6; Euclidean CLR/Aitchison distance; Gaussian-kernel relevance/diversity.", status: implemented_not_project_validated}
+  - {component_id: AL-COST, type: cost_calculator, path: "AL/catalyst_active_learning_runnable/catalyst_al/costs.py", interface: "normalize_ratio(ratio); calculate_normalized_cost(ratio)", behavior: "Fixed order and hardcoded price constants; output 100*weighted sum/Pd price.", status: "relative index only; dated price provenance absent"}
+  - {component_id: AL-PARETO, type: selector, path: "AL/catalyst_active_learning_runnable/catalyst_al/pareto.py", interface: "select_pareto_candidates(candidates,top_k,weight)", behavior: "Pareto by UCB/max and normalized cost/min, then weight ordering.", status: "implemented policy not approved for project"}
+  - {component_id: AL-DATA, type: data_adapter, path: "AL/catalyst_active_learning_runnable/catalyst_al/data.py", interface: "CSV columns eight metal names plus power_density", behavior: "Drop missing rows and normalize every ratio; no condition, unit, provenance, uncertainty, replicate, or basis contract.", status: "requires project adapter before use"}
+metric_candidates:
+  - metric_id: M-PPOWER
+    name: Peak power density
+    aliases: [power_density, P_peak]
+    definition: "Device-level peak power density under a locked protocol and declared unit."
+    unit: null
+    proposed_roles: [primary_objective]
+    direction: maximize
+    threshold: {value: null, range: [], unit: null, status: baseline_relative, guidance: "Matched protocol baseline and replicate uncertainty; no universal numeric threshold."}
+    evaluator_id: AL-ORACLE
+    evidence_refs: ["README.md:198-208", "pipeline.py:136-145", "model.py:14-45"]
+    expert_status: "core_objective_confirmed_unit_and_protocol_unconfirmed"
+    limitation: "AL GBR output is virtual prediction, not experimental measurement; project device label/unit/protocol not established in AL CSV."
+  - metric_id: M-COMPOSITION-VALIDITY
+    name: Composition validity
+    aliases: [fraction_closure, nonnegativity, fixed_order]
+    definition: "Eight named mass fractions in project order, finite and nonnegative, summing to one under approved tolerance."
+    unit: mass_fraction
+    proposed_roles: [hard_constraint]
+    direction: target_range
+    threshold: {value: "x_i >= 0; sum(x)=1", range: [], unit: mass_fraction, status: validated_hard, tolerance: null, guidance: "Tolerance/precision is still to be approved; reject invalid input rather than renormalize."}
+    evaluator_id: PROJECT-SCHEMA-CHECK
+    evidence_refs: ["costs.py:6,19-28", "data.py:11-21", "providers.py:49-70"]
+    expert_status: "mass_fraction_nonnegativity_closure_and_fixed_order_confirmed"
+    unresolved_fields: [closure_tolerance, assay_basis]
+  - metric_id: M-NORMALIZED-COST
+    name: AL normalized cost index
+    aliases: [normalized_cost]
+    definition: "100 times weighted hardcoded element-price sum divided by the Pd reference price."
+    unit: "relative index (not currency)"
+    proposed_roles: [secondary_objective, diagnostic]
+    direction: minimize
+    threshold: {value: null, range: [], unit: "relative index", status: unresolved, guidance: "No threshold until project accepts formula or replaces dated price table and basis."}
+    evaluator_id: AL-COST
+    evidence_refs: ["costs.py:6-16,31-34"]
+    expert_status: "cost_proxy_selected_price_and_formula_unconfirmed"
+    unresolved_fields: [price_date, currency, product_form, catalyst_mass_basis, cost_policy]
+  - metric_id: M-ELEMENT-RANGE
+    name: Element-content ranges and presence
+    aliases: [support_count, element_bounds]
+    definition: "Each fraction checked against expert-approved per-element bounds and presence semantics; nominal and measured vectors kept distinct."
+    unit: mass_fraction
+    proposed_roles: [hard_constraint, diagnostic]
+    direction: target_range
+    threshold: {value: null, range: [], unit: mass_fraction, status: unresolved, guidance: "Do not impose ranges or exact-eight measured-presence threshold until approved."}
+    evaluator_id: PROJECT-SCHEMA-CHECK
+    evidence_refs: ["data/initial_examples.csv", "costs.py:19-28"]
+    expert_status: "constraint_role_confirmed_numeric_bounds_and_presence_unconfirmed"
+    unresolved_fields: [element_min_max, epsilon_presence, nominal_or_measured_enforcement]
+  - metric_id: M-EXPERIMENTAL-NOVELTY
+    name: Distance to existing experimental compositions
+    aliases: [composition_novelty, nearest_neighbor_distance]
+    definition: "Nearest-neighbor distance in a declared compositional representation against verified experimental records only."
+    unit: "CLR/Aitchison distance (dimensionless) if approved"
+    proposed_roles: [diagnostic]
+    direction: context_dependent
+    threshold: {value: null, range: [], unit: null, status: unresolved, guidance: "Set applicability/novelty decision rule from measured-data validation; exclude virtual/oracle records from experimental reference pool."}
+    evaluator_id: AL-SAMPLER
+    evidence_refs: ["sampling.py:6-25,28-53"]
+    expert_status: "diagnostic_requested_distance_definition_unconfirmed"
+    unresolved_fields: [reference_dataset_labels, out_of_domain_rule]
+  - metric_id: M-PREDICTION-CONFIDENCE
+    name: Prediction confidence / committee disagreement
+    aliases: [llm_std, UCB]
+    definition: "AL currently reports repeated LLM prediction mean/std and UCB; this is disagreement, not calibrated confidence."
+    unit: "same unit as LLM response; currently unspecified"
+    proposed_roles: [diagnostic]
+    direction: context_dependent
+    threshold: {value: null, range: [], unit: null, status: unresolved, guidance: "Calibrate against held-out measured device data before treating as predictive uncertainty; outlier disagreement routes to review."}
+    evaluator_id: AL-LLM
+    evidence_refs: ["providers.py:72-92", "pipeline.py:115-128"]
+    expert_status: "diagnostic_requested_calibration_unconfirmed"
+    unresolved_fields: [LLM_output_unit, calibration, acceptable_disagreement]
+  - metric_id: M-STABILITY
+    name: Stability of high-performance formulations
+    aliases: [retention, degradation]
+    definition: "Retention or degradation of a specified response after a defined time/cycle/environment protocol."
+    unit: null
+    proposed_roles: [deferred, hard_constraint]
+    direction: maximize
+    threshold: {value: null, range: [], unit: null, status: unresolved, guidance: "No stability data, protocol, or implementation found; do not activate until added and approved."}
+    evaluator_id: EXPERIMENT-INTERFACE-TBD
+    evidence_refs: ["README.md:198-208", "config.json"]
+    expert_status: "diagnostic_requested_stability_definition_unconfirmed"
+    unresolved_fields: [response, duration, environment, failure_rule, minimum_retention]
+metric_decisions:
+  - {metric_id: M-COMPOSITION-VALIDITY, final_role: hard_constraint, rank: 1, ranking_basis: [invalid vectors must not reach generator/model, deterministic precheck], direction: target_range, threshold: {status: unresolved, value: "nonnegative and sum=1; tolerance requires approval"}, evaluator_id: PROJECT-SCHEMA-CHECK, decision_status: proposed, evidence_refs: ["data.py:11-21"]}
+  - {metric_id: M-PPOWER, final_role: primary_objective, rank: 2, ranking_basis: [computer expert confirmed core performance target, device protocol/units still missing], direction: maximize, threshold: {status: baseline_relative, value: null}, evaluator_id: AL-ORACLE, decision_status: proposed, evidence_refs: ["pipeline.py:136-145"]}
+  - {metric_id: M-ELEMENT-RANGE, final_role: hard_constraint, rank: 3, ranking_basis: [ranges are feasibility policy but values not supplied; otherwise diagnostic], direction: target_range, threshold: {status: unresolved, value: null}, evaluator_id: PROJECT-SCHEMA-CHECK, decision_status: proposed, evidence_refs: ["data.py:17-20"]}
+  - {metric_id: M-NORMALIZED-COST, final_role: secondary_objective, rank: 4, ranking_basis: [cost trade-off is relevant; current index lacks price provenance and policy approval], direction: minimize, threshold: {status: unresolved, value: null}, evaluator_id: AL-COST, decision_status: proposed, evidence_refs: ["costs.py:6-34"]}
+  - {metric_id: M-EXPERIMENTAL-NOVELTY, final_role: diagnostic, rank: 5, ranking_basis: [helps identify extrapolation and diverse candidates; no validated cutoff], direction: context_dependent, threshold: {status: unresolved, value: null}, evaluator_id: AL-SAMPLER, decision_status: proposed, evidence_refs: ["sampling.py:18-53"]}
+  - {metric_id: M-PREDICTION-CONFIDENCE, final_role: diagnostic, rank: 6, ranking_basis: [selection safeguard but LLM dispersion is uncalibrated and GBR has no uncertainty], direction: context_dependent, threshold: {status: unresolved, value: null}, evaluator_id: AL-LLM, decision_status: proposed, evidence_refs: ["providers.py:72-92"]}
+  - {metric_id: M-STABILITY, final_role: deferred, rank: 7, ranking_basis: [scientifically relevant but absent from code/data; protocol required], direction: maximize, threshold: {status: unresolved, value: null}, evaluator_id: EXPERIMENT-INTERFACE-TBD, decision_status: proposed, evidence_refs: ["README.md:198-208"]}
+model_interfaces:
+  - model_id: AL-LLM-DESIGN-001
+    name: "OpenAI-compatible recipe and committee provider"
+    role: predictor
+    status: available
+    source: {type: local, location: "AL/catalyst_active_learning_runnable/catalyst_al/providers.py", version: "repository version not established"}
+    entrypoint: {command: "python run.py", script: "catalyst_al/providers.py::OpenAIProvider", environment: ".env: OPENAI_API_KEY, OPENAI_MODEL, optional OPENAI_BASE_URL", working_directory: "AL/catalyst_active_learning_runnable"}
+    human_provision: {model_information_provided: true, script_location_provided: true, executable_interface_exposed: true, parameter_interface_exposed: false, access_level: inspect_only, authorized_parameters: [], prohibited_actions: ["No live API calls without explicit authorization", "Do not disclose API keys", "Do not change prompt/order/output assumptions without review"] , provided_by: "AL implementation", confirmation_ref: "explicit_execution_authorization_not_documented"}
+    input_schema: [target_pd, target_cost, reference_examples, candidate_ratio, similar_examples, committee_size]
+    output_schema: [eight_fraction_vector, repeated_power_predictions, mean, sample_std, UCB]
+    supported_metrics: [M-PPOWER, M-PREDICTION-CONFIDENCE]
+    parameters: {temperature: 0.2, max_tokens_recipe: 120, max_tokens_prediction: 20, predicted_power_range: [0, 500], element_order: [Pd, Pt, Cu, Au, Ir, Ce, Nb, Cr]}
+    validation: {test_data: "none inspected for calibration", metrics: {}, applicability_domain: "unknown", known_failures: ["provider/API/model availability", "parse failure", "wrong vector order", "committee dispersion uncalibrated"]}
+    evidence_refs: ["providers.py:10-16,18-92", ".env.example"]
+  - model_id: AL-GBR-ORACLE-001
+    name: "GradientBoostingRegressor virtual oracle"
+    role: predictor
+    status: available
+    source: {type: local, location: "AL/catalyst_active_learning_runnable/catalyst_al/model.py", version: "artifact provenance/version not established"}
+    entrypoint: {command: "python train_oracle.py", script: "catalyst_al/model.py::train_oracle", environment: "Python 3.10-3.12; see requirements.txt", working_directory: "AL/catalyst_active_learning_runnable"}
+    human_provision: {model_information_provided: true, script_location_provided: true, executable_interface_exposed: true, parameter_interface_exposed: true, access_level: inspect_only, authorized_parameters: [], prohibited_actions: ["No training or inference without explicit authorization", "Do not treat virtual output as measured data", "Do not overwrite artifact"] , provided_by: "AL implementation", confirmation_ref: "explicit_execution_authorization_not_documented"}
+    input_schema: ["float vector in AL order [Pd, Pt, Cu, Au, Ir, Ce, Nb, Cr]"]
+    output_schema: [power_density_virtual_prediction]
+    supported_metrics: [M-PPOWER]
+    parameters: {n_estimators: 512, learning_rate: 0.03, max_depth: 3, loss: squared_error, random_seed: 42, validation_split: "random 80/20"}
+    validation: {test_data: "data/oracle_training_sample.csv; 120 rows per README", metrics: [test_r2, test_rmse, test_mae], applicability_domain: "unestablished for project/device data", known_failures: ["virtual data only", "random split may leak related compositions", "basis/order and device labels unconfirmed"]}
+    evidence_refs: ["model.py:14-56", "README.md:198-208"]
+    execution_guard: "Pipeline initialization auto-trains if artifact absent; check artifact provenance before any run."
+  - model_id: AL-AKDAS-001
+    name: "Dirichlet + AK-DAS candidate selection"
+    role: generator
+    status: available
+    source: {type: local, location: "AL/catalyst_active_learning_runnable/catalyst_al/sampling.py", version: "repository version not established"}
+    entrypoint: {command: "invoked inside run.py", script: "pipeline.py:102-107; sampling.py:28-53", environment: "numpy"
+    }
+    human_provision: {model_information_provided: true, script_location_provided: true, executable_interface_exposed: true, parameter_interface_exposed: true, access_level: inspect_only, authorized_parameters: [], prohibited_actions: ["No candidate generation without explicit authorization", "Do not use incompatible element order"] , provided_by: "AL implementation", confirmation_ref: "explicit_execution_authorization_not_documented"}
+    input_schema: [target_composition, candidate_pool, lambda_param, sigma, select_count]
+    output_schema: [selected_composition_vectors]
+    supported_metrics: [M-ELEMENT-RANGE, M-EXPERIMENTAL-NOVELTY]
+    parameters: {candidate_distribution: "Dirichlet(alpha=1 for all 8 components)", clr_epsilon: 1.0e-6, default_pool: 20000, default_selected: 10, lambda_start: 0.5, lambda_end: 0.7, sigma: 1.5}
+    validation: {test_data: "software tests present but not run", metrics: {}, applicability_domain: "simplex only, current AL order", known_failures: ["unapproved element bounds", "zero replacement changes sparse support"]}
+    evidence_refs: ["sampling.py:6-53", "pipeline.py:102-107"]
+  - model_id: AL-COST-001
+    name: "Normalized relative cost calculator"
+    role: physics_calculator
+    status: available
+    source: {type: local, location: "AL/catalyst_active_learning_runnable/catalyst_al/costs.py", version: "price-table date absent"}
+    entrypoint: {command: "called by pipeline", script: "costs.py::calculate_normalized_cost", environment: "numpy"}
+    human_provision: {model_information_provided: true, script_location_provided: true, executable_interface_exposed: true, parameter_interface_exposed: false, access_level: inspect_only, authorized_parameters: [], prohibited_actions: ["Do not present as USD/g", "Do not use as budget gate absent price confirmation"] , provided_by: "AL implementation", confirmation_ref: "explicit_execution_authorization_not_documented"}
+    input_schema: ["eight nonnegative fractions in AL order"]
+    output_schema: [normalized_cost_index]
+    supported_metrics: [M-NORMALIZED-COST]
+    parameters: {reference_element: Pd, scale: 100, price_table_date: null}
+    validation: {test_data: "not run", metrics: {}, applicability_domain: "formula as coded only", known_failures: ["no date/currency/product form", "normalizes input", "order mismatch"]}
+    evidence_refs: ["costs.py:6-34"]
+  - model_id: AL-PARETO-001
+    name: "Pareto and weighted candidate selector"
+    role: generator
+    status: available
+    source: {type: local, location: "AL/catalyst_active_learning_runnable/catalyst_al/pareto.py", version: "repository version not established"}
+    entrypoint: {command: "invoked inside run.py", script: "pareto.py::select_pareto_candidates", environment: "numpy"}
+    human_provision: {model_information_provided: true, script_location_provided: true, executable_interface_exposed: true, parameter_interface_exposed: true, access_level: inspect_only, authorized_parameters: [], prohibited_actions: ["Do not activate scalar weights absent approval", "Do not equate LLM UCB with measured power"], provided_by: "AL implementation", confirmation_ref: "explicit_execution_authorization_not_documented"}
+    input_schema: [candidate_ucb, normalized_cost, top_k, performance_weight]
+    output_schema: [pareto_filtered_and_weight_sorted_candidates]
+    supported_metrics: [M-PPOWER, M-NORMALIZED-COST, M-PREDICTION-CONFIDENCE]
+    parameters: {performance_weight: 0.6, query_top_k: 8, objective_directions: [maximize_ucb, minimize_cost]}
+    validation: {test_data: "software tests present but not run", metrics: {}, applicability_domain: "candidate batch only", known_failures: ["weight is not approved", "UCB uses uncalibrated LLM dispersion"]}
+    evidence_refs: ["pareto.py:6-16,53-81"]
+  - model_id: PROJECT-SCHEMA-CHECK
+    name: "Proposed strict project composition and record validator"
+    role: constraint_checker
+    status: proposed
+    source: {type: local, location: "not implemented; adapter required", version: ""}
+    entrypoint: {command: "", script: "", environment: "", working_directory: ""}
+    human_provision: {model_information_provided: false, script_location_provided: false, executable_interface_exposed: false, parameter_interface_exposed: false, access_level: none, authorized_parameters: [], prohibited_actions: ["Do not silently normalize invalid data", "Do not reorder by position", "Do not discard raw values"], provided_by: "computer expert", confirmation_ref: "implementation and review required"}
+    input_schema: [element_named_mass_fraction_fields, declared_element_order, units, condition_id, provenance]
+    output_schema: [validity_flags, reason_coded_errors, preserved_raw_record]
+    supported_metrics: [M-COMPOSITION-VALIDITY, M-ELEMENT-RANGE]
+    parameters: {closure_tolerance: null, element_bounds: null, epsilon_presence: null}
+    validation: {test_data: "boundary/invalid-record fixtures required", metrics: {}, applicability_domain: "project mass-fraction data only after schema approval", known_failures: ["not implemented", "policy parameters unresolved"]}
+    evidence_refs: ["data.py:11-21", "costs.py:19-28"]
+workflow:
+  workflow_id: WF-HEA-AL-ROUND2
+  status: proposed_paused
+  search_space: {definition: "Eight-component project mass-fraction simplex in [Pd, Pt, Au, Cr, Ir, Ce, Cu, Nb].", allowed_regions: [], forbidden_regions: [], expert_rules: ["strict finite nonnegative values", "sum to one at approved tolerance", "map named elements explicitly", "no unapproved element content bounds"]}
+  nodes:
+    - {node_id: P01, action: review, model_id: "", inputs: [project_data_metadata, AL_demo_data_status, basis_order_protocol], outputs: [approved_data_contract], retry_policy: "pause on conflict", stop_on_failure: true}
+    - {node_id: P02, action: check, model_id: PROJECT-SCHEMA-CHECK, inputs: [immutable_raw_records, approved_data_contract], outputs: [valid_rows, rejection_report, condition_coverage], retry_policy: "no silent normalization or row deletion; retain reason-coded exclusions", stop_on_failure: true}
+    - {node_id: P03, action: calculate, model_id: AL-COST-001, inputs: [named_composition, approved_price_source], outputs: [separately_labeled_cost_index], retry_policy: "no cost result if price basis/order unconfirmed", stop_on_failure: false}
+    - {node_id: P04, action: review, model_id: "", inputs: [metric_registry, cost_policy, bounds, uncertainty_policy], outputs: [approved_objective_and_constraints], retry_policy: "require computer and materials expert signoff", stop_on_failure: true}
+    - {node_id: P05, action: review, model_id: "", inputs: [oracle_artifact, training_data, model_provenance], outputs: [approved_simulation_or_measurement_mode], retry_policy: "no train/inference until authorized", stop_on_failure: true}
+    - {node_id: P06, action: predict, model_id: AL-LLM-DESIGN-001, inputs: [references, target_pd, target_cost], outputs: [LLM_generated_composition], retry_policy: "external API use requires explicit authorization", stop_on_failure: true}
+    - {node_id: P07, action: generate, model_id: AL-AKDAS-001, inputs: [LLM_generated_composition, approved_domain, candidate_budget], outputs: [candidate_batch], retry_policy: "algorithm settings require authorization", stop_on_failure: true}
+    - {node_id: P08, action: predict, model_id: AL-LLM-DESIGN-001, inputs: [selected_candidates, similar_examples, committee_size], outputs: [committee_mean_std_UCB], retry_policy: "dispersion remains diagnostic until calibrated", stop_on_failure: true}
+    - {node_id: P09, action: select, model_id: AL-PARETO-001, inputs: [P_peak_predictions, normalized_cost, composition_validity], outputs: [Pareto_candidates_with_diagnostics], retry_policy: "do not apply scalar weights unless approved", stop_on_failure: true}
+    - {node_id: P10, action: predict, model_id: AL-GBR-ORACLE-001, inputs: [candidate_batch, approved_model_artifact], outputs: [virtual_power_labels], retry_policy: "only in separately approved simulation; label virtual", stop_on_failure: true}
+    - {node_id: P11, action: review, model_id: "", inputs: [candidate_results, confidence, novelty, constraints], outputs: [human_candidate_decision], retry_policy: "expert review before synthesis", stop_on_failure: true}
+    - {node_id: P12, action: load, model_id: "", inputs: [authorized_experimental_results], outputs: [provenance-linked_measurements], retry_policy: "append immutable observed data", stop_on_failure: true}
+    - {node_id: P13, action: export, model_id: "", inputs: [validated_data, predictions, virtual_outputs, measured_results, decisions], outputs: [versioned_round_record], retry_policy: "schema validate; never overwrite existing AL outputs", stop_on_failure: true}
+  budget: {max_candidates: null, max_evaluations: null, max_runtime: "", compute_limit: "", llm_calls_per_round_documented_default: 31, authorization_status: not_granted}
+  stopping_conditions: ["basis/order or target conditions unresolved", "invalid data or mismatched vector", "unapproved live API/model execution", "model output outside documented range or domain", "budget exceeded", "expert pause"]
+parameter_controls:
+  - {parameter_id: CFG-ITERATIONS, target: workflow, name: num_iterations, current_value: 10, allowed_range: [], allowed_values: [], adjustment_mode: manual, trigger: "approval required; code default only", max_change_per_round: null, rollback_value: 10, change_history: []}
+  - {parameter_id: CFG-POOL, target: generator, name: candidate_pool_size, current_value: 20000, allowed_range: [], allowed_values: [], adjustment_mode: manual, trigger: "approval required; README suggests 2000 only as initial API check", max_change_per_round: null, rollback_value: 20000, change_history: []}
+  - {parameter_id: CFG-KDAS, target: optimizer, name: "kdas_select_size/query_top_k/retain_top_k", current_value: [10, 8, 3], allowed_range: [], allowed_values: [], adjustment_mode: manual, trigger: "confirm evaluation and retain budgets", max_change_per_round: null, rollback_value: [10, 8, 3], change_history: []}
+  - {parameter_id: CFG-WEIGHTS, target: reward, name: "performance_weight, target gains, performance_threshold", current_value: {performance_weight: 0.6, target_pd_improvement_mean: 0.06, target_pd_improvement_std: 0.02, target_cost_reduction_mean: 0.03, target_cost_reduction_std: 0.01, performance_threshold: 200.0}, allowed_range: [], allowed_values: [], adjustment_mode: fixed, trigger: "Do not activate without project approval; defaults are unsupported demo assumptions.", max_change_per_round: null, rollback_value: null, change_history: []}
+expert_activity_log:
+  - {activity_id: EA-DOMAIN-R2, expert_role: domain_expert, action_type: constrain, target_type: metric, target_id: M-PPOWER, contribution: "P_peak is core; consider normalized cost, composition validity/ranges, novelty from experimental samples, prediction confidence, and stability.", decision_or_effect: "P_peak is primary; other metrics separated by role; stability deferred until protocol/data exist.", evidence_refs: [user_instruction], timestamp: "2026-10-27", status: applied}
+  - {activity_id: EA-COMPUTER-R2, expert_role: computer_expert, action_type: provide, target_type: model, target_id: AL-PIPELINE, contribution: "Confirmed peak power density as core and composition validity as constraints; provided AL implementation folder.", decision_or_effect: "Inspected code interfaces; execution held until explicit authorization.", evidence_refs: [user_instruction], timestamp: "2026-10-27", status: applied}
+expert_feedback_history: []
+run_history: []
+version_history:
+  - {version: "2.0-proposed", date: "2026-10-27", change: "Updated model interface and metric organization from AL source inspection; no execution performed.", approval: pending}
+
+expert_feedback_reconciliation:
+  annotation_date: '2026-10-31'
+  annotation_type: dialogue_based_stage_status_reconciliation
+  requested_by: user
+  source_dialogue: ../../multi_round_dialogue_example_EN.txt
+  source_sha256: 759f71d407a9bb2c542208a75279b8477e0833f2f54ee566e3e990870f96a994
+  interpretation: Stage-scoped working acceptance and task roles from the saved dialogue, following earlier HEA and PS
+    reconciliation rules.
+  itemwise_scientific_verification_completed_by_this_update: false
+  numerical_thresholds_prices_and_model_calibration_certified: false
+  execution_authorized_by_this_update: false
+  historical_version_snapshots_modified: false
+  composition_basis_caution: The project specifies mass fractions. Atomic/molar fraction entries and literature/AL element-order
+    differences require explicit reconciliation; none are silently converted.
+  unanswered_review_questions_and_blocking_flags_preserved: true
+  source_feedback_records:
+  - feedback_id: EO2
+    source_line: 16
+    excerpt: The materials scientist notes that the organization of metrics in the current workflow still needs adjustment.
+      In addition to peak power density, the workflow may consider normalized cost, composition validity, element-content
+      ranges, differences between candidate compositions and existing experimental samples, model-prediction confidence,
+      and the stability of high-performance formulations. The computer expert confirms that peak power density will be
+      the core performance metric for formulation optimization, while nonnegative mass fractions for the eight elements,
+      a total fraction of 1, and a fixed element order will serve as composition constraints. The `AL` folder is now
+      provided as the implemented model execution path. The model architecture, training method, metric-configuration
+      files, runtime parameters, data interfaces, and candidate-result format must be obtained from the code, documentation,
+      and interface documents in the `AL` folder. Inspect and update the model information and interfaces independently,
+      improve the workflow, and report the proposed execution procedure to me for confirmation. Do not run it without
+      authorization. Clearly specify all output paths. Update the previous round's output files and add the suffix `round2`.
+  updates:
+  - path: metadata/approval_status
+    status: core_metric_and_constraints_confirmed_procedure_requires_authorization
+    feedback_refs:
+    - EO2
+    scope: Record confirmed requirements while preserving missing definitions, approval conditions and execution restrictions.
+  - path: metric_candidates/0/expert_status
+    status: core_objective_confirmed_unit_and_protocol_unconfirmed
+    feedback_refs:
+    - EO2
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: metric_candidates/1/expert_status
+    status: mass_fraction_nonnegativity_closure_and_fixed_order_confirmed
+    feedback_refs:
+    - EO2
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: metric_candidates/2/expert_status
+    status: cost_proxy_selected_price_and_formula_unconfirmed
+    feedback_refs:
+    - EO2
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: metric_candidates/3/expert_status
+    status: constraint_role_confirmed_numeric_bounds_and_presence_unconfirmed
+    feedback_refs:
+    - EO2
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: metric_candidates/4/expert_status
+    status: diagnostic_requested_distance_definition_unconfirmed
+    feedback_refs:
+    - EO2
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: metric_candidates/5/expert_status
+    status: diagnostic_requested_calibration_unconfirmed
+    feedback_refs:
+    - EO2
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: metric_candidates/6/expert_status
+    status: diagnostic_requested_stability_definition_unconfirmed
+    feedback_refs:
+    - EO2
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: metric_decisions/0/threshold/value
+    status: nonnegative and sum=1; tolerance requires approval
+    feedback_refs:
+    - EO2
+    scope: Record confirmed requirements while preserving missing definitions, approval conditions and execution restrictions.
+  - path: model_interfaces/0/human_provision/confirmation_ref
+    status: explicit_execution_authorization_not_documented
+    feedback_refs:
+    - EO2
+    scope: AL was supplied for inspection; the dialogue explicitly withholds execution authorization.
+  - path: model_interfaces/1/human_provision/confirmation_ref
+    status: explicit_execution_authorization_not_documented
+    feedback_refs:
+    - EO2
+    scope: AL was supplied for inspection; the dialogue explicitly withholds execution authorization.
+  - path: model_interfaces/2/human_provision/confirmation_ref
+    status: explicit_execution_authorization_not_documented
+    feedback_refs:
+    - EO2
+    scope: AL was supplied for inspection; the dialogue explicitly withholds execution authorization.
+  - path: model_interfaces/3/human_provision/confirmation_ref
+    status: explicit_execution_authorization_not_documented
+    feedback_refs:
+    - EO2
+    scope: AL was supplied for inspection; the dialogue explicitly withholds execution authorization.
+  - path: model_interfaces/4/human_provision/confirmation_ref
+    status: explicit_execution_authorization_not_documented
+    feedback_refs:
+    - EO2
+    scope: AL was supplied for inspection; the dialogue explicitly withholds execution authorization.
+  - path: expert_activity_log/1/decision_or_effect
+    status: Inspected code interfaces; execution held until explicit authorization.
+    feedback_refs:
+    - EO2
+    scope: Record confirmed requirements while preserving missing definitions, approval conditions and execution restrictions.

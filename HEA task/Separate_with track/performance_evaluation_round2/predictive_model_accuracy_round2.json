@@ -1,0 +1,40 @@
+{
+  "training_rows": 120,
+  "model": "GradientBoostingRegressor",
+  "configuration": {
+    "n_estimators": 512,
+    "learning_rate": 0.03,
+    "max_depth": 3,
+    "loss": "squared_error",
+    "random_state": 42
+  },
+  "random_split_holdout": {
+    "n": 24,
+    "r2": 0.8647236500420666,
+    "rmse": 8.659894821553493,
+    "mae": 6.573925256785887,
+    "pearson_r": 0.9318205858135844,
+    "spearman_r": 0.7452173913043478,
+    "mean_signed_error": 1.2967913856497226
+  },
+  "five_fold_cross_validated": {
+    "n": 120,
+    "r2": 0.8698543231789541,
+    "rmse": 8.56366767053842,
+    "mae": 6.6913091501398885,
+    "pearson_r": 0.93518836538996,
+    "spearman_r": 0.8277033127300506,
+    "mean_signed_error": 1.3199538480385067
+  },
+  "interpretation": "virtual-oracle accuracy on supplied training data; not experimental predictive validity",
+  "pool_process_coverage": {
+    "pool_rows": 160,
+    "id_min": 1,
+    "id_max": 160,
+    "unique_ids": 160,
+    "iteration_log_available": false,
+    "query_log_available": false,
+    "generated_ratios_log_available": false,
+    "exact_iteration_reconstruction": false
+  }
+}

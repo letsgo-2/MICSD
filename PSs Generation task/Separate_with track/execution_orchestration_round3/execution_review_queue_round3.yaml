@@ -1,0 +1,82 @@
+round: 3
+status: "selected_metrics_confirmed_execution_authorization_required"
+source_round: execution_orchestration_round2
+items:
+  - id: EXR3-001
+    object: execution_authorization
+    issue: "Confirm whether to authorize only static review, the metric preflight, or the later RL pilot. This Round 3 deliverable has not executed any SDPD command."
+    requested_from: project_owner
+    action: approve_or_revise
+    blocking: true
+  - id: EXR3-002
+    object: ST_gap_metric_mapping
+    issue: "Confirm use of the three-output runtime predictor with output index 2 as E(S1)-E(T1)/ST Gap, including normalization scale and mechanism direction."
+    requested_from: computer_scientist_and_computational_photochemist
+    action: approve_or_revise
+    blocking: true
+  - id: EXR3-003
+    object: reward_weights
+    issue: "Approve or revise existing SDPD weights [0.1, 0.3, 0.6] for [st_gap, charge_score, symmetry_score]. The current ordering strongly favors symmetry."
+    requested_from: computer_scientist_and_materials_scientist
+    action: approve_or_revise
+    blocking: true
+  - id: EXR3-004
+    object: charge_semantics
+    issue: "Define pH, protonation/tautomer state, counterions, partial-charge method, and intended charge distribution before treating charge_score as a targeting objective."
+    requested_from: materials_scientist_and_formulation_expert
+    action: request_evidence
+    blocking: true
+  - id: EXR3-005
+    object: symmetry_semantics
+    issue: "Confirm whether the existing decoration fingerprint/pair heuristic is acceptable as symmetry, or replace it with a defined graph/point-group/conformer-aware descriptor."
+    requested_from: materials_scientist
+    action: approve_or_revise
+    blocking: true
+  - id: EXR3-006
+    object: configuration_copy
+    issue: "Approve review-copy paths and the policy of leaving SDPD source JSON/YAML and checkpoints untouched until confirmation."
+    requested_from: project_owner
+    action: approve_or_revise
+    blocking: false
+  - id: EXR3-007
+    object: preflight_fixture
+    issue: "Approve the fixture cases and preflight output paths before any predictor or scorer invocation."
+    requested_from: computer_scientist
+    action: request_test
+    blocking: true
+  - id: EXR3-008
+    object: actor_checkpoint_export
+    issue: "Decide whether an updated actor checkpoint is required; SDPD run_rl.py does not automatically save one, and any export needs a separate approved procedure."
+    requested_from: computer_scientist_and_project_owner
+    action: approve_or_revise
+    blocking: false
+
+expert_feedback_reconciliation:
+  annotation_date: '2026-10-31'
+  annotation_type: dialogue_based_stage_status_reconciliation
+  requested_by: user
+  source_dialogue: ../../multi_round_dialogue_example_EN.txt
+  source_sha256: ebb57f5513ccd2ee131a9971088e81acaa8e6b610f46e7df5afea5890dbc12d8
+  interpretation: Stage-scoped working acceptance from the saved dialogue and subsequent adoption, following the earlier
+    PS reconciliation rules.
+  itemwise_scientific_validation_completed_by_this_update: false
+  numerical_values_units_and_thresholds_certified_by_this_update: false
+  execution_authorized_by_this_update: false
+  existing_disputed_entries_preserved: true
+  unanswered_review_items_and_blocking_flags_preserved: true
+  historical_execution_trace_events_modified: false
+  source_feedback_records:
+  - feedback_id: PS-EO-R3-SELECTION
+    source_line: 18
+    excerpt: The computer scientist ultimately selects E(S1)−E(T1), charge, and symmetry as the three metrics. The training
+      framework's metric-configuration files, predictive-model execution paths, and other parameters can be obtained
+      from `SDPD/AGENT_INTERFACE.md`. Inspect and update the model information and interfaces independently, improve
+      the workflow, and report the proposed execution procedure to me for confirmation. Do not run it without authorization.
+      Clearly specify all output paths. Update the previous round's output files and add the suffix `round3`.
+  updates:
+  - path: status
+    status: selected_metrics_confirmed_execution_authorization_required
+    feedback_refs:
+    - PS-EO-R3-SELECTION
+    scope: Stage-level intent is confirmed; existing review questions, blocking flags and unanswered details are retained,
+      not marked resolved.

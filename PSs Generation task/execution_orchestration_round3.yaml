@@ -25,6 +25,8 @@ final_metrics:
     configured_weight: 0.1
     role: primary_objective
     status: active_runtime_contract
+    expert_selection_status: explicitly_selected_in_dialogue
+    expert_feedback_refs: [PS-EO-R3-SELECTION]
   - metric_id: charge
     implementation_name: charge_score
     raw_source: "formal-charge rules in score_function.py"
@@ -34,6 +36,8 @@ final_metrics:
     configured_weight: 0.3
     role: primary_objective
     status: active_runtime_contract
+    expert_selection_status: explicitly_selected_in_dialogue
+    expert_feedback_refs: [PS-EO-R3-SELECTION]
   - metric_id: symmetric
     implementation_name: symmetry_score
     raw_source: "decoration-pair reward in score_function.py"
@@ -44,6 +48,8 @@ final_metrics:
     configured_weight: 0.6
     role: primary_objective
     status: active_runtime_contract
+    expert_selection_status: explicitly_selected_in_dialogue
+    expert_feedback_refs: [PS-EO-R3-SELECTION]
 
 reward_contract:
   weights_order:
@@ -192,3 +198,36 @@ evidence:
     identifier_or_url: /Users/jimmmmmies/Desktop/alignment/SDPD/data_preparation/prediction_model/rl_compatible_2025/kagnn_gap_predictor.py
     location: "lines 35-64"
     content_summary: "Runtime predictor hard-codes the installed best.pth path."
+
+expert_feedback_reconciliation:
+  annotation_date: '2026-10-30'
+  annotation_type: retrospective_dialogue_based_status_reconciliation
+  scope: General knowledge, task inputs, candidate metrics, selected optimization metrics and constraint requirements
+    may be confirmed at their own stage. This is retrospective interpretation, not newly completed independent itemwise
+    validation.
+  source_file: multi_round_dialogue_example_EN.txt
+  source_sha256: ebb57f5513ccd2ee131a9971088e81acaa8e6b610f46e7df5afea5890dbc12d8
+  itemwise_expert_verification_completed: false
+  numerical_values_units_and_thresholds_certified: false
+  execution_authorized_by_this_annotation: false
+  note: No original-status fields or new original-file backup are retained in this update. Source dialogue and confirmation
+    scope remain recorded. Unanswered review items, quantitative settings, checkpoint approval and run authorization
+    remain unresolved.
+  feedback_records:
+  - feedback_id: PS-EO-R3-SELECTION
+    source_file: multi_round_dialogue_example_EN.txt
+    source_line: 18
+    source_excerpt: The computer scientist ultimately selects E(S1)−E(T1), charge, and symmetry as the three metrics.
+      The training framework's metric-configuration files, predictive-model execution paths, and other parameters can
+      be obtained from `SDPD/AGENT_INTERFACE.md`. Inspect and update the model information and interfaces independently,
+      improve the workflow, and report the proposed execution procedure to me for confirmation. Do not run it without
+      authorization. Clearly specify all output paths. Update the previous round's output files and add the suffix `round3`.
+    attributed_expert_role: computer scientist
+    action: select_optimization_metrics
+    confirmed_scope: Exactly ES1-ET1, charge, and symmetry are selected as the optimization metrics; inspect the supplied
+      SDPD interface.
+    not_confirmed: No separate approval of configured weights, checkpoint validity, scientific adequacy, scaffold structure,
+      or model execution; the dialogue expressly requires confirmation before running.
+    original_expert_review_date: null
+    provenance: User-provided dialogue example; no independent signature or original execution log is supplied.
+  status_interpretation: Stage-scoped confirmation inferred from supplied dialogue and subsequent workflow use.

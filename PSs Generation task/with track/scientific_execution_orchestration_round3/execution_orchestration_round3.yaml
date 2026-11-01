@@ -1,0 +1,569 @@
+{
+  "metadata": {
+    "name": "Scientific Execution Orchestration — Round 3",
+    "language": "English",
+    "version": "0.3.0-draft",
+    "created": "2026-10-31",
+    "status": "draft_confirmation_required",
+    "suffix": "round3",
+    "upstream_round": "scientific_execution_orchestration_round2",
+    "run_authorized": false,
+    "revision_scope": "Selected E(S1)-E(T1), charge and symmetry; mapped SDPD model/configuration interfaces and proposed a no-run confirmation procedure."
+  },
+  "upstream_inputs": {
+    "orchestration_yaml": "../scientific_execution_orchestration_round2/execution_orchestration_round2.yaml",
+    "orchestration_report": "../scientific_execution_orchestration_round2/execution_orchestration_report_round2.md",
+    "orchestration_review_queue": "../scientific_execution_orchestration_round2/execution_review_queue_round2.yaml"
+  },
+  "execution_context": {
+    "representation": "SMILES",
+    "fragmentation_rule": "RECAP",
+    "default_scaffold": "porphyrin",
+    "optimization_paradigm": "SDPD reinforcement learning molecular generation",
+    "selected_metrics": [
+      "E(S1)-E(T1)",
+      "charge",
+      "symmetry"
+    ],
+    "run_authorized": false,
+    "repository_root": "SDPD/"
+  },
+  "repository_paths": {
+    "repository": "SDPD/",
+    "agent_interface": "SDPD/AGENT_INTERFACE_EN.md",
+    "rl_entrypoint": "SDPD/data_preparation/run_rl.py",
+    "rl_config": "SDPD/configs/rl_configs.json",
+    "scoring_strategy": "SDPD/data_preparation/scoring_strategy/standard_strategy.py",
+    "scoring_function": "SDPD/data_preparation/scoring_strategy/score_function.py",
+    "configuration_classes": "SDPD/data_preparation/configurations/configurations.py",
+    "predictor_wrapper": "SDPD/data_preparation/prediction_model/kagnn_gap_predictor.py",
+    "three_output_predictor_entry": "SDPD/data_preparation/prediction_model/rl_compatible_2025/main.py",
+    "three_output_predictor_config": "SDPD/data_preparation/prediction_model/rl_compatible_2025/config/c_path.yaml",
+    "three_output_checkpoint": "SDPD/data_preparation/prediction_model/pretrained_models/best.pth",
+    "rl_actor_critic_checkpoint": "SDPD/pretrained_models/rl/best.pt",
+    "rl_output_pattern": "SDPD/rl_runs/<YYYYMMDD-HHMMSS>/diversity_memory.csv",
+    "descriptor_output_reference": "SDPD/data_preparation/scoring_strategy/score_function.py::multiple_score"
+  },
+  "selected_metrics": [
+    {
+      "metric_id": "E(S1)-E(T1)",
+      "canonical_runtime_name": "st_gap",
+      "role": "primary_selected_metric",
+      "direction": "minimize_raw_gap / maximize_normalized_score",
+      "current_runtime_support": "partial_existing",
+      "existing_path": "SDPD/data_preparation/prediction_model/rl_compatible_2025/main.py -> predictor output index 2 -> score_function.multiple_score",
+      "current_semantics": "KA-GNN predicts raw ST gap; runtime normalizes as 1/(1 + max(raw_gap,0)/scale), with scale from scoring config and default 1.0.",
+      "proposed_configuration": "Keep as component 0 of the three-component scorer; verify that the selected checkpoint and predictor output contract are compatible before execution.",
+      "threshold": "No new hard threshold activated in Round 3; retain the Round 2 <0.4 eV ISC heuristic as scientific context only, not an SDPD runtime gate.",
+      "evidence_refs": [
+        "Round 2 orchestration",
+        "SDPD/AGENT_INTERFACE_EN.md:189-195",
+        "SDPD/data_preparation/scoring_strategy/score_function.py:241-260"
+      ],
+      "status": "proposed_pending_confirmation"
+    },
+    {
+      "metric_id": "charge",
+      "canonical_runtime_name": "charge_score",
+      "role": "selected_structure_or_objective_metric",
+      "direction": "maximize_current_score",
+      "current_runtime_support": "existing",
+      "existing_path": "SDPD/data_preparation/scoring_strategy/score_function.py::multiple_score:270-296",
+      "current_semantics": "For one decoration, both positive and negative atom charges score 1.0, one nonzero sign scores 0.5, and no nonzero atom charge scores 0.0. For multiple decoration parts, total formal charge 0 scores 0.0, even formal charge scores 1.0, and odd nonzero charge scores 0.5.",
+      "proposed_configuration": "Preserve current behavior for confirmation, but require materials-scientist approval because this is a project-specific heuristic rather than a general charge optimum.",
+      "threshold": "Existing discrete thresholds are encoded in the scorer; no additional threshold should be invented before confirmation.",
+      "evidence_refs": [
+        "Materials scientist Round 3 selection",
+        "SDPD/data_preparation/scoring_strategy/score_function.py:279-296",
+        "SDPD/README_EN.md:450-468"
+      ],
+      "status": "existing_but_pending_scientific_confirmation"
+    },
+    {
+      "metric_id": "symmetry",
+      "canonical_runtime_name": "symmetry_score",
+      "role": "selected_structure_or_objective_metric",
+      "direction": "maximize_current_score",
+      "current_runtime_support": "existing_decoration_level",
+      "existing_path": "SDPD/data_preparation/scoring_strategy/score_function.py::_decoration_pair_reward -> multiple_score:297-299",
+      "current_semantics": "Scores symmetry of decoration fragments using exact/near-identical Morgan-fingerprint grouping rules; the implementation is not a general 3D molecular point-group symmetry descriptor.",
+      "proposed_configuration": "Use the existing decoration symmetry component unchanged for the confirmation run; label it decoration symmetry, not global molecular symmetry.",
+      "threshold": "Current reward is rule-based (0, 0.25, 0.5, or 1.0 depending on decoration grouping); no external numeric symmetry threshold is activated.",
+      "evidence_refs": [
+        "Materials scientist Round 3 selection",
+        "SDPD/data_preparation/scoring_strategy/score_function.py:101-204",
+        "SDPD/README_EN.md:469-496"
+      ],
+      "status": "existing_but_semantic_scope_requires_confirmation"
+    }
+  ],
+  "model_interfaces": [
+    {
+      "interface_id": "IF-R3-001",
+      "name": "RL execution interface",
+      "role": "generator_and_optimizer",
+      "status": "existing_proposed_no_run",
+      "entrypoint": "SDPD/data_preparation/run_rl.py",
+      "config": "SDPD/configs/rl_configs.json",
+      "working_directory": "SDPD/",
+      "command": "python data_preparation/run_rl.py --config configs/rl_configs.json --seed 42",
+      "inputs": [
+        "actor checkpoint",
+        "critic checkpoint",
+        "porphyrin scaffold template",
+        "RECAP/decorator vocabulary",
+        "rl_configs.json"
+      ],
+      "outputs": [
+        "SDPD/rl_runs/<timestamp>/diversity_memory.csv",
+        "W&B metrics if enabled",
+        "component score logs"
+      ],
+      "metric_mapping": {
+        "component_0": "st_gap",
+        "component_1": "charge_score",
+        "component_2": "symmetry_score"
+      },
+      "authorization": "Do not execute in Round 3; command is recorded for confirmation only.",
+      "known_caveats": [
+        "AGENT_INTERFACE_EN.md says actor checkpoint is not automatically saved at run end",
+        "run_rl.py integration should be smoke-tested before a formal run",
+        "current output path is timestamped"
+      ]
+    },
+    {
+      "interface_id": "IF-R3-002",
+      "name": "Scoring configuration interface",
+      "role": "metric_configuration",
+      "status": "existing_editable_json_proposed",
+      "entrypoint": "SDPD/configs/rl_configs.json",
+      "config": "SDPD/configs/rl_configs.json",
+      "current_values": {
+        "scoring_strategy.scoring_function.use_kan": true,
+        "scoring_strategy.scoring_function.weights": [
+          0.1,
+          0.3,
+          0.6
+        ],
+        "scoring_strategy.scoring_function.scale": 1.0,
+        "scoring_strategy.scoring_function.invalid_value": 0.0,
+        "scoring_strategy.scoring_function.model_path": "./data_preparation/prediction_model/pretrained_models/best.pth",
+        "scoring_strategy.diversity_filter.name": "no_filter_with_penalty",
+        "scoring_strategy.diversity_filter.minscore": 0.77,
+        "learning_strategy.name": "dap",
+        "learning_strategy.parameters.sigma": 120,
+        "n_steps": 1000,
+        "batch_size": 128,
+        "learning_rate": 0.0001
+      },
+      "proposed_round3_values": {
+        "scoring_strategy.scoring_function.weights": [
+          0.1,
+          0.3,
+          0.6
+        ],
+        "selected_metric_order": [
+          "E(S1)-E(T1)",
+          "charge",
+          "symmetry"
+        ],
+        "run_name": "round3-selected-st-gap-charge-symmetry-confirmation",
+        "wandb.mode": "disabled_until_authorized"
+      },
+      "authorization": "Do not edit the repository config in Round 3; proposed values are reported for confirmation.",
+      "validation": "After authorization, run python -m json.tool SDPD/configs/rl_configs.json before any RL command."
+    },
+    {
+      "interface_id": "IF-R3-003",
+      "name": "Three-output predictor interface",
+      "role": "predictive_model",
+      "status": "existing_checkpoint_proposed_for_smoke_test",
+      "entrypoint": "SDPD/data_preparation/prediction_model/rl_compatible_2025/main.py",
+      "config": "SDPD/data_preparation/prediction_model/rl_compatible_2025/config/c_path.yaml",
+      "checkpoint": "SDPD/data_preparation/prediction_model/pretrained_models/best.pth",
+      "output_contract": {
+        "0": "S1",
+        "1": "T1",
+        "2": "ST Gap"
+      },
+      "working_directory": "SDPD/data_preparation/prediction_model/rl_compatible_2025/",
+      "command": "python main.py",
+      "authorization": "Do not run in Round 3; smoke test requires confirmation.",
+      "known_caveats": [
+        "main.py forces ./config/c_path.yaml",
+        "predictor wrapper currently hard-codes model_path in kagnn_gap_predictor.py",
+        "checkpoint/output compatibility must be checked"
+      ]
+    },
+    {
+      "interface_id": "IF-R3-004",
+      "name": "Charge and decoration-symmetry scorer",
+      "role": "metric_evaluator",
+      "status": "existing_source_level_interface_proposed_for_confirmation",
+      "entrypoint": "SDPD/data_preparation/scoring_strategy/score_function.py::multiple_score",
+      "config": "SDPD/configs/rl_configs.json",
+      "inputs": [
+        "SMILES list",
+        "decoration strings",
+        "weights"
+      ],
+      "outputs": [
+        "charge_score",
+        "symmetry_score",
+        "st_gap",
+        "st_gap_raw",
+        "weighted total"
+      ],
+      "authorization": "No source modification or execution in Round 3.",
+      "known_caveats": [
+        "charge score is a project-specific discrete heuristic",
+        "symmetry is decoration symmetry based on Morgan fingerprints, not full molecular symmetry",
+        "invalid values fall back to configured invalid_value"
+      ]
+    }
+  ],
+  "workflow": {
+    "workflow_id": "WF-ORCH-R3",
+    "status": "draft_confirmation_required",
+    "run_authorized": false,
+    "objective": "Prepare an SDPD RL run using the existing ST-gap, charge-score and decoration-symmetry components without executing it.",
+    "nodes": [
+      {
+        "node_id": "R3-N001",
+        "action": "inspect",
+        "interface_id": "IF-R3-001",
+        "inputs": [
+          "SDPD repository",
+          "AGENT_INTERFACE_EN.md"
+        ],
+        "outputs": [
+          "version/path record"
+        ],
+        "stop_on_failure": true
+      },
+      {
+        "node_id": "R3-N002",
+        "action": "validate",
+        "interface_id": "IF-R3-002",
+        "inputs": [
+          "rl_configs.json"
+        ],
+        "outputs": [
+          "JSON/path/weight validation"
+        ],
+        "stop_on_failure": true
+      },
+      {
+        "node_id": "R3-N003",
+        "action": "smoke_test",
+        "interface_id": "IF-R3-003",
+        "inputs": [
+          "approved tiny SMILES set"
+        ],
+        "outputs": [
+          "ST-gap output contract"
+        ],
+        "stop_on_failure": true
+      },
+      {
+        "node_id": "R3-N004",
+        "action": "smoke_test",
+        "interface_id": "IF-R3-004",
+        "inputs": [
+          "approved decorations and SMILES"
+        ],
+        "outputs": [
+          "three component scores"
+        ],
+        "stop_on_failure": true
+      },
+      {
+        "node_id": "R3-N005",
+        "action": "run_rl",
+        "interface_id": "IF-R3-001",
+        "inputs": [
+          "confirmed config and checkpoints"
+        ],
+        "outputs": [
+          "timestamped diversity memory and logs"
+        ],
+        "stop_on_failure": true
+      },
+      {
+        "node_id": "R3-N006",
+        "action": "review",
+        "interface_id": "IF-R3-001",
+        "inputs": [
+          "run outputs"
+        ],
+        "outputs": [
+          "confirmation report"
+        ],
+        "stop_on_failure": true
+      }
+    ],
+    "budget": {
+      "n_steps": "current config 1000; not authorized",
+      "batch_size": "current config 128; not authorized",
+      "output_dir": "SDPD/rl_runs/<timestamp>",
+      "compute_limit": "not specified"
+    },
+    "stopping_conditions": [
+      "no authorization",
+      "checkpoint/output contract mismatch",
+      "invalid config",
+      "metric semantic mismatch",
+      "failed smoke test",
+      "untracked output or checkpoint overwrite",
+      "expert pause"
+    ]
+  },
+  "execution_procedure": [
+    {
+      "step": 0,
+      "name": "Confirmation gate",
+      "action": "Obtain explicit authorization to run any SDPD command or edit any SDPD JSON/YAML/Python file.",
+      "command": null,
+      "expected_output": "Authorization record; otherwise stop with no execution."
+    },
+    {
+      "step": 1,
+      "name": "Repository integrity check",
+      "action": "Inspect git status and record commit/repository version without modifying files.",
+      "command": "cd SDPD && git status --short && git rev-parse HEAD",
+      "expected_output": "Clean/known baseline and commit hash."
+    },
+    {
+      "step": 2,
+      "name": "Configuration validation",
+      "action": "Validate the selected RL JSON and confirm paths/checkpoints exist.",
+      "command": "python -m json.tool SDPD/configs/rl_configs.json",
+      "expected_output": "Valid JSON; no training or inference."
+    },
+    {
+      "step": 3,
+      "name": "Predictor smoke test",
+      "action": "Run a minimal, separately logged predictor test on a tiny approved SMILES set and verify output index 2 is ST Gap.",
+      "command": "cd SDPD/data_preparation/prediction_model/rl_compatible_2025 && python main.py",
+      "expected_output": "Only after authorization: checkpoint loads, output contract and units are recorded."
+    },
+    {
+      "step": 4,
+      "name": "Scorer smoke test",
+      "action": "Evaluate the scorer on valid/invalid SMILES and decoration cases; verify st_gap, charge_score, symmetry_score, weighted total and invalid fallback.",
+      "command": "cd SDPD && python -c '<approved scorer smoke-test command to be supplied after authorization>'",
+      "expected_output": "Only after authorization: metric mapping and reward directions verified."
+    },
+    {
+      "step": 5,
+      "name": "RL dry-run/small budget",
+      "action": "Run the smallest authorized RL budget with W&B disabled, fixed seed, separate output directory, and actor checkpoint preservation.",
+      "command": "cd SDPD && python data_preparation/run_rl.py --config configs/rl_configs.json --seed 42",
+      "expected_output": "Only after authorization: timestamped diversity_memory.csv and component logs."
+    },
+    {
+      "step": 6,
+      "name": "Post-run audit",
+      "action": "Inspect raw ST gap, charge, symmetry, validity, diversity, scaffold retention and checkpoint behavior; do not overwrite baseline artifacts.",
+      "command": "not specified; audit scripts to be confirmed",
+      "expected_output": "Run report and expert review package."
+    }
+  ],
+  "parameter_controls": [
+    {
+      "parameter_id": "R3-P001",
+      "target": "reward",
+      "name": "selected metric weights",
+      "current_value": [
+        0.1,
+        0.3,
+        0.6
+      ],
+      "allowed_values": [
+        "[0.1,0.3,0.6] pending confirmation"
+      ],
+      "adjustment_mode": "manual",
+      "trigger": "materials/computer scientist confirmation",
+      "rollback_value": "Round 2 config copy",
+      "change_history": []
+    },
+    {
+      "parameter_id": "R3-P002",
+      "target": "workflow",
+      "name": "run_authorized",
+      "current_value": false,
+      "allowed_values": [
+        false,
+        true
+      ],
+      "adjustment_mode": "manual",
+      "trigger": "explicit user authorization",
+      "rollback_value": false,
+      "change_history": []
+    }
+  ],
+  "expert_feedback_history": [],
+  "expert_activity_log": [
+    {
+      "activity_id": "EA-R3-001",
+      "expert_role": "computer_expert",
+      "action_type": "select",
+      "target_type": "metric",
+      "target_id": "E(S1)-E(T1),charge,symmetry",
+      "contribution": "Selected the three metrics for the SDPD training framework.",
+      "decision_or_effect": "Reduced active metric set to the existing SDPD three-component scorer.",
+      "evidence_refs": [
+        "User Round 3 instruction"
+      ],
+      "timestamp": "2026-10-31",
+      "status": "recorded"
+    },
+    {
+      "activity_id": "EA-R3-002",
+      "expert_role": "computer_expert",
+      "action_type": "configure",
+      "target_type": "model",
+      "target_id": "SDPD",
+      "contribution": "Provided AGENT_INTERFACE.md as the source for configuration and predictive-model paths.",
+      "decision_or_effect": "Mapped actual repository interfaces and identified checkpoint-path and semantic-scope discrepancies for review.",
+      "evidence_refs": [
+        "SDPD/AGENT_INTERFACE_EN.md"
+      ],
+      "timestamp": "2026-10-31",
+      "status": "recorded"
+    }
+  ],
+  "review_queue": [
+    {
+      "issue_id": "EO-R3-001",
+      "category": "workflow",
+      "question": "Authorize or reject execution of the proposed confirmation procedure; Round 3 must not run SDPD without explicit authorization.",
+      "affected_ids": [
+        "WF-ORCH-R3",
+        "IF-R3-001",
+        "IF-R3-003"
+      ],
+      "recommendation": "Keep workflow status draft and run_authorized false.",
+      "evidence_refs": [
+        "User Round 3 instruction",
+        "AGENT_INTERFACE_EN.md:12-19"
+      ],
+      "required_expert": "project owner",
+      "priority": "critical",
+      "blocking": true,
+      "status": "open"
+    },
+    {
+      "issue_id": "EO-R3-002",
+      "category": "model",
+      "question": "Confirm that checkpoint SDPD/data_preparation/prediction_model/pretrained_models/best.pth is compatible with the three-output predictor and output index 2 is ST Gap.",
+      "affected_ids": [
+        "IF-R3-003",
+        "E(S1)-E(T1)"
+      ],
+      "recommendation": "Run only the authorized minimal predictor smoke test; do not train or overwrite checkpoints.",
+      "evidence_refs": [
+        "AGENT_INTERFACE_EN.md:176-195",
+        "AGENT_INTERFACE_EN.md:247-262"
+      ],
+      "required_expert": "computer scientist",
+      "priority": "critical",
+      "blocking": true,
+      "status": "open"
+    },
+    {
+      "issue_id": "EO-R3-003",
+      "category": "metric",
+      "question": "Confirm that the selected symmetry metric means decoration symmetry, not global molecular symmetry.",
+      "affected_ids": [
+        "symmetry",
+        "IF-R3-004"
+      ],
+      "recommendation": "Retain the existing scorer unchanged for the first confirmation run and label its scope explicitly.",
+      "evidence_refs": [
+        "score_function.py:101-204",
+        "README_EN.md:469-496"
+      ],
+      "required_expert": "materials scientist",
+      "priority": "high",
+      "blocking": true,
+      "status": "open"
+    },
+    {
+      "issue_id": "EO-R3-004",
+      "category": "metric",
+      "question": "Confirm the project-specific charge-score rule and whether both formal-charge signs or even total charge should receive the highest score.",
+      "affected_ids": [
+        "charge",
+        "IF-R3-004"
+      ],
+      "recommendation": "Do not alter current discrete scoring until the materials scientist confirms the intended chemical objective.",
+      "evidence_refs": [
+        "score_function.py:279-296",
+        "README_EN.md:450-468"
+      ],
+      "required_expert": "materials scientist",
+      "priority": "high",
+      "blocking": true,
+      "status": "open"
+    },
+    {
+      "issue_id": "EO-R3-005",
+      "category": "parameter",
+      "question": "Confirm the selected weights [0.1, 0.3, 0.6], scale 1.0, sigma 120, 1000 steps and batch size 128 for the first authorized run.",
+      "affected_ids": [
+        "IF-R3-002",
+        "RC-R3-001"
+      ],
+      "recommendation": "Use the repository values only after configuration validation and expert confirmation; preserve a copy before edits.",
+      "evidence_refs": [
+        "SDPD/configs/rl_configs.json:1-43",
+        "README_EN.md:394-420"
+      ],
+      "required_expert": "computer scientist and materials scientist",
+      "priority": "high",
+      "blocking": true,
+      "status": "open"
+    },
+    {
+      "issue_id": "EO-R3-006",
+      "category": "model",
+      "question": "Resolve the hard-coded predictor checkpoint path in kagnn_gap_predictor.py versus the configurable path documented in AGENT_INTERFACE_EN.md.",
+      "affected_ids": [
+        "IF-R3-003",
+        "MODEL-003"
+      ],
+      "recommendation": "Do not modify in Round 3; record the discrepancy and require an approved adapter/fix before relying on alternate checkpoints.",
+      "evidence_refs": [
+        "kagnn_gap_predictor.py:56-65",
+        "AGENT_INTERFACE_EN.md:12-19"
+      ],
+      "required_expert": "computer scientist",
+      "priority": "high",
+      "blocking": true,
+      "status": "open"
+    }
+  ],
+  "version_history": [
+    {
+      "version": "0.3.0-draft",
+      "change": "Mapped SDPD interfaces and selected three-metric no-run procedure",
+      "timestamp": "2026-10-31",
+      "status": "draft_confirmation_required"
+    }
+  ],
+  "external_evidence": [
+    {
+      "id": "SDPD-IF",
+      "source": "SDPD AGENT_INTERFACE_EN.md",
+      "path": "SDPD/AGENT_INTERFACE_EN.md",
+      "use": "model registry, paths, output contracts and execution conventions"
+    },
+    {
+      "id": "SDPD-README",
+      "source": "SDPD README_EN.md",
+      "path": "SDPD/README_EN.md",
+      "use": "runtime scorer semantics and RL command/output documentation"
+    }
+  ]
+}

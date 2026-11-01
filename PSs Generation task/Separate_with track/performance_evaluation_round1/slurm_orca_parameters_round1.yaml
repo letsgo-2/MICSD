@@ -1,0 +1,58 @@
+round: 1
+language: en
+status: template_only_not_submitted
+candidate_source: candidates_round1.csv
+output_root: performance_evaluation_round1
+rdkit:
+  required_preflight: true
+  required_version_record: true
+  smiles_fields: [candidate_id, isomeric_smiles, decoration, scaffold, generation_seed, run_id]
+  sanitize: true
+  canonicalize: true
+  retain_isomeric_smiles: true
+  formal_charge: record
+  descriptors: [MW, cLogP, TPSA, HBD, HBA, rotatable_bonds]
+  fingerprint: {family: Morgan, radius: 2, bits: 2048}
+  conformers: {generator: ETKDGv3, seed: 20261101, explicit_hydrogens: true, force_field: MMFF94s}
+orca:
+  executable: orca
+  version: SITE_ORCA_VERSION_REQUIRED
+  method_proposal: PBE0
+  basis_proposal: def2-TZVP
+  scf: TightSCF
+  acceleration: RIJCOSX
+  solvent: CPCM(water)_only_if_approved
+  geometry: optimize_ground_state_then_frequency_minimum_check
+  excited_states: vertical_TDDFT_singlet_and_triplet_at_same_geometry
+  nroots: SITE_EXPERT_APPROVED_VALUE_REQUIRED
+  charge_multiplicity: from_versioned_protonation_state_metadata
+  gap_definition: E_S1_minus_E_T1_in_eV_same_geometry_same_method
+  method_sensitivity: representative_subset_with_range_separated_functional
+  retain: [input, output, geometry, convergence, warnings, state_energies, failure_reason]
+slurm:
+  submission_enabled: false
+  job_name: ps_orca_round1
+  array_max_index: SITE_ARRAY_MAX
+  concurrency: SITE_CONCURRENCY
+  ntasks: 1
+  cpus_per_task: SITE_CPUS
+  memory: SITE_MEMORY
+  walltime: SITE_WALLTIME
+  partition: SITE_PARTITION
+  account: SITE_ACCOUNT
+  qos: SITE_QOS
+  orca_module: SITE_ORCA_MODULE
+  scratch_path: SITE_SCRATCH_PATH
+  omp_num_threads: SLURM_CPUS_PER_TASK
+  requirements: [approved_site_values, per_candidate_manifest_mapping, output_validation, failure_logging, retry_policy, authorization]
+statistics:
+  split_group: scaffold
+  metrics: [MAE, RMSE, signed_bias, Pearson_r, Spearman_rho]
+  bootstrap: {unit: scaffold_group, confidence_level: 0.95}
+  no_data_behavior: no_statistics_no_figures_no_ranking
+filenames:
+  report: performance_evaluation_report_round1.md
+  configuration: performance_evaluation_round1.yaml
+  review_queue: performance_review_queue_round1.yaml
+  trace: execution_trace_round1.jsonl
+  plotting_plan: plotting_script_plan_round1.md

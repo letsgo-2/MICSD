@@ -1,0 +1,11 @@
+{"design_id": "R3-CONTROL-CENTROID", "closure_error": 0.0, "nonnegative": true, "valid_strict": true}
+{"design_id": "R3-HIGH-CENTROID", "closure_error": 0.0, "nonnegative": true, "valid_strict": true}
+{"design_id": "R3-TOP5-CENTROID", "closure_error": 0.0, "nonnegative": true, "valid_strict": true}
+{"design_id": "R3-GRADIENT-1", "closure_error": 0.0, "nonnegative": true, "valid_strict": true}
+{"design_id": "R3-GRADIENT-2", "closure_error": 2.220446049250313e-16, "nonnegative": true, "valid_strict": true}
+{"design_id": "R3-GRADIENT-3", "closure_error": 0.0, "nonnegative": true, "valid_strict": true}
+{"design_id": "R3-PD-AU-CONTRAST-1", "closure_error": 2.220446049250313e-16, "nonnegative": true, "valid_strict": true}
+{"design_id": "R3-PD-AU-CONTRAST-2", "closure_error": 0.0, "nonnegative": true, "valid_strict": true}
+{"design_id": "R3-DIVERSE-1", "closure_error": 0.0, "nonnegative": true, "valid_strict": true}
+{"design_id": "R3-DIVERSE-2", "closure_error": 0.0, "nonnegative": true, "valid_strict": true}
+{"design_id": "R3-DIVERSE-3", "closure_error": 1.1102230246251565e-16, "nonnegative": true, "valid_strict": true}

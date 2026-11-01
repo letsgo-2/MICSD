@@ -1,0 +1,287 @@
+metadata:
+  orchestration_id: "EO-HEA-8METAL-ROUND1"
+  version: "1.0.0-draft"
+  status: "draft; not executable for target-specific candidate release"
+  language: "English"
+  created: "2026-10-27"
+  filename_suffix: "round1"
+upstream_inputs:
+  alignment_directory: "../knowledge_alignment_round2/"
+  files:
+    - "knowledge_alignment.yaml"
+    - "knowledge_alignment_report.md"
+    - "expert_review_queue.yaml"
+  additional_operational_context:
+    directory: "../AL/catalyst_active_learning_runnable/"
+    status: "reference prototype and historical dataset; not assumed validated/authorized for production"
+execution_context:
+  research_goal: "Iteratively optimize formulation for peak areal device power while accounting for material cost."
+  target_device: null
+  target_reaction: null
+  status_note: "CRESt direct formate fuel cell is an adjacent evidence precedent, not confirmed as project target."
+  composition:
+    fixed_order: ["Pd", "Pt", "Au", "Cr", "Ir", "Ce", "Cu", "Nb"]
+    unit: "mass_fraction"
+    constraints:
+      - "Each w_i is finite numeric and w_i >= 0."
+      - "sum(w_i)=1 within an expert-approved tolerance."
+    component_bounds: null
+    all_components_required_positive: null
+    missing_semantics: {zero: "explicit zero/absence if confirmed", null: "unknown/not measured"}
+    migration_rule: "Keep original source vector, source order, and source basis. Map by element header to fixed target order only after confirming basis. Convert atomic fraction to mass fraction only with verified source basis and recorded atomic-weight version; do not silently normalize or relabel."
+  data_inventory:
+    raw_workbook: {path: "../AL/catalyst_active_learning_runnable/data/Data.xlsx", sheet: "Result 1", rows: 703, target_column: "max_power", condition_metadata_in_sheet: false}
+    abandoned_rows: {count: 396, source_flag: "abandoned=1", disposition: "retain in audit/failure table; exclude from primary performance model unless modeling failures separately"}
+    unflagged_rows: {count: 307, disposition: "candidate eligible set pending label/unit/condition validation"}
+    bundled_surrogate_sample: {path: "../AL/catalyst_active_learning_runnable/data/oracle_training_sample.csv", rows: 120, label_type: "source-derived historical values", sampling_note: "target-sorted then evenly thinned; not an unbiased validation split"}
+    seed_examples: {path: "../AL/catalyst_active_learning_runnable/data/initial_examples.csv", rows: 10}
+    accumulated_pool: {path: "../AL/catalyst_active_learning_runnable/outputs/total_examples_pool.csv", rows: 160, label_provenance: "must reconcile; local package README says pipeline uses GBR virtual labels"}
+    original_source_order: ["Pd", "Pt", "Cu", "Au", "Ir", "Ce", "Nb", "Cr"]
+    migration_status: "blocked pending source basis confirmation"
+metric_candidates:
+  - metric_id: M_POWER
+    name: "Peak areal device power density"
+    aliases: ["maximum power density", "peak power density"]
+    definition: "max_k(V_cell,k*I_k/A_geo) or max(V_cell*j_geo) from a device polarization curve."
+    unit: "mW cm^-2_geo or W cm^-2_geo; select one canonical storage unit"
+    proposed_roles: ["primary_objective"]
+    direction: "maximize"
+    threshold: {value: null, range: [], unit: "mW cm^-2_geo", status: "unresolved"}
+    suggested_reference_context: "CRESt DFFC: 325 mW cm^-2 at 60 C, 2.0 M KOH + 1.0 M HCOOK, total metal loading 2.0 mg cm^-2; comparator/context only if exact target protocol matches."
+    conditions: ["device/reaction/electrode role", "area basis", "fuel/electrolyte/feed", "loading", "temperature/pressure/flow", "conditioning", "polarization protocol"]
+    acquisition: ["measure full device curve", "derive V*I/A", "predict only after condition-aware model validation"]
+    evidence_refs: ["EA-KA:E001", "EA-KA:E002", "WEB:CREST2025", "WEB:FCTESQA2010"]
+    expert_status: "core_objective_confirmed_unit_and_protocol_unconfirmed"
+    unresolved_fields: ["target device", "reaction", "conditions", "replicate/uncertainty criterion", "application minimum"]
+  - metric_id: M_COST
+    name: "Actual precursor/material cost"
+    aliases: ["bill of materials cost", "formulation cost"]
+    definition: "Cost from actual precursor quantities, prices, purity/stoichiometry, yield and scale, reported per catalyst/electrode/batch as agreed."
+    proposed_roles: ["secondary_objective", "hard_constraint if budget supplied"]
+    direction: "minimize"
+    threshold: {value: null, range: [], unit: "currency per defined basis", status: "unresolved"}
+    conditions: ["supplier", "region/date/currency", "purity/form", "yield/recovery", "batch scale", "cost denominator"]
+    acquisition: ["derive from purchase records and synthesis mass balance"]
+    evidence_refs: ["EA-KA:E015", "EA-KA:E001"]
+    expert_status: "cost_objective_accepted_procurement_data_unavailable"
+    unresolved_fields: ["quotes and cost basis", "budget or no-hard-cap decision"]
+  - metric_id: M_COMPOSITION
+    name: "Eight mass-fraction components"
+    aliases: ["formulation vector", "composition feasibility"]
+    definition: "w=[w_Pd,w_Pt,w_Au,w_Cr,w_Ir,w_Ce,w_Cu,w_Nb] with w_i>=0 and sum=1."
+    proposed_roles: ["hard_constraint", "design_variables"]
+    direction: "target_range"
+    threshold: {value: 1.0, range: [1.0, 1.0], unit: "sum of mass fractions", status: "expert_provided; numeric tolerance pending"}
+    conditions: ["verified mass-fraction basis", "fixed header order", "assay/tolerance", "presence policy"]
+    acquisition: ["specify nominal mass recipe", "measure elemental composition for realized recipe"]
+    evidence_refs: ["USER:materials-expert-round1", "EA-KA:E003"]
+    expert_status: "approved_for_representation_only"
+    unresolved_fields: ["element bounds", "all-positive policy", "closure tolerance", "source-data conversion" ]
+  - metric_id: M_PGM
+    name: "PGM/broader precious-metal loading"
+    aliases: ["precious-metal fraction", "PGM loading"]
+    definition: "Report mass fractions Pd+Pt+Ir and separately Pd+Pt+Ir+Au; additionally report metal loading mg cm^-2 if device relevance."
+    proposed_roles: ["secondary_objective", "diagnostic", "soft budget criterion"]
+    direction: "minimize"
+    threshold: {value: null, range: [], unit: "mass fraction or mg cm^-2", status: "unresolved"}
+    conditions: ["category definition", "catalyst or electrode/device denominator"]
+    acquisition: ["derive from verified mass vector", "measure total/PGM loading"]
+    evidence_refs: ["EA-KA:E006", "EA-KA:E001"]
+    expert_status: "precious_metal_cost_descriptor_accepted_threshold_unconfirmed"
+    unresolved_fields: ["include Au in project precious set?", "loading denominator", "cost redundancy"]
+  - metric_id: M_COST_PROXY
+    name: "Public-price raw-material index"
+    aliases: ["composition cost proxy"]
+    definition: "Composition-weighted public commodity price using a consistent source vintage and transparent material-form conversions."
+    proposed_roles: ["diagnostic", "provisional secondary objective"]
+    direction: "minimize"
+    threshold: {value: null, range: [], unit: "USD kg^-1 proxy", status: "no hard threshold supported"}
+    conditions: ["price year", "product form/purity", "basis conversion", "currency"]
+    acquisition: ["derive from approved USGS price table; do not use as supplier cost"]
+    evidence_refs: ["EA-KA:E006", "EA-KA:E007", "EA-KA:E008", "EA-KA:E009", "EA-KA:E010", "EA-KA:E011"]
+    expert_status: "cost_proxy_selected_price_and_formula_unconfirmed"
+    unresolved_fields: ["approve dataset and forms", "do not double-count against actual cost"]
+  - metric_id: M_HALF_CELL
+    name: "Formate half-cell activity/overpotential"
+    aliases: ["LSV current density", "electrode activity proxy"]
+    definition: "Reaction-specific half-cell current or overpotential at fixed conditions; proxy only if validated against device performance for the same context."
+    proposed_roles: ["intermediate", "diagnostic"]
+    direction: "context_dependent"
+    threshold: {value: null, range: [], unit: "protocol-specific", status: "unresolved"}
+    conditions: ["electrolyte/concentration", "potential scale", "loading", "iR correction", "scan/hold protocol"]
+    acquisition: ["measure half-cell; do not substitute for device power"]
+    evidence_refs: ["EA-KA:E001", "EA-KA:E002"]
+    expert_status: "accepted_as_supporting_proxy_not_device_target"
+    unresolved_fields: ["target reaction and protocol", "proxy calibration"]
+metric_decisions:
+  - {metric_id: M_POWER, final_role: "primary_objective", rank: 1, ranking_basis: ["direct match to stated end goal", "measured device output", "explicitly identified in Round 2"], direction: "maximize", threshold: {value: null, unit: "mW cm^-2_geo", status: "unresolved; matched baseline/requirement needed"}, evaluator_id: "IF-POWER-001", decision_status: "proposed", evidence_refs: ["EA-KA:E001", "WEB:CREST2025"]}
+  - {metric_id: M_COST, final_role: "secondary_objective", rank: 2, ranking_basis: ["expert-requested trade-off", "actual cost records currently missing"], direction: "minimize", threshold: {value: null, status: "unresolved"}, evaluator_id: "IF-COST-001", decision_status: "proposed", evidence_refs: ["EA-KA:E015"]}
+  - {metric_id: M_COMPOSITION, final_role: "hard_constraint", rank: 0, ranking_basis: ["expert-provided nonnegative mass fractions summing to one"], direction: "target_range", threshold: {sum: 1.0, component_min: 0.0, component_max: null, tolerance: null, status: "partially expert-approved; bounds/tolerance pending"}, evaluator_id: "IF-SIMPLEX-001", decision_status: "proposed", evidence_refs: ["USER:materials-expert-round1"]}
+  - {metric_id: M_PGM, final_role: "secondary_objective", rank: 3, ranking_basis: ["tracks scarce/high-value metal use", "potentially redundant with actual cost"], direction: "minimize", threshold: {value: null, status: "unresolved"}, evaluator_id: "IF-PGM-001", decision_status: "proposed", evidence_refs: ["EA-KA:E001"]}
+  - {metric_id: M_COST_PROXY, final_role: "diagnostic", rank: 5, ranking_basis: ["computable from public tables but inconsistent product forms", "not a quote"], direction: "minimize", threshold: {value: null, status: "no hard cutoff"}, evaluator_id: "IF-PROXY-COST-001", decision_status: "proposed", evidence_refs: ["EA-KA:E006-E011"]}
+  - {metric_id: M_HALF_CELL, final_role: "intermediate", rank: 4, ranking_basis: ["may reduce experimental cost but is not endpoint", "CRESt proxy assumptions are context-specific"], direction: "context_dependent", threshold: {value: null, status: "unresolved"}, evaluator_id: "IF-HALFCELL-001", decision_status: "proposed", evidence_refs: ["EA-KA:E001"]}
+model_interfaces:
+  - model_id: MODEL-DATA-QA-001
+    name: "Composition/data provenance validator"
+    role: "constraint_checker"
+    status: "proposed"
+    source: {type: "local", location: "AL/catalyst_active_learning_runnable/catalyst_al/data.py (reference only)", version: "unverified for mass-order migration"}
+    entrypoint: {command: "", script: "", environment: "", working_directory: ""}
+    human_provision: {model_information_provided: false, script_location_provided: true, executable_interface_exposed: false, parameter_interface_exposed: false, access_level: "inspect_only", authorized_parameters: [], prohibited_actions: ["do not overwrite raw data", "do not silently relabel atomic values as mass fractions"], provided_by: "existing workspace package; no production approval", confirmation_ref: ""}
+    input_schema: ["raw row", "source basis", "header order", "assay/provenance metadata"]
+    output_schema: ["validity", "error flags", "conversion lineage", "closure residual"]
+    supported_metrics: ["M_COMPOSITION"]
+    parameters: {composition_order: ["Pd", "Pt", "Au", "Cr", "Ir", "Ce", "Cu", "Nb"], "closure_tolerance": null}
+    validation: {test_data: "test fixtures pending", metrics: {}, applicability_domain: "schema validation only", known_failures: ["existing code assumes old order", "source basis uncertain"]}
+    evidence_refs: ["USER:materials-expert-round1"]
+  - model_id: MODEL-POWER-PRED-001
+    name: "Condition-aware peak-power predictor interface"
+    role: "predictor"
+    status: "proposed"
+    source: {type: "local", location: "AL/catalyst_active_learning_runnable/catalyst_al/model.py (GBR prototype only)", version: "unvalidated; not authorized for live candidate release"}
+    entrypoint: {command: "", script: "", environment: "", working_directory: ""}
+    human_provision: {model_information_provided: false, script_location_provided: true, executable_interface_exposed: false, parameter_interface_exposed: false, access_level: "inspect_only", authorized_parameters: [], prohibited_actions: ["do not equate GBR virtual output to experiment", "do not auto-tune", "do not overwrite source model"], provided_by: "existing workspace package; no expert authorization", confirmation_ref: ""}
+    input_schema: ["mass_fraction_vector in confirmed order", "device/condition covariates", "label provenance"]
+    output_schema: ["predicted peak power in canonical units", "uncertainty", "applicability/domain flag", "model version"]
+    supported_metrics: ["M_POWER"]
+    parameters: {}
+    validation: {test_data: "raw batch/group-held-out experimental records required", metrics: {"MAE": null, "RMSE": null, "calibration": null}, applicability_domain: "unresolved", known_failures: ["available GBR trained on target-thinned sample; possible sampling bias", "device conditions absent in extracted table"]}
+    evidence_refs: ["EA-KA:E001", "EA-KA:E002"]
+  - model_id: MODEL-COST-001
+    name: "Actual precursor cost evaluator interface"
+    role: "physics_calculator"
+    status: "proposed"
+    source: {type: "local", location: "procurement records not supplied", version: "none"}
+    entrypoint: {command: "", script: "", environment: "", working_directory: ""}
+    human_provision: {model_information_provided: false, script_location_provided: false, executable_interface_exposed: false, parameter_interface_exposed: false, access_level: "none", authorized_parameters: [], prohibited_actions: ["do not treat public price proxy as actual precursor cost"], provided_by: "", confirmation_ref: ""}
+    input_schema: ["mass fractions", "precursor identity/grade/lot", "purchase prices", "yield and batch scale"]
+    output_schema: ["cost per declared mass basis", "currency/date", "cost uncertainty"]
+    supported_metrics: ["M_COST", "M_PGM"]
+    parameters: {}
+    validation: {test_data: "supplier invoices/quotes required", metrics: {}, applicability_domain: "unresolved", known_failures: ["no actual prices in current dataset"]}
+    evidence_refs: ["EA-KA:E015"]
+reward_components:
+  - component_id: RC-POWER-001
+    metric_id: M_POWER
+    evaluator_id: IF-POWER-001
+    role: "objective"
+    direction: "maximize"
+    threshold: {value: null, status: "proposed; target/benchmark threshold pending"}
+    normalization: "none"
+    weight: null
+    uncertainty_penalty: "do not promote out-of-domain/high-uncertainty candidate without experimental review"
+    missing_policy: "manual_review"
+    status: "proposed"
+    evidence_refs: ["EA-KA:E001", "WEB:CREST2025"]
+  - component_id: RC-COST-001
+    metric_id: M_COST
+    evaluator_id: IF-COST-001
+    role: "objective"
+    direction: "minimize"
+    threshold: {value: null, status: "proposed; actual cost basis/budget pending"}
+    normalization: "none"
+    weight: null
+    uncertainty_penalty: "missing quotes or yield -> do not score as measured actual cost"
+    missing_policy: "manual_review"
+    status: "proposed"
+    evidence_refs: ["EA-KA:E015"]
+  - component_id: RC-SIMPLEX-001
+    metric_id: M_COMPOSITION
+    evaluator_id: IF-SIMPLEX-001
+    role: "hard_constraint"
+    direction: "target_range"
+    threshold: {component_min: 0.0, component_max: null, sum: 1.0, tolerance: null}
+    normalization: "none"
+    weight: null
+    uncertainty_penalty: "reject invalid candidate; route near-tolerance measured vector to assay review"
+    missing_policy: "reject"
+    status: "proposed"
+    evidence_refs: ["USER:materials-expert-round1"]
+  - component_id: RC-PGM-001
+    metric_id: M_PGM
+    evaluator_id: IF-PGM-001
+    role: "objective"
+    direction: "minimize"
+    threshold: {value: null, status: "proposed; assess redundancy with actual cost before activation"}
+    normalization: "none"
+    weight: null
+    uncertainty_penalty: "report both PGM mass fraction and actual catalyst-layer loading; do not conflate"
+    missing_policy: "manual_review"
+    status: "proposed"
+    evidence_refs: ["EA-KA:E001"]
+workflow:
+  workflow_id: "WF-HEA-CLOSED-LOOP-ROUND1"
+  status: "draft"
+  search_space:
+    definition: "Mass-fraction simplex over fixed eight fields [Pd,Pt,Au,Cr,Ir,Ce,Cu,Nb]."
+    allowed_regions: []
+    forbidden_regions: []
+    expert_rules: ["all fractions finite and nonnegative", "sum is one within approved tolerance"]
+    component_bounds: null
+    all_positive_rule: null
+  nodes:
+    - {node_id: "N01", action: "load", model_id: "", inputs: ["raw workbook", "seed CSV", "historical pool", "condition/protocol records"], outputs: ["immutable raw snapshot", "provenance inventory"], retry_policy: "manual retry after file/read error", stop_on_failure: true}
+    - {node_id: "N02", action: "check", model_id: "MODEL-DATA-QA-001", inputs: ["raw records", "basis/order metadata"], outputs: ["mass-order normalized records", "quarantine list", "conversion log"], retry_policy: "manual review for unknown basis or invalid sums", stop_on_failure: true}
+    - {node_id: "N03", action: "review", model_id: "", inputs: ["data audit", "target protocol", "cost definition"], outputs: ["approved dataset and metric decisions"], retry_policy: "pause until expert decisions recorded", stop_on_failure: true}
+    - {node_id: "N04", action: "load", model_id: "", inputs: ["approved historical experimental labels"], outputs: ["versioned train/validation/test partitions"], retry_policy: "manual review of provenance/split", stop_on_failure: true}
+    - {node_id: "N05", action: "predict", model_id: "MODEL-POWER-PRED-001", inputs: ["mass vector", "fixed device conditions"], outputs: ["power predictions", "uncertainty", "applicability flags"], retry_policy: "fall back to baseline/manual review; do not use failed output", stop_on_failure: true}
+    - {node_id: "N06", action: "calculate", model_id: "MODEL-COST-001", inputs: ["candidate composition", "quotes, precursor forms, yields"], outputs: ["actual cost and uncertainty"], retry_policy: "if quotes absent, retain cost as unknown; do not substitute proxy silently", stop_on_failure: true}
+    - {node_id: "N07", action: "generate", model_id: "", inputs: ["approved search space", "historical data", "power/cost trade-off policy"], outputs: ["diverse feasible candidate batch", "generation provenance"], retry_policy: "regenerate only within approved budget/rules", stop_on_failure: true}
+    - {node_id: "N08", action: "check", model_id: "MODEL-DATA-QA-001", inputs: ["candidate batch"], outputs: ["feasible candidates", "rejections with reasons"], retry_policy: "reject invalid candidate; do not auto-correct without logging", stop_on_failure: true}
+    - {node_id: "N09", action: "score", model_id: "", inputs: ["feasible predictions", "uncertainty", "cost", "constraints"], outputs: ["Pareto set", "recommended batch and rationale"], retry_policy: "manual/domain review when Pareto or uncertainty unresolved", stop_on_failure: true}
+    - {node_id: "N10", action: "review", model_id: "", inputs: ["candidate evidence cards"], outputs: ["approved experiment batch"], retry_policy: "revise/pause/request evidence", stop_on_failure: true}
+    - {node_id: "N11", action: "measure", model_id: "", inputs: ["approved recipes and fixed protocol"], outputs: ["measured polarization, actual cost, replicate/QC records"], retry_policy: "retain failures and reasons; remeasure per protocol", stop_on_failure: true}
+    - {node_id: "N12", action: "export", model_id: "", inputs: ["new measured data", "prior version"], outputs: ["append-only dataset version", "updated evaluation report", "next-cycle queue"], retry_policy: "rollback to prior data/model version on integrity failure", stop_on_failure: true}
+  budget: {max_candidates: null, max_evaluations: null, max_runtime: "", compute_limit: "expert/experiment capacity not provided"}
+  stopping_conditions: ["approved application target and confirmation repeats met", "approved experiment budget exhausted", "data/model quality gate fails", "expert pause/veto", "no further decision-relevant gain under preapproved criterion"]
+parameter_controls:
+  - {parameter_id: "PC-001", target: "workflow", name: "candidate_batch_size", current_value: null, allowed_range: [], allowed_values: [], adjustment_mode: "manual", trigger: "set by experimental throughput approval", max_change_per_round: null, rollback_value: null, change_history: []}
+  - {parameter_id: "PC-002", target: "model", name: "predictor hyperparameters", current_value: null, allowed_range: [], allowed_values: [], adjustment_mode: "fixed", trigger: "not adjustable until model/interface/access explicitly approved", max_change_per_round: null, rollback_value: null, change_history: []}
+expert_feedback_history: []
+expert_activity_log:
+  - {activity_id: "EA-DOM-001", expert_role: "domain_expert", action_type: "define", target_type: "constraint", target_id: "M_COMPOSITION", contribution: "Specified mass fraction, fixed order Pd/Pt/Au/Cr/Ir/Ce/Cu/Nb, nonnegative components, sum one.", decision_or_effect: "Applied as canonical representation; component bounds and presence policy remain unresolved.", evidence_refs: ["USER:materials-expert-round1"], timestamp: "2026-10-27", status: "applied"}
+  - {activity_id: "EA-COMP-001", expert_role: "computer_expert", action_type: "recommend", target_type: "workflow", target_id: "WF-HEA-CLOSED-LOOP-ROUND1", contribution: "Requested iterative workflow grounded in existing composition-performance data; no specific model or algorithm authorized.", decision_or_effect: "Workflow remains algorithm-neutral; all model interfaces proposed, not active.", evidence_refs: ["USER:computer-expert-round1"], timestamp: "2026-10-27", status: "recorded"}
+run_history: []
+version_history:
+  - {version: "1.0.0-draft", date: "2026-10-27", change: "Initial execution-orchestration draft from Round 2 alignment plus mass-fraction expert override.", previous_version: null}
+
+dialogue_status_reconciliation:
+  annotation_date: '2026-10-30'
+  basis: Retrospective inference from the supplied dialogue; broad acceptance of task roles and working knowledge, not
+    newly performed expert validation.
+  source_file: multi_round_dialogue_example_EN.txt
+  source_sha256: 759f71d407a9bb2c542208a75279b8477e0833f2f54ee566e3e990870f96a994
+  independent_itemwise_verification_recorded: false
+  quantitative_thresholds_or_prices_approved: false
+  execution_authorized: false
+  composition_basis_caution: Dialogue specifies mass fractions. Atomic-/molar-fraction entries are not upgraded by this
+    annotation; conversion and schema reconciliation remain necessary.
+  feedback:
+  - id: EO1
+    line: 12
+    statement: 'Please run the Execution Orchestration Skill. Based on the three output files from the knowledge-alignment
+      stage and the research methods used in this field, which may be identified from the literature or through online
+      research, design a basic task-execution workflow for optimizing the formulation of an eight-component high-entropy
+      alloy catalyst. Provide necessary recommendations, especially recommendations for metric ranking and corresponding
+      threshold guidance, preferably supported by evidence. Starting from existing experimental data, the workflow should
+      explain how to perform data organization, model training, candidate-composition generation, performance evaluation,
+      candidate screening, and result feedback, but it must not assume a specific model or algorithm that has not yet
+      been confirmed. The materials expert provides the following information: the catalyst consists of eight metals—Pd,
+      Pt, Au, Cr, Ir, Ce, Cu, and Nb—and is generally represented as a mass-fraction vector with a fixed element order;
+      each element''s mass fraction must be nonnegative, and the fractions must sum to 1. The optimization problem therefore
+      involves trade-offs among peak power density, cost, and composition constraints. The computer expert would like
+      to construct a model workflow capable of iterative optimization from existing composition-performance data. Add
+      the suffix `round1` to the output filenames.'
+  - id: EO2
+    line: 16
+    statement: The materials scientist notes that the organization of metrics in the current workflow still needs adjustment.
+      In addition to peak power density, the workflow may consider normalized cost, composition validity, element-content
+      ranges, differences between candidate compositions and existing experimental samples, model-prediction confidence,
+      and the stability of high-performance formulations. The computer expert confirms that peak power density will be
+      the core performance metric for formulation optimization, while nonnegative mass fractions for the eight elements,
+      a total fraction of 1, and a fixed element order will serve as composition constraints. The `AL` folder is now
+      provided as the implemented model execution path. The model architecture, training method, metric-configuration
+      files, runtime parameters, data interfaces, and candidate-result format must be obtained from the code, documentation,
+      and interface documents in the `AL` folder. Inspect and update the model information and interfaces independently,
+      improve the workflow, and report the proposed execution procedure to me for confirmation. Do not run it without
+      authorization. Clearly specify all output paths. Update the previous round's output files and add the suffix `round2`.

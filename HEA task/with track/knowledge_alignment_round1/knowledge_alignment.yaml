@@ -1,0 +1,748 @@
+schema_version: "scientific-knowledge-alignment/0.2.0"
+project:
+  name: "Round 1: eight-component HEA electrocatalyst composition alignment"
+  goal: "Optimize elemental composition of an eight-component high-entropy-alloy catalyst to increase electrochemical-device peak power density."
+  domain: "High-entropy alloy electrocatalysis and electrochemical device performance"
+  application_context: "Electrochemical device not yet specified"
+  web_search_allowed: true
+  primary_evidence_directory: "../literature_markdown/"
+  evidence_file_count: 43
+  expert_request: "Extract concepts, metrics, constraints, conditions, and structure-performance relations; keep uncertain claims in expert review."
+  status: "general_knowledge_accepted_itemwise_validation_not_recorded"
+  scope_note: "All 43 Markdown files are inventoried below. Only directly relevant electrocatalyst studies support reaction-specific activity claims; method papers and unrelated material systems are contextual, not direct performance evidence."
+concepts:
+  - concept_id: C001
+    name: "High-entropy alloy"
+    definition: "Compositionally complex alloy often defined either by at least five principal elements with commonly cited atomic-fraction bounds or by an ideal configurational entropy criterion; definitions vary and neither alone requires a single phase."
+    synonyms: ["HEA", "high-entropy alloy", "compositionally complex alloy (overlapping broader term)"]
+    parent_concept: "Alloy"
+    ontology_source:
+      name: "Local concept aligned to peer-reviewed HEA literature; no authoritative ontology IRI identified"
+      iri_or_url: "https://doi.org/10.1016/j.actamat.2016.08.081"
+      version_or_access_date: "Accessed 2026-10-27"
+    mapping_status: "close"
+    evidence: [E002, E003, E007, E008, E013]
+    expert_status: "accepted_in_principle_from_dialogue"
+  - concept_id: C002
+    name: "Eight-component alloy"
+    definition: "Project-defined catalyst alloy containing exactly eight designated elemental components; does not imply equiatomic composition, a single phase, or minimum fractions."
+    synonyms: ["eight-element alloy"]
+    parent_concept: "High-entropy alloy (project scope; definition to confirm)"
+    ontology_source: {name: "Project-local", iri_or_url: "", version_or_access_date: "2026-10-27"}
+    mapping_status: "local"
+    evidence: [E001]
+    expert_status: "accepted_in_principle_from_dialogue"
+  - concept_id: C003
+    name: "Composition vector"
+    definition: "Fractions x_i for component i, with x_i >= 0 and sum_i x_i = 1; atom fractions and mass fractions are distinct representations."
+    synonyms: ["compositional data", "mixture composition"]
+    parent_concept: "Composition"
+    ontology_source:
+      name: "Compositional data analysis literature"
+      iri_or_url: "https://doi.org/10.1111/j.2517-6161.1982.tb01195.x"
+      version_or_access_date: "Accessed 2026-10-27"
+    mapping_status: "close"
+    evidence: [E033, E034]
+    expert_status: "pending"
+  - concept_id: C004
+    name: "Electrocatalyst"
+    definition: "A catalyst operating at an electrode to affect an electrochemical reaction rate; meaning is conditional on reaction, electrolyte, potential scale, electrode, and protocol."
+    synonyms: ["electrochemical catalyst"]
+    parent_concept: "Catalyst"
+    ontology_source:
+      name: "IUPAC Gold Book, electrocatalysis (09094); catalyst (C00876)"
+      iri_or_url: "https://doi.org/10.1351/goldbook.09094; https://doi.org/10.1351/goldbook.C00876"
+      version_or_access_date: "Gold Book 5.0.0; accessed 2026-10-27"
+    mapping_status: "close"
+    evidence: [E007, E008, E013, E021, E024]
+    expert_status: "accepted_in_principle_from_dialogue"
+  - concept_id: C005
+    name: "Mean current density"
+    definition: "Electric current divided by a stated electrode area; geometric/projected and true/electrochemically active area bases must not be conflated."
+    synonyms: ["current density", "j"]
+    parent_concept: "Electric current per area"
+    ontology_source:
+      name: "IUPAC Gold Book, M03776"
+      iri_or_url: "https://doi.org/10.1351/goldbook.M03776"
+      version_or_access_date: "Gold Book 5.0.0; accessed 2026-10-27"
+    mapping_status: "exact"
+    evidence: [E044]
+    expert_status: "accepted_in_principle_from_dialogue"
+  - concept_id: C009
+    name: "Overpotential"
+    definition: "Deviation of an electrode potential from its equilibrium value required to cause a given current to flow through the electrode."
+    synonyms: ["eta", "electrode overpotential"]
+    parent_concept: "Electrode potential difference"
+    ontology_source:
+      name: "IUPAC Gold Book, O04358"
+      iri_or_url: "https://doi.org/10.1351/goldbook.O04358"
+      version_or_access_date: "Gold Book 5.0.0; accessed 2026-10-27"
+    mapping_status: "exact"
+    evidence: [E047]
+    expert_status: "accepted_in_principle_from_dialogue"
+  - concept_id: C006
+    name: "Areal peak device power density"
+    definition: "Maximum cell power divided by declared active area over a defined device polarization curve; for each point p_A = V_cell * I / A. Device-level response, not an intrinsic catalyst-only property."
+    synonyms: ["peak power density", "maximum areal power density"]
+    parent_concept: "Device performance metric"
+    ontology_source:
+      name: "Local project concept; IUPAC electrochemical engineering nomenclature and FCTESQA PEFC procedure are terminology/method references"
+      iri_or_url: "https://doi.org/10.1351/pac199365051009"
+      version_or_access_date: "Accessed 2026-10-27"
+    mapping_status: "local"
+    evidence: [E045, E046]
+    expert_status: "accepted_in_principle_from_dialogue"
+  - concept_id: C007
+    name: "Polarization curve"
+    definition: "Device voltage and power characterized as functions of current density under declared, controlled operating conditions; the supplied FCTESQA procedure is specifically for PEFC single cells."
+    synonyms: ["current-voltage curve", "polarisation curve"]
+    parent_concept: "Electrochemical device characterization"
+    ontology_source:
+      name: "FCTESQA PEFC SC 5-2 test module (harmonized procedure; not represented as formal standard)"
+      iri_or_url: "https://joint-research-centre.ec.europa.eu/system/files/2017-02/polarisation_curve_testprocedure.pdf"
+      version_or_access_date: "Version 2010-04-30; accessed 2026-10-27"
+    mapping_status: "close"
+    evidence: [E045, E046]
+    expert_status: "accepted_in_principle_from_dialogue"
+  - concept_id: C008
+    name: "Chemical ordering and phase state"
+    definition: "Arrangement of elements among lattice sites and phases, including ordered intermetallic, disordered solid solution, and multiphase states; surface state may differ from bulk composition."
+    synonyms: ["ordering degree", "phase constitution", "surface segregation"]
+    parent_concept: "Alloy structure"
+    ontology_source: {name: "Project-local mapping based on alloy/electrocatalysis literature", iri_or_url: "", version_or_access_date: "2026-10-27"}
+    mapping_status: "local"
+    evidence: [E006, E021, E025]
+    expert_status: "accepted_in_principle_from_dialogue"
+indicators:
+  - indicator_id: I01
+    name: "Areal peak device power density"
+    definition: "max(V_cell * I / A_declared) over the defined device polarization curve."
+    unit: "W cm^-2 or W m^-2"
+    conditions: ["device architecture and cell/stack level", "active-area convention", "reactant/electrolyte conditions", "temperature, pressure, humidity/flow", "conditioning and steady-state/sweep protocol"]
+    domain_meaning: "Target device output; depends on catalyst and the complete electrochemical device/system."
+    audience: "shared"
+    obtainable_by: ["measure", "derive"]
+    optimization_role: "primary_objective"
+    optimization_direction: "maximize"
+    importance: 5
+    computability: 4
+    data_readiness: 1
+    priority: "P1"
+    methods: ["device polarization measurement; derive power from voltage and current/area"]
+    related_indicators: [I02, I09, I10]
+    evidence: [E045, E046]
+    expert_status: "core_objective_confirmed_unit_and_protocol_unconfirmed"
+  - indicator_id: I02
+    name: "Device polarization curve"
+    definition: "Paired cell voltage and current density over device operating points."
+    unit: "V and A cm^-2 (area basis required)"
+    conditions: ["same conditions and protocol as I01"]
+    domain_meaning: "Intermediate device response from which I01 is obtained."
+    audience: "shared"
+    obtainable_by: ["measure"]
+    optimization_role: "intermediate"
+    optimization_direction: "context_dependent"
+    importance: 5
+    computability: 4
+    data_readiness: 1
+    priority: "P1"
+    methods: ["controlled device polarization test"]
+    related_indicators: [I01, I03]
+    evidence: [E045, E046]
+    expert_status: "accepted_in_principle_from_dialogue"
+  - indicator_id: I03
+    name: "Reaction-specific electrocatalytic activity"
+    definition: "Current or rate for a named reaction at a specified potential/current, with explicit loading and normalization."
+    unit: "A cm^-2, A mg^-1, or other explicitly defined rate unit"
+    conditions: ["reaction", "electrolyte/pH", "potential reference", "area/mass basis", "iR and transport corrections", "loading and protocol"]
+    domain_meaning: "Half-cell or electrode response; may support but is not equivalent to device power."
+    audience: "shared"
+    obtainable_by: ["measure", "derive"]
+    optimization_role: "intermediate"
+    optimization_direction: "context_dependent"
+    importance: 5
+    computability: 4
+    data_readiness: 3
+    priority: "P1"
+    methods: ["reaction-appropriate electrochemical testing"]
+    related_indicators: [I01, I02, I04, I05, I06]
+    evidence: [E008, E012, E017, E021, E024, E026]
+    expert_status: "accepted_in_principle_from_dialogue"
+  - indicator_id: I04
+    name: "Overpotential at specified current"
+    definition: "Potential difference from the reaction equilibrium potential at a specified current density and reference convention."
+    unit: "V or mV"
+    conditions: ["reaction", "reference electrode and conversion", "current density/area", "iR correction", "electrolyte and temperature"]
+    domain_meaning: "Reaction kinetic/electrode proxy; not full-device peak power."
+    audience: "shared"
+    obtainable_by: ["measure", "derive"]
+    optimization_role: "secondary_objective"
+    optimization_direction: "minimize"
+    importance: 4
+    computability: 4
+    data_readiness: 3
+    priority: "P1"
+    methods: ["electrochemical polarization at specified current"]
+    related_indicators: [I03, I01]
+    evidence: [E008, E013, E021]
+    expert_status: "accepted_in_principle_from_dialogue"
+  - indicator_id: I05
+    name: "Mass activity"
+    definition: "Reaction current divided by declared catalyst or active-metal mass."
+    unit: "A mg_cat^-1 or A mg_PGM^-1"
+    conditions: ["reaction", "potential", "mass denominator", "loading", "electrolyte and corrections"]
+    domain_meaning: "Mass utilization indicator; denominators across papers can differ."
+    audience: "shared"
+    obtainable_by: ["measure", "derive"]
+    optimization_role: "secondary_objective"
+    optimization_direction: "maximize"
+    importance: 4
+    computability: 4
+    data_readiness: 3
+    priority: "P2"
+    methods: ["electrochemical current and independently known catalyst/metal mass"]
+    related_indicators: [I03, I07]
+    evidence: [E021]
+    expert_status: "accepted_in_principle_from_dialogue"
+  - indicator_id: I06
+    name: "ECSA-normalized specific activity"
+    definition: "Reaction current divided by electrochemically active surface area using a stated ECSA method."
+    unit: "A cm_ECSA^-2"
+    conditions: ["reaction", "potential", "ECSA measurement method", "electrolyte and corrections"]
+    domain_meaning: "Surface-area normalized activity, method-dependent."
+    audience: "shared"
+    obtainable_by: ["measure", "derive"]
+    optimization_role: "diagnostic"
+    optimization_direction: "context_dependent"
+    importance: 3
+    computability: 3
+    data_readiness: 2
+    priority: "P2"
+    methods: ["electrochemical surface-area measurement plus activity test"]
+    related_indicators: [I03, I05]
+    evidence: [E021]
+    expert_status: "accepted_in_principle_from_dialogue"
+  - indicator_id: I07
+    name: "Durability / activity or power retention"
+    definition: "Change in a specified performance quantity following a defined hold/cycling protocol."
+    unit: "% retention, mV change, or time; protocol-defined"
+    conditions: ["start metric", "stress protocol", "duration/cycles", "post-test measurement conditions"]
+    domain_meaning: "Stability under a specified operational stress; no universal corpus-wide protocol."
+    audience: "shared"
+    obtainable_by: ["measure", "derive"]
+    optimization_role: "constraint"
+    optimization_direction: "maximize"
+    importance: 4
+    computability: 3
+    data_readiness: 2
+    priority: "P1"
+    methods: ["protocol-defined aging/cycling and repeat performance measurement"]
+    related_indicators: [I01, I03]
+    evidence: [E007, E013, E021]
+    expert_status: "accepted_in_principle_from_dialogue"
+  - indicator_id: I08
+    name: "Selectivity / Faradaic efficiency"
+    definition: "Fraction of charge or product attributable to the desired product/reaction, as defined for the named system."
+    unit: "% or dimensionless"
+    conditions: ["reaction and product", "sampling/quantification method", "potential and electrolyte"]
+    domain_meaning: "Relevant only where competing products/reactions make it meaningful."
+    audience: "shared"
+    obtainable_by: ["measure", "derive"]
+    optimization_role: "constraint"
+    optimization_direction: "target_range"
+    importance: 3
+    computability: 3
+    data_readiness: 2
+    priority: "P2"
+    methods: ["reaction product/charge quantification"]
+    related_indicators: [I03, I01]
+    evidence: [E013, E026]
+    expert_status: "accepted_in_principle_from_dialogue"
+  - indicator_id: I09
+    name: "Elemental atomic fractions"
+    definition: "Eight component atomic fractions x_i, nonnegative and summing to 1; component-specific bounds remain unspecified."
+    unit: "at.% or fraction"
+    conditions: ["measured versus nominal composition must be distinguished", "bounds and assay uncertainty needed"]
+    domain_meaning: "Composition design variables and feasibility constraints."
+    audience: "shared"
+    obtainable_by: ["measure", "derive"]
+    optimization_role: "constraint"
+    optimization_direction: "target_range"
+    importance: 5
+    computability: 5
+    data_readiness: 2
+    priority: "P1"
+    methods: ["composition specification and quantitative elemental analysis"]
+    related_indicators: [I10, I13]
+    evidence: [E001, E024, E025, E033, E034]
+    expert_status: "pending"
+  - indicator_id: I10
+    name: "Number of alloy components"
+    definition: "Count of designated alloy components; project requires exactly eight."
+    unit: "count"
+    conditions: ["project definition must specify whether dopants/support/surface species count"]
+    domain_meaning: "Fixed design constraint, not a performance metric."
+    audience: "shared"
+    obtainable_by: ["measure", "expert_only"]
+    optimization_role: "constraint"
+    optimization_direction: "target_range"
+    importance: 5
+    computability: 5
+    data_readiness: 4
+    priority: "P1"
+    methods: ["composition specification and verification"]
+    related_indicators: [I09]
+    evidence: [E001]
+    expert_status: "accepted_in_principle_from_dialogue"
+  - indicator_id: I11
+    name: "Phase and chemical ordering state"
+    definition: "Phase identity/fraction and degree/type of chemical ordering, with surface state recorded where possible."
+    unit: "categorical, fraction, or method-specific descriptor"
+    conditions: ["synthesis/thermal history", "characterization resolution", "bulk versus surface distinction"]
+    domain_meaning: "Potential mediator/diagnostic of active site and stability behavior."
+    audience: "shared"
+    obtainable_by: ["measure", "physics_compute", "expert_only"]
+    optimization_role: "intermediate"
+    optimization_direction: "context_dependent"
+    importance: 4
+    computability: 3
+    data_readiness: 2
+    priority: "P2"
+    methods: ["diffraction and microscopy/spectroscopy as suitable; method selection requires expert"]
+    related_indicators: [I03, I07, I12]
+    evidence: [E006, E021, E025]
+    expert_status: "accepted_in_principle_from_dialogue"
+  - indicator_id: I12
+    name: "Morphology and accessible surface descriptors"
+    definition: "Particle size/distribution, morphology, dispersion/support, porosity, and accessible surface descriptors relevant to measured electrode performance."
+    unit: "method-dependent"
+    conditions: ["characterization method", "sampling and catalyst-layer context"]
+    domain_meaning: "Potential mediator and confounder of composition-performance comparisons."
+    audience: "shared"
+    obtainable_by: ["measure", "derive"]
+    optimization_role: "diagnostic"
+    optimization_direction: "target_range"
+    importance: 4
+    computability: 3
+    data_readiness: 2
+    priority: "P2"
+    methods: ["microscopy and surface/electrode characterization"]
+    related_indicators: [I03, I05, I06, I11]
+    evidence: [E005, E007, E021]
+    expert_status: "accepted_in_principle_from_dialogue"
+  - indicator_id: I13
+    name: "Ideal configurational entropy descriptor"
+    definition: "For ideal random mixing, S_conf/R = -sum_i x_i ln(x_i); composition-derived descriptor only, not proof of realized phase stability or activity."
+    unit: "dimensionless S_conf/R (or J mol^-1 K^-1 for S_conf)"
+    conditions: ["assumes ideal configurational mixing and declared component fractions"]
+    domain_meaning: "Descriptive alloy feature; causal interpretation is not presumed."
+    audience: "shared"
+    obtainable_by: ["derive"]
+    optimization_role: "feature_only"
+    optimization_direction: "none"
+    importance: 2
+    computability: 5
+    data_readiness: 3
+    priority: "P2"
+    methods: ["calculate from composition under stated ideal-mixing assumption"]
+    related_indicators: [I09, I11]
+    evidence: [E003, E025]
+    expert_status: "accepted_in_principle_from_dialogue"
+  - indicator_id: I14
+    name: "Adsorption / intermediate binding energy"
+    definition: "Computed energy of a specified adsorbate/intermediate on a specified alloy surface/site and model."
+    unit: "eV"
+    conditions: ["surface termination/site", "coverage/coadsorbates", "solvation/potential treatment", "computational model"]
+    domain_meaning: "Mechanistic proxy; HEA site distributions and model assumptions affect transferability."
+    audience: "shared"
+    obtainable_by: ["physics_compute", "estimate"]
+    optimization_role: "intermediate"
+    optimization_direction: "context_dependent"
+    importance: 3
+    computability: 2
+    data_readiness: 2
+    priority: "P2"
+    methods: ["atomistic electronic-structure calculations and site sampling"]
+    related_indicators: [I03, I11]
+    evidence: [E017]
+    expert_status: "accepted_in_principle_from_dialogue"
+  - indicator_id: I15
+    name: "Tafel slope"
+    definition: "Slope of a specified overpotential versus log(current) region for a named reaction."
+    unit: "mV dec^-1"
+    conditions: ["reaction", "fitted region", "reference/iR/transport correction", "electrolyte and temperature"]
+    domain_meaning: "Kinetic diagnostic; not an objective with universal direction."
+    audience: "shared"
+    obtainable_by: ["derive"]
+    optimization_role: "diagnostic"
+    optimization_direction: "none"
+    importance: 2
+    computability: 3
+    data_readiness: 2
+    priority: "P2"
+    methods: ["derive from suitable electrochemical polarization data"]
+    related_indicators: [I03, I04]
+    evidence: [E021]
+    expert_status: "accepted_in_principle_from_dialogue"
+claims:
+  - claim_id: K001
+    subject: "Element fractions and element identity"
+    relation: "correlates_with"
+    object: "reaction-specific electrocatalytic activity"
+    claim_type: "correlation"
+    conditions: ["reaction-, synthesis-, surface-, and electrolyte-dependent"]
+    evidence: [E008, E012, E024, E026]
+    confidence: "medium"
+    expert_status: "accepted_in_principle_from_dialogue"
+  - claim_id: K002
+    subject: "Chemical ordering state"
+    relation: "increases"
+    object: "ORR/HER performance in Pt4FeCoCuNi under the reported test conditions"
+    claim_type: "mechanism"
+    conditions: ["specific five-component alloy, synthesis and electrochemical test in Wang et al. 2023"]
+    evidence: [E021]
+    confidence: "medium"
+    expert_status: "accepted_in_principle_from_dialogue"
+  - claim_id: K003
+    subject: "HEA local site distribution and adsorbate binding-energy distribution"
+    relation: "correlates_with"
+    object: "modeled expected catalytic activity"
+    claim_type: "mechanism"
+    conditions: ["surface/site sampling and theoretical assumptions in Clausen et al. 2023"]
+    evidence: [E017]
+    confidence: "medium"
+    expert_status: "accepted_in_principle_from_dialogue"
+  - claim_id: K004
+    subject: "Device polarization curve under declared operating conditions"
+    relation: "defines"
+    object: "areal peak device power density"
+    claim_type: "definition"
+    conditions: ["cell voltage, current, and declared area basis"]
+    evidence: [E045, E046]
+    confidence: "high"
+    expert_status: "accepted_in_principle_from_dialogue"
+  - claim_id: K005
+    subject: "Composition closure and fixed component identities"
+    relation: "defines"
+    object: "feasible composition-vector domain"
+    claim_type: "definition"
+    conditions: ["eight designated components; fractions nonnegative and sum to one"]
+    evidence: [E001, E033, E034]
+    confidence: "high"
+    expert_status: "accepted_in_principle_from_dialogue"
+  - claim_id: K006
+    subject: "Octonary Pd-Pt-Cu-Au-Ir-Ce-Nb-Cr composition search"
+    relation: "correlates_with"
+    object: "direct formate-fuel-cell power-density performance"
+    claim_type: "correlation"
+    conditions: ["specific CRESt study and formate oxidation/device configuration; not established for the project target"]
+    evidence: [E050]
+    confidence: "high"
+    expert_status: "accepted_in_principle_from_dialogue"
+evidence:
+  - evidence_id: E001
+    source_type: "expert"
+    source_name: "User project objective"
+    identifier_or_url: "Conversation request"
+    location: "User instruction"
+    content_summary: "Optimize elemental composition of an eight-component HEA catalyst to increase electrochemical-device peak power density."
+    evidence_use: "expert_rule"
+    quality: "high"
+  - evidence_id: E002
+    source_type: "paper"
+    source_name: "02_Cantor_2004_Microstructural_development_in_equiatomic_multicomponent_alloys.md"
+    identifier_or_url: "literature_markdown/02_Cantor_2004_Microstructural_development_in_equiatomic_multicomponent_alloys.md"
+    location: "Whole Markdown paper; sections Abstract/Experimental/Results/Discussion"
+    content_summary: "Foundational multicomponent alloy/microstructure evidence; contextual rather than catalyst performance evidence."
+    evidence_use: "definition"
+    quality: "high"
+  - evidence_id: E003
+    source_type: "paper"
+    source_name: "03_Miracle_2017_Critical_review_of_high_entropy_alloys.md"
+    identifier_or_url: "literature_markdown/03_Miracle_2017_Critical_review_of_high_entropy_alloys.md"
+    location: "Whole review; definition and alloy concepts"
+    content_summary: "Reviews HEA and related definitions, thermodynamic/structural concepts; supports definition plurality, not a catalyst-specific rule."
+    evidence_use: "definition"
+    quality: "high"
+  - evidence_id: E005
+    source_type: "paper"
+    source_name: "05_Yao_2022_High_entropy_nanoparticles.md"
+    identifier_or_url: "literature_markdown/05_Yao_2022_High_entropy_nanoparticles.md"
+    location: "Whole review"
+    content_summary: "High-entropy nanoparticle synthesis-structure-property relationships; contextual morphology and synthesis evidence."
+    evidence_use: "relationship"
+    quality: "medium"
+  - evidence_id: E006
+    source_type: "paper"
+    source_name: "06_Li_2016_Metastable_high_entropy_dual_phase_alloys.md"
+    identifier_or_url: "literature_markdown/06_Li_2016_Metastable_high_entropy_dual_phase_alloys.md"
+    location: "Whole paper / Methods"
+    content_summary: "Multiphase/metastable HEA example; contextual evidence that HEAs need not be single-phase."
+    evidence_use: "definition"
+    quality: "medium"
+  - evidence_id: E007
+    source_type: "paper"
+    source_name: "07_Zhang_2022_High_entropy_alloys_for_electrocatalysis.md"
+    identifier_or_url: "literature_markdown/07_Zhang_2022_High_entropy_alloys_for_electrocatalysis.md"
+    location: "Sections 2-5: definitions, design, characterization, applications"
+    content_summary: "Review of HEA electrocatalyst design, characterization, and applications; secondary context."
+    evidence_use: "relationship"
+    quality: "medium"
+  - evidence_id: E008
+    source_type: "paper"
+    source_name: "08_Batchelor_2019_High_entropy_alloys_as_discovery_platform.md"
+    identifier_or_url: "literature_markdown/08_Batchelor_2019_High_entropy_alloys_as_discovery_platform.md"
+    location: "Results and Discussion; full paper"
+    content_summary: "HEAs as an electrocatalysis discovery platform; supports composition-dependent activity context, not target device power."
+    evidence_use: "relationship"
+    quality: "high"
+  - evidence_id: E012
+    source_type: "paper"
+    source_name: "12_Pan_2024_High_throughput_screening_of_Pt_based_HEAs.md"
+    identifier_or_url: "literature_markdown/12_Pan_2024_High_throughput_screening_of_Pt_based_HEAs.md"
+    location: "Abstract/Results; high-throughput ORR composition screening"
+    content_summary: "Reports microscale Pt-based HEA composition screening and relative current density by SECCM for ORR, validation, and DFT analysis. The paper describes precursor-array pulse heating under Ar (0.55 s, 2023 K, 5 pulses); study-specific conditions only. Reaction-specific electrode evidence."
+    evidence_use: "method"
+    quality: "high"
+  - evidence_id: E013
+    source_type: "paper"
+    source_name: "13_Ren_2023_High_entropy_alloys_in_electrocatalysis.md"
+    identifier_or_url: "literature_markdown/13_Ren_2023_High_entropy_alloys_in_electrocatalysis.md"
+    location: "Review sections on alloy effects, electrocatalysis, and applications"
+    content_summary: "Review discusses ligand/ensemble/strain effects and reaction-specific activity, selectivity and stability; review evidence only."
+    evidence_use: "relationship"
+    quality: "medium"
+  - evidence_id: E017
+    source_type: "paper"
+    source_name: "17_Clausen_2023_ML_optimization_of_HEA_catalytic_activity.md"
+    identifier_or_url: "literature_markdown/17_Clausen_2023_ML_optimization_of_HEA_catalytic_activity.md"
+    location: "Introduction/Methods/Results; adsorption energy regression and expected catalytic activity"
+    content_summary: "Models distributions of possible HEA sites and intermediate adsorption energies to estimate catalytic activity; computational proxy evidence."
+    evidence_use: "relationship"
+    quality: "high"
+  - evidence_id: E021
+    source_type: "paper"
+    source_name: "21_Wang_2023_Ordering_dependent_electrocatalysis_of_Pt4FeCoCuNi.md"
+    identifier_or_url: "literature_markdown/21_Wang_2023_Ordering_dependent_electrocatalysis_of_Pt4FeCoCuNi.md"
+    location: "Results, synthesis description, ORR/HER figures and durability discussion; see associated image assets and supporting-information references"
+    content_summary: "Five-component Pt4FeCoCuNi intermetallic with tunable order; reports 3 m H2SO4 treatment at 110 C for 72 h and an ordering heat-treatment threshold >=600 C in this study, as well as HER/ORR electrochemistry, ORR mass activity and durability characterization. Conditions are study-specific. Not an eight-component device-power measurement."
+    evidence_use: "relationship"
+    quality: "high"
+  - evidence_id: E024
+    source_type: "paper"
+    source_name: "24_Banko_2021_Combinatorial_HEA_electrocatalyst_discovery.md"
+    identifier_or_url: "literature_markdown/24_Banko_2021_Combinatorial_HEA_electrocatalyst_discovery.md"
+    location: "Results and Discussion; continuous composition spread and source-permutation figures"
+    content_summary: "Quinary composition-space coverage and attribution by permuted deposition sources for electrocatalyst discovery."
+    evidence_use: "method"
+    quality: "high"
+  - evidence_id: E025
+    source_type: "paper"
+    source_name: "25_Qi_2020_Navigating_HEA_compositional_landscape.md"
+    identifier_or_url: "literature_markdown/25_Qi_2020_Navigating_HEA_compositional_landscape.md"
+    location: "Whole review; HEA compositional landscape"
+    content_summary: "Composition-space and alloy design context; notes uncertain mechanisms in some electrochemical behaviors."
+    evidence_use: "definition"
+    quality: "medium"
+  - evidence_id: E026
+    source_type: "paper"
+    source_name: "26_Zhang_2025_Multimodal_robotic_electrocatalyst_discovery.md"
+    identifier_or_url: "literature_markdown/26_Zhang_2025_Multimodal_robotic_electrocatalyst_discovery.md"
+    location: "Whole paper; robotic/multimodal electrocatalyst discovery"
+    content_summary: "CRESt robotic/multimodal study explores >900 catalyst chemistries and reports an octonary Pd-Pt-Cu-Au-Ir-Ce-Nb-Cr catalyst for formate oxidation, cost-specific performance, and direct formate-fuel-cell power density. This is direct octonary/device-level adjacent evidence, but the reaction, elements, and device do not match the unspecified project target."
+    evidence_use: "method"
+    quality: "medium"
+  - evidence_id: E050
+    source_type: "paper"
+    source_name: "26_Zhang_2025_Multimodal_robotic_electrocatalyst_discovery.md"
+    identifier_or_url: "https://doi.org/10.1038/s41586-025-09640-5"
+    location: "Abstract; Fig. 1 caption and adjoining results; direct formate fuel-cell result"
+    content_summary: "Reports octonary Pd-Pt-Cu-Au-Ir-Ce-Nb-Cr catalyst discovery for formate oxidation; figure labels maximum power density in mW cm^-2_geo, and optimized recipe delivered record power density in a direct formate fuel cell. Abstract reports 9.3-fold improvement in cost-specific performance. Do not transfer numeric values or optimal recipe to the project without target-reaction/device matching."
+    evidence_use: "value"
+    quality: "high"
+  - evidence_id: E051
+    source_type: "paper"
+    source_name: "13_Ren_2023_High_entropy_alloys_in_electrocatalysis.md"
+    identifier_or_url: "literature_markdown/13_Ren_2023_High_entropy_alloys_in_electrocatalysis.md"
+    location: "Section on ethanol oxidation / direct ethanol fuel cells, lines near 874"
+    content_summary: "Review cites an HEA catalyst with maximum direct-ethanol-fuel-cell power density 0.72 W cm^-2 at 60 C and steady operation >1200 h; secondary-source review value and not independently revalidated against its cited primary study in this round."
+    evidence_use: "value"
+    quality: "medium"
+  - evidence_id: E033
+    source_type: "paper"
+    source_name: "33_Egozcue_2018_Modelling_compositional_data.md"
+    identifier_or_url: "literature_markdown/33_Egozcue_2018_Modelling_compositional_data.md"
+    location: "Whole paper"
+    content_summary: "Compositional-data modeling principles; method context for closed composition vectors."
+    evidence_use: "definition"
+    quality: "high"
+  - evidence_id: E034
+    source_type: "paper"
+    source_name: "34_Aitchison_1982_Statistical_analysis_of_compositional_data.md"
+    identifier_or_url: "literature_markdown/34_Aitchison_1982_Statistical_analysis_of_compositional_data.md"
+    location: "Whole paper"
+    content_summary: "Foundational statistical treatment of compositional data."
+    evidence_use: "definition"
+    quality: "high"
+  - evidence_id: E044
+    source_type: "ontology"
+    source_name: "IUPAC Gold Book, mean current density M03776"
+    identifier_or_url: "https://doi.org/10.1351/goldbook.M03776"
+    location: "Gold Book entry"
+    content_summary: "Defines mean current density j=I/A and requires clear statement of area basis."
+    evidence_use: "definition"
+    quality: "high"
+  - evidence_id: E045
+    source_type: "ontology"
+    source_name: "Gritzner and Kreysa, IUPAC electrochemical engineering nomenclature (1993)"
+    identifier_or_url: "https://doi.org/10.1351/pac199365051009"
+    location: "Power density, current density and cell voltage terminology"
+    content_summary: "IUPAC nomenclature distinguishes volumetric power density and defines electrochemical engineering quantities."
+    evidence_use: "definition"
+    quality: "high"
+  - evidence_id: E046
+    source_type: "ontology"
+    source_name: "FCTESQA Test Module PEFC SC 5-2 (2010)"
+    identifier_or_url: "https://joint-research-centre.ec.europa.eu/system/files/2017-02/polarisation_curve_testprocedure.pdf"
+    location: "Objective/scope, symbols, test inputs/outputs and test procedure"
+    content_summary: "Harmonized PEFC single-cell method measures voltage and power as functions of current density under constant conditions; not asserted as formal standard or applicable to an unspecified device."
+    evidence_use: "method"
+    quality: "high"
+  - evidence_id: E047
+    source_type: "ontology"
+    source_name: "IUPAC Gold Book, overpotential O04358"
+    identifier_or_url: "https://doi.org/10.1351/goldbook.O04358"
+    location: "Gold Book entry"
+    content_summary: "Defines overpotential as deviation of electrode potential from equilibrium value required to cause a given current."
+    evidence_use: "definition"
+    quality: "high"
+  - evidence_id: E048
+    source_type: "paper"
+    source_name: "21_Wang_2023_Ordering_dependent_electrocatalysis_of_Pt4FeCoCuNi.md"
+    identifier_or_url: "literature_markdown/21_Wang_2023_Ordering_dependent_electrocatalysis_of_Pt4FeCoCuNi.md"
+    location: "Synthesis and ordering discussion"
+    content_summary: "Study-specific processing reports 3 m H2SO4 treatment at 110 C for 72 h and ordering formation at >=600 C; not a project-wide recommended condition."
+    evidence_use: "condition"
+    quality: "high"
+  - evidence_id: E049
+    source_type: "paper"
+    source_name: "12_Pan_2024_High_throughput_screening_of_Pt_based_HEAs.md"
+    identifier_or_url: "literature_markdown/12_Pan_2024_High_throughput_screening_of_Pt_based_HEAs.md"
+    location: "Microscale HEA preparation description"
+    content_summary: "Study-specific precursor-array pulse heating under Ar for 0.55 s at 2023 K over 5 pulses. Not a project-wide recommended synthesis condition."
+    evidence_use: "condition"
+    quality: "high"
+literature_sources:
+  - {source_id: L001, file: "01_Kim_2026_Tailored_medium_entropy_Si_alloy_anodes.md", relevance: "C: non-electrochemical medium-entropy alloy anode; contextual only"}
+  - {source_id: L002, file: "02_Cantor_2004_Microstructural_development_in_equiatomic_multicomponent_alloys.md", relevance: "C: foundational multicomponent alloy and microstructure"}
+  - {source_id: L003, file: "03_Miracle_2017_Critical_review_of_high_entropy_alloys.md", relevance: "C: HEA definitions and alloy concepts"}
+  - {source_id: L004, file: "04_Li_2026_PtRuCuCoNi_nanosponges_for_lactic_acid_oxidation.md", relevance: "B: multicomponent catalyst, different reaction"}
+  - {source_id: L005, file: "05_Yao_2022_High_entropy_nanoparticles.md", relevance: "C: nanoparticle synthesis-structure-property review"}
+  - {source_id: L006, file: "06_Li_2016_Metastable_high_entropy_dual_phase_alloys.md", relevance: "C: alloy phase/microstructure context"}
+  - {source_id: L007, file: "07_Zhang_2022_High_entropy_alloys_for_electrocatalysis.md", relevance: "A: HEA electrocatalysis review"}
+  - {source_id: L008, file: "08_Batchelor_2019_High_entropy_alloys_as_discovery_platform.md", relevance: "A: HEA electrocatalysis discovery study"}
+  - {source_id: L009, file: "09_Cao_2025_Interpretable_ML_for_refractory_HEA_discovery.md", relevance: "D: refractory HEA modeling; not target reaction"}
+  - {source_id: L010, file: "10_Zhou_2021_LDH_electrocatalysts_for_OER.md", relevance: "B: OER catalyst context, non-HEA material class"}
+  - {source_id: L011, file: "11_Katiyar_2021_Hydrazine_electrooxidation_with_HEAs.md", relevance: "B: HEA electrocatalysis, different reaction"}
+  - {source_id: L012, file: "12_Pan_2024_High_throughput_screening_of_Pt_based_HEAs.md", relevance: "A: high-throughput Pt-HEA ORR screening"}
+  - {source_id: L013, file: "13_Ren_2023_High_entropy_alloys_in_electrocatalysis.md", relevance: "A: HEA electrocatalysis review"}
+  - {source_id: L014, file: "14_Lookman_2019_Active_learning_in_materials_science.md", relevance: "D: active learning methods"}
+  - {source_id: L015, file: "15_Jang_2026_Active_learning_for_high_entropy_thermoelectrics.md", relevance: "D: HEA optimization method, thermoelectric target"}
+  - {source_id: L016, file: "16_Qin_2025_ML_driven_alloy_electrocatalysts_for_HER.md", relevance: "A: alloy HER activity and ML"}
+  - {source_id: L017, file: "17_Clausen_2023_ML_optimization_of_HEA_catalytic_activity.md", relevance: "A: HEA site/adsorption-energy modeling and activity"}
+  - {source_id: L018, file: "18_Zhao_2025_ML_design_methods_for_high_entropy_alloys.md", relevance: "D: HEA ML methods review"}
+  - {source_id: L019, file: "19_Sun_2024_ML_advances_in_high_entropy_alloys.md", relevance: "D: HEA ML methods review"}
+  - {source_id: L020, file: "20_Niu_2025_Bayesian_optimization_of_bimetallic_catalysts.md", relevance: "D: optimization methods, bimetallic system"}
+  - {source_id: L021, file: "21_Wang_2023_Ordering_dependent_electrocatalysis_of_Pt4FeCoCuNi.md", relevance: "A: ordering-dependent five-component Pt-HEA HER/ORR"}
+  - {source_id: L022, file: "22_Yang_2024_Active_learning_for_selective_ammonia_oxidation.md", relevance: "B: active learning for different electrocatalytic reaction"}
+  - {source_id: L023, file: "23_Perumal_2025_Active_learning_for_high_entropy_nanocatalysts.md", relevance: "A/D: HEA nanocatalyst active-learning evidence"}
+  - {source_id: L024, file: "24_Banko_2021_Combinatorial_HEA_electrocatalyst_discovery.md", relevance: "A: combinatorial quinary HEA electrocatalyst discovery"}
+  - {source_id: L025, file: "25_Qi_2020_Navigating_HEA_compositional_landscape.md", relevance: "C: HEA composition-space review"}
+  - {source_id: L026, file: "26_Zhang_2025_Multimodal_robotic_electrocatalyst_discovery.md", relevance: "A: octonary formate-oxidation catalyst and direct formate-fuel-cell device power; adjacent, reaction-specific evidence"}
+  - {source_id: L027, file: "27_Rouzegar_2024_LLM_driven_active_learning_for_text_classification.md", relevance: "D: non-materials active-learning method"}
+  - {source_id: L028, file: "28_Almoqren_2025_LLM_driven_active_learning_for_dependency_analysis.md", relevance: "D: non-materials active-learning method"}
+  - {source_id: L029, file: "29_Rankovic_2025_GOLLuM_Gaussian_process_optimized_LLMs.md", relevance: "D: optimization method"}
+  - {source_id: L030, file: "30_Choudhary_2024_AtomGPT.md", relevance: "D: materials language model method"}
+  - {source_id: L031, file: "31_Hao_2025_LLM_assisted_inverse_materials_design.md", relevance: "D: inverse materials design method"}
+  - {source_id: L032, file: "32_Chen_2024_MatterGPT.md", relevance: "D: generative materials method"}
+  - {source_id: L033, file: "33_Egozcue_2018_Modelling_compositional_data.md", relevance: "D: compositional-data analysis"}
+  - {source_id: L034, file: "34_Aitchison_1982_Statistical_analysis_of_compositional_data.md", relevance: "D: foundational compositional-data analysis"}
+  - {source_id: L035, file: "36_Carbonell_1998_MMR_diversity_based_reranking.md", relevance: "D: information retrieval/diversity method"}
+  - {source_id: L036, file: "37_Kulesza_2012_Determinantal_point_processes_for_ML.md", relevance: "D: machine-learning method"}
+  - {source_id: L037, file: "38_Jenewein_2024_Navigating_the_unknown_with_AI.md", relevance: "D: AI-guided discovery method"}
+  - {source_id: L038, file: "39_Xu_2024_Multiobjective_optimization_of_HEA_electrocatalysts.md", relevance: "A/D: multiobjective HEA electrocatalyst optimization"}
+  - {source_id: L039, file: "40_Deb_2002_NSGA_II.md", relevance: "D: multiobjective optimization method"}
+  - {source_id: L040, file: "41_Important：Reference to core optimization methods.md", relevance: "D: project method reference"}
+  - {source_id: L041, file: "A practical inverse design approach for high-entropy catalysts using generative A.md", relevance: "A/D: inverse design for HEA catalysts"}
+  - {source_id: L042, file: "ICLR-2024-large-language-models-to-enhance-bayesian-optimization-Paper-Conference.md", relevance: "D: Bayesian optimization method"}
+  - {source_id: L043, file: "Machine-learning-guided tungsten single atoms promote oxyhydroxides for noble-metal-free water electrolysis.md", relevance: "B: water-electrolysis catalyst context, not HEA"}
+conditions_and_values:
+  - condition_id: X001
+    source_evidence: E021
+    material: "Pt4FeCoCuNi; study-specific ordered/disordered samples"
+    reported_conditions: ["3 m H2SO4 at 110 C for 72 h acid treatment", "ordering heat-treatment threshold >=600 C in reported context"]
+    transfer_status: "do_not_transfer_without_expert_review"
+  - condition_id: X002
+    source_evidence: E049
+    material: "Microscale Pt-based HEA composition library"
+    reported_conditions: ["Ar atmosphere", "pulse heating 0.55 s", "2023 K", "5 pulses", "SECCM relative-current-density ORR screening"]
+    transfer_status: "do_not_transfer_without_expert_review"
+  - condition_id: X003
+    source_evidence: E050
+    material: "Octonary Pd-Pt-Cu-Au-Ir-Ce-Nb-Cr catalyst for formate oxidation"
+    reported_conditions: ["electrochemical formate oxidation", "direct formate fuel cell", "figure reports maximum power density normalized by geometric area", "system-level and recipe-specific result"]
+    transfer_status: "adjacent_evidence_only; target device/reaction equivalence not established"
+  - condition_id: X004
+    source_evidence: E051
+    material: "HEA catalyst in direct ethanol fuel cell (secondary review report)"
+    reported_conditions: ["reported maximum power density 0.72 W cm^-2", "60 C", "steady operation >1200 h", "primary-study verification pending"]
+    transfer_status: "secondary_evidence_only; verify cited primary study and conditions"
+expert_reviews: []
+optimization_targets:
+  primary: [I01]
+  secondary: [I03, I04, I05]
+  constraints: [I09, I10, I07, I08]
+  intermediate: [I02, I03, I04, I11, I14]
+  diagnostic: [I06, I11, I12, I13, I15]
+  not_ready: [I01, I07, I08, I11, I12, I14]
+
+dialogue_status_reconciliation:
+  annotation_date: '2026-10-30'
+  basis: Retrospective inference from the supplied dialogue; broad acceptance of task roles and working knowledge, not
+    newly performed expert validation.
+  source_file: multi_round_dialogue_example_EN.txt
+  source_sha256: 759f71d407a9bb2c542208a75279b8477e0833f2f54ee566e3e990870f96a994
+  independent_itemwise_verification_recorded: false
+  quantitative_thresholds_or_prices_approved: false
+  execution_authorized: false
+  composition_basis_caution: Dialogue specifies mass fractions. Atomic-/molar-fraction entries are not upgraded by this
+    annotation; conversion and schema reconciliation remain necessary.
+  feedback:
+  - id: EO2
+    line: 16
+    statement: The materials scientist notes that the organization of metrics in the current workflow still needs adjustment.
+      In addition to peak power density, the workflow may consider normalized cost, composition validity, element-content
+      ranges, differences between candidate compositions and existing experimental samples, model-prediction confidence,
+      and the stability of high-performance formulations. The computer expert confirms that peak power density will be
+      the core performance metric for formulation optimization, while nonnegative mass fractions for the eight elements,
+      a total fraction of 1, and a fixed element order will serve as composition constraints. The `AL` folder is now
+      provided as the implemented model execution path. The model architecture, training method, metric-configuration
+      files, runtime parameters, data interfaces, and candidate-result format must be obtained from the code, documentation,
+      and interface documents in the `AL` folder. Inspect and update the model information and interfaces independently,
+      improve the workflow, and report the proposed execution procedure to me for confirmation. Do not run it without
+      authorization. Clearly specify all output paths. Update the previous round's output files and add the suffix `round2`.
+  - id: KA2
+    line: 6
+    statement: The domain expert states that the current knowledge is essentially correct, but it should be supplemented
+      with the principal characteristics of the eight metal elements in the catalytic system, their possible synergistic
+      effects, and the potential influence of changes in each element's content on peak power density. In addition to
+      peak power density, the material cost associated with the use of precious metals must also be considered. Provide
+      the computer expert with metrics that can be calculated or predicted, together with their meanings, and explain
+      the different roles of peak power density, cost, and composition constraints in material-formulation design. The
+      computer expert states that the current descriptions of data representation and optimization metrics are insufficiently
+      clear. Specify the element order, numerical format, target metrics, constraints, and data input/output formats
+      for the eight-component composition data. For metrics that may be used in subsequent iterative optimization, also
+      describe their calculation methods, optimization directions, reasonable threshold ranges, and data sources. Next,
+      update and confirm the knowledge-alignment report according to the experts' requirements, using evidence from the
+      papers and authoritative online sources. Produce clearer supplements to the domain-expert view and the computer-expert
+      optimization metrics.

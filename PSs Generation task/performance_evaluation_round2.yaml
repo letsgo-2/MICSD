@@ -321,3 +321,49 @@ open_limitations:
   - default LogP/TPSA feasibility window is unsuitable for this chemical space
   - reference benchmark has Imaginary=Yes
   - SDPD predictor calibration remains pending
+
+expert_feedback_reconciliation:
+  annotation_date: '2026-10-30'
+  annotation_type: retrospective_dialogue_based_status_reconciliation
+  scope: General knowledge, task inputs, candidate metrics, selected optimization metrics and constraint requirements
+    may be confirmed at their own stage. This is retrospective interpretation, not newly completed independent itemwise
+    validation.
+  source_file: multi_round_dialogue_example_EN.txt
+  source_sha256: ebb57f5513ccd2ee131a9971088e81acaa8e6b610f46e7df5afea5890dbc12d8
+  itemwise_expert_verification_completed: false
+  numerical_values_units_and_thresholds_certified: false
+  execution_authorized_by_this_annotation: false
+  note: No original-status fields or new original-file backup are retained in this update. Source dialogue and confirmation
+    scope remain recorded. Unanswered review items, quantitative settings, checkpoint approval and run authorization
+    remain unresolved.
+  feedback_records:
+  - feedback_id: PS-PE-R1-TOOLS
+    source_file: multi_round_dialogue_example_EN.txt
+    source_line: 25
+    source_excerpt: Please run the Performance Evaluation Skill. Performance analysis and statistics are now required
+      for the generated photosensitizer molecules and the model. Based on the previous stage's output files and the `SDPD`
+      directory in the project, establish a workflow and provide the necessary tool parameters and plotting-script plan.
+      The computer expert has provided a runtime environment with a Slurm cluster. The materials expert requests the
+      use of RDKit and ORCA for DFT calculations and statistical analysis. Add the suffix `round1` to the output filenames.
+    attributed_expert_role: materials expert and computer expert
+    action: provide_evaluation_tools_and_environment
+    confirmed_scope: Use RDKit and ORCA; a Slurm runtime environment is stated as provided.
+    not_confirmed: No approval of a specific DFT method, partition, resource values, checkpoint or job submission.
+    original_expert_review_date: null
+    provenance: User-provided dialogue example; no independent signature or original execution log is supplied.
+  - feedback_id: PS-PE-R2-WORKFLOW
+    source_file: multi_round_dialogue_example_EN.txt
+    source_line: 28
+    source_excerpt: The evaluation-pipeline scripts have been constructed according to the planned workflow, and the
+      entire workflow has been executed in the `meloculardftcal` folder. Its `AGENT_INTERFACE.md` records the basic configuration.
+      Inspect it and update the relevant toolchain, parameters, and other information in the output files. In addition,
+      provide recommendations for the next optimization step based on the various analysis results. Add the suffix `round2`
+      to the output filenames.
+    attributed_expert_role: user relaying workflow availability
+    action: provide_external_workflow_evidence
+    confirmed_scope: meloculardftcal is supplied as an executed workflow and its interface is to be inspected.
+    not_confirmed: The statement alone does not independently verify raw ORCA logs, all calculations, numerical accuracy
+      or execution success.
+    original_expert_review_date: null
+    provenance: User-provided dialogue example; no independent signature or original execution log is supplied.
+  status_interpretation: Stage-scoped confirmation inferred from supplied dialogue and subsequent workflow use.

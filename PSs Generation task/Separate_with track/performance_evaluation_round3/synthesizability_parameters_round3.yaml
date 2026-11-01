@@ -1,0 +1,57 @@
+round: 3
+language: en
+status: proposal_only_threshold_not_approved
+expert_request: {expert_id: materials_scientist, request: add_synthesizability_constraint}
+primary_proxy:
+  metric: SA_Score
+  implementation: ../meloculardftcal/04_data_processing/sascorer.py
+  reference: Ertl_and_Schuffenhauer_2009_style_synthetic_accessibility_heuristic
+  scale: approximately_1_to_10
+  direction: minimize
+  current_data_available: true
+  threshold: null
+  threshold_status: "requires_materials_expert_approval"
+  use_as_hard_gate: false
+  known_components: [fragment_contributions, molecular_size_penalty, stereochemistry_penalty, spiro_penalty, bridgehead_penalty, macrocycle_penalty, symmetry_fingerprint_density]
+  limitations: [not_a_synthetic_route, no_yield_prediction, building_block_availability_not_assessed, macrocycle_and_charge_domain_bias_possible, symmetry_overlap_with_other_objective]
+proposed_screening:
+  initial_role: soft_feasibility_dimension_and_pareto_objective
+  keep_raw_score: true
+  threshold_sensitivity: report_candidate_retention_vs_threshold_without_selecting_an_unapproved_cutoff
+  shortlist_route_review: true
+  route_status_values: [not_assessed, plausible_with_precedent, plausible_but_unverified, high_risk, infeasible_with_evidence]
+  route_record_fields: [candidate_id, route_summary, disconnections, building_blocks, availability_evidence, key_step_count, functional_group_compatibility, macrocycle_assembly_risk, charge_counterion_handling, purification_risk, reviewer, review_date, confidence, evidence_links]
+candidate_data_contract:
+  required_fields: [candidate_id, isomeric_smiles, scaffold, SA_Score, sa_score_implementation_version, sa_score_fragment_data_hash, synthesis_screen_status, approved_sa_threshold, sa_threshold_rationale, route_review_status, route_review_evidence]
+  missing_policy: unknown_not_pass_or_fail
+analysis:
+  baseline_core: {n: 222, median: 6.2455, mean: 6.3105405405, min: 5.022, max: 7.935}
+  candidate_cohorts: {round1: {n: 60, median: 6.463, mean: 6.481567}, round2: {n: 60, median: 6.071, mean: 6.064883}}
+  cohort_comparison: descriptive_unpaired_only
+  recommended_strata: [scaffold, molecular_weight, macrocycle_count, rotatable_bonds, photophysical_pareto_status]
+
+expert_feedback_reconciliation:
+  annotation_date: '2026-10-31'
+  annotation_type: dialogue_based_stage_status_reconciliation
+  requested_by: user
+  source_dialogue: ../../multi_round_dialogue_example_EN.txt
+  source_sha256: ebb57f5513ccd2ee131a9971088e81acaa8e6b610f46e7df5afea5890dbc12d8
+  interpretation: Stage-scoped working acceptance from the saved dialogue and subsequent adoption, following the earlier
+    PS reconciliation rules.
+  itemwise_scientific_validation_completed_by_this_update: false
+  numerical_values_units_and_thresholds_certified_by_this_update: false
+  execution_authorized_by_this_update: false
+  existing_disputed_entries_preserved: true
+  unanswered_review_items_and_blocking_flags_preserved: true
+  historical_execution_trace_events_modified: false
+  source_feedback_records:
+  - feedback_id: PS-PE-R3-SYNTHESIS
+    source_line: 31
+    excerpt: The materials scientist recommends adding a synthesizability constraint. Please update the output files
+      and add the suffix `round3`.
+  updates:
+  - path: primary_proxy/threshold_status
+    status: requires_materials_expert_approval
+    feedback_refs:
+    - PS-PE-R3-SYNTHESIS
+    scope: No SA threshold was provided. The null threshold and inactive hard constraint remain unchanged.

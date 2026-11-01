@@ -1,0 +1,61 @@
+review_items:
+  - issue_id: PE2-001
+    category: provenance
+    question: Can raw ORCA logs, Slurm job IDs, exit codes, termination markers and per-run manifests be made available for the 222-row core and generated cohorts?
+    affected_ids: [EP2-core-pipeline, PR2-core-qc]
+    recommendation: Archive immutable per-run manifests and log-backed QC summaries; distinguish parsed-table coverage from successful job termination.
+    evidence_refs: [../meloculardftcal/reports/pic16_s1/metrics.json, ../meloculardftcal/reports/runs/]
+    required_expert_ids: [computer_expert]
+    priority: critical
+    blocking: true
+    status: open
+  - issue_id: PE2-002
+    category: environment
+    question: Which actual cluster provides the ORCA 6.0.1 / OpenMPI 4.1.6 / UCX 1.15 / Slurm profile, and does the current runtime environment report correspond to it?
+    affected_ids: [meloculardftcal_reference_hpc, recorded_metrics_runtime]
+    recommendation: Run the repository preflight on the real target cluster and capture ORCA, MPI, UCX, Slurm, hardware, modules and limits.
+    evidence_refs: [../meloculardftcal/AGENT_INTERFACE_EN.md, ../meloculardftcal/reports/environment.json]
+    required_expert_ids: [computer_expert]
+    priority: critical
+    blocking: true
+    status: open
+  - issue_id: PE2-003
+    category: metric
+    question: What application-specific LogP, TPSA, charge/protonation, solubility, aggregation and size criteria should replace or validate the default property window?
+    affected_ids: [PR2-window, ADJ2-02]
+    recommendation: Approve criteria with biological/formulation rationale and retrospectively test feasibility on the existing core set.
+    evidence_refs: [../meloculardftcal/reports/pic16_s1/metrics.json]
+    required_expert_ids: [materials_expert, formulation_expert]
+    priority: high
+    blocking: true
+    status: open
+  - issue_id: PE2-004
+    category: comparison
+    question: Were Round 1/Round 2 candidate tables generated under identical generator, checkpoint, scoring weights, selection, and DFT protocol settings?
+    affected_ids: [CR2-generated-cohorts]
+    recommendation: Supply per-round config/checkpoint hashes and parent-selection provenance before causal or inferential comparisons.
+    evidence_refs: [../meloculardftcal/molecule_figures/02_data/round1_n60.csv, ../meloculardftcal/molecule_figures/02_data/round2_n60.csv]
+    required_expert_ids: [computer_expert, project_owner]
+    priority: high
+    blocking: true
+    status: open
+  - issue_id: PE2-005
+    category: benchmark
+    question: Is reference row `pic16` acceptable for ranking despite `Imaginary=Yes`, and are its calculation settings compatible with the candidate calculations?
+    affected_ids: [BR2-pic16]
+    recommendation: Label it as electronic-property comparator only; add validated minima and protocol-matched references where available.
+    evidence_refs: [../meloculardftcal/reports/pic16_s1/README.md, ../meloculardftcal/reports/pic16_s1/metrics.json]
+    required_expert_ids: [computational_chemist, materials_expert]
+    priority: high
+    blocking: true
+    status: open
+  - issue_id: PE2-006
+    category: analysis_plan
+    question: Is a scaffold-held-out model validation set and a stratified protocol-sensitivity subset available for the next round?
+    affected_ids: [AP2-model-validation, ADJ2-04]
+    recommendation: Pre-register split, targets, sample selection and uncertainty calculation before tuning.
+    evidence_refs: [performance_evaluation_report_round2.md]
+    required_expert_ids: [computer_expert, computational_chemist]
+    priority: high
+    blocking: false
+    status: open

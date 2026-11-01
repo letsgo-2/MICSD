@@ -1,0 +1,559 @@
+metadata:
+  title: "Execution orchestration: octonary HEA catalyst formulation"
+  round: 1
+  language: English
+  status: draft
+  created_date: "2026-10-27"
+  upstream_round: 2
+  upstream_directory: "../knowledge_alignment_round2"
+  approval_status: "task_roles_confirmed_detailed_workflow_review_required"
+  design_principle: "Algorithm-neutral; no model or search algorithm assumed available or selected."
+upstream_inputs:
+  files:
+    - "../knowledge_alignment_round2/knowledge_alignment.yaml"
+    - "../knowledge_alignment_round2/knowledge_alignment_report.md"
+    - "../knowledge_alignment_round2/expert_review_queue.yaml"
+  evidence_policy: "Uploaded literature remains primary; online source classes support terminology/provenance only; no new numeric thresholds or price values asserted."
+  conflicts:
+    - conflict_id: BASIS-ORDER-001
+      project_instruction: {basis: mass_fraction, element_order: [Pd, Pt, Au, Cr, Ir, Ce, Cu, Nb]}
+      upstream_literature_example: {basis: atomic_or_molar_fraction, element_order: [Pd, Pt, Cu, Au, Ir, Ce, Nb, Cr]}
+      resolution: "Use project instruction as a provisional, distinct mass-fraction design interface; retain upstream vectors separately. Expert approval required before activation."
+execution_context:
+  goal: "Optimize device peak power density while accounting for material cost and formulation feasibility."
+  composition:
+    element_order: [Pd, Pt, Au, Cr, Ir, Ce, Cu, Nb]
+    fraction_basis: mass_fraction
+    values: "Eight decimal fractions in [0,1]; sum to 1."
+    closure_tolerance: 1.0e-6
+    closure_tolerance_status: expert_provisional
+    zero_semantics: "Zero denotes nominal recipe value; measured presence/absence requires method-specific detection policy."
+    support_rule: {formula: "count(x_i >= epsilon_presence)", target: 8, epsilon_presence: null, status: unresolved}
+    separate_fields: [x_nominal_mass, x_measured_bulk_mass, x_measured_surface_mass]
+  data_granularity: "candidate_id x synthesis_run_id x test_condition_id x replicate_id"
+  preferred_format: JSONL
+  condition_lock_required: true
+  target_data_status: "Existing composition-performance data available per request; quantity, harmonization, and device-protocol coverage not provided. Audit before model training."
+metric_candidates:
+  - metric_id: I201
+    name: Peak power density
+    aliases: [P_peak]
+    definition: "Maximum V*j on a declared device polarization/power curve with fixed sign convention, active area, and conditions."
+    unit: W cm^-2
+    proposed_roles: [primary_objective]
+    direction: maximize
+    threshold: {value: null, range: [], unit: W cm^-2, status: baseline_relative, guidance: "Matched-device baseline and replicate uncertainty; no universal numeric cutoff."}
+    conditions: [device_architecture, reaction, active_area, loading, temperature, pressure, protocol, voltage_current_sign_convention]
+    acquisition: [device_power_curve]
+    evidence_refs: [E201, E212]
+    expert_status: "core_objective_confirmed_unit_and_protocol_unconfirmed"
+    unresolved_fields: [device_protocol, baseline, replicate_rule, existing_target_coverage]
+  - metric_id: I202
+    name: Catalyst material cost
+    aliases: [C_mass]
+    definition: "Cost on a declared catalyst-mass basis from composition and dated element product prices/quotes."
+    unit: USD g_cat^-1
+    proposed_roles: [secondary_objective, hard_constraint]
+    direction: minimize
+    threshold: {value: null, range: [], unit: USD g_cat^-1, status: expert_provisional, guidance: "Use approved budget ceiling or same-basis baseline; no universal value."}
+    conditions: [currency, quote_date, product_form, purity, procurement_scale, catalyst_mass_basis]
+    acquisition: [price_table_or_procurement_quote, composition_calculation]
+    evidence_refs: [E201, E205, E206]
+    expert_status: "cost_objective_accepted_procurement_data_unavailable"
+    unresolved_fields: [price_basis, budget_policy]
+  - metric_id: I203
+    name: Cost-specific peak power
+    aliases: [P_cost]
+    definition: "P_peak divided by catalyst material cost on an explicitly declared and consistent basis."
+    unit: W USD^-1
+    proposed_roles: [secondary_objective, diagnostic]
+    direction: maximize
+    threshold: {value: null, range: [], unit: W USD^-1, status: baseline_relative, guidance: "Matched baseline and propagated uncertainty; avoid double-counting with P_peak and cost."}
+    conditions: [I201_protocol, I202_cost_basis]
+    acquisition: [derived_from_I201_I202]
+    evidence_refs: [E201]
+    expert_status: "cost_performance_role_accepted_exact_formula_unconfirmed"
+    unresolved_fields: [role, denominator_convention]
+  - metric_id: I204
+    name: Eight mass fractions and closure
+    aliases: [composition_feasibility]
+    definition: "Eight requested-order mass fractions with each in [0,1] and sum equal to 1 within approved tolerance."
+    unit: mass_fraction
+    proposed_roles: [hard_constraint]
+    direction: target_range
+    threshold: {value: "0 <= x_i <= 1; abs(sum(x)-1) <= 1e-6", range: [], unit: mass_fraction, status: expert_provisional, guidance: "The numeric tolerance is inherited as a draft computer convention and requires approval for mass-basis data."}
+    conditions: [element_order, fraction_basis, rounding_policy]
+    acquisition: [recipe_record, composition_assay]
+    evidence_refs: [E202, E203, user_project_specification]
+    expert_status: "mass_fraction_nonnegativity_closure_and_fixed_order_confirmed"
+    unresolved_fields: [basis_order_confirmation, tolerance_approval]
+  - metric_id: I205
+    name: Element support count
+    aliases: [K]
+    definition: "Count of elements at or above method-specific presence threshold in nominal or measured vector."
+    unit: count
+    proposed_roles: [hard_constraint]
+    direction: target_range
+    threshold: {value: 8, range: [], unit: count, status: expert_provisional, guidance: "Activate only after epsilon_presence and nominal/measured enforcement rule are approved."}
+    conditions: [assay_method, detection_limit, vector_type]
+    acquisition: [recipe_record, bulk_and_or_surface_assay]
+    evidence_refs: [E204]
+    expert_status: "eight_component_design_confirmed_presence_threshold_unconfirmed"
+    unresolved_fields: [epsilon_presence, exact_eight_semantics]
+  - metric_id: I206
+    name: Precious-metal fraction
+    aliases: [X_PGM]
+    definition: "Sum of fractions in the project-defined precious-metal set."
+    unit: mass_fraction
+    proposed_roles: [soft_constraint, diagnostic]
+    direction: minimize
+    threshold: {value: null, range: [], unit: mass_fraction, status: expert_provisional, guidance: "No cap until element set and budget policy are approved."}
+    conditions: [precious_element_set]
+    acquisition: [composition_calculation]
+    evidence_refs: [E201, E205]
+    expert_status: "precious_metal_cost_descriptor_accepted_threshold_unconfirmed"
+    unresolved_fields: [include_Au, threshold_policy]
+  - metric_id: I207
+    name: Phase and ordering feasibility
+    aliases: [realized_structure]
+    definition: "Expert-approved accepted structural state based on characterization and/or validated calculation."
+    unit: categorical_plus_uncertainty
+    proposed_roles: [hard_constraint, soft_constraint]
+    direction: target_range
+    threshold: {value: null, range: [], unit: categorical, status: expert_provisional, guidance: "Use accepted labels; unknown status routes to review."}
+    conditions: [characterization_method, synthesis_route]
+    acquisition: [characterization, optional_validated_phase_model]
+    evidence_refs: [E209, E213]
+    expert_status: "retained_as_candidate_not_selected_or_validated"
+    unresolved_fields: [allowed_states]
+  - metric_id: I208
+    name: Condition-specific current density
+    aliases: [j_ref]
+    definition: "Current density at fixed reaction, potential, electrolyte, temperature, loading, and reference."
+    unit: mA cm^-2
+    proposed_roles: [secondary_objective, diagnostic]
+    direction: maximize
+    threshold: {value: null, range: [], unit: mA cm^-2, status: data_percentile, guidance: "Matched-condition reference only; never pool incompatible reactions."}
+    conditions: [reaction, potential, electrolyte, temperature, loading, reference]
+    acquisition: [half_cell_curve]
+    evidence_refs: [E214]
+    expert_status: "retained_as_candidate_not_selected_or_validated"
+    unresolved_fields: [selected_reaction_and_metric]
+  - metric_id: I209
+    name: Overpotential
+    aliases: [eta_ref]
+    definition: "Declared potential offset at a fixed reaction-specific current density."
+    unit: mV
+    proposed_roles: [secondary_objective, diagnostic]
+    direction: minimize
+    threshold: {value: null, range: [], unit: mV, status: data_percentile, guidance: "Reaction- and protocol-specific; no cross-reaction cutoff."}
+    conditions: [reaction, reference_potential, current_density, calibration]
+    acquisition: [polarization_curve]
+    evidence_refs: [E214]
+    expert_status: "retained_as_candidate_not_selected_or_validated"
+    unresolved_fields: [protocol]
+  - metric_id: I210
+    name: Stability retention
+    aliases: [R_t]
+    definition: "100*y(t)/y(0) for a declared output and fixed aging protocol."
+    unit: percent
+    proposed_roles: [hard_constraint, soft_constraint]
+    direction: maximize
+    threshold: {value: null, range: [], unit: percent, status: expert_provisional, guidance: "Approve minimum only together with duration, cycle count, response, and failure rule."}
+    conditions: [response_variable, time_or_cycles, failure_rule]
+    acquisition: [stability_test]
+    evidence_refs: [E209]
+    expert_status: "retained_as_candidate_not_selected_or_validated"
+    unresolved_fields: [test_protocol, minimum]
+  - metric_id: I211
+    name: ECSA-normalized activity
+    aliases: [specific_activity]
+    definition: "Current normalized by ECSA or declared mass activity under fixed protocol."
+    unit: A cm^-2_ECSA
+    proposed_roles: [diagnostic]
+    direction: maximize
+    threshold: {value: null, range: [], unit: A cm^-2_ECSA, status: data_percentile, guidance: "Matched ECSA method only."}
+    conditions: [ECSA_method, loading, reaction_protocol]
+    acquisition: [electrochemical_area_measurement]
+    evidence_refs: [E214]
+    expert_status: "retained_as_candidate_not_selected_or_validated"
+    unresolved_fields: [method_comparability]
+  - metric_id: I212
+    name: Configurational entropy
+    aliases: [S_mix]
+    definition: "-R*sum(x_i*ln(x_i)); input basis and nominal/measured vector must be declared."
+    unit: J mol^-1 K^-1
+    proposed_roles: [diagnostic, soft_constraint]
+    direction: context_dependent
+    threshold: {value: null, range: [], unit: J mol^-1 K^-1, status: expert_provisional, guidance: "No generic HEA cutoff; use only an approved phase-screening convention."}
+    conditions: [fraction_basis, vector_type, entropy_convention]
+    acquisition: [composition_calculation]
+    evidence_refs: [E215]
+    expert_status: "retained_as_candidate_not_selected_or_validated"
+    unresolved_fields: [role_and_convention]
+  - metric_id: I213
+    name: Adsorption or binding descriptor
+    aliases: [adsorption_energy]
+    definition: "Named adsorbate/site/coverage/model-specific calculated or predicted energy."
+    unit: eV
+    proposed_roles: [diagnostic]
+    direction: target_range
+    threshold: {value: null, range: [], unit: eV, status: data_percentile, guidance: "Reaction/site/model-specific only."}
+    conditions: [reaction, site, coverage, computational_model]
+    acquisition: [validated_DFT_or_model]
+    evidence_refs: [E208, E216]
+    expert_status: "retained_as_candidate_not_selected_or_validated"
+    unresolved_fields: [descriptor_definition, model]
+  - metric_id: I214
+    name: Predictive uncertainty
+    aliases: [U]
+    definition: "Calibrated interval width or model-specific dispersion for a stated output."
+    unit: model_specific
+    proposed_roles: [diagnostic]
+    direction: context_dependent
+    threshold: {value: null, range: [], unit: model_specific, status: unresolved, guidance: "Validate calibration/coverage on held-out groups; threshold requires pre-registered protocol."}
+    conditions: [model_version, validation_split, target]
+    acquisition: [uncertainty_interface, grouped_held_out_validation]
+    evidence_refs: [E217]
+    expert_status: "diagnostic_requested_calibration_unconfirmed"
+    unresolved_fields: [calibration_acceptance_rule]
+  - metric_id: I215
+    name: Synthesis reproducibility
+    aliases: [CV_rep]
+    definition: "100*sd(y_replicates)/mean(y_replicates), with replicate count and protocol."
+    unit: percent_CV
+    proposed_roles: [hard_constraint, soft_constraint]
+    direction: minimize
+    threshold: {value: null, range: [], unit: percent_CV, status: expert_provisional, guidance: "Set maximum after process/measurement variability and replicate design are characterized."}
+    conditions: [independent_synthesis_replicates, response_variable, test_protocol]
+    acquisition: [replicate_synthesis_and_measurement]
+    evidence_refs: [E218]
+    expert_status: "retained_as_candidate_not_selected_or_validated"
+    unresolved_fields: [replicate_count, maximum_CV]
+metric_decisions:
+  - {metric_id: I201, final_role: primary_objective, rank: 1, ranking_basis: [direct project goal, device-level relevance, value conditional on protocol lock; low current readiness], direction: maximize, threshold: {status: baseline_relative, value: null}, evaluator_id: EVAL-PPOWER, decision_status: proposed, evidence_refs: [E201, E212], expert_feedback_refs: []}
+  - {metric_id: I202, final_role: secondary_objective, rank: 3, ranking_basis: [explicit cost trade-off, high computability after dated prices, policy unresolved], direction: minimize, threshold: {status: expert_provisional, value: null}, evaluator_id: EVAL-COST, decision_status: proposed, evidence_refs: [E201, E205, E206], expert_feedback_refs: []}
+  - {metric_id: I203, final_role: secondary_objective, rank: 4, ranking_basis: [joint trade-off summary, derived/coupled to other objectives, prevent double-counting], direction: maximize, threshold: {status: baseline_relative, value: null}, evaluator_id: EVAL-PCOST, decision_status: proposed, evidence_refs: [E201], expert_feedback_refs: []}
+  - {metric_id: I204, final_role: hard_constraint, rank: 2, ranking_basis: [invalid compositions must not proceed, deterministic validation, "basis/order conflict requires reconciliation and approval"], direction: target_range, threshold: {status: expert_provisional, value: "nonnegative; closure tolerance 1e-6 proposed"}, evaluator_id: CHECK-COMPOSITION, decision_status: proposed, evidence_refs: [E202, E203, user_project_specification], expert_feedback_refs: []}
+  - {metric_id: I205, final_role: hard_constraint, rank: 5, ranking_basis: [eight-element requirement central but measurement semantics unresolved], direction: target_range, threshold: {status: expert_provisional, value: "K=8 if approved; epsilon unset"}, evaluator_id: CHECK-SUPPORT, decision_status: proposed, evidence_refs: [E204], expert_feedback_refs: []}
+  - {metric_id: I207, final_role: hard_constraint, rank: 6, ranking_basis: [realized structure influences outcomes; accepted states absent], direction: target_range, threshold: {status: expert_provisional, value: null}, evaluator_id: CHECK-PHASE, decision_status: proposed, evidence_refs: [E209, E213], expert_feedback_refs: []}
+  - {metric_id: I210, final_role: soft_constraint, rank: 7, ranking_basis: [useful durability guard; protocol and acceptance value missing], direction: maximize, threshold: {status: expert_provisional, value: null}, evaluator_id: EVAL-STABILITY, decision_status: proposed, evidence_refs: [E209], expert_feedback_refs: []}
+  - {metric_id: I215, final_role: soft_constraint, rank: 8, ranking_basis: [practical repeatability; insufficient replicate data], direction: minimize, threshold: {status: expert_provisional, value: null}, evaluator_id: EVAL-REPEAT, decision_status: proposed, evidence_refs: [E218], expert_feedback_refs: []}
+  - {metric_id: I208, final_role: diagnostic, rank: 9, ranking_basis: [condition-sensitive supporting activity; not device power], direction: maximize, threshold: {status: data_percentile, value: null}, evaluator_id: EVAL-JREF, decision_status: proposed, evidence_refs: [E214], expert_feedback_refs: []}
+  - {metric_id: I209, final_role: diagnostic, rank: 9, ranking_basis: [condition-sensitive supporting kinetic metric; not device power], direction: minimize, threshold: {status: data_percentile, value: null}, evaluator_id: EVAL-ETA, decision_status: proposed, evidence_refs: [E214], expert_feedback_refs: []}
+  - {metric_id: I214, final_role: diagnostic, rank: 10, ranking_basis: [necessary for trustworthy selection; model not yet selected or calibrated], direction: context_dependent, threshold: {status: unresolved, value: null}, evaluator_id: EVAL-UNCERTAINTY, decision_status: proposed, evidence_refs: [E217], expert_feedback_refs: []}
+  - {metric_id: I206, final_role: diagnostic, rank: 3, ranking_basis: [cost explanation and feasible-region control; precious set/cap unresolved], direction: minimize, threshold: {status: expert_provisional, value: null}, evaluator_id: CHECK-PGM, decision_status: proposed, evidence_refs: [E201, E205], expert_feedback_refs: []}
+  - {metric_id: I211, final_role: diagnostic, rank: 11, ranking_basis: [interpretive metric with method comparability limits], direction: maximize, threshold: {status: data_percentile, value: null}, evaluator_id: EVAL-ECSA, decision_status: proposed, evidence_refs: [E214], expert_feedback_refs: []}
+  - {metric_id: I212, final_role: diagnostic, rank: 11, ranking_basis: [calculated descriptor but no generic phase cutoff], direction: context_dependent, threshold: {status: expert_provisional, value: null}, evaluator_id: EVAL-ENTROPY, decision_status: proposed, evidence_refs: [E215], expert_feedback_refs: []}
+  - {metric_id: I213, final_role: diagnostic, rank: 11, ranking_basis: [expensive/model-specific mechanistic descriptor; not direct device endpoint], direction: target_range, threshold: {status: data_percentile, value: null}, evaluator_id: EVAL-ADSORPTION, decision_status: proposed, evidence_refs: [E208, E216], expert_feedback_refs: []}
+model_interfaces:
+  - model_id: MODEL-PERF-001
+    name: "Composition/condition-to-performance predictor (family unselected)"
+    role: surrogate
+    status: proposed
+    source: {type: local, location: "", version: ""}
+    entrypoint: {command: "", script: "", environment: "", working_directory: ""}
+    human_provision: {model_information_provided: false, script_location_provided: false, executable_interface_exposed: false, parameter_interface_exposed: false, access_level: none, authorized_parameters: [], prohibited_actions: [modify_raw_data, modify_production_scripts, change_unapproved_objectives], provided_by: "computer expert", confirmation_ref: "round1_interface_confirmation_not_documented"}
+    input_schema: [x_nominal_mass, x_measured_bulk_mass_optional, x_measured_surface_mass_optional, synthesis_conditions, device_conditions]
+    output_schema: [metric_id, mean, interval_or_uncertainty, unit, measurement_or_prediction, model_version, applicability_status]
+    supported_metrics: [I201, I208, I209, I210]
+    parameters: {}
+    validation: {test_data: "grouped held-out candidate/synthesis records", metrics: {}, applicability_domain: "to be established", known_failures: [device-protocol mismatch, extrapolation, composition-basis mismatch, sparse octonary coverage]}
+    evidence_refs: [E204, E217]
+  - model_id: MODEL-UNC-001
+    name: "Uncertainty/calibration interface (method unselected)"
+    role: uncertainty_model
+    status: proposed
+    source: {type: local, location: "", version: ""}
+    entrypoint: {command: "", script: "", environment: "", working_directory: ""}
+    human_provision: {model_information_provided: false, script_location_provided: false, executable_interface_exposed: false, parameter_interface_exposed: false, access_level: none, authorized_parameters: [], prohibited_actions: [report_uncalibrated_estimates_as_measurements], provided_by: "computer expert", confirmation_ref: "round1_interface_confirmation_not_documented"}
+    input_schema: [held_out_predictions, measured_targets, split_definition]
+    output_schema: [calibration_summary, uncertainty_by_candidate, applicability_status]
+    supported_metrics: [I214]
+    parameters: {}
+    validation: {test_data: "grouped held-out observations", metrics: {coverage: null}, applicability_domain: "unconfirmed", known_failures: []}
+    evidence_refs: [E217]
+  - model_id: GEN-CANDIDATE-001
+    name: "Simplex candidate generator (algorithm unselected)"
+    role: generator
+    status: proposed
+    source: {type: local, location: "", version: ""}
+    entrypoint: {command: "", script: "", environment: "", working_directory: ""}
+    human_provision: {model_information_provided: false, script_location_provided: false, executable_interface_exposed: false, parameter_interface_exposed: false, access_level: none, authorized_parameters: [], prohibited_actions: [leave_simplex, violate_approved_composition_bounds], provided_by: "computer expert", confirmation_ref: "round1_interface_confirmation_not_documented"}
+    input_schema: [element_order, fraction_basis, approved_bounds, support_policy, candidate_budget]
+    output_schema: [candidate_id, composition_vector, constraint_status]
+    supported_metrics: [I204, I205]
+    parameters: {}
+    validation: {test_data: "schema and boundary test cases", metrics: {}, applicability_domain: "approved composition space only", known_failures: [no approved bounds, unresolved support epsilon]}
+    evidence_refs: [E202, E203, E204]
+  - model_id: CALC-COST-001
+    name: "Versioned material-cost calculator"
+    role: physics_calculator
+    status: proposed
+    source: {type: local, location: "", version: ""}
+    entrypoint: {command: "", script: "", environment: "", working_directory: ""}
+    human_provision: {model_information_provided: false, script_location_provided: false, executable_interface_exposed: false, parameter_interface_exposed: false, access_level: none, authorized_parameters: [], prohibited_actions: [use_undated_prices, infer_missing_price], provided_by: "computer/procurement experts", confirmation_ref: "round1_interface_confirmation_not_documented"}
+    input_schema: [mass_fraction_vector, catalyst_mass_basis, dated_element_prices, currency, product_form, purity]
+    output_schema: [I202_value, unit, formula_version, price_provenance, uncertainty]
+    supported_metrics: [I202, I203, I206]
+    parameters: {}
+    validation: {test_data: "expert-approved reference calculation", metrics: {}, applicability_domain: "declared price products and basis", known_failures: [missing or mismatched quote basis]}
+    evidence_refs: [E205, E206]
+reward_components:
+  - {component_id: RC-PPOWER, metric_id: I201, evaluator_id: EVAL-PPOWER, role: objective, direction: maximize, threshold: {status: baseline_relative, value: null}, normalization: none, weight: null, uncertainty_penalty: "No scalar penalty set; high uncertainty routes candidate to review or measurement.", missing_policy: manual_review, status: proposed, evidence_refs: [E201, E212]}
+  - {component_id: RC-COST, metric_id: I202, evaluator_id: EVAL-COST, role: objective, direction: minimize, threshold: {status: expert_provisional, value: null}, normalization: none, weight: null, uncertainty_penalty: "Propagate price and composition uncertainty; policy requires approval.", missing_policy: manual_review, status: proposed, evidence_refs: [E201, E205, E206]}
+  - {component_id: RC-PCOST, metric_id: I203, evaluator_id: EVAL-PCOST, role: objective, direction: maximize, threshold: {status: baseline_relative, value: null}, normalization: none, weight: null, uncertainty_penalty: "Propagate I201 and I202 uncertainty; activate only by expert choice to avoid double-counting.", missing_policy: manual_review, status: proposed, evidence_refs: [E201]}
+  - {component_id: RC-COMPOSITION, metric_id: I204, evaluator_id: CHECK-COMPOSITION, role: hard_constraint, direction: target_range, threshold: {status: expert_provisional, value: "nonnegative and sum=1 within approved tolerance"}, normalization: none, weight: null, uncertainty_penalty: "Not applicable.", missing_policy: reject, status: proposed, evidence_refs: [E202, E203]}
+  - {component_id: RC-SUPPORT, metric_id: I205, evaluator_id: CHECK-SUPPORT, role: hard_constraint, direction: target_range, threshold: {status: expert_provisional, value: "K=8 after epsilon and vector-type rule approval"}, normalization: none, weight: null, uncertainty_penalty: "Unknown measured support routes to review.", missing_policy: manual_review, status: proposed, evidence_refs: [E204]}
+  - {component_id: RC-PHASE, metric_id: I207, evaluator_id: CHECK-PHASE, role: hard_constraint, direction: target_range, threshold: {status: expert_provisional, value: null}, normalization: none, weight: null, uncertainty_penalty: "Unknown or uncertain structural class routes to review.", missing_policy: manual_review, status: proposed, evidence_refs: [E209, E213]}
+workflow:
+  workflow_id: WF-HEA-001
+  status: draft
+  search_space: {definition: "Eight-element mass-fraction simplex in project-instruction order [Pd, Pt, Au, Cr, Ir, Ce, Cu, Nb].", allowed_regions: [], forbidden_regions: [], expert_rules: ["all fractions nonnegative", "sum equals 1 within approved tolerance", "no element-wise bounds until approved", "keep atomic/molar and mass-basis fields distinct"]}
+  nodes:
+    - {node_id: N01, action: load, model_id: "", inputs: [raw_existing_data, source_manifest], outputs: [immutable_raw_records], retry_policy: "retry only transient read failures; otherwise record and pause affected source", stop_on_failure: true}
+    - {node_id: N02, action: check, model_id: CHECK-DATA-001, inputs: [immutable_raw_records, schema_metadata], outputs: [validated_records, row_level_issues, basis_and_condition_coverage], retry_policy: "no silent repair; corrections require versioned transform", stop_on_failure: true}
+    - {node_id: N03, action: calculate, model_id: CALC-COST-001, inputs: [validated_composition, approved_price_table], outputs: [cost_records_with_provenance], retry_policy: "missing or stale quote routes to review", stop_on_failure: false}
+    - {node_id: N04, action: review, model_id: "", inputs: [data_audit, metric_conditions, expert_review_queue], outputs: [approved_training_scope, locked_baseline_protocol], retry_policy: "pause until critical decisions resolved", stop_on_failure: true}
+    - {node_id: N05, action: predict, model_id: MODEL-PERF-001, inputs: [approved_training_records, validation_split, model_specification], outputs: [validated_model_artifact, per_metric_validation, applicability_domain], retry_policy: "model-specific and registered only", stop_on_failure: true}
+    - {node_id: N06, action: check, model_id: MODEL-UNC-001, inputs: [held_out_predictions, measurements], outputs: [calibration_and_uncertainty_report], retry_policy: "uncalibrated outputs cannot drive autonomous ranking", stop_on_failure: true}
+    - {node_id: N07, action: generate, model_id: GEN-CANDIDATE-001, inputs: [approved_search_space, budget], outputs: [candidate_batch], retry_policy: "regenerate invalid candidates only with logged configuration", stop_on_failure: true}
+    - {node_id: N08, action: check, model_id: CHECK-COMPOSITION, inputs: [candidate_batch], outputs: [feasibility_and_reason_codes], retry_policy: "reject malformed candidates; unresolved scientific constraints route to review", stop_on_failure: true}
+    - {node_id: N09, action: predict, model_id: MODEL-PERF-001, inputs: [feasible_candidates, locked_conditions], outputs: [per_metric_prediction_records], retry_policy: "no prediction outside registered interface; out-of-domain routes to measurement/review", stop_on_failure: false}
+    - {node_id: N10, action: score, model_id: "", inputs: [predictions, uncertainty, cost, approved_constraints], outputs: [pareto_set, candidate_actions], retry_policy: "preserve separate metrics; no scalarization without approval", stop_on_failure: true}
+    - {node_id: N11, action: select, model_id: "", inputs: [pareto_set, budget, expert_rules], outputs: [pilot_batch_with_controls], retry_policy: "human approval required", stop_on_failure: true}
+    - {node_id: N12, action: review, model_id: "", inputs: [pilot_batch, experiment_plan], outputs: [approved_measurement_plan], retry_policy: "pause for domain and computer expert decisions", stop_on_failure: true}
+    - {node_id: N13, action: load, model_id: "", inputs: [new_synthesis_and_device_results], outputs: [versioned_observation_records], retry_policy: "retain failures and missingness with status", stop_on_failure: true}
+    - {node_id: N14, action: predict, model_id: MODEL-PERF-001, inputs: [prior_records, new_observations, approved_model_controls], outputs: [updated_validation_and_pareto_set], retry_policy: "retraining is outside the registered action interface; only update after an approved training interface is registered, otherwise request computer expert", stop_on_failure: true}
+    - {node_id: N15, action: export, model_id: "", inputs: [data_audit, model_report, candidate_actions, expert_feedback], outputs: [round_record, feedback_log, next_round_inputs], retry_policy: "schema validate before publish", stop_on_failure: true}
+  budget: {max_candidates: null, max_evaluations: null, max_runtime: "", compute_limit: "", status: expert_computer_input_required}
+  stopping_conditions: ["critical target, basis, unit, or condition conflict", "model output unmapped or outside applicability domain", "uncertainty/calibration unacceptable under approved policy", "hard constraint conflict or expert pause", "authorized budget exhausted", "approved stopping rule reached without useful Pareto improvement"]
+parameter_controls:
+  - {parameter_id: PARAM-BUDGET-001, target: workflow, name: max_candidates, current_value: null, allowed_range: [], allowed_values: [], adjustment_mode: fixed, trigger: "expert/computer approval required", max_change_per_round: null, rollback_value: null, change_history: []}
+  - {parameter_id: PARAM-MODEL-001, target: model, name: "model hyperparameters (unselected)", current_value: null, allowed_range: [], allowed_values: [], adjustment_mode: fixed, trigger: "No automatic change until executable+parameter interface and authorization exist.", max_change_per_round: null, rollback_value: null, change_history: []}
+expert_feedback_history: []
+expert_activity_log:
+  - {activity_id: EA-DOMAIN-001, expert_role: domain_expert, action_type: provide, target_type: search_space, target_id: I204, contribution: "Provided eight metals, fixed mass-fraction representation, order [Pd, Pt, Au, Cr, Ir, Ce, Cu, Nb], nonnegativity and unit-sum rules.", decision_or_effect: "Applied to draft interface; conflict with round2 literature-derived order/basis opened for confirmation.", evidence_refs: [user_project_specification], timestamp: "2026-10-27", status: applied}
+  - {activity_id: EA-COMPUTER-001, expert_role: computer_expert, action_type: recommend, target_type: workflow, target_id: WF-HEA-001, contribution: "Requested iterative optimization from existing composition-performance data.", decision_or_effect: "Draft includes data audit, model interface, candidate generation, scoring, screening, experiment feedback; no algorithm assumed.", evidence_refs: [user_project_specification], timestamp: "2026-10-27", status: applied}
+  - {activity_id: EA-DOMAIN-002, expert_role: domain_expert, action_type: constrain, target_type: metric, target_id: I201, contribution: "Trade off peak power density against cost while preserving feasible composition.", decision_or_effect: "P_peak primary; performance-cost tradeoff requirement confirmed; cost-specific scoring policy requires approval; composition checks precede scoring.", evidence_refs: [user_project_specification, E201], timestamp: "2026-10-27", status: "performance_cost_tradeoff_requirement_confirmed"}
+  - {activity_id: EA-COMPUTER-002, expert_role: computer_expert, action_type: configure, target_type: model, target_id: MODEL-PERF-001, contribution: "No specific model/script/interface/parameter authorization supplied.", decision_or_effect: "Abstract proposed slot only; execution and autonomous parameter adjustment disabled.", evidence_refs: [user_project_specification], timestamp: "2026-10-27", status: recorded}
+run_history: []
+version_history:
+  - {version: "1.0-draft", date: "2026-10-27", change: "Initial algorithm-neutral orchestration derived from knowledge_alignment_round2 and project instructions.", approval: pending}
+
+expert_feedback_reconciliation:
+  annotation_date: '2026-10-31'
+  annotation_type: dialogue_based_stage_status_reconciliation
+  requested_by: user
+  source_dialogue: ../../multi_round_dialogue_example_EN.txt
+  source_sha256: 759f71d407a9bb2c542208a75279b8477e0833f2f54ee566e3e990870f96a994
+  interpretation: Stage-scoped working acceptance and task roles from the saved dialogue, following earlier HEA and PS
+    reconciliation rules.
+  itemwise_scientific_verification_completed_by_this_update: false
+  numerical_thresholds_prices_and_model_calibration_certified: false
+  execution_authorized_by_this_update: false
+  historical_version_snapshots_modified: false
+  composition_basis_caution: The project specifies mass fractions. Atomic/molar fraction entries and literature/AL element-order
+    differences require explicit reconciliation; none are silently converted.
+  unanswered_review_questions_and_blocking_flags_preserved: true
+  source_feedback_records:
+  - feedback_id: EO1
+    source_line: 12
+    excerpt: 'Please run the Execution Orchestration Skill. Based on the three output files from the knowledge-alignment
+      stage and the research methods used in this field, which may be identified from the literature or through online
+      research, design a basic task-execution workflow for optimizing the formulation of an eight-component high-entropy
+      alloy catalyst. Provide necessary recommendations, especially recommendations for metric ranking and corresponding
+      threshold guidance, preferably supported by evidence. Starting from existing experimental data, the workflow should
+      explain how to perform data organization, model training, candidate-composition generation, performance evaluation,
+      candidate screening, and result feedback, but it must not assume a specific model or algorithm that has not yet
+      been confirmed. The materials expert provides the following information: the catalyst consists of eight metals—Pd,
+      Pt, Au, Cr, Ir, Ce, Cu, and Nb—and is generally represented as a mass-fraction vector with a fixed element order;
+      each element''s mass fraction must be nonnegative, and the fractions must sum to 1. The optimization problem therefore
+      involves trade-offs among peak power density, cost, and composition constraints. The computer expert would like
+      to construct a model workflow capable of iterative optimization from existing composition-performance data. Add
+      the suffix `round1` to the output filenames.'
+  - feedback_id: EO2
+    source_line: 16
+    excerpt: The materials scientist notes that the organization of metrics in the current workflow still needs adjustment.
+      In addition to peak power density, the workflow may consider normalized cost, composition validity, element-content
+      ranges, differences between candidate compositions and existing experimental samples, model-prediction confidence,
+      and the stability of high-performance formulations. The computer expert confirms that peak power density will be
+      the core performance metric for formulation optimization, while nonnegative mass fractions for the eight elements,
+      a total fraction of 1, and a fixed element order will serve as composition constraints. The `AL` folder is now
+      provided as the implemented model execution path. The model architecture, training method, metric-configuration
+      files, runtime parameters, data interfaces, and candidate-result format must be obtained from the code, documentation,
+      and interface documents in the `AL` folder. Inspect and update the model information and interfaces independently,
+      improve the workflow, and report the proposed execution procedure to me for confirmation. Do not run it without
+      authorization. Clearly specify all output paths. Update the previous round's output files and add the suffix `round2`.
+  - feedback_id: KA2
+    source_line: 6
+    excerpt: The domain expert states that the current knowledge is essentially correct, but it should be supplemented
+      with the principal characteristics of the eight metal elements in the catalytic system, their possible synergistic
+      effects, and the potential influence of changes in each element's content on peak power density. In addition to
+      peak power density, the material cost associated with the use of precious metals must also be considered. Provide
+      the computer expert with metrics that can be calculated or predicted, together with their meanings, and explain
+      the different roles of peak power density, cost, and composition constraints in material-formulation design. The
+      computer expert states that the current descriptions of data representation and optimization metrics are insufficiently
+      clear. Specify the element order, numerical format, target metrics, constraints, and data input/output formats
+      for the eight-component composition data. For metrics that may be used in subsequent iterative optimization, also
+      describe their calculation methods, optimization directions, reasonable threshold ranges, and data sources. Next,
+      update and confirm the knowledge-alignment report according to the experts' requirements, using evidence from the
+      papers and authoritative online sources. Produce clearer supplements to the domain-expert view and the computer-expert
+      optimization metrics.
+  updates:
+  - path: metadata/approval_status
+    status: task_roles_confirmed_detailed_workflow_review_required
+    feedback_refs:
+    - EO1
+    - EO2
+    scope: Record confirmed requirements while preserving missing definitions, approval conditions and execution restrictions.
+  - path: metric_candidates/0/expert_status
+    status: core_objective_confirmed_unit_and_protocol_unconfirmed
+    feedback_refs:
+    - EO2
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: metric_candidates/1/expert_status
+    status: cost_objective_accepted_procurement_data_unavailable
+    feedback_refs:
+    - KA2
+    - EO1
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: metric_candidates/2/expert_status
+    status: cost_performance_role_accepted_exact_formula_unconfirmed
+    feedback_refs:
+    - KA2
+    - EO1
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: metric_candidates/3/expert_status
+    status: mass_fraction_nonnegativity_closure_and_fixed_order_confirmed
+    feedback_refs:
+    - EO1
+    - EO2
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: metric_candidates/4/expert_status
+    status: eight_component_design_confirmed_presence_threshold_unconfirmed
+    feedback_refs:
+    - EO1
+    - EO2
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: metric_candidates/5/expert_status
+    status: precious_metal_cost_descriptor_accepted_threshold_unconfirmed
+    feedback_refs:
+    - KA2
+    - EO1
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: metric_candidates/6/expert_status
+    status: retained_as_candidate_not_selected_or_validated
+    feedback_refs:
+    - EO2
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: metric_candidates/7/expert_status
+    status: retained_as_candidate_not_selected_or_validated
+    feedback_refs:
+    - EO2
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: metric_candidates/8/expert_status
+    status: retained_as_candidate_not_selected_or_validated
+    feedback_refs:
+    - EO2
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: metric_candidates/9/expert_status
+    status: retained_as_candidate_not_selected_or_validated
+    feedback_refs:
+    - EO2
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: metric_candidates/10/expert_status
+    status: retained_as_candidate_not_selected_or_validated
+    feedback_refs:
+    - EO2
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: metric_candidates/11/expert_status
+    status: retained_as_candidate_not_selected_or_validated
+    feedback_refs:
+    - EO2
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: metric_candidates/12/expert_status
+    status: retained_as_candidate_not_selected_or_validated
+    feedback_refs:
+    - EO2
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: metric_candidates/13/expert_status
+    status: diagnostic_requested_calibration_unconfirmed
+    feedback_refs:
+    - EO2
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: metric_candidates/14/expert_status
+    status: retained_as_candidate_not_selected_or_validated
+    feedback_refs:
+    - EO2
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: metric_decisions/3/ranking_basis/2
+    status: basis/order conflict requires reconciliation and approval
+    feedback_refs:
+    - EO1
+    - EO2
+    scope: Record confirmed requirements while preserving missing definitions, approval conditions and execution restrictions.
+  - path: model_interfaces/0/human_provision/confirmation_ref
+    status: round1_interface_confirmation_not_documented
+    feedback_refs:
+    - EO1
+    - EO2
+    scope: The abstract round-1 interface has no recorded confirmation; later AL provision does not certify this particular
+      interface.
+  - path: model_interfaces/1/human_provision/confirmation_ref
+    status: round1_interface_confirmation_not_documented
+    feedback_refs:
+    - EO1
+    - EO2
+    scope: The abstract round-1 interface has no recorded confirmation; later AL provision does not certify this particular
+      interface.
+  - path: model_interfaces/2/human_provision/confirmation_ref
+    status: round1_interface_confirmation_not_documented
+    feedback_refs:
+    - EO1
+    - EO2
+    scope: The abstract round-1 interface has no recorded confirmation; later AL provision does not certify this particular
+      interface.
+  - path: model_interfaces/3/human_provision/confirmation_ref
+    status: round1_interface_confirmation_not_documented
+    feedback_refs:
+    - EO1
+    - EO2
+    scope: The abstract round-1 interface has no recorded confirmation; later AL provision does not certify this particular
+      interface.
+  - path: reward_components/1/uncertainty_penalty
+    status: Propagate price and composition uncertainty; policy requires approval.
+    feedback_refs:
+    - KA2
+    - EO2
+    scope: Record confirmed requirements while preserving missing definitions, approval conditions and execution restrictions.
+  - path: expert_activity_log/2/decision_or_effect
+    status: P_peak primary; performance-cost tradeoff requirement confirmed; cost-specific scoring policy requires approval;
+      composition checks precede scoring.
+    feedback_refs:
+    - KA2
+    - EO1
+    - EO2
+    scope: Record confirmed requirements while preserving missing definitions, approval conditions and execution restrictions.
+  - path: expert_activity_log/2/status
+    status: performance_cost_tradeoff_requirement_confirmed
+    feedback_refs:
+    - KA2
+    - EO1
+    - EO2
+    scope: Record confirmed requirements while preserving missing definitions, approval conditions and execution restrictions.

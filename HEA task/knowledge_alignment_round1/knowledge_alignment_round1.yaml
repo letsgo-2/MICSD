@@ -19,7 +19,7 @@ concepts:
     ontology_source: {name: project local concept, iri_or_url: null, version_or_access_date: 2026-07-30}
     mapping_status: local
     evidence: [E001, E004, E012]
-    expert_status: pending
+    expert_status: "accepted_in_principle_from_dialogue"
   - concept_id: C002
     name: High-entropy alloy
     definition: "Multi-principal-element / complex concentrated alloy concept used here for compositionally complex alloy electrocatalysts; exact entropy threshold not fixed by the primary paper."
@@ -28,7 +28,7 @@ concepts:
     ontology_source: {name: literature-derived terminology, iri_or_url: null, version_or_access_date: 2026-07-30}
     mapping_status: close
     evidence: [E006, E007]
-    expert_status: pending
+    expert_status: "accepted_in_principle_from_dialogue"
   - concept_id: C003
     name: Catalyst
     definition: "A substance that increases the rate of a reaction without modifying the overall standard Gibbs energy change."
@@ -37,7 +37,7 @@ concepts:
     ontology_source: {name: IUPAC Gold Book, iri_or_url: https://doi.org/10.1351/goldbook.C00876, version_or_access_date: Version 5.0.0 accessed 2026-07-30}
     mapping_status: exact
     evidence: [E008]
-    expert_status: pending
+    expert_status: "accepted_in_principle_from_dialogue"
   - concept_id: C004
     name: Electrode reaction
     definition: "Interfacial electrode process including at least one elementary charge-transfer step, with current controlled by kinetics and transport at a given potential."
@@ -46,7 +46,7 @@ concepts:
     ontology_source: {name: IUPAC Gold Book, iri_or_url: https://doi.org/10.1351/goldbook.E01960, version_or_access_date: Version 5.0.0 accessed 2026-07-30}
     mapping_status: exact
     evidence: [E009]
-    expert_status: pending
+    expert_status: "accepted_in_principle_from_dialogue"
   - concept_id: C005
     name: Direct formate fuel cell
     definition: "Electrochemical device context used to validate selected catalysts via polarization curves with formate electrolyte."
@@ -55,7 +55,7 @@ concepts:
     ontology_source: {name: EMMO Domain Electrochemistry Ontology, iri_or_url: https://w3id.org/emmo/domain/electrochemistry, version_or_access_date: accessed 2026-07-30}
     mapping_status: close
     evidence: [E003, E004, E014]
-    expert_status: pending
+    expert_status: "accepted_in_principle_from_dialogue"
   - concept_id: C006
     name: Composition vector
     definition: "Eight-dimensional non-negative vector ordered Pd, Pt, Cu, Au, Ir, Ce, Nb, Cr and normalized to sum to 1 in local data/code."
@@ -64,7 +64,7 @@ concepts:
     ontology_source: {name: project local concept, iri_or_url: null, version_or_access_date: 2026-07-30}
     mapping_status: local
     evidence: [E011, E012, E013]
-    expert_status: pending
+    expert_status: "accepted_in_principle_from_dialogue"
   - concept_id: C007
     name: Single FCC solid-solution phase
     definition: "Structural state reported by XRD/Rietveld for the optimized octonary catalyst."
@@ -73,7 +73,7 @@ concepts:
     ontology_source: {name: project local concept, iri_or_url: null, version_or_access_date: 2026-07-30}
     mapping_status: local
     evidence: [E005]
-    expert_status: pending
+    expert_status: "accepted_in_principle_from_dialogue"
   - concept_id: C008
     name: Poisoning tolerance
     definition: "Resistance to hydrogen poisoning and CO poisoning relative to pure Pd in formate oxidation mechanism."
@@ -82,7 +82,7 @@ concepts:
     ontology_source: {name: project local concept, iri_or_url: null, version_or_access_date: 2026-07-30}
     mapping_status: local
     evidence: [E005]
-    expert_status: pending
+    expert_status: "accepted_in_principle_from_dialogue"
 
 indicators:
   - indicator_id: I001
@@ -102,7 +102,7 @@ indicators:
     methods: [fuel-cell polarization, three-electrode LSV proxy, supervised model after protocol certification]
     related_indicators: [I006, I007, I013]
     evidence: [E002, E003, E004, E011]
-    expert_status: pending
+    expert_status: "core_objective_confirmed_unit_and_protocol_unconfirmed"
   - indicator_id: I002
     name: Cost-specific performance
     definition: "Power density normalized by catalyst cost."
@@ -120,7 +120,7 @@ indicators:
     methods: [derive from power density and catalyst cost]
     related_indicators: [I001, I003]
     evidence: [E001, E004, E013]
-    expert_status: pending
+    expert_status: "cost_tradeoff_selected_formula_and_price_basis_unconfirmed"
   - indicator_id: I003
     name: Normalized catalyst cost
     definition: "Weighted elemental price of composition normalized by Pd price times 100 in local code."
@@ -138,7 +138,7 @@ indicators:
     methods: [dot product of normalized ratio and metal prices]
     related_indicators: [I002, I004]
     evidence: [E013]
-    expert_status: pending
+    expert_status: "cost_tradeoff_selected_formula_and_price_basis_unconfirmed"
   - indicator_id: I004
     name: Elemental fraction vector
     definition: "Normalized fractions of Pd, Pt, Cu, Au, Ir, Ce, Nb, Cr."
@@ -174,7 +174,7 @@ indicators:
     methods: [sample preparation metadata]
     related_indicators: [I001, I002]
     evidence: [E003]
-    expert_status: pending
+    expert_status: "accepted_in_principle_from_dialogue"
   - indicator_id: I006
     name: Current density
     definition: "Current per geometric electrode area."
@@ -192,7 +192,7 @@ indicators:
     methods: [CV, LSV, polarization curve]
     related_indicators: [I001, I007]
     evidence: [E003]
-    expert_status: pending
+    expert_status: "accepted_in_principle_from_dialogue"
   - indicator_id: I007
     name: Cell voltage / potential
     definition: "Device cell voltage or electrode potential versus Hg/HgO depending on experiment."
@@ -210,7 +210,7 @@ indicators:
     methods: [polarization curve, three-electrode measurement]
     related_indicators: [I001, I006]
     evidence: [E002, E003]
-    expert_status: pending
+    expert_status: "accepted_in_principle_from_dialogue"
   - indicator_id: I008
     name: Activation barrier
     definition: "DFT-computed reaction barrier for direct or indirect formate oxidation pathway."
@@ -228,7 +228,7 @@ indicators:
     methods: [DFT reaction pathway calculation]
     related_indicators: [I001, I012]
     evidence: [E005]
-    expert_status: pending
+    expert_status: "accepted_in_principle_from_dialogue"
   - indicator_id: I009
     name: Single FCC phase status
     definition: "Whether catalyst is a singular FCC solid solution by XRD/Rietveld or equivalent phase analysis."
@@ -246,7 +246,7 @@ indicators:
     methods: [XRD, Rietveld refinement, phase prediction]
     related_indicators: [I001]
     evidence: [E005]
-    expert_status: pending
+    expert_status: "accepted_in_principle_from_dialogue"
   - indicator_id: I010
     name: Metallic Pd/Pt state
     definition: "Whether Pd and Pt retain metallic states during formate oxidation."
@@ -264,7 +264,7 @@ indicators:
     methods: [XANES, EXAFS]
     related_indicators: [I001, I012]
     evidence: [E005]
-    expert_status: pending
+    expert_status: "accepted_in_principle_from_dialogue"
   - indicator_id: I011
     name: Morphology descriptors
     definition: "SEM-derived particle distribution slope, distribution bias, particle coverage ratio, and particle count per unit area."
@@ -282,7 +282,7 @@ indicators:
     methods: [SEM image processing]
     related_indicators: [I001]
     evidence: [E002]
-    expert_status: pending
+    expert_status: "accepted_in_principle_from_dialogue"
   - indicator_id: I012
     name: Poisoning tolerance
     definition: "Resistance to hydrogen and CO poisoning relative to pure Pd."
@@ -300,7 +300,7 @@ indicators:
     methods: [DFT pathway analysis, adsorption-energy analysis, expert labels]
     related_indicators: [I008, I010]
     evidence: [E005]
-    expert_status: pending
+    expert_status: "accepted_in_principle_from_dialogue"
   - indicator_id: I014
     name: AL surrogate predicted power density
     definition: "GBR virtual-oracle or LLM committee prediction used for candidate screening."
@@ -318,7 +318,7 @@ indicators:
     methods: [GBR, UCB, Pareto screening]
     related_indicators: [I001]
     evidence: [E011, E013]
-    expert_status: pending
+    expert_status: "accepted_in_principle_from_dialogue"
 
 claims:
   - claim_id: K001
@@ -329,7 +329,7 @@ claims:
     conditions: [CRESt formate oxidation experiments, pure Pd benchmark]
     evidence: [E001, E002, E004]
     confidence: high
-    expert_status: pending
+    expert_status: "accepted_in_principle_from_dialogue"
   - claim_id: K002
     subject: three-electrode current-potential data
     relation: is_proxy_for
@@ -338,7 +338,7 @@ claims:
     conditions: [constant ORR overpotential assumption, validation against fuel-cell experiments]
     evidence: [E002]
     confidence: medium
-    expert_status: pending
+    expert_status: "accepted_in_principle_from_dialogue"
   - claim_id: K003
     subject: Pd and Pt
     relation: promotes
@@ -347,7 +347,7 @@ claims:
     conditions: [primary paper context]
     evidence: [E005]
     confidence: medium
-    expert_status: pending
+    expert_status: "accepted_in_principle_from_dialogue"
   - claim_id: K004
     subject: Cu Ce Nb Cr additions
     relation: promotes
@@ -356,7 +356,7 @@ claims:
     conditions: [alloying with primary elements]
     evidence: [E005]
     confidence: low
-    expert_status: pending
+    expert_status: "accepted_in_principle_from_dialogue"
   - claim_id: K005
     subject: optimized octonary HEA
     relation: decreases
@@ -365,7 +365,7 @@ claims:
     conditions: [DFT pathway models]
     evidence: [E005]
     confidence: medium
-    expert_status: pending
+    expert_status: "accepted_in_principle_from_dialogue"
   - claim_id: K006
     subject: local AL surrogate outputs
     relation: is_proxy_for
@@ -374,7 +374,7 @@ claims:
     conditions: [screening only, not real experiments]
     evidence: [E011, E013]
     confidence: high
-    expert_status: pending
+    expert_status: "accepted_in_principle_from_dialogue"
 
 evidence:
   - evidence_id: E001
@@ -534,3 +534,44 @@ optimization_targets:
   intermediate: [I006, I007, I008, I011]
   diagnostic: [I010, I012, I014]
   not_ready: [I010, I012]
+
+dialogue_status_reconciliation:
+  annotation_date: '2026-10-30'
+  basis: Retrospective inference from the supplied dialogue; broad acceptance of task roles and working knowledge, not
+    newly performed expert validation.
+  source_file: multi_round_dialogue_example_EN.txt
+  source_sha256: 759f71d407a9bb2c542208a75279b8477e0833f2f54ee566e3e990870f96a994
+  independent_itemwise_verification_recorded: false
+  quantitative_thresholds_or_prices_approved: false
+  execution_authorized: false
+  composition_basis_caution: Dialogue specifies mass fractions. Atomic-/molar-fraction entries are not upgraded by this
+    annotation; conversion and schema reconciliation remain necessary.
+  feedback:
+  - id: EO2
+    line: 16
+    statement: The materials scientist notes that the organization of metrics in the current workflow still needs adjustment.
+      In addition to peak power density, the workflow may consider normalized cost, composition validity, element-content
+      ranges, differences between candidate compositions and existing experimental samples, model-prediction confidence,
+      and the stability of high-performance formulations. The computer expert confirms that peak power density will be
+      the core performance metric for formulation optimization, while nonnegative mass fractions for the eight elements,
+      a total fraction of 1, and a fixed element order will serve as composition constraints. The `AL` folder is now
+      provided as the implemented model execution path. The model architecture, training method, metric-configuration
+      files, runtime parameters, data interfaces, and candidate-result format must be obtained from the code, documentation,
+      and interface documents in the `AL` folder. Inspect and update the model information and interfaces independently,
+      improve the workflow, and report the proposed execution procedure to me for confirmation. Do not run it without
+      authorization. Clearly specify all output paths. Update the previous round's output files and add the suffix `round2`.
+  - id: KA2
+    line: 6
+    statement: The domain expert states that the current knowledge is essentially correct, but it should be supplemented
+      with the principal characteristics of the eight metal elements in the catalytic system, their possible synergistic
+      effects, and the potential influence of changes in each element's content on peak power density. In addition to
+      peak power density, the material cost associated with the use of precious metals must also be considered. Provide
+      the computer expert with metrics that can be calculated or predicted, together with their meanings, and explain
+      the different roles of peak power density, cost, and composition constraints in material-formulation design. The
+      computer expert states that the current descriptions of data representation and optimization metrics are insufficiently
+      clear. Specify the element order, numerical format, target metrics, constraints, and data input/output formats
+      for the eight-component composition data. For metrics that may be used in subsequent iterative optimization, also
+      describe their calculation methods, optimization directions, reasonable threshold ranges, and data sources. Next,
+      update and confirm the knowledge-alignment report according to the experts' requirements, using evidence from the
+      papers and authoritative online sources. Produce clearer supplements to the domain-expert view and the computer-expert
+      optimization metrics.

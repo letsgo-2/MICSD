@@ -1,0 +1,3 @@
+pool_phase,rows,mean_power_density,median_power_density,max_power_density,mean_normalized_cost,median_normalized_cost,mean_nonzero_elements
+generated_or_retained_rows,150,58.075122432066664,60.437930980000004,68.58106887,59.230812355199994,58.21930992,8.0
+seed_or_baseline_rows,10,5.66949,0.70095,49.53,55.2212569956,58.454009510000006,2.2

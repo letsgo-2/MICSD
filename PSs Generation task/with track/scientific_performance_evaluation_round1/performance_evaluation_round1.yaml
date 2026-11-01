@@ -1,0 +1,2328 @@
+{
+  "metadata": {
+    "name": "Scientific Performance Evaluation — Round 1",
+    "language": "English",
+    "version": "0.1.0-draft",
+    "created": "2026-10-31",
+    "status": "draft_confirmation_required",
+    "suffix": "round1",
+    "upstream_round": "scientific_execution_orchestration_round3",
+    "execution_authorized": false,
+    "revision_scope": "Established evaluation workflow, Slurm/RDKit/ORCA/statistics tool registration, SDPD plotting plan, statistical protocols and reversible adjustment proposals."
+  },
+  "upstream_inputs": {
+    "orchestration_yaml": "../scientific_execution_orchestration_round3/execution_orchestration_round3.yaml",
+    "orchestration_report": "../scientific_execution_orchestration_round3/execution_orchestration_report_round3.md",
+    "orchestration_review_queue": "../scientific_execution_orchestration_round3/execution_review_queue_round3.yaml",
+    "source_repository": "../SDPD/"
+  },
+  "execution_context": {
+    "selected_metrics": [
+      "E(S1)-E(T1)",
+      "charge",
+      "symmetry"
+    ],
+    "candidate_representation": "SMILES",
+    "scaffold": "porphyrin",
+    "execution_results_present": false,
+    "planned_cluster": "Slurm",
+    "execution_authorized": false,
+    "raw_output_policy": "never overwrite"
+  },
+  "expert_registry": [
+    {
+      "expert_id": "EXP-R1-COMPUTER",
+      "expert_role": "computer_expert",
+      "domain_id": "computational_systems",
+      "responsibilities": [
+        "Slurm runtime, model diagnostics, reproducibility, resource and failure analysis"
+      ],
+      "provided_tools": [
+        "Slurm cluster environment"
+      ],
+      "provided_rules": [],
+      "authorized_actions": [],
+      "contact_or_reference": "User Round 1 request",
+      "status": "active"
+    },
+    {
+      "expert_id": "EXP-R1-MATERIALS",
+      "expert_role": "domain_expert",
+      "domain_id": "photosensitizer_materials",
+      "responsibilities": [
+        "RDKit molecular validation, ORCA DFT calculation, scientific/statistical interpretation of candidate metrics"
+      ],
+      "provided_tools": [
+        "RDKit",
+        "ORCA"
+      ],
+      "provided_rules": [],
+      "authorized_actions": [],
+      "contact_or_reference": "User Round 1 request",
+      "status": "active"
+    }
+  ],
+  "analysis_evidence": [
+    {
+      "evidence_id": "AE-R1-001",
+      "source_type": "upstream_input",
+      "source_ref": "../scientific_execution_orchestration_round3/execution_orchestration_round3.yaml",
+      "title_or_description": "Round 3 selected metrics and SDPD interface map",
+      "domain_id": "computational_systems",
+      "supported_questions": [
+        "metric coverage",
+        "run artifact schema",
+        "model interface"
+      ],
+      "supported_metrics": [
+        "E(S1)-E(T1)",
+        "charge",
+        "symmetry"
+      ],
+      "extracted_claim": "The selected runtime components are st_gap, charge_score and symmetry_score; execution was not authorized in Round 3.",
+      "applicability_conditions": [
+        "SDPD runtime",
+        "selected configuration"
+      ],
+      "retrieval_or_extraction_method": "inherited",
+      "retrieved_by": "skill",
+      "confidence": "high",
+      "verification_status": "cross_checked",
+      "limitations": [
+        "No execution results were present"
+      ]
+    },
+    {
+      "evidence_id": "AE-R1-002",
+      "source_type": "execution_configuration",
+      "source_ref": "SDPD/configs/rl_configs.json",
+      "title_or_description": "SDPD RL configuration",
+      "domain_id": "computational_systems",
+      "supported_questions": [
+        "configured weights",
+        "RL budget",
+        "output path"
+      ],
+      "supported_metrics": [
+        "E(S1)-E(T1)",
+        "charge",
+        "symmetry"
+      ],
+      "extracted_claim": "Configured scorer weights are [0.1, 0.3, 0.6], with n_steps 1000, batch_size 128, DAP sigma 120 and output_dir ./rl_runs.",
+      "applicability_conditions": [
+        "configuration must be validated before use"
+      ],
+      "retrieval_or_extraction_method": "automatic_parsing",
+      "retrieved_by": "skill",
+      "confidence": "high",
+      "verification_status": "cross_checked",
+      "limitations": [
+        "Configuration has not been executed in this evaluation round"
+      ]
+    },
+    {
+      "evidence_id": "AE-R1-003",
+      "source_type": "software_documentation",
+      "source_ref": "SDPD/README_EN.md",
+      "title_or_description": "SDPD plotting and output documentation",
+      "domain_id": "computational_systems",
+      "supported_questions": [
+        "plotting plan",
+        "result columns",
+        "baseline comparison"
+      ],
+      "supported_metrics": [
+        "st_gap",
+        "charge_score",
+        "symmetry_score",
+        "total_score"
+      ],
+      "extracted_claim": "SDPD documents diversity_memory.csv outputs and trend, hit-count, raincloud, radar, t-SNE and ST-gap plotting workflows.",
+      "applicability_conditions": [
+        "documented CSV schema and paths"
+      ],
+      "retrieval_or_extraction_method": "manual_review",
+      "retrieved_by": "skill",
+      "confidence": "high",
+      "verification_status": "cross_checked",
+      "limitations": [
+        "Documentation does not constitute observed results"
+      ]
+    },
+    {
+      "evidence_id": "AE-R1-004",
+      "source_type": "expert_input",
+      "source_ref": "User Round 1 request",
+      "title_or_description": "Runtime environment and tool requirements",
+      "domain_id": "photosensitizer_materials",
+      "supported_questions": [
+        "tool registration",
+        "DFT workflow",
+        "statistics"
+      ],
+      "supported_metrics": [
+        "E(S1)-E(T1)",
+        "charge",
+        "symmetry"
+      ],
+      "extracted_claim": "The computer expert provides a Slurm environment and the materials expert requests RDKit, ORCA and statistical analysis.",
+      "applicability_conditions": [
+        "versions, partitions and resource limits still require registration"
+      ],
+      "retrieval_or_extraction_method": "expert_provided",
+      "retrieved_by": "EXP-R1-COMPUTER/EXP-R1-MATERIALS",
+      "confidence": "high",
+      "verification_status": "unverified",
+      "limitations": [
+        "No concrete Slurm account, partition, module versions or ORCA version supplied"
+      ]
+    },
+    {
+      "evidence_id": "AE-R1-005",
+      "source_type": "software_documentation",
+      "source_ref": "SDPD/draw_picture/total_score_trend.py; SDPD/draw_picture/raincloud.py",
+      "title_or_description": "Built-in SDPD plotting script interfaces",
+      "domain_id": "computational_systems",
+      "supported_questions": [
+        "figure implementation",
+        "input schema"
+      ],
+      "supported_metrics": [
+        "total_score",
+        "novelty"
+      ],
+      "extracted_claim": "The trend script expects Step, SMILES and total_score; the raincloud script compares novelty distributions against a reference library.",
+      "applicability_conditions": [
+        "CSV fields and configured paths must exist"
+      ],
+      "retrieval_or_extraction_method": "manual_review",
+      "retrieved_by": "skill",
+      "confidence": "high",
+      "verification_status": "cross_checked",
+      "limitations": [
+        "Scripts were not executed"
+      ]
+    }
+  ],
+  "analysis_tools": [
+    {
+      "tool_id": "TOOL-R1-RDKIT",
+      "name": "RDKit",
+      "domain_id": "photosensitizer_materials",
+      "role": "data_validator",
+      "status": "proposed",
+      "provider_type": "expert_provided",
+      "provider_id": "EXP-R1-MATERIALS",
+      "discovery_or_provision_refs": [
+        "AE-R1-004"
+      ],
+      "source": {
+        "type": "package",
+        "location": "cluster environment; exact module/package path pending",
+        "version": "pending"
+      },
+      "entrypoint": {
+        "command": "python evaluation scripts using RDKit",
+        "script": "new adapter to be stored under scientific_performance_evaluation_round1/scripts/",
+        "working_directory": "project root or Slurm job workdir",
+        "environment_id": "ENV-R1-SLURM"
+      },
+      "access": {
+        "interface_exposed": false,
+        "access_level": "none",
+        "authorized_parameters": [],
+        "prohibited_actions": [
+          "modify SDPD production code",
+          "overwrite raw outputs",
+          "change metric definitions"
+        ],
+        "confirmation_ref": "EO-R1-ISSUE-001"
+      },
+      "input_schema": [
+        "SMILES",
+        "candidate_id",
+        "run_id"
+      ],
+      "output_schema": [
+        "canonical_smiles",
+        "validity",
+        "formal_charge",
+        "molecular_weight",
+        "fingerprints",
+        "duplicate/novelty fields",
+        "optional descriptors"
+      ],
+      "supported_metrics": [
+        "charge",
+        "symmetry",
+        "MW",
+        "candidate validity",
+        "uniqueness",
+        "novelty",
+        "diversity"
+      ],
+      "supported_subject_types": [
+        "candidate",
+        "batch",
+        "run"
+      ],
+      "validation": {
+        "test_case": "approved valid/invalid and charged porphyrin SMILES",
+        "expected_output": "known validity and charge outcomes",
+        "benchmark_status": "untested",
+        "applicability_domain": "SMILES supported by installed RDKit",
+        "known_failures": [
+          "metals/coordination or unusual valence handling"
+        ]
+      },
+      "reproducibility": {
+        "deterministic": true,
+        "random_seed_control": "explicit seed for sampling/subsampling",
+        "version_lock": "record RDKit version and Python environment",
+        "log_location": "planned job logs"
+      }
+    },
+    {
+      "tool_id": "TOOL-R1-ORCA",
+      "name": "ORCA",
+      "domain_id": "photosensitizer_materials",
+      "role": "domain_calculator",
+      "status": "proposed",
+      "provider_type": "expert_provided",
+      "provider_id": "EXP-R1-MATERIALS",
+      "discovery_or_provision_refs": [
+        "AE-R1-004"
+      ],
+      "source": {
+        "type": "package",
+        "location": "cluster module/container; exact path pending",
+        "version": "pending"
+      },
+      "entrypoint": {
+        "command": "orca input.inp > input.out",
+        "script": "new ORCA input generator/parser under scientific_performance_evaluation_round1/scripts/",
+        "working_directory": "Slurm scratch/job directory",
+        "environment_id": "ENV-R1-SLURM"
+      },
+      "access": {
+        "interface_exposed": false,
+        "access_level": "none",
+        "authorized_parameters": [],
+        "prohibited_actions": [
+          "change scientific method without approval",
+          "mix ORCA and predictor values without source labels",
+          "overwrite failed logs"
+        ],
+        "confirmation_ref": "EO-R1-ISSUE-002"
+      },
+      "input_schema": [
+        "standardized SMILES",
+        "3D coordinates",
+        "charge",
+        "multiplicity",
+        "ORCA input template",
+        "method/basis/solvent protocol"
+      ],
+      "output_schema": [
+        "E(S1)",
+        "E(T1)",
+        "E(S1)-E(T1)",
+        "SOCME only if explicitly configured and supported",
+        "convergence status",
+        "warnings",
+        "walltime/resource metadata"
+      ],
+      "supported_metrics": [
+        "E(S1)-E(T1)",
+        "E(S1)",
+        "E(T1)",
+        "optional SOCME"
+      ],
+      "supported_subject_types": [
+        "candidate",
+        "ORCA job",
+        "batch"
+      ],
+      "validation": {
+        "test_case": "small approved porphyrin reference and one failure case",
+        "expected_output": "parseable energies with units and convergence flag",
+        "benchmark_status": "untested",
+        "applicability_domain": "approved electronic-structure method and valid 3D structures",
+        "known_failures": [
+          "SCF/TD-DFT convergence",
+          "open-shell/multimetal systems",
+          "ambiguous state assignment"
+        ]
+      },
+      "reproducibility": {
+        "deterministic": null,
+        "random_seed_control": "record ORCA settings and geometry source",
+        "version_lock": "record ORCA version, method, basis, solvent and input template hash",
+        "log_location": "planned ORCA output archive"
+      }
+    },
+    {
+      "tool_id": "TOOL-R1-SLURM",
+      "name": "Slurm",
+      "domain_id": "computational_systems",
+      "role": "benchmark_tool",
+      "status": "proposed",
+      "provider_type": "expert_provided",
+      "provider_id": "EXP-R1-COMPUTER",
+      "discovery_or_provision_refs": [
+        "AE-R1-004"
+      ],
+      "source": {
+        "type": "server",
+        "location": "expert-provided Slurm cluster; exact cluster/account pending",
+        "version": "pending"
+      },
+      "entrypoint": {
+        "command": "sbatch/squeue/sacct",
+        "script": "new batch templates under scientific_performance_evaluation_round1/slurm/",
+        "working_directory": "cluster project directory",
+        "environment_id": "ENV-R1-SLURM"
+      },
+      "access": {
+        "interface_exposed": false,
+        "access_level": "none",
+        "authorized_parameters": [],
+        "prohibited_actions": [
+          "submit jobs before authorization",
+          "consume unbounded cluster resources",
+          "delete failed job logs"
+        ],
+        "confirmation_ref": "EO-R1-ISSUE-003"
+      },
+      "input_schema": [
+        "job array manifest",
+        "resource profile",
+        "container/module environment",
+        "script path"
+      ],
+      "output_schema": [
+        "job IDs",
+        "state/exit code",
+        "resource usage",
+        "stdout/stderr",
+        "sacct accounting"
+      ],
+      "supported_metrics": [
+        "runtime",
+        "throughput",
+        "failure rate",
+        "resource usage",
+        "queue delay"
+      ],
+      "supported_subject_types": [
+        "job",
+        "array",
+        "evaluation batch"
+      ],
+      "validation": {
+        "test_case": "cluster-specific dry-run or authorized single test",
+        "expected_output": "known job state and accounting record",
+        "benchmark_status": "untested",
+        "applicability_domain": "expert-provided cluster",
+        "known_failures": [
+          "partition limits",
+          "time limit",
+          "memory limit",
+          "module mismatch"
+        ]
+      },
+      "reproducibility": {
+        "deterministic": null,
+        "random_seed_control": "propagate candidate/run seed",
+        "version_lock": "record cluster, partition, modules/container digest",
+        "log_location": "planned Slurm logs and sacct export"
+      }
+    },
+    {
+      "tool_id": "TOOL-R1-SCIWORK",
+      "name": "Python statistics stack",
+      "domain_id": "computational_systems",
+      "role": "statistical_analyzer",
+      "status": "proposed",
+      "provider_type": "skill_discovered",
+      "provider_id": "scientific-performance-evaluator",
+      "discovery_or_provision_refs": [
+        "Skill protocol"
+      ],
+      "source": {
+        "type": "package",
+        "location": "Pandas/NumPy/SciPy/statsmodels/matplotlib/seaborn; exact versions pending",
+        "version": "pending"
+      },
+      "entrypoint": {
+        "command": "python evaluation scripts",
+        "script": "new scripts under scientific_performance_evaluation_round1/scripts/",
+        "working_directory": "project root or batch workdir",
+        "environment_id": "ENV-R1-SLURM"
+      },
+      "access": {
+        "interface_exposed": false,
+        "access_level": "none",
+        "authorized_parameters": [],
+        "prohibited_actions": [
+          "impute missing values without approval",
+          "drop outliers silently",
+          "claim significance without multiplicity control"
+        ],
+        "confirmation_ref": "EO-R1-ISSUE-004"
+      },
+      "input_schema": [
+        "clean analysis tables with value_type and conditions"
+      ],
+      "output_schema": [
+        "summary statistics",
+        "confidence intervals",
+        "effect sizes",
+        "p-values with correction",
+        "analysis tables",
+        "figures"
+      ],
+      "supported_metrics": [
+        "all observed metrics with compatible units"
+      ],
+      "supported_subject_types": [
+        "candidate",
+        "batch",
+        "run",
+        "cross_run"
+      ],
+      "validation": {
+        "test_case": "synthetic fixture with known summary/test results",
+        "expected_output": "reproducible table and statistic",
+        "benchmark_status": "untested",
+        "applicability_domain": "well-typed tabular results",
+        "known_failures": [
+          "small n",
+          "non-independent candidates",
+          "missing condition labels"
+        ]
+      },
+      "reproducibility": {
+        "deterministic": true,
+        "random_seed_control": "fixed bootstrap/subsampling seed",
+        "version_lock": "record lockfile/environment export",
+        "log_location": "planned analysis logs"
+      }
+    },
+    {
+      "tool_id": "TOOL-R1-SDPDPLOT",
+      "name": "SDPD plotting scripts",
+      "domain_id": "computational_systems",
+      "role": "visualization_tool",
+      "status": "proposed",
+      "provider_type": "upstream_registered",
+      "provider_id": "SDPD",
+      "discovery_or_provision_refs": [
+        "AE-R1-003",
+        "AE-R1-005"
+      ],
+      "source": {
+        "type": "repository",
+        "location": "SDPD/draw_picture/ and SDPD/configs/",
+        "version": "repository commit pending"
+      },
+      "entrypoint": {
+        "command": "python draw_picture/<script>.py ...",
+        "script": "SDPD/draw_picture/*.py",
+        "working_directory": "SDPD/",
+        "environment_id": "ENV-R1-SLURM"
+      },
+      "access": {
+        "interface_exposed": false,
+        "access_level": "inspect_only",
+        "authorized_parameters": [],
+        "prohibited_actions": [
+          "modify original plotting scripts without authorization",
+          "overwrite source CSVs"
+        ],
+        "confirmation_ref": "EO-R1-ISSUE-005"
+      },
+      "input_schema": [
+        "diversity_memory.csv",
+        "random_sampling_results.csv",
+        "reference library",
+        "plot config JSON/YAML"
+      ],
+      "output_schema": [
+        "PNG/PDF/SVG figures",
+        "console validation logs"
+      ],
+      "supported_metrics": [
+        "total_score",
+        "st_gap_raw",
+        "novelty",
+        "diversity",
+        "hit count",
+        "candidate distributions"
+      ],
+      "supported_subject_types": [
+        "run",
+        "candidate batch",
+        "baseline"
+      ],
+      "validation": {
+        "test_case": "existing SDPD fixture/output if supplied",
+        "expected_output": "figure and field validation",
+        "benchmark_status": "untested",
+        "applicability_domain": "documented SDPD CSV schemas",
+        "known_failures": [
+          "missing columns",
+          "stale config paths",
+          "no run results"
+        ]
+      },
+      "reproducibility": {
+        "deterministic": true,
+        "random_seed_control": "fixed subsampling seed where supported",
+        "version_lock": "record SDPD commit and Python package versions",
+        "log_location": "planned plotting logs"
+      }
+    }
+  ],
+  "compute_environments": [
+    {
+      "environment_id": "ENV-R1-SLURM",
+      "owner_expert_id": "EXP-R1-COMPUTER",
+      "location": "expert-provided Slurm cluster; exact hostname/account/partition pending",
+      "platform": "cluster",
+      "operating_system": "pending",
+      "runtime": "Python environment plus RDKit, ORCA and statistics stack",
+      "dependencies": [
+        "RDKit",
+        "ORCA",
+        "NumPy",
+        "Pandas",
+        "SciPy",
+        "statsmodels",
+        "matplotlib",
+        "seaborn",
+        "SDPD dependencies"
+      ],
+      "hardware": {
+        "cpu": "pending",
+        "gpu": "pending",
+        "memory": "pending",
+        "accelerator": "pending"
+      },
+      "scheduler": "Slurm",
+      "access_status": "unknown",
+      "reproducibility_status": "unregistered",
+      "data_access": [
+        "SDPD repository",
+        "authorized execution results",
+        "ORCA input/output archive"
+      ],
+      "output_locations": [
+        "scientific_performance_evaluation_round1/raw/",
+        "scientific_performance_evaluation_round1/clean/",
+        "scientific_performance_evaluation_round1/figures/",
+        "Slurm log directory pending"
+      ],
+      "restrictions": [
+        "No job submission without authorization",
+        "No production code/checkpoint modification",
+        "Preserve raw outputs"
+      ]
+    }
+  ],
+  "skill_inferences": {
+    "concerns": [
+      {
+        "concern_id": "CONC-R1-COMP",
+        "target_perspective": "computer_expert",
+        "domain_id": "computational_systems",
+        "question": "Are the SDPD optimization and evaluation outputs convergent, reproducible, resource-efficient and free of metric/predictor failures?",
+        "concern_type": "model_behavior",
+        "source_attribution": {
+          "source_type": "skill_inference",
+          "source_id": "scientific-performance-evaluator v0.3.1",
+          "source_refs": [
+            "Round 3 orchestration"
+          ],
+          "statement_type": "recommendation",
+          "verification_status": "unverified"
+        },
+        "trigger_refs": [
+          "AE-R1-001",
+          "AE-R1-002"
+        ],
+        "evidence_refs": [
+          "AE-R1-001",
+          "AE-R1-002",
+          "AE-R1-003"
+        ],
+        "suggested_metric_ids": [
+          "st_gap",
+          "charge_score",
+          "symmetry_score",
+          "total_score",
+          "validity",
+          "uniqueness",
+          "diversity",
+          "runtime",
+          "failure_rate"
+        ],
+        "suggested_analysis_methods": [
+          "seed-stratified run comparison",
+          "rolling top-n trend",
+          "bootstrap confidence intervals",
+          "resource/failure summaries"
+        ],
+        "suggested_visualization_types": [
+          "learning curves",
+          "failure bar chart",
+          "resource curve",
+          "run-level distribution"
+        ],
+        "priority": "high",
+        "confidence": "high",
+        "confirmation_status": "unconfirmed",
+        "superseded_by": ""
+      },
+      {
+        "concern_id": "CONC-R1-MAT",
+        "target_perspective": "domain_expert",
+        "domain_id": "photosensitizer_materials",
+        "question": "Do generated candidates preserve chemically valid porphyrin-centered structures, and do ORCA-derived E(S1)-E(T1) values agree with the SDPD proxy within a documented protocol?",
+        "concern_type": "scientific_performance",
+        "source_attribution": {
+          "source_type": "skill_inference",
+          "source_id": "scientific-performance-evaluator v0.3.1",
+          "source_refs": [
+            "Round 3 selected metrics",
+            "expert tool request"
+          ],
+          "statement_type": "recommendation",
+          "verification_status": "unverified"
+        },
+        "trigger_refs": [
+          "AE-R1-001",
+          "AE-R1-004"
+        ],
+        "evidence_refs": [
+          "AE-R1-001",
+          "AE-R1-004"
+        ],
+        "suggested_metric_ids": [
+          "E(S1)-E(T1)",
+          "st_gap",
+          "charge",
+          "symmetry",
+          "validity",
+          "SA",
+          "MW"
+        ],
+        "suggested_analysis_methods": [
+          "RDKit validity/duplicate analysis",
+          "ORCA recomputation on stratified candidates",
+          "agreement/error analysis",
+          "threshold/pass-rate analysis"
+        ],
+        "suggested_visualization_types": [
+          "predicted-vs-computed plot",
+          "gap distribution",
+          "candidate evidence cards",
+          "Pareto/threshold plot"
+        ],
+        "priority": "critical",
+        "confidence": "high",
+        "confirmation_status": "unconfirmed",
+        "superseded_by": ""
+      },
+      {
+        "concern_id": "CONC-R1-JOINT",
+        "target_perspective": "cross_domain_team",
+        "domain_id": "joint",
+        "question": "Which candidates are suitable for experimental follow-up after combining computational proxy, chemical validity, uncertainty, synthesis and model-behavior evidence without collapsing them into one unapproved score?",
+        "concern_type": "decision",
+        "source_attribution": {
+          "source_type": "skill_inference",
+          "source_id": "scientific-performance-evaluator v0.3.1",
+          "source_refs": [
+            "Round 3 orchestration",
+            "Round 2 alignment"
+          ],
+          "statement_type": "recommendation",
+          "verification_status": "unverified"
+        },
+        "trigger_refs": [
+          "AE-R1-001",
+          "AE-R1-003",
+          "AE-R1-004"
+        ],
+        "evidence_refs": [
+          "AE-R1-001",
+          "AE-R1-003",
+          "AE-R1-004"
+        ],
+        "suggested_metric_ids": [
+          "E(S1)-E(T1)",
+          "charge",
+          "symmetry",
+          "validity",
+          "uncertainty",
+          "SA",
+          "MW"
+        ],
+        "suggested_analysis_methods": [
+          "Pareto analysis",
+          "evidence matrix",
+          "candidate clustering",
+          "missingness and applicability review"
+        ],
+        "suggested_visualization_types": [
+          "joint scorecard",
+          "Pareto front",
+          "metric-candidate matrix",
+          "decision table"
+        ],
+        "priority": "high",
+        "confidence": "high",
+        "confirmation_status": "unconfirmed",
+        "superseded_by": ""
+      }
+    ]
+  },
+  "metric_bindings": [
+    {
+      "binding_id": "BIND-R1-STGAP",
+      "metric_id": "E(S1)-E(T1)",
+      "definition_ref": "Round 3 selected_metrics[0]",
+      "active_in_execution": true,
+      "evaluation_role": "proxy_performance",
+      "subject_types": [
+        "candidate",
+        "batch",
+        "run"
+      ],
+      "value_types_allowed": [
+        "predicted",
+        "computed",
+        "derived"
+      ],
+      "evaluator_ids": [
+        "SDPD-KAGNN",
+        "ORCA-R1"
+      ],
+      "required_conditions": [
+        "state definition",
+        "units",
+        "model/protocol version",
+        "candidate ID"
+      ],
+      "direction": "minimize",
+      "threshold": {
+        "round2_context": "<0.4 eV heuristic is context only",
+        "evaluation": "report distributions and agreement; no automatic hard cutoff"
+      },
+      "aggregation_level": "candidate",
+      "uncertainty_required": true,
+      "comparability_requirements": [
+        "same units and state definition",
+        "separate SDPD predicted and ORCA computed values"
+      ],
+      "status": "proposed"
+    },
+    {
+      "binding_id": "BIND-R1-CHARGE",
+      "metric_id": "charge",
+      "definition_ref": "Round 3 selected_metrics[1]",
+      "active_in_execution": true,
+      "evaluation_role": "constraint_check",
+      "subject_types": [
+        "candidate",
+        "batch",
+        "run"
+      ],
+      "value_types_allowed": [
+        "implementation_score",
+        "computed"
+      ],
+      "evaluator_ids": [
+        "SDPD-charge",
+        "RDKit-R1"
+      ],
+      "required_conditions": [
+        "formal charge policy",
+        "SMILES standardization",
+        "counterion policy"
+      ],
+      "direction": "context_dependent",
+      "threshold": {
+        "runtime": "preserve current discrete scorer semantics",
+        "analysis": "report pass-rate and raw formal charge separately"
+      },
+      "aggregation_level": "candidate",
+      "uncertainty_required": false,
+      "comparability_requirements": [
+        "same formal-charge definition"
+      ],
+      "status": "proposed"
+    },
+    {
+      "binding_id": "BIND-R1-SYMM",
+      "metric_id": "symmetry",
+      "definition_ref": "Round 3 selected_metrics[2]",
+      "active_in_execution": true,
+      "evaluation_role": "proxy_performance",
+      "subject_types": [
+        "candidate",
+        "batch",
+        "run"
+      ],
+      "value_types_allowed": [
+        "implementation_score",
+        "computed"
+      ],
+      "evaluator_ids": [
+        "SDPD-decoration-symmetry",
+        "RDKit-R1"
+      ],
+      "required_conditions": [
+        "decoration fields",
+        "fingerprint implementation/version"
+      ],
+      "direction": "maximize",
+      "threshold": {
+        "runtime": "rule-based 0/0.25/0.5/1 score",
+        "analysis": "label as decoration symmetry, not global point-group symmetry"
+      },
+      "aggregation_level": "candidate",
+      "uncertainty_required": false,
+      "comparability_requirements": [
+        "same decoration parser and fingerprint settings"
+      ],
+      "status": "proposed"
+    },
+    {
+      "binding_id": "BIND-R1-MODEL",
+      "metric_id": "model_behavior",
+      "definition_ref": "Round 3 workflow/output contract",
+      "active_in_execution": false,
+      "evaluation_role": "model_behavior",
+      "subject_types": [
+        "run",
+        "cross_run"
+      ],
+      "value_types_allowed": [
+        "derived",
+        "implementation_score"
+      ],
+      "evaluator_ids": [
+        "STATS-R1",
+        "SDPD plots"
+      ],
+      "required_conditions": [
+        "Step",
+        "seed",
+        "run ID",
+        "raw component scores"
+      ],
+      "direction": "context_dependent",
+      "threshold": {
+        "status": "not observed"
+      },
+      "aggregation_level": "run",
+      "uncertainty_required": true,
+      "comparability_requirements": [
+        "same configuration or documented ablation"
+      ],
+      "status": "not_observed"
+    }
+  ],
+  "evaluation_protocols": [
+    {
+      "protocol_id": "EP-R1-INGEST",
+      "name": "SDPD result ingestion and provenance audit",
+      "question": "Are all generated candidate/run records present, typed, deduplicated and traceable?",
+      "concern_ids": [
+        "CONC-R1-COMP",
+        "CONC-R1-JOINT"
+      ],
+      "source_attribution": {
+        "source_type": "skill_inference",
+        "source_id": "scientific-performance-evaluator v0.3.1",
+        "source_refs": [
+          "AE-R1-001",
+          "AE-R1-003"
+        ],
+        "statement_type": "recommendation",
+        "verification_status": "unverified"
+      },
+      "basis_refs": [
+        "SDPD README_EN.md",
+        "Round 3 orchestration"
+      ],
+      "external_evidence_refs": [],
+      "subject_ids": [
+        "all future runs"
+      ],
+      "metric_bindings": [
+        "BIND-R1-STGAP",
+        "BIND-R1-CHARGE",
+        "BIND-R1-SYMM",
+        "BIND-R1-MODEL"
+      ],
+      "baseline_ids": [
+        "BM-R1-RANDOM"
+      ],
+      "filters": [
+        "record run ID, seed, step, SMILES, raw component scores, total score, validity"
+      ],
+      "grouping_variables": [
+        "run_id",
+        "seed",
+        "step",
+        "source_type"
+      ],
+      "statistical_methods": [
+        "missingness table",
+        "duplicate/uniqueness audit",
+        "schema validation"
+      ],
+      "multiple_testing_control": "not applicable",
+      "uncertainty_method": "retain evaluator uncertainty/status; no imputation by default",
+      "missing_data_policy": "report_missing",
+      "outlier_policy": "flag, do not silently remove",
+      "minimum_sample_requirement": 1,
+      "tool_ids": [
+        "TOOL-R1-RDKIT",
+        "TOOL-R1-SCIWORK"
+      ],
+      "visualization_ids": [
+        "VIS-R1-MATRIX"
+      ],
+      "expert_approval_refs": [],
+      "revision_of": "",
+      "revision_reason": "",
+      "confirmation_status": "unconfirmed",
+      "status": "draft"
+    },
+    {
+      "protocol_id": "EP-R1-MODEL",
+      "name": "Model convergence, stability and resource evaluation",
+      "question": "Does SDPD improve and stabilize selected metrics across steps and seeds without failure/resource bottlenecks?",
+      "concern_ids": [
+        "CONC-R1-COMP"
+      ],
+      "source_attribution": {
+        "source_type": "skill_inference",
+        "source_id": "scientific-performance-evaluator v0.3.1",
+        "source_refs": [
+          "AE-R1-001",
+          "AE-R1-002"
+        ],
+        "statement_type": "recommendation",
+        "verification_status": "unverified"
+      },
+      "basis_refs": [
+        "Round 3 workflow",
+        "SDPD total_score_trend.py"
+      ],
+      "external_evidence_refs": [],
+      "subject_ids": [
+        "run outputs"
+      ],
+      "metric_bindings": [
+        "BIND-R1-MODEL",
+        "BIND-R1-STGAP",
+        "BIND-R1-CHARGE",
+        "BIND-R1-SYMM"
+      ],
+      "baseline_ids": [
+        "BM-R1-RANDOM"
+      ],
+      "filters": [
+        "aligned step ranges",
+        "same seed/config metadata",
+        "exclude failed jobs from metric summaries but report failure count"
+      ],
+      "grouping_variables": [
+        "seed",
+        "run",
+        "step",
+        "model_version"
+      ],
+      "statistical_methods": [
+        "rolling top-n mean",
+        "bootstrap CI by run",
+        "mixed-effects or run-level summaries when replicated",
+        "effect size",
+        "failure-rate CI"
+      ],
+      "multiple_testing_control": "Benjamini-Hochberg for multiple metric/seed comparisons",
+      "uncertainty_method": "bootstrap over independent runs; do not treat molecules as independent replicates for run-level claims",
+      "missing_data_policy": "report_missing",
+      "outlier_policy": "flag and sensitivity analysis",
+      "minimum_sample_requirement": 3,
+      "tool_ids": [
+        "TOOL-R1-SCIWORK",
+        "TOOL-R1-SDPDPLOT",
+        "TOOL-R1-SLURM"
+      ],
+      "visualization_ids": [
+        "VIS-R1-TREND",
+        "VIS-R1-RESOURCE",
+        "VIS-R1-FAILURE"
+      ],
+      "expert_approval_refs": [],
+      "revision_of": "",
+      "revision_reason": "",
+      "confirmation_status": "unconfirmed",
+      "status": "draft"
+    },
+    {
+      "protocol_id": "EP-R1-CHEM",
+      "name": "RDKit candidate quality evaluation",
+      "question": "Are generated molecules valid, unique, diverse, scaffold-retaining and chemically traceable?",
+      "concern_ids": [
+        "CONC-R1-MAT",
+        "CONC-R1-JOINT"
+      ],
+      "source_attribution": {
+        "source_type": "expert_input",
+        "source_id": "EXP-R1-MATERIALS",
+        "source_refs": [
+          "AE-R1-004"
+        ],
+        "statement_type": "request",
+        "verification_status": "unverified"
+      },
+      "basis_refs": [
+        "Round 3 SMILES/RECAP/porphyrin context",
+        "SDPD output contract"
+      ],
+      "external_evidence_refs": [],
+      "subject_ids": [
+        "candidate batches"
+      ],
+      "metric_bindings": [
+        "BIND-R1-CHARGE",
+        "BIND-R1-SYMM"
+      ],
+      "baseline_ids": [
+        "BM-R1-TRAIN",
+        "BM-R1-RANDOM"
+      ],
+      "filters": [
+        "standardize SMILES",
+        "retain raw string",
+        "separate invalid/parse failures",
+        "deduplicate canonical SMILES"
+      ],
+      "grouping_variables": [
+        "run",
+        "step",
+        "scaffold",
+        "seed"
+      ],
+      "statistical_methods": [
+        "validity/uniqueness rates with Wilson intervals",
+        "Morgan fingerprint diversity",
+        "novelty against reference library",
+        "charge/symmetry pass rates"
+      ],
+      "multiple_testing_control": "not applicable",
+      "uncertainty_method": "bootstrap batch-level rates where appropriate",
+      "missing_data_policy": "report_missing",
+      "outlier_policy": "retain and label unusual structures",
+      "minimum_sample_requirement": 30,
+      "tool_ids": [
+        "TOOL-R1-RDKIT",
+        "TOOL-R1-SCIWORK"
+      ],
+      "visualization_ids": [
+        "VIS-R1-CHEM",
+        "VIS-R1-NOVELTY"
+      ],
+      "expert_approval_refs": [],
+      "revision_of": "",
+      "revision_reason": "",
+      "confirmation_status": "unconfirmed",
+      "status": "draft"
+    },
+    {
+      "protocol_id": "EP-R1-ORCA",
+      "name": "ORCA recomputation and SDPD proxy agreement",
+      "question": "How well does the SDPD ST-gap proxy agree with ORCA calculations under one approved protocol?",
+      "concern_ids": [
+        "CONC-R1-MAT",
+        "CONC-R1-JOINT"
+      ],
+      "source_attribution": {
+        "source_type": "expert_input",
+        "source_id": "EXP-R1-MATERIALS",
+        "source_refs": [
+          "AE-R1-004"
+        ],
+        "statement_type": "request",
+        "verification_status": "unverified"
+      },
+      "basis_refs": [
+        "Round 3 selected E(S1)-E(T1)",
+        "SDPD predictor contract"
+      ],
+      "external_evidence_refs": [],
+      "subject_ids": [
+        "stratified candidate sample"
+      ],
+      "metric_bindings": [
+        "BIND-R1-STGAP"
+      ],
+      "baseline_ids": [
+        "BM-R1-ORCA-REF"
+      ],
+      "filters": [
+        "stratify by predicted gap, charge score, symmetry score and failure status",
+        "select reference/edge candidates",
+        "record ORCA convergence"
+      ],
+      "grouping_variables": [
+        "SDPD_vs_ORCA",
+        "scaffold",
+        "charge",
+        "convergence_status"
+      ],
+      "statistical_methods": [
+        "MAE/RMSE/bias",
+        "Pearson/Spearman with caution",
+        "Bland-Altman limits",
+        "bootstrap CI",
+        "calibration/slope if sample supports"
+      ],
+      "multiple_testing_control": "control only if multiple subgroup hypotheses are tested",
+      "uncertainty_method": "ORCA convergence/status plus bootstrap over candidates; report method uncertainty separately",
+      "missing_data_policy": "manual_review",
+      "outlier_policy": "flag failed/converged and influential cases; no silent deletion",
+      "minimum_sample_requirement": 20,
+      "tool_ids": [
+        "TOOL-R1-RDKIT",
+        "TOOL-R1-ORCA",
+        "TOOL-R1-SLURM",
+        "TOOL-R1-SCIWORK"
+      ],
+      "visualization_ids": [
+        "VIS-R1-ORCA-AGREE",
+        "VIS-R1-PARETO"
+      ],
+      "expert_approval_refs": [],
+      "revision_of": "",
+      "revision_reason": "",
+      "confirmation_status": "unconfirmed",
+      "status": "draft"
+    }
+  ],
+  "analysis_plans": [
+    {
+      "plan_id": "PLAN-R1-COMP",
+      "concern_ids": [
+        "CONC-R1-COMP"
+      ],
+      "target_perspective": "computer_expert",
+      "domain_id": "computational_systems",
+      "scientific_questions": [
+        "Does RL converge across steps and seeds?",
+        "Are selected metric components stable and correctly mapped?",
+        "What are runtime, throughput and failure bottlenecks?"
+      ],
+      "metric_ids": [
+        "st_gap",
+        "charge_score",
+        "symmetry_score",
+        "total_score",
+        "validity",
+        "uniqueness",
+        "diversity",
+        "runtime",
+        "failure_rate"
+      ],
+      "analysis_methods": [
+        "schema/provenance audit",
+        "rolling top-n and raw-step summaries",
+        "run-level bootstrap CI",
+        "seed comparison",
+        "failure/resource accounting",
+        "Benjamini-Hochberg for multiple exploratory tests"
+      ],
+      "visualization_spec_ids": [
+        "VIS-R1-TREND",
+        "VIS-R1-MATRIX"
+      ],
+      "preferred_tool_ids": [
+        "TOOL-R1-SDPDPLOT",
+        "TOOL-R1-SCIWORK",
+        "TOOL-R1-SLURM"
+      ],
+      "fallback_methods": [
+        "Pandas/Matplotlib reimplementation if SDPD plotting schema is insufficient"
+      ],
+      "source_attribution": {
+        "source_type": "skill_inference",
+        "source_id": "scientific-performance-evaluator v0.3.1",
+        "source_refs": [
+          "AE-R1-001",
+          "AE-R1-002",
+          "AE-R1-003"
+        ],
+        "statement_type": "recommendation",
+        "verification_status": "unverified"
+      },
+      "basis_refs": [
+        "Round 3 orchestration"
+      ],
+      "external_evidence_refs": [],
+      "assumptions": [
+        "run artifacts will contain Step, SMILES and component/total score fields",
+        "at least 3 independent runs for run-level inference"
+      ],
+      "expected_decision_use": "decide whether orchestration settings or model diagnostics require revision",
+      "interpretation_boundaries": [
+        "implementation reward is not terminal scientific performance",
+        "molecule-level rows are not independent run replicates"
+      ],
+      "revision_of": "",
+      "revision_trigger": "initial_inference",
+      "change_summary": "Initial computer-expert evaluation plan",
+      "expert_status": "unconfirmed",
+      "status": "draft"
+    },
+    {
+      "plan_id": "PLAN-R1-MAT",
+      "concern_ids": [
+        "CONC-R1-MAT"
+      ],
+      "target_perspective": "domain_expert",
+      "domain_id": "photosensitizer_materials",
+      "scientific_questions": [
+        "Are candidates chemically valid and porphyrin-centered?",
+        "Does ORCA support or challenge the SDPD ST-gap proxy?",
+        "Which candidates warrant additional computation or experiment?"
+      ],
+      "metric_ids": [
+        "E(S1)-E(T1)",
+        "st_gap",
+        "charge",
+        "symmetry",
+        "validity",
+        "SA",
+        "MW"
+      ],
+      "analysis_methods": [
+        "RDKit canonicalization/validity/duplicate/novelty/diversity analysis",
+        "stratified ORCA recomputation",
+        "proxy agreement and Bland-Altman analysis",
+        "threshold/pass-rate analysis",
+        "candidate evidence cards"
+      ],
+      "visualization_spec_ids": [
+        "VIS-R1-CHEM",
+        "VIS-R1-ORCA-AGREE"
+      ],
+      "preferred_tool_ids": [
+        "TOOL-R1-RDKIT",
+        "TOOL-R1-ORCA",
+        "TOOL-R1-SLURM",
+        "TOOL-R1-SCIWORK"
+      ],
+      "fallback_methods": [
+        "defer ORCA-dependent conclusions if jobs fail; do not substitute model scores"
+      ],
+      "source_attribution": {
+        "source_type": "expert_input",
+        "source_id": "EXP-R1-MATERIALS",
+        "source_refs": [
+          "AE-R1-004"
+        ],
+        "statement_type": "request",
+        "verification_status": "unverified"
+      },
+      "basis_refs": [
+        "Round 3 selected metrics"
+      ],
+      "external_evidence_refs": [],
+      "assumptions": [
+        "ORCA method/protocol will be provided or approved before computation",
+        "generated candidates and 3D structures can be archived"
+      ],
+      "expected_decision_use": "select candidates for additional compute or experimental validation",
+      "interpretation_boundaries": [
+        "ORCA values are computed, not measured",
+        "SDPD predictor agreement does not prove biological efficacy",
+        "charge/symmetry runtime scores retain project-specific semantics"
+      ],
+      "revision_of": "",
+      "revision_trigger": "expert_request",
+      "change_summary": "Added RDKit and ORCA analysis plan",
+      "expert_status": "unconfirmed",
+      "status": "draft"
+    },
+    {
+      "plan_id": "PLAN-R1-JOINT",
+      "concern_ids": [
+        "CONC-R1-JOINT"
+      ],
+      "target_perspective": "cross_domain_team",
+      "domain_id": "joint",
+      "scientific_questions": [
+        "Which candidates are non-dominated with adequate evidence?",
+        "What trade-offs are visible between proxy performance, chemistry and reproducibility?",
+        "What follow-up is required?"
+      ],
+      "metric_ids": [
+        "E(S1)-E(T1)",
+        "charge",
+        "symmetry",
+        "validity",
+        "uncertainty",
+        "SA",
+        "MW"
+      ],
+      "analysis_methods": [
+        "Pareto analysis",
+        "evidence matrix",
+        "candidate clustering",
+        "condition/value-type separation",
+        "decision-state assignment"
+      ],
+      "visualization_spec_ids": [
+        "VIS-R1-PARETO",
+        "VIS-R1-MATRIX"
+      ],
+      "preferred_tool_ids": [
+        "TOOL-R1-RDKIT",
+        "TOOL-R1-SCIWORK"
+      ],
+      "fallback_methods": [
+        "decision table without aggregate score"
+      ],
+      "source_attribution": {
+        "source_type": "skill_inference",
+        "source_id": "scientific-performance-evaluator v0.3.1",
+        "source_refs": [
+          "AE-R1-001",
+          "AE-R1-004"
+        ],
+        "statement_type": "recommendation",
+        "verification_status": "unverified"
+      },
+      "basis_refs": [
+        "Skill cross-domain synthesis rules"
+      ],
+      "external_evidence_refs": [],
+      "assumptions": [
+        "no unified utility function has been approved"
+      ],
+      "expected_decision_use": "prepare reversible recommendations to execution orchestration and experimental validation",
+      "interpretation_boundaries": [
+        "do not rank incomparable results",
+        "do not treat missing values as low performance",
+        "retain Pareto branches"
+      ],
+      "revision_of": "",
+      "revision_trigger": "initial_inference",
+      "change_summary": "Initial joint evidence synthesis plan",
+      "expert_status": "unconfirmed",
+      "status": "draft"
+    }
+  ],
+  "visualization_specs": [
+    {
+      "visualization_id": "VIS-R1-TREND",
+      "plan_id": "PLAN-R1-COMP",
+      "concern_ids": [
+        "CONC-R1-COMP"
+      ],
+      "title": "SDPD reward and component trends by run",
+      "audience": "computer_expert",
+      "domain_id": "computational_systems",
+      "source_attribution": {
+        "source_type": "skill_inference",
+        "source_id": "scientific-performance-evaluator v0.3.1",
+        "source_refs": [
+          "AE-R1-003"
+        ],
+        "statement_type": "recommendation",
+        "verification_status": "unverified"
+      },
+      "basis_refs": [
+        "SDPD/draw_picture/total_score_trend.py",
+        "SDPD/configs/total_score_trend.json"
+      ],
+      "external_evidence_refs": [],
+      "scientific_question": "Does optimization improve total and selected component scores over steps relative to random sampling?",
+      "subject_ids": [
+        "runs"
+      ],
+      "metric_ids": [
+        "total_score",
+        "st_gap",
+        "charge_score",
+        "symmetry_score"
+      ],
+      "chart_type": "learning/trend curves with bootstrap bands",
+      "x_field": "Step",
+      "y_fields": [
+        "total_score",
+        "st_gap",
+        "charge_score",
+        "symmetry_score"
+      ],
+      "grouping": [
+        "run",
+        "seed",
+        "baseline"
+      ],
+      "filters": [
+        "document step range",
+        "exclude missing values without relabeling"
+      ],
+      "transformations": [
+        "rolling top-n only for exploratory trend; raw step summaries separately"
+      ],
+      "uncertainty_display": "run-level bootstrap CI",
+      "threshold_display": [
+        "annotate only approved thresholds; no invented cutoff"
+      ],
+      "comparison_refs": [
+        "BM-R1-RANDOM"
+      ],
+      "annotation_rules": [
+        "mark failed jobs and changes in configuration"
+      ],
+      "preferred_tool_ids": [
+        "TOOL-R1-SDPDPLOT",
+        "TOOL-R1-SCIWORK"
+      ],
+      "analysis_execution_id": "EXEC-R1-TREND",
+      "output_format": [
+        "PNG",
+        "PDF",
+        "CSV summary"
+      ],
+      "script_path": "scientific_performance_evaluation_round1/scripts/plot_sdpd_trends.py",
+      "data_path": "scientific_performance_evaluation_round1/clean/sdpd_step_metrics.csv",
+      "figure_path": "scientific_performance_evaluation_round1/figures/computer/sdpd_trends.png",
+      "interpretation_limits": [
+        "No causal claim from trend",
+        "run-level replication required",
+        "implementation scores are not terminal biological performance"
+      ],
+      "revision_of": "",
+      "revision_reason": "",
+      "expert_status": "unconfirmed",
+      "status": "planned"
+    },
+    {
+      "visualization_id": "VIS-R1-CHEM",
+      "plan_id": "PLAN-R1-MAT",
+      "concern_ids": [
+        "CONC-R1-MAT"
+      ],
+      "title": "Candidate chemical-quality and metric evidence map",
+      "audience": "domain_expert",
+      "domain_id": "photosensitizer_materials",
+      "source_attribution": {
+        "source_type": "skill_inference",
+        "source_id": "scientific-performance-evaluator v0.3.1",
+        "source_refs": [
+          "AE-R1-004"
+        ],
+        "statement_type": "recommendation",
+        "verification_status": "unverified"
+      },
+      "basis_refs": [
+        "Round 3 selected metrics",
+        "RDKit request"
+      ],
+      "external_evidence_refs": [],
+      "scientific_question": "Which candidates are valid, unique, scaffold-retaining and chemically plausible across selected metrics?",
+      "subject_ids": [
+        "candidates"
+      ],
+      "metric_ids": [
+        "E(S1)-E(T1)",
+        "charge",
+        "symmetry",
+        "validity",
+        "MW"
+      ],
+      "chart_type": "candidate evidence matrix plus distribution/threshold panels",
+      "x_field": "candidate_id",
+      "y_fields": [
+        "st_gap",
+        "charge_score",
+        "symmetry_score",
+        "MW",
+        "validity"
+      ],
+      "grouping": [
+        "run",
+        "scaffold",
+        "candidate_status"
+      ],
+      "filters": [
+        "valid canonical SMILES",
+        "stratified failure labels"
+      ],
+      "transformations": [
+        "retain raw and normalized values separately"
+      ],
+      "uncertainty_display": "ORCA convergence/prediction status annotations",
+      "threshold_display": [
+        "runtime score rules",
+        "Round 2 scientific context clearly labeled"
+      ],
+      "comparison_refs": [
+        "BM-R1-TRAIN",
+        "BM-R1-RANDOM"
+      ],
+      "annotation_rules": [
+        "flag candidates requiring ORCA or experiment"
+      ],
+      "preferred_tool_ids": [
+        "TOOL-R1-RDKIT",
+        "TOOL-R1-SCIWORK"
+      ],
+      "analysis_execution_id": "EXEC-R1-CHEM",
+      "output_format": [
+        "PNG",
+        "PDF",
+        "CSV",
+        "JSON"
+      ],
+      "script_path": "scientific_performance_evaluation_round1/scripts/plot_candidate_evidence.py",
+      "data_path": "scientific_performance_evaluation_round1/clean/candidate_metrics.csv",
+      "figure_path": "scientific_performance_evaluation_round1/figures/domain/candidate_evidence_matrix.png",
+      "interpretation_limits": [
+        "charge/symmetry are implementation metrics",
+        "proxy values do not prove photodynamic efficacy",
+        "no aggregate score unless approved"
+      ],
+      "revision_of": "",
+      "revision_reason": "",
+      "expert_status": "unconfirmed",
+      "status": "planned"
+    },
+    {
+      "visualization_id": "VIS-R1-ORCA-AGREE",
+      "plan_id": "PLAN-R1-MAT",
+      "concern_ids": [
+        "CONC-R1-MAT"
+      ],
+      "title": "SDPD ST-gap proxy versus ORCA E(S1)-E(T1)",
+      "audience": "domain_expert",
+      "domain_id": "photosensitizer_materials",
+      "source_attribution": {
+        "source_type": "expert_input",
+        "source_id": "EXP-R1-MATERIALS",
+        "source_refs": [
+          "AE-R1-004"
+        ],
+        "statement_type": "request",
+        "verification_status": "unverified"
+      },
+      "basis_refs": [
+        "Round 3 selected metric",
+        "ORCA tool plan"
+      ],
+      "external_evidence_refs": [],
+      "scientific_question": "Is the SDPD ST-gap predictor sufficiently accurate for the generated-candidate domain under the approved ORCA protocol?",
+      "subject_ids": [
+        "ORCA-evaluated candidates"
+      ],
+      "metric_ids": [
+        "E(S1)-E(T1)",
+        "st_gap",
+        "ORCA_E(S1)-E(T1)"
+      ],
+      "chart_type": "scatter with identity/regression and Bland-Altman panels",
+      "x_field": "SDPD st_gap_raw",
+      "y_fields": [
+        "ORCA E(S1)-E(T1)",
+        "difference"
+      ],
+      "grouping": [
+        "charge",
+        "symmetry",
+        "convergence_status",
+        "scaffold"
+      ],
+      "filters": [
+        "converged ORCA only for primary agreement; failed jobs shown separately"
+      ],
+      "transformations": [
+        "unit harmonization only with logged formula"
+      ],
+      "uncertainty_display": "bootstrap CI and ORCA convergence markers",
+      "threshold_display": [
+        "no automatic superiority threshold"
+      ],
+      "comparison_refs": [
+        "BM-R1-ORCA-REF"
+      ],
+      "annotation_rules": [
+        "label out-of-domain and failed jobs"
+      ],
+      "preferred_tool_ids": [
+        "TOOL-R1-ORCA",
+        "TOOL-R1-SCIWORK"
+      ],
+      "analysis_execution_id": "EXEC-R1-ORCA",
+      "output_format": [
+        "PNG",
+        "PDF",
+        "CSV"
+      ],
+      "script_path": "scientific_performance_evaluation_round1/scripts/plot_orca_agreement.py",
+      "data_path": "scientific_performance_evaluation_round1/clean/orca_agreement.csv",
+      "figure_path": "scientific_performance_evaluation_round1/figures/domain/orca_stgap_agreement.png",
+      "interpretation_limits": [
+        "agreement is not biological validation",
+        "correlation is not causation",
+        "method/protocol scope must be shown"
+      ],
+      "revision_of": "",
+      "revision_reason": "",
+      "expert_status": "unconfirmed",
+      "status": "planned"
+    },
+    {
+      "visualization_id": "VIS-R1-PARETO",
+      "plan_id": "PLAN-R1-JOINT",
+      "concern_ids": [
+        "CONC-R1-JOINT"
+      ],
+      "title": "Joint candidate Pareto and evidence status view",
+      "audience": "cross_domain_team",
+      "domain_id": "joint",
+      "source_attribution": {
+        "source_type": "skill_inference",
+        "source_id": "scientific-performance-evaluator v0.3.1",
+        "source_refs": [
+          "AE-R1-001",
+          "AE-R1-004"
+        ],
+        "statement_type": "recommendation",
+        "verification_status": "unverified"
+      },
+      "basis_refs": [
+        "Skill synthesis rules",
+        "Round 3 selected metrics"
+      ],
+      "external_evidence_refs": [],
+      "scientific_question": "Which candidates remain non-dominated after validity, selected metrics, uncertainty, synthesis and evidence status are retained separately?",
+      "subject_ids": [
+        "candidates"
+      ],
+      "metric_ids": [
+        "E(S1)-E(T1)",
+        "charge",
+        "symmetry",
+        "SA",
+        "MW",
+        "validity",
+        "uncertainty"
+      ],
+      "chart_type": "Pareto scatter plus evidence matrix",
+      "x_field": "st_gap or ORCA gap",
+      "y_fields": [
+        "charge_score",
+        "symmetry_score",
+        "SA/MW",
+        "evidence_status"
+      ],
+      "grouping": [
+        "candidate_state",
+        "run",
+        "scaffold"
+      ],
+      "filters": [
+        "hard validity first",
+        "exclude incomparable values from Pareto dominance"
+      ],
+      "transformations": [
+        "direction-aware normalization only with explicit protocol"
+      ],
+      "uncertainty_display": "error bars/status glyphs",
+      "threshold_display": [
+        "approved runtime rules only"
+      ],
+      "comparison_refs": [
+        "BM-R1-RANDOM",
+        "BM-R1-TRAIN"
+      ],
+      "annotation_rules": [
+        "candidate states: promising_but_uncertain/requires_experiment/requires_additional_compute/fails_hard_constraint"
+      ],
+      "preferred_tool_ids": [
+        "TOOL-R1-RDKIT",
+        "TOOL-R1-SCIWORK"
+      ],
+      "analysis_execution_id": "EXEC-R1-PARETO",
+      "output_format": [
+        "PNG",
+        "PDF",
+        "CSV",
+        "JSON"
+      ],
+      "script_path": "scientific_performance_evaluation_round1/scripts/plot_joint_pareto.py",
+      "data_path": "scientific_performance_evaluation_round1/clean/joint_candidate_table.csv",
+      "figure_path": "scientific_performance_evaluation_round1/figures/joint/pareto_evidence.png",
+      "interpretation_limits": [
+        "no unified utility without expert approval",
+        "Pareto membership is not experimental recommendation",
+        "missing values are not poor values"
+      ],
+      "revision_of": "",
+      "revision_reason": "",
+      "expert_status": "unconfirmed",
+      "status": "planned"
+    },
+    {
+      "visualization_id": "VIS-R1-MATRIX",
+      "plan_id": "PLAN-R1-COMP",
+      "concern_ids": [
+        "CONC-R1-COMP",
+        "CONC-R1-JOINT"
+      ],
+      "title": "Run/candidate provenance and missingness matrix",
+      "audience": "decision_maker",
+      "domain_id": "joint",
+      "source_attribution": {
+        "source_type": "skill_inference",
+        "source_id": "scientific-performance-evaluator v0.3.1",
+        "source_refs": [
+          "Skill provenance rules"
+        ],
+        "statement_type": "recommendation",
+        "verification_status": "unverified"
+      },
+      "basis_refs": [
+        "Performance Evaluation Skill section 2"
+      ],
+      "external_evidence_refs": [],
+      "scientific_question": "Which conclusions are blocked by missing, failed or non-comparable evidence?",
+      "subject_ids": [
+        "runs",
+        "candidates"
+      ],
+      "metric_ids": [
+        "all active metrics"
+      ],
+      "chart_type": "evidence heatmap and missingness table",
+      "x_field": "candidate/run",
+      "y_fields": [
+        "metric/value_type/condition/status"
+      ],
+      "grouping": [
+        "value_type",
+        "run",
+        "tool",
+        "condition"
+      ],
+      "filters": [
+        "none; show missing explicitly"
+      ],
+      "transformations": [
+        "none beyond schema normalization"
+      ],
+      "uncertainty_display": "status cells",
+      "threshold_display": [
+        "none"
+      ],
+      "comparison_refs": [],
+      "annotation_rules": [
+        "distinguish not_observed, failed, out_of_domain and valid"
+      ],
+      "preferred_tool_ids": [
+        "TOOL-R1-SCIWORK"
+      ],
+      "analysis_execution_id": "EXEC-R1-INGEST",
+      "output_format": [
+        "PNG",
+        "CSV",
+        "JSON"
+      ],
+      "script_path": "scientific_performance_evaluation_round1/scripts/plot_evidence_matrix.py",
+      "data_path": "scientific_performance_evaluation_round1/clean/evidence_matrix.csv",
+      "figure_path": "scientific_performance_evaluation_round1/figures/joint/evidence_matrix.png",
+      "interpretation_limits": [
+        "coverage is not performance",
+        "missingness mechanisms require review"
+      ],
+      "revision_of": "",
+      "revision_reason": "",
+      "expert_status": "unconfirmed",
+      "status": "planned"
+    }
+  ],
+  "analysis_executions": [
+    {
+      "execution_id": "EXEC-R1-INGEST",
+      "plan_id": "PLAN-R1-COMP",
+      "purpose": "data_processing",
+      "scientific_question": "Are outputs complete and provenance-preserving?",
+      "concern_ids": [
+        "CONC-R1-COMP",
+        "CONC-R1-JOINT"
+      ],
+      "specification_refs": [
+        "EP-R1-INGEST"
+      ],
+      "input_artifacts": [
+        "SDPD/rl_runs/<timestamp>/diversity_memory.csv",
+        "random_sampling_results.csv if present",
+        "Slurm logs if present",
+        "ORCA outputs if present"
+      ],
+      "input_schema": [
+        "run_id, seed, Step, SMILES, component scores, total_score, validity/status"
+      ],
+      "required_transformations": [
+        "copy raw artifacts",
+        "canonicalize in separate table",
+        "attach value_type/tool/version/status"
+      ],
+      "required_methods": [
+        "schema validation",
+        "missingness/duplicate audit"
+      ],
+      "visualization_spec_ids": [
+        "VIS-R1-MATRIX"
+      ],
+      "tool_ids": [
+        "TOOL-R1-RDKIT",
+        "TOOL-R1-SCIWORK"
+      ],
+      "environment_id": "ENV-R1-SLURM",
+      "script_requirements": [
+        "no raw overwrite",
+        "log all conversions"
+      ],
+      "prohibited_changes": [
+        "no scientific definition changes",
+        "no silent imputation"
+      ],
+      "expected_outputs": [
+        "clean/evidence_matrix.csv",
+        "clean/candidate_metrics.csv",
+        "tables/missingness.csv"
+      ],
+      "validation_checks": [
+        "required fields",
+        "types/units",
+        "duplicate IDs",
+        "source type"
+      ],
+      "script_paths": [
+        "scientific_performance_evaluation_round1/scripts/ingest_sdpd_results.py"
+      ],
+      "data_paths": [
+        "scientific_performance_evaluation_round1/raw/",
+        "scientific_performance_evaluation_round1/clean/"
+      ],
+      "figure_paths": [
+        "scientific_performance_evaluation_round1/figures/joint/evidence_matrix.png"
+      ],
+      "implementation_notes": [
+        "planned only; not executed"
+      ],
+      "status": "draft"
+    },
+    {
+      "execution_id": "EXEC-R1-ORCA",
+      "plan_id": "PLAN-R1-MAT",
+      "purpose": "batch_execution",
+      "scientific_question": "How accurate is the SDPD ST-gap proxy on a stratified ORCA sample?",
+      "concern_ids": [
+        "CONC-R1-MAT"
+      ],
+      "specification_refs": [
+        "EP-R1-ORCA"
+      ],
+      "input_artifacts": [
+        "clean/candidate_metrics.csv",
+        "approved ORCA template",
+        "Slurm environment"
+      ],
+      "input_schema": [
+        "candidate_id, standardized SMILES, 3D coordinates, charge, multiplicity"
+      ],
+      "required_transformations": [
+        "generate ORCA inputs",
+        "submit job array after authorization",
+        "parse outputs",
+        "record convergence/failure"
+      ],
+      "required_methods": [
+        "approved ORCA method/basis/solvent",
+        "MAE/RMSE/bias/Bland-Altman"
+      ],
+      "visualization_spec_ids": [
+        "VIS-R1-ORCA-AGREE"
+      ],
+      "tool_ids": [
+        "TOOL-R1-RDKIT",
+        "TOOL-R1-ORCA",
+        "TOOL-R1-SLURM",
+        "TOOL-R1-SCIWORK"
+      ],
+      "environment_id": "ENV-R1-SLURM",
+      "script_requirements": [
+        "job manifest",
+        "array index mapping",
+        "scratch cleanup only after archive",
+        "failed logs retained"
+      ],
+      "prohibited_changes": [
+        "no ORCA method change without approval",
+        "no substitute values for failed jobs"
+      ],
+      "expected_outputs": [
+        "raw/orca/inputs/*.inp",
+        "raw/orca/logs/*.out",
+        "clean/orca_results.csv",
+        "tables/orca_agreement.csv",
+        "figures/domain/orca_stgap_agreement.png"
+      ],
+      "validation_checks": [
+        "ORCA termination",
+        "state labels",
+        "units",
+        "charge/multiplicity",
+        "job exit codes"
+      ],
+      "script_paths": [
+        "scientific_performance_evaluation_round1/scripts/make_orca_inputs.py",
+        "scientific_performance_evaluation_round1/scripts/parse_orca_outputs.py",
+        "scientific_performance_evaluation_round1/slurm/orca_array.sbatch"
+      ],
+      "data_paths": [
+        "scientific_performance_evaluation_round1/raw/orca/",
+        "scientific_performance_evaluation_round1/clean/orca_results.csv"
+      ],
+      "figure_paths": [
+        "scientific_performance_evaluation_round1/figures/domain/orca_stgap_agreement.png"
+      ],
+      "implementation_notes": [
+        "no job submission authorized in this round"
+      ],
+      "status": "draft"
+    }
+  ],
+  "benchmark_records": [
+    {
+      "benchmark_id": "BM-R1-RANDOM",
+      "name": "SDPD random-sampling baseline",
+      "source_type": "internal_baseline",
+      "source_ref": "SDPD/random_sampling_results.csv or configured equivalent",
+      "subject_definition": "Candidates generated by the repository random-sampling workflow under matched scaffold/configuration",
+      "metric_id": "st_gap/charge_score/symmetry_score",
+      "value": null,
+      "unit": "mixed",
+      "value_type": "implementation_score",
+      "conditions": {
+        "same_scaffold": "required",
+        "same_config": "required",
+        "same_step_range": "required"
+      },
+      "sample_size": null,
+      "method": "run only if baseline artifact exists",
+      "uncertainty": {},
+      "extraction_method": "provided",
+      "comparability": "unknown",
+      "comparability_notes": [
+        "No baseline output present in current inputs"
+      ],
+      "status": "registered"
+    },
+    {
+      "benchmark_id": "BM-R1-TRAIN",
+      "name": "Reference training library",
+      "source_type": "internal_baseline",
+      "source_ref": "SDPD/data/train/merged_smiles.csv or actual configured reference",
+      "subject_definition": "Reference molecules used for novelty/diversity comparison",
+      "metric_id": "novelty/diversity",
+      "value": null,
+      "unit": "implementation-specific",
+      "value_type": "computed",
+      "conditions": {
+        "reference_version": "required"
+      },
+      "sample_size": null,
+      "method": "RDKit fingerprint comparison",
+      "uncertainty": {},
+      "extraction_method": "provided",
+      "comparability": "unknown",
+      "comparability_notes": [
+        "Reference path must be confirmed"
+      ],
+      "status": "registered"
+    },
+    {
+      "benchmark_id": "BM-R1-ORCA-REF",
+      "name": "ORCA reference subset",
+      "source_type": "expert_reference",
+      "source_ref": "new ORCA calculations under approved protocol",
+      "subject_definition": "Stratified generated candidates and known reference molecules recomputed with ORCA",
+      "metric_id": "E(S1)-E(T1)",
+      "value": null,
+      "unit": "eV",
+      "value_type": "computed",
+      "conditions": {
+        "method": "pending",
+        "basis": "pending",
+        "solvent": "pending",
+        "charge_multiplicity": "required"
+      },
+      "sample_size": null,
+      "method": "ORCA",
+      "uncertainty": {},
+      "extraction_method": "recomputed",
+      "comparability": "unknown",
+      "comparability_notes": [
+        "Protocol not yet supplied"
+      ],
+      "status": "registered"
+    }
+  ],
+  "performance_records": [],
+  "analysis_findings": [],
+  "cross_domain_findings": [],
+  "candidate_decision_states": [],
+  "adjustment_proposals": [
+    {
+      "proposal_id": "ADJ-R1-001",
+      "source_attribution": {
+        "source_type": "skill_inference",
+        "source_id": "scientific-performance-evaluator v0.3.1",
+        "source_refs": [
+          "PE-R1-003"
+        ],
+        "statement_type": "recommendation",
+        "verification_status": "unverified"
+      },
+      "proposal_layer": "skill_generated",
+      "target_stage": "execution_orchestration",
+      "target_type": "additional_compute",
+      "target_id": "WF-ORCH-R3",
+      "current_state": "No SDPD run artifacts are available.",
+      "proposed_change": "Run a controlled, replicated SDPD evaluation only after authorization and tool/config confirmation.",
+      "proposed_value": null,
+      "proposed_range": [
+        "at least 3 independent seeds for run-level inference"
+      ],
+      "based_on_plan_ids": [
+        "PLAN-R1-COMP"
+      ],
+      "based_on_visualization_ids": [],
+      "based_on_finding_ids": [],
+      "trigger_findings": [
+        "missing run results"
+      ],
+      "supporting_record_ids": [],
+      "required_expert_actions": [
+        "authorize run",
+        "provide environment metadata"
+      ],
+      "risk_and_tradeoffs": [
+        "cluster cost",
+        "no result guarantee",
+        "reproducibility depends on exact config"
+      ],
+      "rollback_or_recovery": "Do not alter Round 3 config; archive each run separately.",
+      "status": "proposed",
+      "expert_status": "pending",
+      "implementation_status": "not_started"
+    },
+    {
+      "proposal_id": "ADJ-R1-002",
+      "source_attribution": {
+        "source_type": "skill_inference",
+        "source_id": "scientific-performance-evaluator v0.3.1",
+        "source_refs": [
+          "PE-R1-002",
+          "EP-R1-ORCA"
+        ],
+        "statement_type": "recommendation",
+        "verification_status": "unverified"
+      },
+      "proposal_layer": "skill_generated",
+      "target_stage": "execution_orchestration",
+      "target_type": "tool",
+      "target_id": "ORCA",
+      "current_state": "ORCA requested but method/version/path not registered.",
+      "proposed_change": "Add an authorized ORCA validation job and parseable provenance archive before evaluating SDPD proxy agreement.",
+      "proposed_value": null,
+      "proposed_range": [],
+      "based_on_plan_ids": [
+        "PLAN-R1-MAT"
+      ],
+      "based_on_visualization_ids": [
+        "VIS-R1-ORCA-AGREE"
+      ],
+      "based_on_finding_ids": [],
+      "trigger_findings": [
+        "tool metadata missing"
+      ],
+      "supporting_record_ids": [],
+      "required_expert_actions": [
+        "approve method/basis/solvent/state protocol",
+        "provide Slurm resources"
+      ],
+      "risk_and_tradeoffs": [
+        "DFT cost",
+        "convergence failures",
+        "method dependence"
+      ],
+      "rollback_or_recovery": "Retain SDPD proxy-only evaluation with explicit uncertainty if ORCA is unavailable; do not substitute values.",
+      "status": "proposed",
+      "expert_status": "pending",
+      "implementation_status": "not_started"
+    }
+  ],
+  "review_items": [
+    {
+      "issue_id": "PE-R1-001",
+      "category": "environment",
+      "question": "Provide Slurm cluster hostname/account/partition, module or container versions, CPU/memory/time limits, scratch policy and output location.",
+      "affected_ids": [
+        "ENV-R1-SLURM",
+        "TOOL-R1-SLURM"
+      ],
+      "recommendation": "Keep environment unregistered and tools proposed until concrete runtime metadata are supplied.",
+      "evidence_refs": [
+        "AE-R1-004",
+        "Performance Evaluation Skill 3.3"
+      ],
+      "required_expert": "computer expert",
+      "priority": "critical",
+      "blocking": true,
+      "status": "open"
+    },
+    {
+      "issue_id": "PE-R1-002",
+      "category": "tool",
+      "question": "Provide RDKit and ORCA versions, executable/module paths, approved ORCA method/basis/solvent/state protocol, and parameter authorization.",
+      "affected_ids": [
+        "TOOL-R1-RDKIT",
+        "TOOL-R1-ORCA"
+      ],
+      "recommendation": "Register exact versions and run a tiny approved validation fixture before batch evaluation.",
+      "evidence_refs": [
+        "AE-R1-004",
+        "Performance Evaluation Skill 3.2"
+      ],
+      "required_expert": "materials expert",
+      "priority": "critical",
+      "blocking": true,
+      "status": "open"
+    },
+    {
+      "issue_id": "PE-R1-003",
+      "category": "results",
+      "question": "Provide SDPD run artifacts, including diversity_memory.csv, seed/config metadata, component scores, raw ST-gap and failure logs.",
+      "affected_ids": [
+        "EP-R1-INGEST",
+        "BIND-R1-MODEL"
+      ],
+      "recommendation": "Until artifacts exist, report all performance results as not_observed and do not infer convergence.",
+      "evidence_refs": [
+        "AE-R1-001",
+        "AE-R1-003"
+      ],
+      "required_expert": "computer expert",
+      "priority": "critical",
+      "blocking": true,
+      "status": "open"
+    },
+    {
+      "issue_id": "PE-R1-004",
+      "category": "protocol",
+      "question": "Approve the ORCA recomputation protocol and stratified sampling design for validating the SDPD ST-gap proxy.",
+      "affected_ids": [
+        "EP-R1-ORCA",
+        "VIS-R1-ORCA-AGREE"
+      ],
+      "recommendation": "Use a documented method/geometry/charge/multiplicity/solvent protocol and retain failed jobs.",
+      "evidence_refs": [
+        "AE-R1-004",
+        "BIND-R1-STGAP"
+      ],
+      "required_expert": "materials expert",
+      "priority": "high",
+      "blocking": true,
+      "status": "open"
+    },
+    {
+      "issue_id": "PE-R1-005",
+      "category": "statistics",
+      "question": "Confirm independent replicate definition, minimum number of RL seeds/runs, bootstrap policy, missing-data policy and multiple-testing correction.",
+      "affected_ids": [
+        "EP-R1-MODEL",
+        "PLAN-R1-COMP"
+      ],
+      "recommendation": "Use run-level replication; do not treat individual generated molecules as independent model replicates.",
+      "evidence_refs": [
+        "Performance Evaluation Skill 5.2",
+        "CONC-R1-COMP"
+      ],
+      "required_expert": "computer expert and interdisciplinary reviewer",
+      "priority": "high",
+      "blocking": true,
+      "status": "open"
+    },
+    {
+      "issue_id": "PE-R1-006",
+      "category": "comparison",
+      "question": "Confirm random-sampling and training-reference paths and conditions before direct baseline comparisons.",
+      "affected_ids": [
+        "BM-R1-RANDOM",
+        "BM-R1-TRAIN"
+      ],
+      "recommendation": "Label missing/unmatched baselines as unknown or context-only; do not calculate superiority claims.",
+      "evidence_refs": [
+        "AE-R1-003",
+        "SDPD/configs/*.json"
+      ],
+      "required_expert": "computer expert",
+      "priority": "high",
+      "blocking": false,
+      "status": "open"
+    },
+    {
+      "issue_id": "PE-R1-007",
+      "category": "visualization",
+      "question": "Approve the separate computer, materials-domain and cross-domain figure sets and evidence-state annotations.",
+      "affected_ids": [
+        "VIS-R1-TREND",
+        "VIS-R1-CHEM",
+        "VIS-R1-ORCA-AGREE",
+        "VIS-R1-PARETO",
+        "VIS-R1-MATRIX"
+      ],
+      "recommendation": "Keep predicted, computed, implementation-score and missing values visually distinct.",
+      "evidence_refs": [
+        "Performance Evaluation Skill 6.3-6.4"
+      ],
+      "required_expert": "computer and materials experts",
+      "priority": "medium",
+      "blocking": false,
+      "status": "open"
+    }
+  ],
+  "version_history": [
+    {
+      "version": "0.1.0-draft",
+      "change": "Initial no-results performance evaluation plan based on Round 3 and SDPD",
+      "timestamp": "2026-10-31",
+      "status": "draft_confirmation_required"
+    }
+  ],
+  "run_history": []
+}

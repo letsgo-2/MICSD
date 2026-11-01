@@ -1,0 +1,300 @@
+{
+  "evaluation_state": "partially_executed",
+  "primary_metric": "power_density",
+  "primary_metric_status": "not_validated_as_measured",
+  "source_type_policy": {
+    "initial_examples": "unclassified_source_data; measurement provenance missing",
+    "oracle_training_sample": "virtual_or_training_data unless provenance is supplied",
+    "total_pool": "derived/model-labeled AL artifact",
+    "total_examples_pool": "derived/model-labeled AL artifact"
+  },
+  "composition_contract": {
+    "al_order": [
+      "Pd",
+      "Pt",
+      "Cu",
+      "Au",
+      "Ir",
+      "Ce",
+      "Nb",
+      "Cr"
+    ],
+    "project_order": [
+      "Pd",
+      "Pt",
+      "Au",
+      "Cr",
+      "Ir",
+      "Ce",
+      "Cu",
+      "Nb"
+    ],
+    "explicit_mapping": {
+      "Pd": "Pd",
+      "Pt": "Pt",
+      "Au": "Au",
+      "Cr": "Cr",
+      "Ir": "Ir",
+      "Ce": "Ce",
+      "Cu": "Cu",
+      "Nb": "Nb"
+    },
+    "silent_normalization": false,
+    "closure_tolerance": 1e-09
+  },
+  "dataset_checks": [
+    {
+      "source": "initial_examples.csv",
+      "rows": 10,
+      "columns": [
+        "Pd",
+        "Pt",
+        "Cu",
+        "Au",
+        "Ir",
+        "Ce",
+        "Nb",
+        "Cr",
+        "power_density"
+      ],
+      "composition_order_observed": [
+        "Pd",
+        "Pt",
+        "Cu",
+        "Au",
+        "Ir",
+        "Ce",
+        "Nb",
+        "Cr"
+      ],
+      "required_elements_present": true,
+      "duplicate_rows": 0,
+      "missing_cells": 0,
+      "non_numeric_composition_rows": 0,
+      "negative_composition_rows": 0,
+      "closure_tolerance": 1e-09,
+      "closure_error_max": 0.0,
+      "closure_failures": 0,
+      "valid_composition_rows": 10,
+      "target_summary": {
+        "n": 10,
+        "missing": 0,
+        "mean": 20.9985,
+        "std_sample": 12.069543867382341,
+        "median": 19.845,
+        "min": 0.545,
+        "max": 39.61,
+        "q25": 13.7825,
+        "q75": 25.825
+      }
+    },
+    {
+      "source": "oracle_training_sample.csv",
+      "rows": 120,
+      "columns": [
+        "Pd",
+        "Pt",
+        "Cu",
+        "Au",
+        "Ir",
+        "Ce",
+        "Nb",
+        "Cr",
+        "power_density"
+      ],
+      "composition_order_observed": [
+        "Pd",
+        "Pt",
+        "Cu",
+        "Au",
+        "Ir",
+        "Ce",
+        "Nb",
+        "Cr"
+      ],
+      "required_elements_present": true,
+      "duplicate_rows": 0,
+      "missing_cells": 0,
+      "non_numeric_composition_rows": 0,
+      "negative_composition_rows": 0,
+      "closure_tolerance": 1e-09,
+      "closure_error_max": 1.1000000910144081e-10,
+      "closure_failures": 0,
+      "valid_composition_rows": 120,
+      "target_summary": {
+        "n": 120,
+        "missing": 0,
+        "mean": 45.34054341666667,
+        "std_sample": 23.8375751115025,
+        "median": 55.34,
+        "min": 0.02709,
+        "max": 75.45,
+        "q25": 27.78,
+        "q75": 64.25999999999999
+      }
+    },
+    {
+      "source": "total_examples_pool.csv",
+      "rows": 160,
+      "columns": [
+        "example_id",
+        "Pd",
+        "Pt",
+        "Cu",
+        "Au",
+        "Ir",
+        "Ce",
+        "Nb",
+        "Cr",
+        "power_density",
+        "timestamp"
+      ],
+      "composition_order_observed": [
+        "Pd",
+        "Pt",
+        "Cu",
+        "Au",
+        "Ir",
+        "Ce",
+        "Nb",
+        "Cr"
+      ],
+      "required_elements_present": true,
+      "duplicate_rows": 0,
+      "missing_cells": 0,
+      "non_numeric_composition_rows": 0,
+      "negative_composition_rows": 0,
+      "closure_tolerance": 1e-09,
+      "closure_error_max": 7.771561172376096e-16,
+      "closure_failures": 0,
+      "valid_composition_rows": 160,
+      "target_summary": {
+        "n": 160,
+        "missing": 0,
+        "mean": 57.778306226748725,
+        "std_sample": 12.604902137691056,
+        "median": 61.749830854275146,
+        "min": 1.007,
+        "max": 69.72944252689389,
+        "q25": 56.783035557474385,
+        "q75": 64.56964271667698
+      }
+    },
+    {
+      "source": "total_pool.csv",
+      "rows": 160,
+      "columns": [
+        "id",
+        "ratio",
+        "power_density",
+        "normalized_cost",
+        "Pd",
+        "Pt",
+        "Cu",
+        "Au",
+        "Ir",
+        "Ce",
+        "Nb",
+        "Cr"
+      ],
+      "composition_order_observed": [
+        "Pd",
+        "Pt",
+        "Cu",
+        "Au",
+        "Ir",
+        "Ce",
+        "Nb",
+        "Cr"
+      ],
+      "required_elements_present": true,
+      "duplicate_rows": 0,
+      "missing_cells": 0,
+      "non_numeric_composition_rows": 0,
+      "negative_composition_rows": 0,
+      "closure_tolerance": 1e-09,
+      "closure_error_max": 4.440892098500626e-16,
+      "closure_failures": 0,
+      "valid_composition_rows": 160,
+      "target_summary": {
+        "n": 160,
+        "missing": 0,
+        "mean": 54.799770405062496,
+        "std_sample": 14.800752689074505,
+        "median": 60.06957452,
+        "min": 0.4594,
+        "max": 68.58106887,
+        "q25": 50.37789238,
+        "q75": 63.8784222425
+      }
+    }
+  ],
+  "statistical_metrics": {
+    "initial_power_density": {
+      "n": 10,
+      "missing": 0,
+      "mean": 20.9985,
+      "std_sample": 12.069543867382341,
+      "median": 19.845,
+      "min": 0.545,
+      "max": 39.61,
+      "q25": 13.7825,
+      "q75": 25.825
+    },
+    "oracle_training_power_density": {
+      "n": 120,
+      "missing": 0,
+      "mean": 45.34054341666667,
+      "std_sample": 23.8375751115025,
+      "median": 55.34,
+      "min": 0.02709,
+      "max": 75.45,
+      "q25": 27.78,
+      "q75": 64.25999999999999
+    },
+    "total_examples_pool_power_density": {
+      "n": 160,
+      "missing": 0,
+      "mean": 57.778306226748725,
+      "std_sample": 12.604902137691056,
+      "median": 61.749830854275146,
+      "min": 1.007,
+      "max": 69.72944252689389,
+      "q25": 56.783035557474385,
+      "q75": 64.56964271667698
+    },
+    "total_pool_power_density": {
+      "n": 160,
+      "missing": 0,
+      "mean": 54.799770405062496,
+      "std_sample": 14.800752689074505,
+      "median": 60.06957452,
+      "min": 0.4594,
+      "max": 68.58106887,
+      "q25": 50.37789238,
+      "q75": 63.8784222425
+    },
+    "total_pool_normalized_cost": {
+      "n": 160,
+      "missing": 0,
+      "mean": 58.980215145224996,
+      "std_sample": 12.177760051046016,
+      "median": 58.21930992,
+      "min": 0.017163642,
+      "max": 111.0067063,
+      "q25": 54.476692015,
+      "q75": 63.8204698225
+    },
+    "total_pool_power_cost_pearson": 0.051849969212287475,
+    "total_pool_power_cost_spearman": -0.15823860307043244,
+    "top_10_percent_power_threshold": 65.477473377,
+    "top_10_percent_count": 16
+  },
+  "blocking_data_gaps": [
+    "P_peak unit, device protocol, operating conditions, assay basis, and replicate metadata are absent.",
+    "Round2 execution was not authorized or performed; no live API/model run is attributable to this evaluation.",
+    "The AL element order differs from the project order; project mapping is explicit but requires independent validation.",
+    "Normalized cost has no dated price provenance and is a relative index, not USD/g.",
+    "No uncertainty intervals or repeated measurements are available for candidate performance."
+  ]
+}

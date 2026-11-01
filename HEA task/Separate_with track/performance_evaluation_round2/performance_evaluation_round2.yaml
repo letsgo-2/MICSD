@@ -1,0 +1,39 @@
+metadata:
+  title: "Performance evaluation: HEA composition, cost, iterative process, and virtual-model accuracy"
+  round: 2
+  language: English
+  state: partially_executed
+  upstream_round1: "../performance_evaluation_round1/"
+  source_pool: "../AL/catalyst_active_learning_runnable/outputs/total_pool.csv"
+  output_directory: "performance_evaluation_round2/"
+expert_requests:
+  materials:
+    - "composition distributions of eight metals"
+    - "peak power density"
+    - "normalized cost"
+    - "composition characteristics of high-performance formulations"
+  computer:
+    - "iterative process"
+    - "predictive-model accuracy"
+analysis:
+  scripts:
+    - "evaluate_performance_round2.py"
+    - "plot_performance_round2.py"
+  charts_directory: "figures_round2/"
+  statistical_outputs:
+    - "statistical_metrics_round2.json"
+    - "predictive_model_accuracy_round2.json"
+    - "composition_high_performance_stats_round2.csv"
+  analysis_outputs:
+    - "pool_annotated_round2.csv"
+    - "high_performance_formulations_round2.csv"
+    - "top5_virtual_formulations_round2.csv"
+    - "process_phase_summary_round2.csv"
+    - "oracle_cv_predictions_round2.csv"
+  recommendations: "recommendations_round2.md"
+  report: "performance_evaluation_report_round2.md"
+interpretation_policy:
+  power_density: "virtual/model-derived label; not measured P_peak"
+  normalized_cost: "relative index; not USD/g"
+  iteration: "pool sequence only; exact iteration reconstruction unavailable"
+  model_accuracy: "internal virtual-oracle validation; not external experimental validity"

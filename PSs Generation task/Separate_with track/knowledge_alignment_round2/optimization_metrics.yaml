@@ -1,0 +1,241 @@
+schema_version: "0.3.0"
+round: 2
+language: en
+based_on: "../knowledge_alignment_round1/knowledge_alignment.yaml"
+project_goal: "Generate photosensitizer candidates whose molecular electronic structure supports useful, condition-specific photochemistry while preserving experimental safety and targeting constraints."
+computability_policy:
+  dft_only_can_calculate: [geometry, conformer_energy, orbital_descriptors, vertical_excitation, oscillator_strength, triplet_state_energy, state_character, dipole, charge, approximate_redox, reorganization_energy, selected_dimer_energy, approximate_SOC]
+  dft_only_cannot_claim: [absolute_PhiDelta, absolute_ROS_rate, cellular_IC50, dark_toxicity, organelle_localization, photostability_in_cells, pyroptosis_fraction, immune_response]
+  reward_policy: "Use fixed-method, uncertainty-aware, soft rewards and scaffold-family calibration; do not use universal hard cutoffs unless explicitly source-backed and condition-matched."
+metrics:
+  - id: D001
+    name: vertical_excitation_energy
+    meaning: "Electronic excitation at fixed ground-state nuclear geometry; supports spectral-window screening."
+    method: "TD-DFT on dispersion-corrected optimized conformers with solvent model; inspect state character."
+    unit: "eV or nm"
+    role: intermediate
+    direction: target_range
+    iterative_use: eligible
+    importance: 5
+    computability: 5
+    data_readiness: 3
+    priority: P0
+    reward: "soft band around selected illumination window; initial context 600-800 nm, broader 600-850 nm context"
+    threshold_status: "contextual_not_universal"
+    evidence: [E_R2_01, E_R2_02]
+  - id: D002
+    name: oscillator_strength
+    meaning: "Dimensionless measure of integrated electronic-transition intensity."
+    method: "TD-DFT transition dipole/oscillator output for the selected state."
+    unit: dimensionless
+    role: intermediate
+    direction: maximize
+    iterative_use: eligible
+    importance: 4
+    computability: 5
+    data_readiness: 3
+    priority: P0
+    reward: "combine with D001; avoid rewarding a bright but mechanistically irrelevant state"
+    threshold_status: no_universal_threshold
+    evidence: [E_R2_03]
+  - id: D003
+    name: triplet_state_energy
+    meaning: "Energy of the lowest relevant triplet state; a thermodynamic compatibility descriptor for oxygen sensitization and Type-I design."
+    method: "Triplet optimization or validated excited-state calculation; record vertical versus adiabatic definition."
+    unit: eV
+    role: intermediate
+    direction: context_dependent
+    iterative_use: eligible_with_calibration
+    importance: 5
+    computability: 3
+    data_readiness: 2
+    priority: P1
+    reward: "soft compatibility check against approximately 0.98 eV oxygen singlet-energy context; method-dependent 0.98-1.75 eV values require no hard cutoff"
+    threshold_status: method_and_mechanism_dependent
+    evidence: [E_R2_04, E_R2_05]
+  - id: D004
+    name: singlet_triplet_gap_and_state_character
+    meaning: "Energy separation and electronic character relevant to ISC and pathway engineering."
+    method: "TD-DFT/TDA plus NTO and transition-density analysis; higher-level validation for near-degenerate states."
+    unit: eV_and_dimensionless_overlap
+    role: intermediate
+    direction: context_dependent
+    iterative_use: eligible_with_calibration
+    importance: 4
+    computability: 3
+    data_readiness: 2
+    priority: P1
+    reward: "family-calibrated proxy only; never reward gap alone"
+    threshold_status: no_universal_threshold
+    evidence: [E_R2_02, E_R2_05]
+  - id: D005
+    name: spin_orbit_coupling
+    meaning: "Relativistic coupling relevant to spin-forbidden transitions and ISC."
+    method: "SOC-enabled relativistic TD-DFT or effective-core-potential calculation; pair with energy gaps and vibronic factors."
+    unit: "cm^-1"
+    role: intermediate
+    direction: maximize_conditionally
+    iterative_use: eligible_for_heavy_atom_families
+    importance: 4
+    computability: 2
+    data_readiness: 1
+    priority: P1
+    reward: "secondary feature, calibrated within metal/heavy-atom scaffold family"
+    threshold_status: no_universal_threshold
+    evidence: [E_R2_06]
+  - id: D006
+    name: redox_potential_and_photoinduced_ET_driving_force
+    meaning: "Electron donor/acceptor energetics and thermodynamic driving force for Type-I radical chemistry."
+    method: "Delta-SCF or calibrated total-energy redox calculations with solvent and reference-electrode corrections; combine with excitation energy and IUPAC-consistent free-energy expression."
+    unit: "V and eV"
+    role: intermediate
+    direction: target_range
+    iterative_use: eligible_with_protocol
+    importance: 5
+    computability: 3
+    data_readiness: 2
+    priority: P1
+    reward: "reaction-specific soft target, quantile-normalized when no reaction partner is fixed"
+    threshold_status: reaction_specific
+    evidence: [E_R2_07, E_R2_08]
+  - id: D007
+    name: inner_sphere_reorganization_energy
+    meaning: "Nuclear relaxation energy dissipated after vertical electron transfer."
+    method: "Four-point neutral/cation/anion energy scheme; include solvent/outer-sphere terms separately when possible."
+    unit: eV
+    role: intermediate
+    direction: minimize_conditionally
+    iterative_use: eligible_with_protocol
+    importance: 4
+    computability: 3
+    data_readiness: 2
+    priority: P1
+    reward: "lower within matched reaction regime; do not assume monotonic benefit in all Marcus regimes"
+    threshold_status: no_universal_threshold
+    evidence: [E_R2_09]
+  - id: D008
+    name: dimer_aggregation_energy
+    meaning: "Interaction energy for representative stacked or offset pairs; aggregation-resistance proxy."
+    method: "Dispersion-corrected DFT with solvent for multiple dimer geometries; report binding and conformational ensemble."
+    unit: "kcal/mol or kJ/mol"
+    role: constraint
+    direction: minimize_binding_strength
+    iterative_use: eligible_as_relative_proxy
+    importance: 5
+    computability: 3
+    data_readiness: 1
+    priority: P1
+    reward: "penalize relative to scaffold controls; no universal cutoff"
+    threshold_status: no_universal_threshold
+    evidence: [E_R2_02, E_R2_10]
+  - id: D009
+    name: absorption_weighted_capture_proxy
+    meaning: "Protocol-defined combination of predicted spectral position and transition intensity for a target light spectrum."
+    method: "Weighted sum/integral of TD-DFT oscillator strengths over an explicit wavelength window; calibrate to measured extinction coefficient."
+    unit: protocol_defined
+    role: secondary_objective
+    direction: maximize
+    iterative_use: eligible_after_calibration
+    importance: 4
+    computability: 4
+    data_readiness: 1
+    priority: P1
+    reward: "soft spectral weighting; not equivalent to experimental epsilon"
+    threshold_status: contextual_not_universal
+    evidence: [E_R2_11]
+  - id: E001
+    name: measured_singlet_oxygen_quantum_yield
+    meaning: "Experimental ratio of singlet oxygen generated to photons absorbed under declared conditions."
+    method: "Experiment; later surrogate model possible."
+    unit: dimensionless_fraction
+    role: experimental_objective
+    direction: maximize
+    iterative_use: experiment_or_validated_surrogate_only
+    importance: 5
+    computability: 1
+    data_readiness: 3
+    priority: P0
+    reward: "use measured value with assay metadata; never infer from DFT alone"
+    threshold_status: source_specific
+    evidence: [E_R2_12, E_R2_13]
+  - id: E002
+    name: cellular_phototoxicity_and_dark_toxicity
+    meaning: "Light-conditioned efficacy and dark safety in a defined biological system."
+    method: "Cell experiment or validated multimodal surrogate."
+    unit: concentration
+    role: experimental_objective_and_constraint
+    direction: minimize_light_IC50_and_dark_toxicity
+    iterative_use: experiment_or_validated_surrogate_only
+    importance: 5
+    computability: 1
+    data_readiness: 3
+    priority: P0
+    reward: "assay-specific Pareto objective; no pooled threshold"
+    threshold_status: assay_specific
+    evidence: [E_R2_14, E_R2_15]
+evidence:
+  - id: E_R2_01
+    source: "IUPAC Gold Book excitation energy E02250 and Franck-Condon principle F02510"
+    url: "https://goldbook.iupac.org/terms/view/E02250"
+    use: definition
+  - id: E_R2_02
+    source: "Homem-de-Mello et al., Evaluation of computational approaches to design new photosensitizers"
+    url: "https://doi.org/10.21826/viiiseedmol2020-29"
+    use: method_and_limitations
+  - id: E_R2_03
+    source: "IUPAC Gold Book oscillator strength O04339"
+    url: "https://goldbook.iupac.org/terms/view/O04339/pdf"
+    use: definition
+  - id: E_R2_04
+    source: "The photophysics of photosensitization: A brief overview"
+    url: "https://www.sciencedirect.com/science/article/pii/S2666469021000270"
+    use: threshold_context
+  - id: E_R2_05
+    source: "Ma et al., Advanced Science 2024"
+    url: "https://doi.org/10.1002/advs.202413365"
+    use: Type_I_design_and_method_dependence
+  - id: E_R2_06
+    source: "Steinkamp, DFT Based Modeling of the Heavy Atom Effect in Triplet Photosensitizers"
+    url: "https://pdxscholar.library.pdx.edu/open_access_etds/"
+    use: calibrated_proxy_example
+  - id: E_R2_07
+    source: "IUPAC Gold Book Gibbs energy of photoinduced electron transfer GT07388"
+    url: "https://goldbook.iupac.org/terms/view/GT07388/pdf"
+    use: definition_and_method
+  - id: E_R2_08
+    source: "IUPAC photochemistry glossary 2006/2007"
+    url: "https://doi.org/10.1351/pac200779030293"
+    use: electron_transfer_terms
+  - id: E_R2_09
+    source: "IUPAC Gold Book reorganization energy R05292"
+    url: "https://goldbook.iupac.org/terms/view/R05292"
+    use: definition
+  - id: E_R2_10
+    source: "Homem-de-Mello et al., computational photosensitizer review"
+    url: "https://doi.org/10.21826/viiiseedmol2020-29"
+    use: dispersion_and_solvation
+  - id: E_R2_11
+    source: "Taking phototherapeutics from concept to clinical launch"
+    url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC8493544/"
+    use: epsilon_phi_context
+  - id: E_R2_12
+    source: "Abrahamse and Hamblin, New photosensitizers for PDT"
+    url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC4811612/"
+    use: scaffold_and_window_context
+  - id: E_R2_13
+    source: "Cui et al., Singlet Oxygen in PDT"
+    url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC11510636/"
+    use: PhiDelta_methods_and_condition_dependence
+  - id: E_R2_14
+    source: "Makhseed et al. 2013 uploaded paper"
+    url: "https://doi.org/10.1039/c3cc44609c"
+    use: measured_value
+  - id: E_R2_15
+    source: "Machacek et al. 2015 uploaded paper"
+    url: "https://pubs.acs.org/doi/"
+    use: measured_value
+reward_groups:
+  primary_computational: [D001, D003, D006]
+  secondary_computational: [D002, D004, D005, D007, D008, D009]
+  hard_validity_constraints: [geometry_validity, charge_spin_validity, convergence]
+  experimental_or_surrogate_only: [E001, E002]

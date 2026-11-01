@@ -1,0 +1,390 @@
+project:
+  title: "Round 1 scientific knowledge alignment for an octonary HEA electrochemical catalyst"
+  goal: "Optimize the elemental composition of an eight-component HEA catalyst to increase electrochemical-device peak power density."
+  domain: "HEA electrocatalysis, electrochemical devices, active learning, composition-constrained materials discovery"
+  language: "English"
+  evidence_policy: "Uploaded markdown papers are primary; online sources clarify terminology only."
+  round: 1
+  source_directory: "../literature_markdown"
+  uploaded_markdown_count: 43
+  web_search_allowed: true
+  expert_status: "general_knowledge_accepted_itemwise_validation_not_recorded"
+concepts:
+  - {concept_id: C001, name: "High-entropy alloy", mapping_status: close, expert_status: "accepted_in_principle_from_dialogue", evidence: [E001]}
+  - {concept_id: C002, name: "Octonary composition", mapping_status: local, expert_status: "accepted_in_principle_from_dialogue", evidence: [E002]}
+  - {concept_id: C003, name: "Composition simplex", mapping_status: exact, expert_status: "accepted_in_principle_from_dialogue", evidence: [E003, E004]}
+  - {concept_id: C004, name: "Configurational entropy", mapping_status: close, expert_status: "accepted_in_principle_from_dialogue", evidence: [E005]}
+  - {concept_id: C005, name: "Cocktail/synergistic effect", mapping_status: local, expert_status: "accepted_in_principle_from_dialogue", evidence: [E006]}
+  - {concept_id: C006, name: "Local chemical ordering", mapping_status: close, expert_status: "accepted_in_principle_from_dialogue", evidence: [E007]}
+  - {concept_id: C007, name: "Electrocatalytic activity", mapping_status: close, expert_status: "accepted_in_principle_from_dialogue", evidence: [E008]}
+  - {concept_id: C008, name: "Peak power density", mapping_status: local, expert_status: "accepted_in_principle_from_dialogue", evidence: [E009]}
+  - {concept_id: C009, name: "Structure-property-performance chain", mapping_status: local, expert_status: "accepted_in_principle_from_dialogue", evidence: [E010]}
+  - {concept_id: C010, name: "Active learning / Bayesian optimization", mapping_status: close, expert_status: "accepted_in_principle_from_dialogue", evidence: [E011]}
+  - {concept_id: C011, name: "Pareto optimality", mapping_status: close, expert_status: "accepted_in_principle_from_dialogue", evidence: [E012]}
+  - {concept_id: C012, name: "Compositional data", mapping_status: exact, expert_status: "accepted_in_principle_from_dialogue", evidence: [E003, E004]}
+indicators:
+  - {indicator_id: I001, name: "Peak power density", unit: "W cm^-2 or declared device-normalized unit", optimization_role: primary_objective, optimization_direction: maximize, importance: 5, computability: 4, data_readiness: 1, priority: P1, expert_status: "core_objective_confirmed_unit_and_protocol_unconfirmed", evidence: [E009]}
+  - {indicator_id: I002, name: "Eight elemental fractions", unit: "molar/atomic fraction; sum=1", optimization_role: constraint, optimization_direction: target_range, importance: 5, computability: 5, data_readiness: 3, priority: P0, expert_status: "composition_constraint_role_confirmed_mass_basis_reconciliation_required", evidence: [E003, E004, E013]}
+  - {indicator_id: I003, name: "Element support cardinality", unit: "count", optimization_role: constraint, optimization_direction: target_range, importance: 5, computability: 5, data_readiness: 3, priority: P0, expert_status: "eight_component_design_confirmed_presence_threshold_unconfirmed", evidence: [E002, E013]}
+  - {indicator_id: I004, name: "Phase/structure state", unit: "declared phase label", optimization_role: constraint, optimization_direction: target_range, importance: 5, computability: 3, data_readiness: 2, priority: P1, expert_status: "accepted_in_principle_from_dialogue", evidence: [E005, E007]}
+  - {indicator_id: I005, name: "Chemical ordering degree", unit: "method-specific", optimization_role: intermediate, optimization_direction: context_dependent, importance: 4, computability: 3, data_readiness: 2, priority: P1, expert_status: "accepted_in_principle_from_dialogue", evidence: [E007]}
+  - {indicator_id: I006, name: "Particle size/morphology/porosity", unit: "nm and descriptors", optimization_role: intermediate, optimization_direction: context_dependent, importance: 4, computability: 4, data_readiness: 2, priority: P1, expert_status: "accepted_in_principle_from_dialogue", evidence: [E010]}
+  - {indicator_id: I007, name: "ECSA", unit: "cm^2 or proxy", optimization_role: intermediate, optimization_direction: maximize, importance: 4, computability: 3, data_readiness: 1, priority: P1, expert_status: "accepted_in_principle_from_dialogue", evidence: [E008]}
+  - {indicator_id: I008, name: "Reaction current density", unit: "mA cm^-2", optimization_role: secondary_objective, optimization_direction: maximize, importance: 4, computability: 5, data_readiness: 3, priority: P0, expert_status: "accepted_in_principle_from_dialogue", evidence: [E008]}
+  - {indicator_id: I009, name: "Overpotential", unit: "mV", optimization_role: secondary_objective, optimization_direction: minimize, importance: 4, computability: 5, data_readiness: 3, priority: P0, expert_status: "accepted_in_principle_from_dialogue", evidence: [E008]}
+  - {indicator_id: I010, name: "Tafel slope", unit: "mV dec^-1", optimization_role: diagnostic, optimization_direction: minimize, importance: 3, computability: 4, data_readiness: 2, priority: P2, expert_status: "accepted_in_principle_from_dialogue", evidence: [E008]}
+  - {indicator_id: I011, name: "Mass/specific activity", unit: "A mg^-1 or A cm^-2_ECSA", optimization_role: secondary_objective, optimization_direction: maximize, importance: 4, computability: 4, data_readiness: 2, priority: P1, expert_status: "accepted_in_principle_from_dialogue", evidence: [E008]}
+  - {indicator_id: I012, name: "Selectivity/Faradaic efficiency", unit: "%", optimization_role: constraint, optimization_direction: maximize, importance: 4, computability: 4, data_readiness: 2, priority: P1, expert_status: "accepted_in_principle_from_dialogue", evidence: [E008]}
+  - {indicator_id: I013, name: "Stability/retention", unit: "% over time/cycles", optimization_role: constraint, optimization_direction: maximize, importance: 5, computability: 3, data_readiness: 2, priority: P1, expert_status: "accepted_in_principle_from_dialogue", evidence: [E007]}
+  - {indicator_id: I014, name: "Cost-specific performance", unit: "declared cost basis", optimization_role: secondary_objective, optimization_direction: maximize, importance: 3, computability: 3, data_readiness: 1, priority: P2, expert_status: "cost_performance_role_accepted_exact_formula_unconfirmed", evidence: [E011]}
+  - {indicator_id: I015, name: "Configurational entropy descriptor", unit: "J mol^-1 K^-1 or normalized", optimization_role: intermediate, optimization_direction: target_range, importance: 4, computability: 4, data_readiness: 2, priority: P1, expert_status: "accepted_in_principle_from_dialogue", evidence: [E005]}
+  - {indicator_id: I016, name: "Adsorption/binding descriptor", unit: "eV", optimization_role: feature_only, optimization_direction: target_range, importance: 4, computability: 2, data_readiness: 2, priority: P1, expert_status: "accepted_in_principle_from_dialogue", evidence: [E010]}
+  - {indicator_id: I017, name: "Electronic-structure descriptor", unit: "method-specific", optimization_role: feature_only, optimization_direction: none, importance: 3, computability: 2, data_readiness: 1, priority: P2, expert_status: "accepted_in_principle_from_dialogue", evidence: [E010]}
+  - {indicator_id: I018, name: "Predictive uncertainty", unit: "model-specific", optimization_role: diagnostic, optimization_direction: context_dependent, importance: 3, computability: 5, data_readiness: 2, priority: P2, expert_status: "accepted_in_principle_from_dialogue", evidence: [E011]}
+  - {indicator_id: I019, name: "Candidate diversity", unit: "metric-specific", optimization_role: diagnostic, optimization_direction: maximize, importance: 3, computability: 5, data_readiness: 3, priority: P2, expert_status: "accepted_in_principle_from_dialogue", evidence: [E012]}
+  - {indicator_id: I020, name: "Synthesis reproducibility", unit: "variance/pass rate", optimization_role: constraint, optimization_direction: minimize, importance: 5, computability: 3, data_readiness: 1, priority: P1, expert_status: "accepted_in_principle_from_dialogue", evidence: [E009]}
+claims:
+  - {claim_id: K001, subject: "Elemental composition", relation: changes, object: "HEA phase/property landscape", claim_type: correlation, confidence: medium, expert_status: "accepted_in_principle_from_dialogue", evidence: [E005]}
+  - {claim_id: K002, subject: "Multi-element combination", relation: promotes, object: "study-specific electronic/catalytic behavior", claim_type: mechanism, confidence: medium, expert_status: "accepted_in_principle_from_dialogue", evidence: [E006]}
+  - {claim_id: K003, subject: "Chemical ordering in Pt4FeCoCuNi", relation: promotes, object: "HER/ORR activity and stability", claim_type: correlation, confidence: medium, expert_status: "accepted_in_principle_from_dialogue", evidence: [E007]}
+  - {claim_id: K004, subject: "Active learning", relation: promotes, object: "efficient octonary HENP composition search", claim_type: expert_rule, confidence: medium, expert_status: "accepted_in_principle_from_dialogue", evidence: [E011]}
+  - {claim_id: K005, subject: "Multimodal BO", relation: promotes, object: "octonary electrochemical discovery throughput", claim_type: expert_rule, confidence: medium, expert_status: "accepted_in_principle_from_dialogue", evidence: [E013]}
+  - {claim_id: K006, subject: "Multiobjective BO", relation: promotes, object: "balance of activity, cost, entropy", claim_type: expert_rule, confidence: high, expert_status: "accepted_in_principle_from_dialogue", evidence: [E012]}
+  - {claim_id: K007, subject: "Composition fractions", relation: requires, object: "simplex/log-ratio-aware handling", claim_type: definition, confidence: high, expert_status: "accepted_in_principle_from_dialogue", evidence: [E003, E004]}
+  - {claim_id: K008, subject: "Catalyst-level metrics", relation: is_proxy_for, object: "device peak power density", claim_type: hypothesis, confidence: low, expert_status: "accepted_in_principle_from_dialogue", evidence: [E009]}
+evidence:
+  - {evidence_id: E001, source_type: paper, source_name: "HEA foundations and reviews", identifier_or_url: "literature_markdown/03_Miracle_2017_Critical_review_of_high_entropy_alloys.md", location: "paper-level", evidence_use: definition, quality: high}
+  - {evidence_id: E002, source_type: paper, source_name: "Octonary active learning", identifier_or_url: "literature_markdown/23_Perumal_2025_Active_learning_for_high_entropy_nanocatalysts.md", location: "abstract/introduction", evidence_use: value, quality: high}
+  - {evidence_id: E003, source_type: paper, source_name: "Compositional data sample space", identifier_or_url: "literature_markdown/33_Egozcue_2018_Modelling_compositional_data.md", location: "pp.81 and section 4.1", evidence_use: definition, quality: high}
+  - {evidence_id: E004, source_type: paper, source_name: "Aitchison compositional data", identifier_or_url: "literature_markdown/34_Aitchison_1982_Statistical_analysis_of_compositional_data.md", location: "summary/introduction", evidence_use: method, quality: high}
+  - {evidence_id: E005, source_type: paper, source_name: "HEA compositional landscape", identifier_or_url: "literature_markdown/25_Qi_2020_Navigating_HEA_compositional_landscape.md", location: "abstract/contents", evidence_use: relationship, quality: high}
+  - {evidence_id: E006, source_type: paper, source_name: "PtRuCuCoNi HEA nanosponges", identifier_or_url: "literature_markdown/04_Li_2026_PtRuCuCoNi_nanosponges_for_lactic_acid_oxidation.md", location: "abstract lines 25-27", evidence_use: relationship, quality: high}
+  - {evidence_id: E007, source_type: paper, source_name: "Ordering-dependent Pt4FeCoCuNi", identifier_or_url: "literature_markdown/21_Wang_2023_Ordering_dependent_electrocatalysis_of_Pt4FeCoCuNi.md", location: "abstract lines 7-13", evidence_use: relationship, quality: high}
+  - {evidence_id: E008, source_type: paper, source_name: "HEA electrocatalysis review", identifier_or_url: "literature_markdown/07_Zhang_2022_High_entropy_alloys_for_electrocatalysis.md", location: "abstract/introduction", evidence_use: definition, quality: medium}
+  - {evidence_id: E009, source_type: expert, source_name: "Project objective", identifier_or_url: "user request", location: "prompt", evidence_use: expert_rule, quality: medium}
+  - {evidence_id: E010, source_type: paper, source_name: "HEA electrocatalysis and DFT studies", identifier_or_url: "literature_markdown/04_Li_2026_PtRuCuCoNi_nanosponges_for_lactic_acid_oxidation.md; literature_markdown/12_Pan_2024_High_throughput_screening_of_Pt_based_HEAs.md", location: "abstracts", evidence_use: relationship, quality: high}
+  - {evidence_id: E011, source_type: paper, source_name: "Active learning and BO methods", identifier_or_url: "literature_markdown/14_Lookman_2019_Active_learning_in_materials_science.md; literature_markdown/23_Perumal_2025_Active_learning_for_high_entropy_nanocatalysts.md", location: "paper-level", evidence_use: method, quality: high}
+  - {evidence_id: E012, source_type: paper, source_name: "Multiobjective HEA optimization", identifier_or_url: "literature_markdown/39_Xu_2024_Multiobjective_optimization_of_HEA_electrocatalysts.md; literature_markdown/40_Deb_2002_NSGA_II.md", location: "abstracts", evidence_use: method, quality: high}
+  - {evidence_id: E013, source_type: paper, source_name: "Multimodal robotic electrocatalyst discovery", identifier_or_url: "literature_markdown/26_Zhang_2025_Multimodal_robotic_electrocatalyst_discovery.md", location: "abstract lines 1-13", evidence_use: value, quality: high}
+expert_reviews: []
+optimization_targets:
+  primary: [I001]
+  secondary: [I008, I009, I011, I012, I014]
+  constraints: [I003, I004, I013, I020]
+  intermediate: [I005, I006, I007, I015, I016]
+  diagnostic: [I010, I018, I019]
+  not_ready: [I001, I014, I020]
+
+expert_feedback_reconciliation:
+  annotation_date: '2026-10-31'
+  annotation_type: dialogue_based_stage_status_reconciliation
+  requested_by: user
+  source_dialogue: ../../multi_round_dialogue_example_EN.txt
+  source_sha256: 759f71d407a9bb2c542208a75279b8477e0833f2f54ee566e3e990870f96a994
+  interpretation: Stage-scoped working acceptance and task roles from the saved dialogue, following earlier HEA and PS
+    reconciliation rules.
+  itemwise_scientific_verification_completed_by_this_update: false
+  numerical_thresholds_prices_and_model_calibration_certified: false
+  execution_authorized_by_this_update: false
+  historical_version_snapshots_modified: false
+  composition_basis_caution: The project specifies mass fractions. Atomic/molar fraction entries and literature/AL element-order
+    differences require explicit reconciliation; none are silently converted.
+  unanswered_review_questions_and_blocking_flags_preserved: true
+  source_feedback_records:
+  - feedback_id: EO1
+    source_line: 12
+    excerpt: 'Please run the Execution Orchestration Skill. Based on the three output files from the knowledge-alignment
+      stage and the research methods used in this field, which may be identified from the literature or through online
+      research, design a basic task-execution workflow for optimizing the formulation of an eight-component high-entropy
+      alloy catalyst. Provide necessary recommendations, especially recommendations for metric ranking and corresponding
+      threshold guidance, preferably supported by evidence. Starting from existing experimental data, the workflow should
+      explain how to perform data organization, model training, candidate-composition generation, performance evaluation,
+      candidate screening, and result feedback, but it must not assume a specific model or algorithm that has not yet
+      been confirmed. The materials expert provides the following information: the catalyst consists of eight metals—Pd,
+      Pt, Au, Cr, Ir, Ce, Cu, and Nb—and is generally represented as a mass-fraction vector with a fixed element order;
+      each element''s mass fraction must be nonnegative, and the fractions must sum to 1. The optimization problem therefore
+      involves trade-offs among peak power density, cost, and composition constraints. The computer expert would like
+      to construct a model workflow capable of iterative optimization from existing composition-performance data. Add
+      the suffix `round1` to the output filenames.'
+  - feedback_id: EO2
+    source_line: 16
+    excerpt: The materials scientist notes that the organization of metrics in the current workflow still needs adjustment.
+      In addition to peak power density, the workflow may consider normalized cost, composition validity, element-content
+      ranges, differences between candidate compositions and existing experimental samples, model-prediction confidence,
+      and the stability of high-performance formulations. The computer expert confirms that peak power density will be
+      the core performance metric for formulation optimization, while nonnegative mass fractions for the eight elements,
+      a total fraction of 1, and a fixed element order will serve as composition constraints. The `AL` folder is now
+      provided as the implemented model execution path. The model architecture, training method, metric-configuration
+      files, runtime parameters, data interfaces, and candidate-result format must be obtained from the code, documentation,
+      and interface documents in the `AL` folder. Inspect and update the model information and interfaces independently,
+      improve the workflow, and report the proposed execution procedure to me for confirmation. Do not run it without
+      authorization. Clearly specify all output paths. Update the previous round's output files and add the suffix `round2`.
+  - feedback_id: KA2
+    source_line: 6
+    excerpt: The domain expert states that the current knowledge is essentially correct, but it should be supplemented
+      with the principal characteristics of the eight metal elements in the catalytic system, their possible synergistic
+      effects, and the potential influence of changes in each element's content on peak power density. In addition to
+      peak power density, the material cost associated with the use of precious metals must also be considered. Provide
+      the computer expert with metrics that can be calculated or predicted, together with their meanings, and explain
+      the different roles of peak power density, cost, and composition constraints in material-formulation design. The
+      computer expert states that the current descriptions of data representation and optimization metrics are insufficiently
+      clear. Specify the element order, numerical format, target metrics, constraints, and data input/output formats
+      for the eight-component composition data. For metrics that may be used in subsequent iterative optimization, also
+      describe their calculation methods, optimization directions, reasonable threshold ranges, and data sources. Next,
+      update and confirm the knowledge-alignment report according to the experts' requirements, using evidence from the
+      papers and authoritative online sources. Produce clearer supplements to the domain-expert view and the computer-expert
+      optimization metrics.
+  updates:
+  - path: project/expert_status
+    status: general_knowledge_accepted_itemwise_validation_not_recorded
+    feedback_refs:
+    - KA2
+    - EO1
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: concepts/0/expert_status
+    status: accepted_in_principle_from_dialogue
+    feedback_refs:
+    - KA2
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: concepts/1/expert_status
+    status: accepted_in_principle_from_dialogue
+    feedback_refs:
+    - KA2
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: concepts/2/expert_status
+    status: accepted_in_principle_from_dialogue
+    feedback_refs:
+    - KA2
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: concepts/3/expert_status
+    status: accepted_in_principle_from_dialogue
+    feedback_refs:
+    - KA2
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: concepts/4/expert_status
+    status: accepted_in_principle_from_dialogue
+    feedback_refs:
+    - KA2
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: concepts/5/expert_status
+    status: accepted_in_principle_from_dialogue
+    feedback_refs:
+    - KA2
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: concepts/6/expert_status
+    status: accepted_in_principle_from_dialogue
+    feedback_refs:
+    - KA2
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: concepts/7/expert_status
+    status: accepted_in_principle_from_dialogue
+    feedback_refs:
+    - KA2
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: concepts/8/expert_status
+    status: accepted_in_principle_from_dialogue
+    feedback_refs:
+    - KA2
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: concepts/9/expert_status
+    status: accepted_in_principle_from_dialogue
+    feedback_refs:
+    - KA2
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: concepts/10/expert_status
+    status: accepted_in_principle_from_dialogue
+    feedback_refs:
+    - KA2
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: concepts/11/expert_status
+    status: accepted_in_principle_from_dialogue
+    feedback_refs:
+    - KA2
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: indicators/0/expert_status
+    status: core_objective_confirmed_unit_and_protocol_unconfirmed
+    feedback_refs:
+    - KA2
+    - EO2
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: indicators/1/expert_status
+    status: composition_constraint_role_confirmed_mass_basis_reconciliation_required
+    feedback_refs:
+    - KA2
+    - EO1
+    - EO2
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: indicators/2/expert_status
+    status: eight_component_design_confirmed_presence_threshold_unconfirmed
+    feedback_refs:
+    - KA2
+    - EO1
+    - EO2
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: indicators/3/expert_status
+    status: accepted_in_principle_from_dialogue
+    feedback_refs:
+    - KA2
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: indicators/4/expert_status
+    status: accepted_in_principle_from_dialogue
+    feedback_refs:
+    - KA2
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: indicators/5/expert_status
+    status: accepted_in_principle_from_dialogue
+    feedback_refs:
+    - KA2
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: indicators/6/expert_status
+    status: accepted_in_principle_from_dialogue
+    feedback_refs:
+    - KA2
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: indicators/7/expert_status
+    status: accepted_in_principle_from_dialogue
+    feedback_refs:
+    - KA2
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: indicators/8/expert_status
+    status: accepted_in_principle_from_dialogue
+    feedback_refs:
+    - KA2
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: indicators/9/expert_status
+    status: accepted_in_principle_from_dialogue
+    feedback_refs:
+    - KA2
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: indicators/10/expert_status
+    status: accepted_in_principle_from_dialogue
+    feedback_refs:
+    - KA2
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: indicators/11/expert_status
+    status: accepted_in_principle_from_dialogue
+    feedback_refs:
+    - KA2
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: indicators/12/expert_status
+    status: accepted_in_principle_from_dialogue
+    feedback_refs:
+    - KA2
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: indicators/13/expert_status
+    status: cost_performance_role_accepted_exact_formula_unconfirmed
+    feedback_refs:
+    - KA2
+    - EO1
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: indicators/14/expert_status
+    status: accepted_in_principle_from_dialogue
+    feedback_refs:
+    - KA2
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: indicators/15/expert_status
+    status: accepted_in_principle_from_dialogue
+    feedback_refs:
+    - KA2
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: indicators/16/expert_status
+    status: accepted_in_principle_from_dialogue
+    feedback_refs:
+    - KA2
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: indicators/17/expert_status
+    status: accepted_in_principle_from_dialogue
+    feedback_refs:
+    - KA2
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: indicators/18/expert_status
+    status: accepted_in_principle_from_dialogue
+    feedback_refs:
+    - KA2
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: indicators/19/expert_status
+    status: accepted_in_principle_from_dialogue
+    feedback_refs:
+    - KA2
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: claims/0/expert_status
+    status: accepted_in_principle_from_dialogue
+    feedback_refs:
+    - KA2
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: claims/1/expert_status
+    status: accepted_in_principle_from_dialogue
+    feedback_refs:
+    - KA2
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: claims/2/expert_status
+    status: accepted_in_principle_from_dialogue
+    feedback_refs:
+    - KA2
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: claims/3/expert_status
+    status: accepted_in_principle_from_dialogue
+    feedback_refs:
+    - KA2
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: claims/4/expert_status
+    status: accepted_in_principle_from_dialogue
+    feedback_refs:
+    - KA2
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: claims/5/expert_status
+    status: accepted_in_principle_from_dialogue
+    feedback_refs:
+    - KA2
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: claims/6/expert_status
+    status: accepted_in_principle_from_dialogue
+    feedback_refs:
+    - KA2
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: claims/7/expert_status
+    status: accepted_in_principle_from_dialogue
+    feedback_refs:
+    - KA2
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.

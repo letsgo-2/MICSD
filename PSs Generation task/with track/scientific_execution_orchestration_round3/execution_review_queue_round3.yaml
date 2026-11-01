@@ -1,0 +1,113 @@
+{
+  "review_items": [
+    {
+      "issue_id": "EO-R3-001",
+      "category": "workflow",
+      "question": "Authorize or reject execution of the proposed confirmation procedure; Round 3 must not run SDPD without explicit authorization.",
+      "affected_ids": [
+        "WF-ORCH-R3",
+        "IF-R3-001",
+        "IF-R3-003"
+      ],
+      "recommendation": "Keep workflow status draft and run_authorized false.",
+      "evidence_refs": [
+        "User Round 3 instruction",
+        "AGENT_INTERFACE_EN.md:12-19"
+      ],
+      "required_expert": "project owner",
+      "priority": "critical",
+      "blocking": true,
+      "status": "open"
+    },
+    {
+      "issue_id": "EO-R3-002",
+      "category": "model",
+      "question": "Confirm that checkpoint SDPD/data_preparation/prediction_model/pretrained_models/best.pth is compatible with the three-output predictor and output index 2 is ST Gap.",
+      "affected_ids": [
+        "IF-R3-003",
+        "E(S1)-E(T1)"
+      ],
+      "recommendation": "Run only the authorized minimal predictor smoke test; do not train or overwrite checkpoints.",
+      "evidence_refs": [
+        "AGENT_INTERFACE_EN.md:176-195",
+        "AGENT_INTERFACE_EN.md:247-262"
+      ],
+      "required_expert": "computer scientist",
+      "priority": "critical",
+      "blocking": true,
+      "status": "open"
+    },
+    {
+      "issue_id": "EO-R3-003",
+      "category": "metric",
+      "question": "Confirm that the selected symmetry metric means decoration symmetry, not global molecular symmetry.",
+      "affected_ids": [
+        "symmetry",
+        "IF-R3-004"
+      ],
+      "recommendation": "Retain the existing scorer unchanged for the first confirmation run and label its scope explicitly.",
+      "evidence_refs": [
+        "score_function.py:101-204",
+        "README_EN.md:469-496"
+      ],
+      "required_expert": "materials scientist",
+      "priority": "high",
+      "blocking": true,
+      "status": "open"
+    },
+    {
+      "issue_id": "EO-R3-004",
+      "category": "metric",
+      "question": "Confirm the project-specific charge-score rule and whether both formal-charge signs or even total charge should receive the highest score.",
+      "affected_ids": [
+        "charge",
+        "IF-R3-004"
+      ],
+      "recommendation": "Do not alter current discrete scoring until the materials scientist confirms the intended chemical objective.",
+      "evidence_refs": [
+        "score_function.py:279-296",
+        "README_EN.md:450-468"
+      ],
+      "required_expert": "materials scientist",
+      "priority": "high",
+      "blocking": true,
+      "status": "open"
+    },
+    {
+      "issue_id": "EO-R3-005",
+      "category": "parameter",
+      "question": "Confirm the selected weights [0.1, 0.3, 0.6], scale 1.0, sigma 120, 1000 steps and batch size 128 for the first authorized run.",
+      "affected_ids": [
+        "IF-R3-002",
+        "RC-R3-001"
+      ],
+      "recommendation": "Use the repository values only after configuration validation and expert confirmation; preserve a copy before edits.",
+      "evidence_refs": [
+        "SDPD/configs/rl_configs.json:1-43",
+        "README_EN.md:394-420"
+      ],
+      "required_expert": "computer scientist and materials scientist",
+      "priority": "high",
+      "blocking": true,
+      "status": "open"
+    },
+    {
+      "issue_id": "EO-R3-006",
+      "category": "model",
+      "question": "Resolve the hard-coded predictor checkpoint path in kagnn_gap_predictor.py versus the configurable path documented in AGENT_INTERFACE_EN.md.",
+      "affected_ids": [
+        "IF-R3-003",
+        "MODEL-003"
+      ],
+      "recommendation": "Do not modify in Round 3; record the discrepancy and require an approved adapter/fix before relying on alternate checkpoints.",
+      "evidence_refs": [
+        "kagnn_gap_predictor.py:56-65",
+        "AGENT_INTERFACE_EN.md:12-19"
+      ],
+      "required_expert": "computer scientist",
+      "priority": "high",
+      "blocking": true,
+      "status": "open"
+    }
+  ]
+}

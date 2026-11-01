@@ -363,3 +363,8 @@ The following should be confirmed before running:
 5. Confirm API configuration and expected cost/rate limit.
 6. Confirm whether existing `outputs/` files may be overwritten or a new timestamped directory should be used.
 7. Confirm whether high-performance stability should be added as a post-processing metric in a later code update or only tracked manually from logs for now.
+
+
+## Dialogue Based Status Update 2026-10-30
+
+Applicable pending fields have been updated directly using the supplied multi_round_dialogue_example_EN.txt. These are retrospective inferences: general knowledge is accepted in principle, named objectives/constraints are accepted for task use, and requested analyses or ratio adjustment are accepted as requirements. This does not certify numerical values, thresholds, prices, causal mechanisms, detailed recipes or model execution. Mass-fraction versus atomic-fraction conflicts remain unresolved. See the accompanying YAML dialogue_status_reconciliation for the source lines and exact dialogue. No original-file backup was created, as requested.

@@ -1,0 +1,2188 @@
+{
+  "metadata": {
+    "name": "Scientific Execution Orchestration — Round 2",
+    "language": "English",
+    "version": "0.2.0-draft",
+    "created": "2026-10-31",
+    "status": "draft",
+    "suffix": "round2",
+    "upstream_round": "scientific_execution_orchestration_round1",
+    "revision_scope": "Updated priority ranking for SOCME, HOMO-LUMO gap, E(S1)-E(T1), E(S1), charge, symmetry, SA, logP, TPSA and MW."
+  },
+  "upstream_inputs": {
+    "orchestration_yaml": "../scientific_execution_orchestration_round1/execution_orchestration_round1.yaml",
+    "orchestration_report": "../scientific_execution_orchestration_round1/execution_orchestration_report_round1.md",
+    "orchestration_review_queue": "../scientific_execution_orchestration_round1/execution_review_queue_round1.yaml",
+    "round1_review_items": 6
+  },
+  "execution_context": {
+    "representation": "SMILES",
+    "fragmentation_rule": "RECAP",
+    "default_scaffold": "porphyrin",
+    "optimization_paradigm": "reinforcement learning molecular generation",
+    "mechanism_branches": [
+      "type_ii",
+      "type_i"
+    ],
+    "experimental_endpoints": "deferred from molecule-only reward"
+  },
+  "metric_candidates": [
+    {
+      "metric_id": "D001",
+      "name": "Vertical excitation energy / absorption wavelength and oscillator strength",
+      "aliases": [
+        "lambda_abs",
+        "f"
+      ],
+      "definition": "Electronic excitation energy and corresponding wavelength; screens spectral compatibility with the selected light window.",
+      "proposed_roles": [
+        "primary_objective",
+        "soft_constraint"
+      ],
+      "direction": "target_range",
+      "threshold": {
+        "value": null,
+        "range": [
+          600,
+          800
+        ],
+        "unit": "nm",
+        "status": "provisional_literature_band",
+        "companion": "f >= 0.01 is a provisional screen"
+      },
+      "conditions": [
+        "TD-DFT method/basis",
+        "solvent model",
+        "target state",
+        "conformer"
+      ],
+      "acquisition": [
+        "TD-DFT evaluator"
+      ],
+      "evidence_refs": [
+        "X001",
+        "X006"
+      ],
+      "expert_status": "pending",
+      "unresolved_fields": [
+        "approved method/basis/solvent",
+        "project irradiation window",
+        "f threshold calibration"
+      ]
+    },
+    {
+      "metric_id": "D003",
+      "name": "Triplet energy relative to oxygen sensitization threshold",
+      "aliases": [
+        "T1 energy",
+        "S0-T1"
+      ],
+      "definition": "Triplet-state energy relative to the energy required for 3O2→1O2; selects a mechanistic branch.",
+      "proposed_roles": [
+        "hard_constraint",
+        "soft_constraint",
+        "branch_gate"
+      ],
+      "direction": "context_dependent",
+      "threshold": {
+        "value": null,
+        "range": [
+          0.98,
+          1.13
+        ],
+        "unit": "eV",
+        "status": "provisional_branch_threshold",
+        "note": "Type-II favors above; indirect Type-I may favor below"
+      },
+      "conditions": [
+        "triplet state definition",
+        "oxygen reference",
+        "vertical versus adiabatic energy",
+        "method consistency"
+      ],
+      "acquisition": [
+        "TD-DFT/DFT evaluator"
+      ],
+      "evidence_refs": [
+        "X001",
+        "X006"
+      ],
+      "expert_status": "pending",
+      "unresolved_fields": [
+        "selected mechanism branch",
+        "oxygen reference protocol"
+      ]
+    },
+    {
+      "metric_id": "D004",
+      "name": "Singlet-triplet energy separation for ISC channel",
+      "aliases": [
+        "DeltaEST",
+        "DeltaE(S1,Tn)"
+      ],
+      "definition": "Singlet–triplet energy separation for a candidate ISC channel; smaller gaps can facilitate ISC but are not sufficient without SOC and state character.",
+      "proposed_roles": [
+        "secondary_objective",
+        "soft_constraint"
+      ],
+      "direction": "minimize",
+      "threshold": {
+        "value": 0.4,
+        "range": [
+          0,
+          0.4
+        ],
+        "unit": "eV",
+        "status": "provisional_scaffold_local_heuristic"
+      },
+      "conditions": [
+        "state tracking",
+        "relevant Tn",
+        "geometry",
+        "functional"
+      ],
+      "acquisition": [
+        "TD-DFT evaluator"
+      ],
+      "evidence_refs": [
+        "X006",
+        "X008"
+      ],
+      "expert_status": "pending",
+      "unresolved_fields": [
+        "state-tracking protocol",
+        "family calibration"
+      ]
+    },
+    {
+      "metric_id": "D005",
+      "name": "Spin-orbit coupling",
+      "aliases": [
+        "SOC"
+      ],
+      "definition": "Electronic coupling that enables spin-forbidden singlet–triplet transitions and informs ISC propensity.",
+      "proposed_roles": [
+        "secondary_objective",
+        "diagnostic"
+      ],
+      "direction": "maximize",
+      "threshold": {
+        "value": 0.24,
+        "range": [
+          0.24,
+          null
+        ],
+        "unit": "cm^-1",
+        "status": "provisional_state_pair_heuristic"
+      },
+      "conditions": [
+        "state pair",
+        "SOC method",
+        "relativistic treatment",
+        "units"
+      ],
+      "acquisition": [
+        "SOC-capable quantum chemistry evaluator"
+      ],
+      "evidence_refs": [
+        "X001",
+        "X006"
+      ],
+      "expert_status": "pending",
+      "unresolved_fields": [
+        "state pair",
+        "calibrated threshold"
+      ]
+    },
+    {
+      "metric_id": "D008",
+      "name": "Charge-transfer character / electron-hole separation",
+      "aliases": [
+        "CT character",
+        "NTO separation"
+      ],
+      "definition": "Spatial separation and donor-to-acceptor character of an excitation; helps distinguish local excitation from ICT/ET states.",
+      "proposed_roles": [
+        "diagnostic",
+        "secondary_objective"
+      ],
+      "direction": "context_dependent",
+      "threshold": {
+        "value": null,
+        "range": [],
+        "unit": "method-specific",
+        "status": "unresolved_percentile_or_family_target"
+      },
+      "conditions": [
+        "transition density",
+        "partitioning method",
+        "target state"
+      ],
+      "acquisition": [
+        "NTO/transition-density evaluator"
+      ],
+      "evidence_refs": [
+        "X001",
+        "X006"
+      ],
+      "expert_status": "pending",
+      "unresolved_fields": [
+        "descriptor definition",
+        "reward calibration"
+      ]
+    },
+    {
+      "metric_id": "D006",
+      "name": "HOMO/LUMO energies and gap",
+      "aliases": [
+        "frontier orbitals",
+        "gap"
+      ],
+      "definition": "Frontier orbital energies and separation that provide qualitative information about redox propensity, electronic structure and CT tuning.",
+      "proposed_roles": [
+        "feature_only",
+        "diagnostic"
+      ],
+      "direction": "none",
+      "threshold": {
+        "value": null,
+        "range": [],
+        "unit": "eV",
+        "status": "no_universal_threshold"
+      },
+      "conditions": [
+        "charge",
+        "multiplicity",
+        "functional",
+        "conformer"
+      ],
+      "acquisition": [
+        "ground-state DFT"
+      ],
+      "evidence_refs": [
+        "X001",
+        "X006"
+      ],
+      "expert_status": "pending",
+      "unresolved_fields": [
+        "calibrated use case"
+      ]
+    },
+    {
+      "metric_id": "D010",
+      "name": "Dipole, polarizability, volume and solvation descriptors",
+      "aliases": [
+        "polarity/shape descriptors"
+      ],
+      "definition": "Descriptors related to polarity, shape, dispersion and possible solubility/partition behavior.",
+      "proposed_roles": [
+        "feature_only",
+        "soft_constraint"
+      ],
+      "direction": "context_dependent",
+      "threshold": {
+        "value": null,
+        "range": [],
+        "unit": "method-specific",
+        "status": "project_calibration_required"
+      },
+      "conditions": [
+        "solvent",
+        "conformer",
+        "descriptor implementation"
+      ],
+      "acquisition": [
+        "ground-state DFT and cheminformatics"
+      ],
+      "evidence_refs": [
+        "X001"
+      ],
+      "expert_status": "pending",
+      "unresolved_fields": [
+        "aggregation and solubility model"
+      ]
+    },
+    {
+      "metric_id": "I001",
+      "name": "Singlet oxygen quantum yield",
+      "aliases": [
+        "PhiDelta"
+      ],
+      "definition": "Experimental Type-II photochemical output; not a molecule-only RL evaluator in this round.",
+      "proposed_roles": [
+        "deferred",
+        "experimental_validation"
+      ],
+      "direction": "maximize",
+      "threshold": {
+        "value": null,
+        "range": [],
+        "unit": "dimensionless",
+        "status": "deferred_until_matched_assay"
+      },
+      "conditions": [
+        "solvent",
+        "oxygenation",
+        "wavelength",
+        "reference method"
+      ],
+      "acquisition": [
+        "experimental assay"
+      ],
+      "evidence_refs": [
+        "X001",
+        "X007"
+      ],
+      "expert_status": "pending",
+      "unresolved_fields": [
+        "matched assay dataset"
+      ]
+    },
+    {
+      "metric_id": "I003",
+      "name": "Photodynamic potency",
+      "aliases": [
+        "light-induced IC50"
+      ],
+      "definition": "Experimental biological endpoint; deferred from molecule-only reward.",
+      "proposed_roles": [
+        "deferred",
+        "experimental_validation"
+      ],
+      "direction": "minimize",
+      "threshold": {
+        "value": null,
+        "range": [],
+        "unit": "assay-specific",
+        "status": "deferred_until_matched_assay"
+      },
+      "conditions": [
+        "cell",
+        "dose",
+        "fluence",
+        "wavelength",
+        "time",
+        "oxygenation"
+      ],
+      "acquisition": [
+        "biological assay"
+      ],
+      "evidence_refs": [
+        "Round2 alignment I003"
+      ],
+      "expert_status": "pending",
+      "unresolved_fields": [
+        "harmonized dataset"
+      ]
+    },
+    {
+      "metric_id": "SOCME",
+      "name": "Singlet-triplet spin-orbit coupling matrix element",
+      "aliases": [],
+      "definition": "Magnitude of <S1|H_SO|Tn> or the explicitly selected singlet-triplet state pair; a mechanistic proxy for spin-forbidden ISC.",
+      "proposed_roles": [
+        "primary_photophysical_proxy"
+      ],
+      "direction": "maximize within the selected state channel",
+      "threshold": {
+        "value": null,
+        "unit": "cm^-1",
+        "guidance": "No universal cutoff; use scaffold/state-pair calibration. Prior literature examples report values ranging from near-zero organic systems to ~1 cm^-1 dimers and much larger heavy-atom systems.",
+        "status": "provisional"
+      },
+      "conditions": [
+        "state pair",
+        "spin treatment",
+        "relativistic treatment",
+        "scaffold family"
+      ],
+      "acquisition": [
+        "SOC-capable TD-DFT/response or relativistic perturbative calculation; record state pair, units, functional, basis/pseudopotential, and geometry."
+      ],
+      "evidence_refs": [
+        "X001",
+        "X002"
+      ],
+      "expert_status": "pending",
+      "unresolved_fields": [
+        "expert approval",
+        "implementation/version calibration"
+      ]
+    },
+    {
+      "metric_id": "E(S1)-E(T1)",
+      "name": "Lowest singlet-triplet energy gap",
+      "aliases": [],
+      "definition": "Energy separation between the selected S1 and T1 states; a small gap can facilitate ISC, but relevant ISC may involve Tn rather than T1.",
+      "proposed_roles": [
+        "primary_photophysical_proxy"
+      ],
+      "direction": "minimize as a soft ISC proxy",
+      "threshold": {
+        "value": 0.4,
+        "unit": "eV",
+        "guidance": "<0.4 eV is a literature-informed favorable ISC heuristic, not a universal cutoff; calibrate per scaffold and state channel.",
+        "status": "provisional"
+      },
+      "conditions": [
+        "relevant Tn",
+        "state ordering",
+        "geometry",
+        "functional/basis"
+      ],
+      "acquisition": [
+        "TD-DFT excited-state calculation with explicit state tracking at a documented geometry; use consistent vertical/adiabatic convention."
+      ],
+      "evidence_refs": [
+        "X001",
+        "X002"
+      ],
+      "expert_status": "pending",
+      "unresolved_fields": [
+        "expert approval",
+        "implementation/version calibration"
+      ]
+    },
+    {
+      "metric_id": "E(S1)",
+      "name": "First singlet excited-state energy",
+      "aliases": [],
+      "definition": "Energy of the first excited singlet state; related to absorption wavelength and light compatibility.",
+      "proposed_roles": [
+        "primary_spectral_proxy"
+      ],
+      "direction": "target range / application-dependent",
+      "threshold": {
+        "range": [
+          1.55,
+          2.07
+        ],
+        "unit": "eV",
+        "guidance": "Corresponds approximately to 600-800 nm; use a band-pass and pair with oscillator strength, not E(S1) alone.",
+        "status": "provisional_literature_band"
+      },
+      "conditions": [
+        "solvent",
+        "state",
+        "oscillator strength",
+        "light source"
+      ],
+      "acquisition": [
+        "TD-DFT vertical excitation, ideally paired with oscillator strength and a validated spectral protocol; E(eV)=1239.84/lambda(nm)."
+      ],
+      "evidence_refs": [
+        "X001",
+        "X005"
+      ],
+      "expert_status": "pending",
+      "unresolved_fields": [
+        "expert approval",
+        "implementation/version calibration"
+      ]
+    },
+    {
+      "metric_id": "charge",
+      "name": "Formal molecular charge / charge state",
+      "aliases": [],
+      "definition": "Net charge and charge distribution used to define chemical identity, targeting behavior, solubility risk, and evaluator state.",
+      "proposed_roles": [
+        "hard_structure_constraint_and_branch_feature"
+      ],
+      "direction": "context-dependent; constrained rather than maximized",
+      "threshold": {
+        "value": null,
+        "unit": "formal charge",
+        "guidance": "Allowed charge states must be explicitly approved for the porphyrin search space; no universal optimum.",
+        "status": "unresolved"
+      },
+      "conditions": [
+        "SMILES standardization",
+        "counterion policy",
+        "pH/protonation",
+        "multiplicity"
+      ],
+      "acquisition": [
+        "Read from standardized SMILES; validate valence, counterions, protonation and multiplicity. Partial charges are a separate descriptor and must not be conflated."
+      ],
+      "evidence_refs": [
+        "Materials expert input",
+        "X006"
+      ],
+      "expert_status": "pending",
+      "unresolved_fields": [
+        "expert approval",
+        "implementation/version calibration"
+      ]
+    },
+    {
+      "metric_id": "logP",
+      "name": "Octanol-water partition coefficient",
+      "aliases": [],
+      "definition": "Neutral-species lipophilicity descriptor related to membrane partitioning and aqueous compatibility; logD may be more relevant at specified pH.",
+      "proposed_roles": [
+        "soft_developability_constraint"
+      ],
+      "direction": "target range",
+      "threshold": {
+        "range": [
+          0,
+          5
+        ],
+        "unit": "log10 partition coefficient",
+        "guidance": "0-5 is a broad drug-like screening range, not a photosensitizer optimum; calibrate around porphyrin data and consider logD/pKa.",
+        "status": "provisional_screen"
+      },
+      "conditions": [
+        "pH",
+        "ionization",
+        "aggregation",
+        "descriptor model"
+      ],
+      "acquisition": [
+        "Use a named descriptor implementation or measured/calibrated predictor; specify neutral/ionized form and pH. Do not infer logD from logP without pKa."
+      ],
+      "evidence_refs": [
+        "X006",
+        "X007"
+      ],
+      "expert_status": "pending",
+      "unresolved_fields": [
+        "expert approval",
+        "implementation/version calibration"
+      ]
+    },
+    {
+      "metric_id": "TPSA",
+      "name": "Topological polar surface area",
+      "aliases": [],
+      "definition": "2D fragment-based polar surface descriptor used as a coarse proxy for hydrogen-bonding polarity, permeability and solubility behavior.",
+      "proposed_roles": [
+        "soft_developability_constraint"
+      ],
+      "direction": "target range / context-dependent",
+      "threshold": {
+        "range": [
+          0,
+          140
+        ],
+        "unit": "A^2",
+        "guidance": "<=140 A^2 is a conventional broad drug-like screen; it is not a validated PDT threshold and may not transfer to porphyrin macrocycles.",
+        "status": "provisional_screen"
+      },
+      "conditions": [
+        "ionization",
+        "metal handling",
+        "scaffold family",
+        "formulation"
+      ],
+      "acquisition": [
+        "Compute with a documented cheminformatics implementation from standardized molecular graph; treat metal/porphyrin handling as a validation issue."
+      ],
+      "evidence_refs": [
+        "X006",
+        "X007"
+      ],
+      "expert_status": "pending",
+      "unresolved_fields": [
+        "expert approval",
+        "implementation/version calibration"
+      ]
+    },
+    {
+      "metric_id": "SA",
+      "name": "Synthetic accessibility score",
+      "aliases": [],
+      "definition": "Ertl-style heuristic score from 1 (easier) to 10 (more difficult), combining fragment contributions and complexity penalties.",
+      "proposed_roles": [
+        "hard_or_soft_synthesis_constraint"
+      ],
+      "direction": "minimize",
+      "threshold": {
+        "value": 6,
+        "unit": "SA score",
+        "guidance": "Scores above ~6 are described as difficult in the original distribution, but this is not a synthesis guarantee; use relative ranking and expert retrosynthesis.",
+        "status": "provisional_screen"
+      },
+      "conditions": [
+        "score implementation",
+        "macrocycle/metals",
+        "training distribution",
+        "retrosynthetic route"
+      ],
+      "acquisition": [
+        "Use the published/verified implementation; record version and whether porphyrin macrocycles/metals are in domain. Lower is easier under the original convention."
+      ],
+      "evidence_refs": [
+        "X003",
+        "X004"
+      ],
+      "expert_status": "pending",
+      "unresolved_fields": [
+        "expert approval",
+        "implementation/version calibration"
+      ]
+    },
+    {
+      "metric_id": "symmetry",
+      "name": "Molecular symmetry / symmetry descriptor",
+      "aliases": [],
+      "definition": "Geometric or graph-level symmetry of the generated molecule; can affect degeneracy, orbital localization, aggregation, substitution patterns and synthetic complexity.",
+      "proposed_roles": [
+        "diagnostic_or_soft_scaffold_constraint"
+      ],
+      "direction": "context-dependent",
+      "threshold": {
+        "value": null,
+        "unit": "descriptor-specific",
+        "guidance": "No universal target; compare within a scaffold family and preserve asymmetry when needed for solubility/targeting.",
+        "status": "unresolved"
+      },
+      "conditions": [
+        "symmetry definition",
+        "geometry",
+        "substitution pattern",
+        "aggregation"
+      ],
+      "acquisition": [
+        "Define an explicit graph/geometric symmetry measure and tolerance; compute from standardized 2D/3D structure. Do not use an undefined visual notion of symmetry."
+      ],
+      "evidence_refs": [
+        "X001",
+        "X006"
+      ],
+      "expert_status": "pending",
+      "unresolved_fields": [
+        "expert approval",
+        "implementation/version calibration"
+      ]
+    },
+    {
+      "metric_id": "HOMO-LUMO gap",
+      "name": "Frontier-orbital energy gap",
+      "aliases": [],
+      "definition": "Difference between computed HOMO and LUMO orbital energies; a qualitative electronic-structure descriptor, not a direct optical gap.",
+      "proposed_roles": [
+        "feature_only_or_diagnostic"
+      ],
+      "direction": "context-dependent",
+      "threshold": {
+        "value": null,
+        "unit": "eV",
+        "guidance": "No universal threshold; use only as a within-family feature and avoid rewarding a small gap without E(S1), SOCME, state character and stability checks.",
+        "status": "unresolved"
+      },
+      "conditions": [
+        "functional",
+        "charge",
+        "multiplicity",
+        "conformer",
+        "orbital interpretation"
+      ],
+      "acquisition": [
+        "Ground-state DFT with fixed charge/multiplicity and method; if a physical gap is needed use calibrated ΔSCF or excited-state calculations instead of raw orbital subtraction."
+      ],
+      "evidence_refs": [
+        "X001",
+        "X006"
+      ],
+      "expert_status": "pending",
+      "unresolved_fields": [
+        "expert approval",
+        "implementation/version calibration"
+      ]
+    },
+    {
+      "metric_id": "MW",
+      "name": "Molecular weight",
+      "aliases": [],
+      "definition": "Mass of the molecular entity, including the precise representation policy for metals, counterions and protonation.",
+      "proposed_roles": [
+        "soft_developability_constraint"
+      ],
+      "direction": "minimize or target range as a developability constraint",
+      "threshold": {
+        "value": 500,
+        "unit": "Da",
+        "guidance": "<500 Da is a conventional broad drug-like screen, but porphyrin photosensitizers often exceed it; do not reject macrocycles solely on this rule.",
+        "status": "provisional_screen"
+      },
+      "conditions": [
+        "counterion policy",
+        "metal identity",
+        "formulation",
+        "delivery route"
+      ],
+      "acquisition": [
+        "Calculate from standardized molecular graph and explicit isotope/element policy."
+      ],
+      "evidence_refs": [
+        "X005",
+        "X006",
+        "X007"
+      ],
+      "expert_status": "pending",
+      "unresolved_fields": [
+        "expert approval",
+        "implementation/version calibration"
+      ]
+    }
+  ],
+  "metric_decisions": [
+    {
+      "metric_id": "SOCME",
+      "final_role": "primary_photophysical_proxy",
+      "rank": 1,
+      "ranking_basis": [
+        "Directly connected to ISC and supported by porphyrinoid/BODIPY theory literature; more mechanistic than generic frontier descriptors, but expensive and state-pair dependent.",
+        "Ranking requested by materials scientist in orchestration Round 2.",
+        "Decision remains proposed pending expert confirmation."
+      ],
+      "direction": "maximize within the selected state channel",
+      "threshold": {
+        "value": null,
+        "unit": "cm^-1",
+        "guidance": "No universal cutoff; use scaffold/state-pair calibration. Prior literature examples report values ranging from near-zero organic systems to ~1 cm^-1 dimers and much larger heavy-atom systems.",
+        "status": "provisional"
+      },
+      "evaluator_id": "EVAL-R2-SOCME",
+      "decision_status": "proposed",
+      "evidence_refs": [
+        "X001",
+        "X002"
+      ],
+      "expert_feedback_refs": []
+    },
+    {
+      "metric_id": "E(S1)-E(T1)",
+      "final_role": "primary_photophysical_proxy",
+      "rank": 2,
+      "ranking_basis": [
+        "Computationally more accessible than SOCME and strongly connected to ISC design; can be misleading without SOC, state character and T1 branch checks.",
+        "Ranking requested by materials scientist in orchestration Round 2.",
+        "Decision remains proposed pending expert confirmation."
+      ],
+      "direction": "minimize as a soft ISC proxy",
+      "threshold": {
+        "value": 0.4,
+        "unit": "eV",
+        "guidance": "<0.4 eV is a literature-informed favorable ISC heuristic, not a universal cutoff; calibrate per scaffold and state channel.",
+        "status": "provisional"
+      },
+      "evaluator_id": "EVAL-R2-E(S1)-E(T1)",
+      "decision_status": "proposed",
+      "evidence_refs": [
+        "X001",
+        "X002"
+      ],
+      "expert_feedback_refs": []
+    },
+    {
+      "metric_id": "E(S1)",
+      "final_role": "primary_spectral_proxy",
+      "rank": 3,
+      "ranking_basis": [
+        "Directly supports irradiation compatibility and is relatively suitable for cached high-throughput evaluation; it is not sufficient for ROS or biological efficacy.",
+        "Ranking requested by materials scientist in orchestration Round 2.",
+        "Decision remains proposed pending expert confirmation."
+      ],
+      "direction": "target range / application-dependent",
+      "threshold": {
+        "range": [
+          1.55,
+          2.07
+        ],
+        "unit": "eV",
+        "guidance": "Corresponds approximately to 600-800 nm; use a band-pass and pair with oscillator strength, not E(S1) alone.",
+        "status": "provisional_literature_band"
+      },
+      "evaluator_id": "EVAL-R2-E(S1)",
+      "decision_status": "proposed",
+      "evidence_refs": [
+        "X001",
+        "X005"
+      ],
+      "expert_feedback_refs": []
+    },
+    {
+      "metric_id": "charge",
+      "final_role": "hard_structure_constraint_and_branch_feature",
+      "rank": 4,
+      "ranking_basis": [
+        "A wrong charge state invalidates DFT, changes uptake/targeting, and can create incomparable molecules; it is a prerequisite for every other metric.",
+        "Ranking requested by materials scientist in orchestration Round 2.",
+        "Decision remains proposed pending expert confirmation."
+      ],
+      "direction": "context-dependent; constrained rather than maximized",
+      "threshold": {
+        "value": null,
+        "unit": "formal charge",
+        "guidance": "Allowed charge states must be explicitly approved for the porphyrin search space; no universal optimum.",
+        "status": "unresolved"
+      },
+      "evaluator_id": "EVAL-R2-charge",
+      "decision_status": "proposed",
+      "evidence_refs": [
+        "Materials expert input",
+        "X006"
+      ],
+      "expert_feedback_refs": []
+    },
+    {
+      "metric_id": "logP",
+      "final_role": "soft_developability_constraint",
+      "rank": 5,
+      "ranking_basis": [
+        "Important for uptake, formulation and off-target distribution, but not a direct photochemical objective and highly dependent on ionization/aggregation.",
+        "Ranking requested by materials scientist in orchestration Round 2.",
+        "Decision remains proposed pending expert confirmation."
+      ],
+      "direction": "target range",
+      "threshold": {
+        "range": [
+          0,
+          5
+        ],
+        "unit": "log10 partition coefficient",
+        "guidance": "0-5 is a broad drug-like screening range, not a photosensitizer optimum; calibrate around porphyrin data and consider logD/pKa.",
+        "status": "provisional_screen"
+      },
+      "evaluator_id": "EVAL-R2-logP",
+      "decision_status": "proposed",
+      "evidence_refs": [
+        "X006",
+        "X007"
+      ],
+      "expert_feedback_refs": []
+    },
+    {
+      "metric_id": "TPSA",
+      "final_role": "soft_developability_constraint",
+      "rank": 6,
+      "ranking_basis": [
+        "Useful low-cost developability descriptor, but less directly tied to photosensitization than excited-state metrics and potentially unreliable for unusual/metallated structures.",
+        "Ranking requested by materials scientist in orchestration Round 2.",
+        "Decision remains proposed pending expert confirmation."
+      ],
+      "direction": "target range / context-dependent",
+      "threshold": {
+        "range": [
+          0,
+          140
+        ],
+        "unit": "A^2",
+        "guidance": "<=140 A^2 is a conventional broad drug-like screen; it is not a validated PDT threshold and may not transfer to porphyrin macrocycles.",
+        "status": "provisional_screen"
+      },
+      "evaluator_id": "EVAL-R2-TPSA",
+      "decision_status": "proposed",
+      "evidence_refs": [
+        "X006",
+        "X007"
+      ],
+      "expert_feedback_refs": []
+    },
+    {
+      "metric_id": "SA",
+      "final_role": "hard_or_soft_synthesis_constraint",
+      "rank": 7,
+      "ranking_basis": [
+        "Critical for RL because it provides a fast continuous signal against inaccessible molecules and directly complements RECAP generation; it should not dominate photophysics.",
+        "Ranking requested by materials scientist in orchestration Round 2.",
+        "Decision remains proposed pending expert confirmation."
+      ],
+      "direction": "minimize",
+      "threshold": {
+        "value": 6,
+        "unit": "SA score",
+        "guidance": "Scores above ~6 are described as difficult in the original distribution, but this is not a synthesis guarantee; use relative ranking and expert retrosynthesis.",
+        "status": "provisional_screen"
+      },
+      "evaluator_id": "EVAL-R2-SA",
+      "decision_status": "proposed",
+      "evidence_refs": [
+        "X003",
+        "X004"
+      ],
+      "expert_feedback_refs": []
+    },
+    {
+      "metric_id": "symmetry",
+      "final_role": "diagnostic_or_soft_scaffold_constraint",
+      "rank": 8,
+      "ranking_basis": [
+        "Potentially informative for porphyrin substitution and photophysics, but underspecified and not yet robust enough for a primary RL reward.",
+        "Ranking requested by materials scientist in orchestration Round 2.",
+        "Decision remains proposed pending expert confirmation."
+      ],
+      "direction": "context-dependent",
+      "threshold": {
+        "value": null,
+        "unit": "descriptor-specific",
+        "guidance": "No universal target; compare within a scaffold family and preserve asymmetry when needed for solubility/targeting.",
+        "status": "unresolved"
+      },
+      "evaluator_id": "EVAL-R2-symmetry",
+      "decision_status": "proposed",
+      "evidence_refs": [
+        "X001",
+        "X006"
+      ],
+      "expert_feedback_refs": []
+    },
+    {
+      "metric_id": "HOMO-LUMO gap",
+      "final_role": "feature_only_or_diagnostic",
+      "rank": 9,
+      "ranking_basis": [
+        "Easy to compute but weakly identifiable and strongly functional-dependent; lower priority than actual excited-state metrics.",
+        "Ranking requested by materials scientist in orchestration Round 2.",
+        "Decision remains proposed pending expert confirmation."
+      ],
+      "direction": "context-dependent",
+      "threshold": {
+        "value": null,
+        "unit": "eV",
+        "guidance": "No universal threshold; use only as a within-family feature and avoid rewarding a small gap without E(S1), SOCME, state character and stability checks.",
+        "status": "unresolved"
+      },
+      "evaluator_id": "EVAL-R2-HOMO-LUMO gap",
+      "decision_status": "proposed",
+      "evidence_refs": [
+        "X001",
+        "X006"
+      ],
+      "expert_feedback_refs": []
+    },
+    {
+      "metric_id": "MW",
+      "final_role": "soft_developability_constraint",
+      "rank": 10,
+      "ranking_basis": [
+        "Cheap and useful for size/transport/diversity control, but least specific to photosensitizing performance and likely to conflict with porphyrin/metal/targeting requirements.",
+        "Ranking requested by materials scientist in orchestration Round 2.",
+        "Decision remains proposed pending expert confirmation."
+      ],
+      "direction": "minimize or target range as a developability constraint",
+      "threshold": {
+        "value": 500,
+        "unit": "Da",
+        "guidance": "<500 Da is a conventional broad drug-like screen, but porphyrin photosensitizers often exceed it; do not reject macrocycles solely on this rule.",
+        "status": "provisional_screen"
+      },
+      "evaluator_id": "EVAL-R2-MW",
+      "decision_status": "proposed",
+      "evidence_refs": [
+        "X005",
+        "X006",
+        "X007"
+      ],
+      "expert_feedback_refs": []
+    }
+  ],
+  "metric_priority_ranking": [
+    {
+      "rank": 1,
+      "metric_id": "SOCME",
+      "name": "Singlet-triplet spin-orbit coupling matrix element",
+      "meaning": "Magnitude of <S1|H_SO|Tn> or the explicitly selected singlet-triplet state pair; a mechanistic proxy for spin-forbidden ISC.",
+      "calculation_method": "SOC-capable TD-DFT/response or relativistic perturbative calculation; record state pair, units, functional, basis/pseudopotential, and geometry.",
+      "direction": "maximize within the selected state channel",
+      "role": "primary_photophysical_proxy",
+      "reward_status": "trial_soft_reward",
+      "threshold": {
+        "value": null,
+        "unit": "cm^-1",
+        "guidance": "No universal cutoff; use scaffold/state-pair calibration. Prior literature examples report values ranging from near-zero organic systems to ~1 cm^-1 dimers and much larger heavy-atom systems.",
+        "status": "provisional"
+      },
+      "why_ranked": "Directly connected to ISC and supported by porphyrinoid/BODIPY theory literature; more mechanistic than generic frontier descriptors, but expensive and state-pair dependent.",
+      "conditions": [
+        "state pair",
+        "spin treatment",
+        "relativistic treatment",
+        "scaffold family"
+      ],
+      "evidence_refs": [
+        "X001",
+        "X002"
+      ],
+      "expert_status": "pending"
+    },
+    {
+      "rank": 2,
+      "metric_id": "E(S1)-E(T1)",
+      "name": "Lowest singlet-triplet energy gap",
+      "meaning": "Energy separation between the selected S1 and T1 states; a small gap can facilitate ISC, but relevant ISC may involve Tn rather than T1.",
+      "calculation_method": "TD-DFT excited-state calculation with explicit state tracking at a documented geometry; use consistent vertical/adiabatic convention.",
+      "direction": "minimize as a soft ISC proxy",
+      "role": "primary_photophysical_proxy",
+      "reward_status": "trial_soft_reward",
+      "threshold": {
+        "value": 0.4,
+        "unit": "eV",
+        "guidance": "<0.4 eV is a literature-informed favorable ISC heuristic, not a universal cutoff; calibrate per scaffold and state channel.",
+        "status": "provisional"
+      },
+      "why_ranked": "Computationally more accessible than SOCME and strongly connected to ISC design; can be misleading without SOC, state character and T1 branch checks.",
+      "conditions": [
+        "relevant Tn",
+        "state ordering",
+        "geometry",
+        "functional/basis"
+      ],
+      "evidence_refs": [
+        "X001",
+        "X002"
+      ],
+      "expert_status": "pending"
+    },
+    {
+      "rank": 3,
+      "metric_id": "E(S1)",
+      "name": "First singlet excited-state energy",
+      "meaning": "Energy of the first excited singlet state; related to absorption wavelength and light compatibility.",
+      "calculation_method": "TD-DFT vertical excitation, ideally paired with oscillator strength and a validated spectral protocol; E(eV)=1239.84/lambda(nm).",
+      "direction": "target range / application-dependent",
+      "role": "primary_spectral_proxy",
+      "reward_status": "trial_band_reward",
+      "threshold": {
+        "range": [
+          1.55,
+          2.07
+        ],
+        "unit": "eV",
+        "guidance": "Corresponds approximately to 600-800 nm; use a band-pass and pair with oscillator strength, not E(S1) alone.",
+        "status": "provisional_literature_band"
+      },
+      "why_ranked": "Directly supports irradiation compatibility and is relatively suitable for cached high-throughput evaluation; it is not sufficient for ROS or biological efficacy.",
+      "conditions": [
+        "solvent",
+        "state",
+        "oscillator strength",
+        "light source"
+      ],
+      "evidence_refs": [
+        "X001",
+        "X005"
+      ],
+      "expert_status": "pending"
+    },
+    {
+      "rank": 4,
+      "metric_id": "charge",
+      "name": "Formal molecular charge / charge state",
+      "meaning": "Net charge and charge distribution used to define chemical identity, targeting behavior, solubility risk, and evaluator state.",
+      "calculation_method": "Read from standardized SMILES; validate valence, counterions, protonation and multiplicity. Partial charges are a separate descriptor and must not be conflated.",
+      "direction": "context-dependent; constrained rather than maximized",
+      "role": "hard_structure_constraint_and_branch_feature",
+      "reward_status": "hard_validity_gate",
+      "threshold": {
+        "value": null,
+        "unit": "formal charge",
+        "guidance": "Allowed charge states must be explicitly approved for the porphyrin search space; no universal optimum.",
+        "status": "unresolved"
+      },
+      "why_ranked": "A wrong charge state invalidates DFT, changes uptake/targeting, and can create incomparable molecules; it is a prerequisite for every other metric.",
+      "conditions": [
+        "SMILES standardization",
+        "counterion policy",
+        "pH/protonation",
+        "multiplicity"
+      ],
+      "evidence_refs": [
+        "Materials expert input",
+        "X006"
+      ],
+      "expert_status": "pending"
+    },
+    {
+      "rank": 5,
+      "metric_id": "logP",
+      "name": "Octanol-water partition coefficient",
+      "meaning": "Neutral-species lipophilicity descriptor related to membrane partitioning and aqueous compatibility; logD may be more relevant at specified pH.",
+      "calculation_method": "Use a named descriptor implementation or measured/calibrated predictor; specify neutral/ionized form and pH. Do not infer logD from logP without pKa.",
+      "direction": "target range",
+      "role": "soft_developability_constraint",
+      "reward_status": "trial_soft_constraint",
+      "threshold": {
+        "range": [
+          0,
+          5
+        ],
+        "unit": "log10 partition coefficient",
+        "guidance": "0-5 is a broad drug-like screening range, not a photosensitizer optimum; calibrate around porphyrin data and consider logD/pKa.",
+        "status": "provisional_screen"
+      },
+      "why_ranked": "Important for uptake, formulation and off-target distribution, but not a direct photochemical objective and highly dependent on ionization/aggregation.",
+      "conditions": [
+        "pH",
+        "ionization",
+        "aggregation",
+        "descriptor model"
+      ],
+      "evidence_refs": [
+        "X006",
+        "X007"
+      ],
+      "expert_status": "pending"
+    },
+    {
+      "rank": 6,
+      "metric_id": "TPSA",
+      "name": "Topological polar surface area",
+      "meaning": "2D fragment-based polar surface descriptor used as a coarse proxy for hydrogen-bonding polarity, permeability and solubility behavior.",
+      "calculation_method": "Compute with a documented cheminformatics implementation from standardized molecular graph; treat metal/porphyrin handling as a validation issue.",
+      "direction": "target range / context-dependent",
+      "role": "soft_developability_constraint",
+      "reward_status": "trial_soft_constraint",
+      "threshold": {
+        "range": [
+          0,
+          140
+        ],
+        "unit": "A^2",
+        "guidance": "<=140 A^2 is a conventional broad drug-like screen; it is not a validated PDT threshold and may not transfer to porphyrin macrocycles.",
+        "status": "provisional_screen"
+      },
+      "why_ranked": "Useful low-cost developability descriptor, but less directly tied to photosensitization than excited-state metrics and potentially unreliable for unusual/metallated structures.",
+      "conditions": [
+        "ionization",
+        "metal handling",
+        "scaffold family",
+        "formulation"
+      ],
+      "evidence_refs": [
+        "X006",
+        "X007"
+      ],
+      "expert_status": "pending"
+    },
+    {
+      "rank": 7,
+      "metric_id": "SA",
+      "name": "Synthetic accessibility score",
+      "meaning": "Ertl-style heuristic score from 1 (easier) to 10 (more difficult), combining fragment contributions and complexity penalties.",
+      "calculation_method": "Use the published/verified implementation; record version and whether porphyrin macrocycles/metals are in domain. Lower is easier under the original convention.",
+      "direction": "minimize",
+      "role": "hard_or_soft_synthesis_constraint",
+      "reward_status": "trial_soft_constraint",
+      "threshold": {
+        "value": 6,
+        "unit": "SA score",
+        "guidance": "Scores above ~6 are described as difficult in the original distribution, but this is not a synthesis guarantee; use relative ranking and expert retrosynthesis.",
+        "status": "provisional_screen"
+      },
+      "why_ranked": "Critical for RL because it provides a fast continuous signal against inaccessible molecules and directly complements RECAP generation; it should not dominate photophysics.",
+      "conditions": [
+        "score implementation",
+        "macrocycle/metals",
+        "training distribution",
+        "retrosynthetic route"
+      ],
+      "evidence_refs": [
+        "X003",
+        "X004"
+      ],
+      "expert_status": "pending"
+    },
+    {
+      "rank": 8,
+      "metric_id": "symmetry",
+      "name": "Molecular symmetry / symmetry descriptor",
+      "meaning": "Geometric or graph-level symmetry of the generated molecule; can affect degeneracy, orbital localization, aggregation, substitution patterns and synthetic complexity.",
+      "calculation_method": "Define an explicit graph/geometric symmetry measure and tolerance; compute from standardized 2D/3D structure. Do not use an undefined visual notion of symmetry.",
+      "direction": "context-dependent",
+      "role": "diagnostic_or_soft_scaffold_constraint",
+      "reward_status": "deferred_until_definition",
+      "threshold": {
+        "value": null,
+        "unit": "descriptor-specific",
+        "guidance": "No universal target; compare within a scaffold family and preserve asymmetry when needed for solubility/targeting.",
+        "status": "unresolved"
+      },
+      "why_ranked": "Potentially informative for porphyrin substitution and photophysics, but underspecified and not yet robust enough for a primary RL reward.",
+      "conditions": [
+        "symmetry definition",
+        "geometry",
+        "substitution pattern",
+        "aggregation"
+      ],
+      "evidence_refs": [
+        "X001",
+        "X006"
+      ],
+      "expert_status": "pending"
+    },
+    {
+      "rank": 9,
+      "metric_id": "HOMO-LUMO gap",
+      "name": "Frontier-orbital energy gap",
+      "meaning": "Difference between computed HOMO and LUMO orbital energies; a qualitative electronic-structure descriptor, not a direct optical gap.",
+      "calculation_method": "Ground-state DFT with fixed charge/multiplicity and method; if a physical gap is needed use calibrated ΔSCF or excited-state calculations instead of raw orbital subtraction.",
+      "direction": "context-dependent",
+      "role": "feature_only_or_diagnostic",
+      "reward_status": "no_standalone_reward",
+      "threshold": {
+        "value": null,
+        "unit": "eV",
+        "guidance": "No universal threshold; use only as a within-family feature and avoid rewarding a small gap without E(S1), SOCME, state character and stability checks.",
+        "status": "unresolved"
+      },
+      "why_ranked": "Easy to compute but weakly identifiable and strongly functional-dependent; lower priority than actual excited-state metrics.",
+      "conditions": [
+        "functional",
+        "charge",
+        "multiplicity",
+        "conformer",
+        "orbital interpretation"
+      ],
+      "evidence_refs": [
+        "X001",
+        "X006"
+      ],
+      "expert_status": "pending"
+    },
+    {
+      "rank": 10,
+      "metric_id": "MW",
+      "name": "Molecular weight",
+      "meaning": "Mass of the molecular entity, including the precise representation policy for metals, counterions and protonation.",
+      "calculation_method": "Calculate from standardized molecular graph and explicit isotope/element policy.",
+      "direction": "minimize or target range as a developability constraint",
+      "role": "soft_developability_constraint",
+      "reward_status": "trial_soft_constraint",
+      "threshold": {
+        "value": 500,
+        "unit": "Da",
+        "guidance": "<500 Da is a conventional broad drug-like screen, but porphyrin photosensitizers often exceed it; do not reject macrocycles solely on this rule.",
+        "status": "provisional_screen"
+      },
+      "why_ranked": "Cheap and useful for size/transport/diversity control, but least specific to photosensitizing performance and likely to conflict with porphyrin/metal/targeting requirements.",
+      "conditions": [
+        "counterion policy",
+        "metal identity",
+        "formulation",
+        "delivery route"
+      ],
+      "evidence_refs": [
+        "X005",
+        "X006",
+        "X007"
+      ],
+      "expert_status": "pending"
+    }
+  ],
+  "model_interfaces": [
+    {
+      "model_id": "MODEL-001",
+      "name": "SMILES RL molecular generator",
+      "role": "generator",
+      "status": "proposed",
+      "source": {
+        "type": "local",
+        "location": "not provided",
+        "version": "unknown"
+      },
+      "entrypoint": {
+        "command": "",
+        "script": "",
+        "environment": "",
+        "working_directory": ""
+      },
+      "human_provision": {
+        "model_information_provided": false,
+        "script_location_provided": false,
+        "executable_interface_exposed": false,
+        "parameter_interface_exposed": false,
+        "access_level": "none",
+        "authorized_parameters": [],
+        "prohibited_actions": [
+          "modify production code",
+          "change scientific targets",
+          "change unapproved constraints"
+        ],
+        "provided_by": "computer expert request only",
+        "confirmation_ref": ""
+      },
+      "input_schema": [
+        "SMILES seed or graph state",
+        "RECAP fragment vocabulary",
+        "porphyrin scaffold rule",
+        "reward configuration"
+      ],
+      "output_schema": [
+        "candidate SMILES",
+        "generation log probability",
+        "validity status",
+        "parent/action trace"
+      ],
+      "supported_metrics": [
+        "D001",
+        "D003",
+        "D004",
+        "D005",
+        "D008"
+      ],
+      "parameters": {
+        "representation": "SMILES",
+        "fragmentation": "RECAP",
+        "scaffold": "porphyrin",
+        "policy_parameters": "to be provided"
+      },
+      "validation": {
+        "test_data": "not provided",
+        "metrics": {
+          "valid_smiles": "required",
+          "unique_rate": "required",
+          "scaffold_retention": "required",
+          "reward_direction": "required"
+        },
+        "applicability_domain": "porphyrin-centered SMILES edits",
+        "known_failures": [
+          "invalid valence",
+          "broken aromaticity",
+          "scaffold loss",
+          "out-of-domain substituents"
+        ]
+      },
+      "evidence_refs": [
+        "Materials expert input"
+      ]
+    },
+    {
+      "model_id": "MODEL-002",
+      "name": "SMILES parser/standardizer",
+      "role": "constraint_checker",
+      "status": "proposed",
+      "source": {
+        "type": "package",
+        "location": "not provided",
+        "version": "unknown"
+      },
+      "entrypoint": {
+        "command": "",
+        "script": "",
+        "environment": "",
+        "working_directory": ""
+      },
+      "human_provision": {
+        "model_information_provided": false,
+        "script_location_provided": false,
+        "executable_interface_exposed": false,
+        "parameter_interface_exposed": false,
+        "access_level": "none",
+        "authorized_parameters": [],
+        "prohibited_actions": [],
+        "provided_by": "not provided",
+        "confirmation_ref": ""
+      },
+      "input_schema": [
+        "candidate SMILES"
+      ],
+      "output_schema": [
+        "canonical/standardized SMILES",
+        "validity",
+        "charge",
+        "multiplicity proxy",
+        "molecular graph"
+      ],
+      "supported_metrics": [
+        "structure validity",
+        "scaffold retention",
+        "RECAP edit legality"
+      ],
+      "parameters": {},
+      "validation": {
+        "test_data": "must be supplied",
+        "metrics": {
+          "validity": "100% on smoke-test set required"
+        },
+        "applicability_domain": "organic/coordination structures supported by selected toolkit",
+        "known_failures": [
+          "metals or unusual valence if toolkit unsupported"
+        ]
+      },
+      "evidence_refs": [
+        "Materials expert input"
+      ]
+    },
+    {
+      "model_id": "MODEL-003",
+      "name": "DFT/TD-DFT evaluator",
+      "role": "physics_calculator",
+      "status": "proposed",
+      "source": {
+        "type": "package",
+        "location": "not provided",
+        "version": "unknown"
+      },
+      "entrypoint": {
+        "command": "",
+        "script": "",
+        "environment": "",
+        "working_directory": ""
+      },
+      "human_provision": {
+        "model_information_provided": false,
+        "script_location_provided": false,
+        "executable_interface_exposed": false,
+        "parameter_interface_exposed": false,
+        "access_level": "none",
+        "authorized_parameters": [],
+        "prohibited_actions": [
+          "silently change functional/basis/solvent",
+          "return untracked state assignments"
+        ],
+        "provided_by": "not provided",
+        "confirmation_ref": ""
+      },
+      "input_schema": [
+        "standardized SMILES/3D structure",
+        "charge",
+        "multiplicity",
+        "conformer policy",
+        "method/basis/solvent config"
+      ],
+      "output_schema": [
+        "D001",
+        "D003",
+        "D004",
+        "D005",
+        "D006",
+        "D008",
+        "D010",
+        "convergence status",
+        "uncertainty metadata"
+      ],
+      "supported_metrics": [
+        "D001",
+        "D003",
+        "D004",
+        "D005",
+        "D006",
+        "D008",
+        "D010"
+      ],
+      "parameters": {
+        "method": "pending expert approval",
+        "basis": "pending expert approval",
+        "solvent": "pending expert approval",
+        "max_conformers": "pending"
+      },
+      "validation": {
+        "test_data": "Round 2 calibration set required",
+        "metrics": {
+          "spectral_error": "required",
+          "state-tracking consistency": "required",
+          "convergence": "required"
+        },
+        "applicability_domain": "porphyrin-centered candidates",
+        "known_failures": [
+          "large metal complexes",
+          "near-degenerate states",
+          "open-shell convergence"
+        ]
+      },
+      "evidence_refs": [
+        "X001",
+        "X006"
+      ]
+    },
+    {
+      "model_id": "MODEL-004",
+      "name": "Uncertainty and applicability checker",
+      "role": "uncertainty_model",
+      "status": "proposed",
+      "source": {
+        "type": "local",
+        "location": "not provided",
+        "version": "unknown"
+      },
+      "entrypoint": {
+        "command": "",
+        "script": "",
+        "environment": "",
+        "working_directory": ""
+      },
+      "human_provision": {
+        "model_information_provided": false,
+        "script_location_provided": false,
+        "executable_interface_exposed": false,
+        "parameter_interface_exposed": false,
+        "access_level": "none",
+        "authorized_parameters": [],
+        "prohibited_actions": [],
+        "provided_by": "not provided",
+        "confirmation_ref": ""
+      },
+      "input_schema": [
+        "structure descriptors",
+        "evaluator outputs",
+        "training/calibration domain"
+      ],
+      "output_schema": [
+        "uncertainty",
+        "out-of-domain flag",
+        "manual-review flag"
+      ],
+      "supported_metrics": [
+        "all active proxy metrics"
+      ],
+      "parameters": {
+        "threshold": "pending calibration"
+      },
+      "validation": {
+        "test_data": "required",
+        "metrics": {
+          "coverage": "required",
+          "calibration": "required"
+        },
+        "applicability_domain": "calibration set only",
+        "known_failures": [
+          "no calibration data"
+        ]
+      },
+      "evidence_refs": [
+        "Orchestration skill requirement"
+      ]
+    },
+    {
+      "model_id": "MODEL-R2-DESCRIPTOR",
+      "name": "Physicochemical and graph-descriptor evaluator",
+      "role": "predictor",
+      "status": "proposed",
+      "source": {
+        "type": "package",
+        "location": "not provided",
+        "version": "unknown"
+      },
+      "entrypoint": {
+        "command": "",
+        "script": "",
+        "environment": "",
+        "working_directory": ""
+      },
+      "human_provision": {
+        "model_information_provided": false,
+        "script_location_provided": false,
+        "executable_interface_exposed": false,
+        "parameter_interface_exposed": false,
+        "access_level": "none",
+        "authorized_parameters": [],
+        "prohibited_actions": [
+          "silently change descriptor definitions",
+          "mix logP/logD or formal/partial charge"
+        ],
+        "provided_by": "not provided",
+        "confirmation_ref": ""
+      },
+      "input_schema": [
+        "standardized SMILES",
+        "charge/protonation",
+        "metal/counterion policy"
+      ],
+      "output_schema": [
+        "charge",
+        "symmetry",
+        "SA",
+        "logP",
+        "TPSA",
+        "MW",
+        "descriptor provenance"
+      ],
+      "supported_metrics": [
+        "charge",
+        "symmetry",
+        "SA",
+        "logP",
+        "TPSA",
+        "MW"
+      ],
+      "parameters": {
+        "logP_model": "pending",
+        "symmetry_definition": "pending",
+        "SA_implementation": "pending",
+        "metal_handling": "pending"
+      },
+      "validation": {
+        "test_data": "Round 2 descriptor calibration set required",
+        "metrics": {
+          "implementation_agreement": "required",
+          "porphyrin/metal edge cases": "required"
+        },
+        "applicability_domain": "porphyrin-centered SMILES",
+        "known_failures": [
+          "undefined symmetry",
+          "metallated macrocycles",
+          "ionization ambiguity"
+        ]
+      },
+      "evidence_refs": [
+        "X003",
+        "X004",
+        "X006",
+        "X007"
+      ]
+    }
+  ],
+  "reward_components": [
+    {
+      "component_id": "RC-R2-001",
+      "metric_id": "SOCME",
+      "evaluator_id": "EVAL-R2-SOCME",
+      "role": "objective",
+      "direction": "maximize",
+      "threshold": {
+        "status": "calibrate_by_state_pair_and_scaffold"
+      },
+      "normalization": "rank",
+      "weight": 0.25,
+      "uncertainty_penalty": "penalize missing/ambiguous state pair and out-of-domain SOC",
+      "missing_policy": "manual_review",
+      "status": "proposed",
+      "evidence_refs": [
+        "X001",
+        "X002"
+      ]
+    },
+    {
+      "component_id": "RC-R2-002",
+      "metric_id": "E(S1)-E(T1)",
+      "evaluator_id": "EVAL-R2-E(S1)-E(T1)",
+      "role": "soft_constraint",
+      "direction": "minimize",
+      "threshold": {
+        "value": 0.4,
+        "unit": "eV",
+        "status": "provisional_scaffold_local"
+      },
+      "normalization": "piecewise",
+      "weight": 0.2,
+      "uncertainty_penalty": "penalize state-ordering uncertainty",
+      "missing_policy": "manual_review",
+      "status": "proposed",
+      "evidence_refs": [
+        "X001",
+        "X002"
+      ]
+    },
+    {
+      "component_id": "RC-R2-003",
+      "metric_id": "E(S1)",
+      "evaluator_id": "EVAL-R2-E(S1)",
+      "role": "objective",
+      "direction": "target_range",
+      "threshold": {
+        "range": [
+          1.55,
+          2.07
+        ],
+        "unit": "eV",
+        "status": "provisional_600_800_nm_band"
+      },
+      "normalization": "piecewise",
+      "weight": 0.2,
+      "uncertainty_penalty": "penalize excitation uncertainty and low oscillator strength",
+      "missing_policy": "manual_review",
+      "status": "proposed",
+      "evidence_refs": [
+        "X001",
+        "X005"
+      ]
+    },
+    {
+      "component_id": "RC-R2-004",
+      "metric_id": "charge",
+      "evaluator_id": "EVAL-R2-charge",
+      "role": "hard_constraint",
+      "direction": "target_range",
+      "threshold": {
+        "status": "expert_defined_allowed_charge_set"
+      },
+      "normalization": "none",
+      "weight": 0,
+      "uncertainty_penalty": "reject invalid charge/multiplicity",
+      "missing_policy": "reject",
+      "status": "proposed",
+      "evidence_refs": [
+        "Materials expert input"
+      ]
+    },
+    {
+      "component_id": "RC-R2-005",
+      "metric_id": "SA",
+      "evaluator_id": "EVAL-R2-SA",
+      "role": "soft_constraint",
+      "direction": "minimize",
+      "threshold": {
+        "value": 6,
+        "unit": "SA score",
+        "status": "provisional_original_distribution"
+      },
+      "normalization": "piecewise",
+      "weight": 0.1,
+      "uncertainty_penalty": "penalize out-of-domain macrocycle/metal score",
+      "missing_policy": "manual_review",
+      "status": "proposed",
+      "evidence_refs": [
+        "X003",
+        "X004"
+      ]
+    },
+    {
+      "component_id": "RC-R2-006",
+      "metric_id": "logP",
+      "evaluator_id": "EVAL-R2-logP",
+      "role": "soft_constraint",
+      "direction": "target_range",
+      "threshold": {
+        "range": [
+          0,
+          5
+        ],
+        "unit": "logP",
+        "status": "broad_screen_only"
+      },
+      "normalization": "piecewise",
+      "weight": 0.05,
+      "uncertainty_penalty": "penalize ionization/aggregation ambiguity",
+      "missing_policy": "manual_review",
+      "status": "proposed",
+      "evidence_refs": [
+        "X006",
+        "X007"
+      ]
+    },
+    {
+      "component_id": "RC-R2-007",
+      "metric_id": "TPSA",
+      "evaluator_id": "EVAL-R2-TPSA",
+      "role": "soft_constraint",
+      "direction": "target_range",
+      "threshold": {
+        "range": [
+          0,
+          140
+        ],
+        "unit": "A^2",
+        "status": "broad_screen_only"
+      },
+      "normalization": "piecewise",
+      "weight": 0.05,
+      "uncertainty_penalty": "penalize undefined metal/porphyrin handling",
+      "missing_policy": "manual_review",
+      "status": "proposed",
+      "evidence_refs": [
+        "X006",
+        "X007"
+      ]
+    },
+    {
+      "component_id": "RC-R2-008",
+      "metric_id": "MW",
+      "evaluator_id": "EVAL-R2-MW",
+      "role": "soft_constraint",
+      "direction": "target_range",
+      "threshold": {
+        "value": 500,
+        "unit": "Da",
+        "status": "broad_screen_only_not_hard_cutoff"
+      },
+      "normalization": "piecewise",
+      "weight": 0.02,
+      "uncertainty_penalty": "none",
+      "missing_policy": "reject",
+      "status": "proposed",
+      "evidence_refs": [
+        "X005",
+        "X006",
+        "X007"
+      ]
+    }
+  ],
+  "workflow": {
+    "workflow_id": "WF-ORCH-R2",
+    "status": "draft",
+    "objective": "Generate valid porphyrin-centered SMILES and rank them using a revised photophysical/developability priority set requested by the materials scientist.",
+    "search_space": {
+      "definition": "SMILES molecular generation using RECAP edits around a retained porphyrin scaffold.",
+      "allowed_regions": [
+        "valid standardized SMILES",
+        "porphyrin core retained",
+        "RECAP-compatible fragment substitutions",
+        "charge/multiplicity explicitly represented"
+      ],
+      "forbidden_regions": [
+        "invalid valence/aromaticity",
+        "scaffold deletion unless expert-approved",
+        "untracked metals/charges",
+        "candidates outside evaluator applicability domain"
+      ],
+      "expert_rules": [
+        "Porphyrin is the default scaffold family, not a claim of universal superiority.",
+        "Do not mix Type-I and Type-II triplet-energy rewards in one run."
+      ]
+    },
+    "nodes": [
+      {
+        "node_id": "N001",
+        "action": "load",
+        "model_id": "MODEL-002",
+        "inputs": [
+          "seed SMILES",
+          "RECAP vocabulary",
+          "porphyrin scaffold rule"
+        ],
+        "outputs": [
+          "standardized valid seed set"
+        ],
+        "retry_policy": "manual review after parser failure",
+        "stop_on_failure": true
+      },
+      {
+        "node_id": "N002",
+        "action": "generate",
+        "model_id": "MODEL-001",
+        "inputs": [
+          "valid seed set",
+          "RECAP actions",
+          "policy state"
+        ],
+        "outputs": [
+          "candidate SMILES",
+          "edit trace"
+        ],
+        "retry_policy": "retry invalid action with masked action space; stop after configured failure rate",
+        "stop_on_failure": false
+      },
+      {
+        "node_id": "N003",
+        "action": "check",
+        "model_id": "MODEL-002",
+        "inputs": [
+          "candidate SMILES"
+        ],
+        "outputs": [
+          "validity",
+          "scaffold retention",
+          "RECAP legality",
+          "charge/multiplicity metadata"
+        ],
+        "retry_policy": "reject invalid candidates",
+        "stop_on_failure": false
+      },
+      {
+        "node_id": "N004",
+        "action": "calculate",
+        "model_id": "MODEL-003",
+        "inputs": [
+          "valid candidates",
+          "approved quantum protocol"
+        ],
+        "outputs": [
+          "D001,D003,D004,D005,D006,D008,D010",
+          "convergence and uncertainty"
+        ],
+        "retry_policy": "one controlled retry; then manual review",
+        "stop_on_failure": false
+      },
+      {
+        "node_id": "N005",
+        "action": "check",
+        "model_id": "MODEL-004",
+        "inputs": [
+          "DFT outputs",
+          "calibration domain"
+        ],
+        "outputs": [
+          "uncertainty",
+          "OOD flag",
+          "manual-review flag"
+        ],
+        "retry_policy": "defer OOD candidates",
+        "stop_on_failure": false
+      },
+      {
+        "node_id": "N006",
+        "action": "score",
+        "model_id": "MODEL-001",
+        "inputs": [
+          "hard constraints",
+          "proxy outputs",
+          "uncertainty"
+        ],
+        "outputs": [
+          "branch-specific reward",
+          "component scores"
+        ],
+        "retry_policy": "stop scoring if direction/units fail",
+        "stop_on_failure": true
+      },
+      {
+        "node_id": "N007",
+        "action": "select",
+        "model_id": "MODEL-001",
+        "inputs": [
+          "rewarded valid candidates"
+        ],
+        "outputs": [
+          "Pareto/frontier or top-k candidates",
+          "diversity statistics"
+        ],
+        "retry_policy": "manual review if diversity collapses",
+        "stop_on_failure": false
+      },
+      {
+        "node_id": "N008",
+        "action": "review",
+        "model_id": "MODEL-004",
+        "inputs": [
+          "candidate report",
+          "proxy scores",
+          "failure log"
+        ],
+        "outputs": [
+          "expert feedback request",
+          "experimental shortlist"
+        ],
+        "retry_policy": "pause on critical issue",
+        "stop_on_failure": true
+      },
+      {
+        "node_id": "N009",
+        "action": "export",
+        "model_id": "MODEL-001",
+        "inputs": [
+          "shortlist",
+          "full provenance"
+        ],
+        "outputs": [
+          "SMILES shortlist",
+          "evaluation metadata",
+          "RL training log"
+        ],
+        "retry_policy": "manual retry",
+        "stop_on_failure": true
+      },
+      {
+        "node_id": "N010",
+        "action": "calculate",
+        "model_id": "MODEL-R2-DESCRIPTOR",
+        "inputs": [
+          "standardized valid candidates"
+        ],
+        "outputs": [
+          "charge",
+          "symmetry",
+          "SA",
+          "logP",
+          "TPSA",
+          "MW"
+        ],
+        "retry_policy": "one controlled retry; then manual review",
+        "stop_on_failure": false
+      }
+    ],
+    "budget": {
+      "max_candidates": 1000,
+      "max_evaluations": 200,
+      "max_runtime": "not specified",
+      "compute_limit": "not specified"
+    },
+    "stopping_conditions": [
+      "smoke test passes before formal run",
+      "no valid candidates after configured generation budget",
+      "proxy reward plateau defined after calibration",
+      "uncertainty/OOD rate exceeds expert-approved limit",
+      "expert pause or critical constraint conflict",
+      "budget exhausted"
+    ]
+  },
+  "parameter_controls": [
+    {
+      "parameter_id": "PARAM-001",
+      "target": "generator",
+      "name": "policy learning rate",
+      "current_value": null,
+      "allowed_range": [],
+      "allowed_values": [],
+      "adjustment_mode": "fixed",
+      "trigger": "not adjustable until interface and range are provided",
+      "max_change_per_round": null,
+      "rollback_value": null,
+      "change_history": []
+    },
+    {
+      "parameter_id": "PARAM-002",
+      "target": "optimizer",
+      "name": "RL reward weights",
+      "current_value": {
+        "D001": 0.35,
+        "D004": 0.15,
+        "D005": 0.15,
+        "D008": 0.1
+      },
+      "allowed_range": [
+        "expert-approved simplex only"
+      ],
+      "allowed_values": [],
+      "adjustment_mode": "manual",
+      "trigger": "only after calibration and expert review",
+      "max_change_per_round": "not specified",
+      "rollback_value": "previous approved vector",
+      "change_history": []
+    },
+    {
+      "parameter_id": "PARAM-003",
+      "target": "workflow",
+      "name": "mechanism branch",
+      "current_value": "unselected",
+      "allowed_range": [],
+      "allowed_values": [
+        "type_ii",
+        "type_i"
+      ],
+      "adjustment_mode": "manual",
+      "trigger": "domain-expert branch decision",
+      "max_change_per_round": 1,
+      "rollback_value": "unselected",
+      "change_history": []
+    }
+  ],
+  "expert_feedback_history": [],
+  "expert_activity_log": [
+    {
+      "activity_id": "EA-001",
+      "expert_role": "domain_expert",
+      "action_type": "provide",
+      "target_type": "search_space",
+      "target_id": "WF-ORCH-R1",
+      "contribution": "Specified SMILES representation, RECAP fragmentation and porphyrin as a common scaffold.",
+      "decision_or_effect": "Used to define the proposed search space and structure hard constraint.",
+      "evidence_refs": [
+        "Materials expert input"
+      ],
+      "timestamp": "2026-10-31",
+      "status": "recorded"
+    },
+    {
+      "activity_id": "EA-002",
+      "expert_role": "computer_expert",
+      "action_type": "recommend",
+      "target_type": "workflow",
+      "target_id": "WF-ORCH-R1",
+      "contribution": "Requested an RL framework for molecular-generation optimization.",
+      "decision_or_effect": "Registered generator as proposed and created reward/evaluator interfaces; no executable model was assumed.",
+      "evidence_refs": [
+        "Computer expert input"
+      ],
+      "timestamp": "2026-10-31",
+      "status": "recorded"
+    },
+    {
+      "activity_id": "EA-R2-001",
+      "expert_role": "domain_expert",
+      "action_type": "rank",
+      "target_type": "metric",
+      "target_id": "SOCME,HOMO-LUMO gap,E(S1)-E(T1),E(S1),charge,symmetry,SA,logP,TPSA,MW",
+      "contribution": "Requested updated priority ranking for ten metrics.",
+      "decision_or_effect": "Created a dedicated Round 2 ranking and reward-role layer; all decisions remain proposed.",
+      "evidence_refs": [
+        "Materials scientist Round 2 request"
+      ],
+      "timestamp": "2026-10-31",
+      "status": "recorded"
+    }
+  ],
+  "run_history": [],
+  "version_history": [
+    {
+      "version": "0.2.0-draft",
+      "change": "Updated requested metric ranking and added descriptor evaluator/reward roles",
+      "timestamp": "2026-10-31",
+      "status": "draft"
+    }
+  ],
+  "stop_policy": [
+    "pause on unresolved branch conflict",
+    "pause on missing evaluator interface",
+    "pause on invalid reward direction or units",
+    "pause on OOD/uncertainty breach",
+    "pause on expert veto"
+  ],
+  "external_evidence": [
+    {
+      "evidence_id": "X001",
+      "source": "TD-DFT review of porphyrinoid photosensitizers",
+      "url": "https://doi.org/10.3390/molecules26237176",
+      "supports": [
+        "SOCME",
+        "E(S1)-E(T1)",
+        "E(S1)",
+        "Type-II T1 threshold",
+        "method dependence"
+      ]
+    },
+    {
+      "evidence_id": "X002",
+      "source": "DFT study of BODIPY photosensitizers",
+      "url": "https://www.frontiersin.org/journals/physics/articles/10.3389/fphy.2018.00143/full",
+      "supports": [
+        "SOCME",
+        "E(S1)-E(T1)",
+        "T1 oxygen threshold",
+        "heavy atom effects"
+      ]
+    },
+    {
+      "evidence_id": "X003",
+      "source": "Ertl and Schuffenhauer synthetic accessibility score",
+      "url": "https://doi.org/10.1186/1758-2946-1-8",
+      "supports": [
+        "SA definition",
+        "SA 1-10 interpretation",
+        "synthetic complexity"
+      ]
+    },
+    {
+      "evidence_id": "X004",
+      "source": "Integrating synthetic accessibility with AI-based generative drug design",
+      "url": "https://doi.org/10.1186/s13321-023-00742-8",
+      "supports": [
+        "SA as generation reward",
+        "continuous accessibility scores",
+        "limits of SA proxies"
+      ]
+    },
+    {
+      "evidence_id": "X005",
+      "source": "Photodynamic Therapy in the Treatment of Cancer—Selection of Synthetic Photosensitizers",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11279632/",
+      "supports": [
+        "porphyrin scaffold",
+        "600-800 nm context",
+        "photosensitizer developability"
+      ]
+    },
+    {
+      "evidence_id": "X006",
+      "source": "Physicochemical and topological parameters in drug design",
+      "url": "https://www.frontiersin.org/journals/drug-discovery/articles/10.3389/fddsv.2024.1424402/full",
+      "supports": [
+        "logP",
+        "TPSA",
+        "MW",
+        "physicochemical descriptor interpretation"
+      ]
+    },
+    {
+      "evidence_id": "X007",
+      "source": "Lipinski-style property thresholds and common drug-like filters",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/20206562/",
+      "supports": [
+        "MW/logP/TPSA as developability filters",
+        "context dependence"
+      ]
+    }
+  ]
+}

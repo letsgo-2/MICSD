@@ -1,0 +1,84 @@
+project: "Performance Evaluation: First-Round Pool Analysis, Round 2"
+input_state: "external_results_only_with_unverified_legacy_provenance"
+status: "open"
+review_items:
+  - issue_id: PE2-001
+    category: "provenance"
+    question: "Confirm whether total_pool.csv power_density values are measured experiments, GBR virtual outputs, or mixed; supply row-level source/value_type and model/run provenance."
+    affected_ids: ["SUBJ-POOL-R1", "PR-POOL-POWER-001", "FIND-POOL-001"]
+    recommendation: "Do not describe these values as physical experiment results until verified. Preserve different value types in separate records/plots."
+    evidence_refs: ["POOL-R1", "EVAL-R2-004"]
+    required_expert_ids: ["data_owner", "EXP-COMP-ROUND2"]
+    priority: "critical"
+    blocking: true
+    status: "open"
+  - issue_id: PE2-002
+    category: "input"
+    question: "Provide power_density unit, area basis, target device, reaction, protocol/device ID and operating conditions for the pool rows."
+    affected_ids: ["PR-POOL-POWER-001", "BIND-POOL-POWER-R2", "BM-CREST-CONTEXT-001"]
+    recommendation: "Stratify comparisons by compatible conditions; keep CRESt reference context-only until matched."
+    evidence_refs: ["POOL-R1", "EVAL-R2-005"]
+    required_expert_ids: ["EXP-MAT-ROUND2", "electrochemical_device_expert", "data_owner"]
+    priority: "critical"
+    blocking: true
+    status: "open"
+  - issue_id: PE2-003
+    category: "input"
+    question: "Confirm whether ratio lists are mass fractions or atomic fractions; approve conversion/provenance into expert order [Pd, Pt, Au, Cr, Ir, Ce, Cu, Nb]."
+    affected_ids: ["PR-TOP-DECILE-001", "BIND-POOL-COMP-R2"]
+    recommendation: "Current analysis decodes legacy order [Pd,Pt,Cu,Au,Ir,Ce,Nb,Cr] and only permutes columns by symbol for display; no basis conversion was performed."
+    evidence_refs: ["POOL-R1", "execution_orchestration_round2/execution_orchestration_round2.yaml:composition_migration"]
+    required_expert_ids: ["EXP-MAT-ROUND2", "analytical_characterization_expert"]
+    priority: "critical"
+    blocking: true
+    status: "open"
+  - issue_id: PE2-004
+    category: "metric"
+    question: "Define normalized_cost formula, units, price source/vintage, and whether it is a legacy proxy or actual cost. Provide actual precursor/electrode cost if cost-effectiveness is to be evaluated."
+    affected_ids: ["PR-POOL-COST-001", "PR-POOL-ASSOC-001", "VIS-POOL-PARETO-R2"]
+    recommendation: "Retain current results only as legacy normalized-cost proxy; don't call it actual material cost."
+    evidence_refs: ["POOL-R1", "EVAL-R2-003", "AL/catalyst_active_learning_runnable/catalyst_al/costs.py"]
+    required_expert_ids: ["procurement_cost_expert", "EXP-COMP-ROUND2"]
+    priority: "high"
+    blocking: true
+    status: "open"
+  - issue_id: PE2-005
+    category: "result"
+    question: "Provide actual iteration number, candidate source, selection/rejection status, and run/config/model version for each row; verify whether IDs 1-10 are seeds and whether subsequent IDs represent retained candidates."
+    affected_ids: ["FIND-POOL-004", "PLAN-COMP-AUDIT-R2"]
+    recommendation: "Do not infer iteration from monotonically increasing id; current analysis treats id as row ID only."
+    evidence_refs: ["POOL-R1", "AL/catalyst_active_learning_runnable/catalyst_al/pipeline.py"]
+    required_expert_ids: ["EXP-COMP-ROUND2", "data_owner"]
+    priority: "critical"
+    blocking: true
+    status: "open"
+  - issue_id: PE2-006
+    category: "model"
+    question: "Supply paired held-out measured target and model prediction, model ID/version, split identifiers, and prediction uncertainty/calibration output."
+    affected_ids: ["FIND-POOL-004", "SUBJ-AL-MODEL", "EVAL-R2-007"]
+    recommendation: "Predictor accuracy is not evaluable from total_pool.csv; provide a group/batch-held-out prediction table to compute MAE/RMSE/R2 and interval coverage if available."
+    evidence_refs: ["POOL-R1", "AL/catalyst_active_learning_runnable/catalyst_al/model.py"]
+    required_expert_ids: ["EXP-COMP-ROUND2", "model_owner"]
+    priority: "critical"
+    blocking: true
+    status: "open"
+  - issue_id: PE2-007
+    category: "comparison"
+    question: "Approve the descriptive top-decile rule as a reporting slice only, or provide a pre-registered scientific power threshold for future confirmation."
+    affected_ids: ["PR-TOP-DECILE-001", "FIND-POOL-003"]
+    recommendation: "Current q90 is pool-derived and post-selection; don't use as performance acceptance threshold or for hypothesis tests."
+    evidence_refs: ["POOL-R1"]
+    required_expert_ids: ["EXP-MAT-ROUND2"]
+    priority: "medium"
+    blocking: false
+    status: "open"
+  - issue_id: PE2-008
+    category: "metric"
+    question: "Provide independent replicate/batch data for high-performing recipes and clarify whether formulation stability means repeatability or long-term durability."
+    affected_ids: ["M_FORMULATION_STABILITY", "FIND-POOL-003"]
+    recommendation: "Do not infer stability from high scores or composition; report replicate SD/CV/interval only with appropriate independent replicates."
+    evidence_refs: ["execution_orchestration_round2/execution_review_queue_round2.yaml:EO2-008"]
+    required_expert_ids: ["EXP-MAT-ROUND2", "experimental_expert"]
+    priority: "high"
+    blocking: true
+    status: "open"

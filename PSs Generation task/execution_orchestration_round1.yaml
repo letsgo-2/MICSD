@@ -9,7 +9,7 @@ project:
   molecular_representation: SMILES
   fragmentation_rule: RECAP
   initial_scaffold_policy: "porphyrin_scaffold_first"
-  status: proposed_pending_expert_review
+  status: "working_plan_accepted_detailed_configuration_unconfirmed"
 
 metric_candidates:
   - metric_id: M-VALID
@@ -25,7 +25,7 @@ metric_candidates:
     conditions: ["RDKit parser", "RDKit sanitization"]
     acquisition: ["rdkit.Chem.MolFromSmiles", "rdkit.Chem.SanitizeMol"]
     evidence_refs: [RDKit-DOC]
-    expert_status: pending
+    expert_status: "confirmed_as_chemical_validity_gate"
     unresolved_fields: []
   - metric_id: M-SCAFFOLD
     name: "Porphyrin scaffold preservation"
@@ -40,7 +40,8 @@ metric_candidates:
     conditions: ["round1 porphyrin branch"]
     acquisition: ["substructure search", "scaffold similarity"]
     evidence_refs: [USER-PORPHYRIN, R2-S001, R2-S007]
-    expert_status: pending
+    expert_status: "confirmed_as_working_scaffold_family_exact_structure_unconfirmed"
+    expert_feedback_refs: [PS-EO-R1-INPUTS]
     unresolved_fields: ["exact scaffold SMARTS", "allowed porphyrinoid variants"]
   - metric_id: R2-I001
     name: "TD-DFT absorption wavelength lambda_abs"
@@ -56,7 +57,7 @@ metric_candidates:
     conditions: ["same TD-DFT method", "same solvent model", "target transition selected with nonzero oscillator strength"]
     acquisition: [physics_compute, surrogate]
     evidence_refs: [R2-I001, R2-O001]
-    expert_status: pending
+    expert_status: "accepted_as_initial_candidate_metric"
     unresolved_fields: ["final light source", "method calibration error"]
   - metric_id: R2-I003-TYPEII
     name: "T1-S0 energy gap for Type-II PDT"
@@ -72,7 +73,7 @@ metric_candidates:
     conditions: ["Type-II branch only", "consistent DFT method"]
     acquisition: [physics_compute, surrogate]
     evidence_refs: [R2-I003, R2-O001]
-    expert_status: pending
+    expert_status: "accepted_as_initial_candidate_metric"
     unresolved_fields: ["whether 0.98 or 1.13 eV is used as hard gate"]
   - metric_id: R2-I004
     name: "Minimum S1-Tn energy gap"
@@ -87,7 +88,7 @@ metric_candidates:
     conditions: ["low-lying triplet states", "combine with SOC if possible"]
     acquisition: [physics_compute, surrogate]
     evidence_refs: [R2-I004, R2-O002]
-    expert_status: pending
+    expert_status: "accepted_as_initial_candidate_metric"
     unresolved_fields: ["number of triplet states to compute"]
   - metric_id: R2-I002
     name: "Oscillator strength"
@@ -102,7 +103,7 @@ metric_candidates:
     conditions: ["same method", "same transition selection"]
     acquisition: [physics_compute, surrogate]
     evidence_refs: [R2-I002, R2-O004]
-    expert_status: pending
+    expert_status: "accepted_as_initial_candidate_metric"
     unresolved_fields: []
   - metric_id: R2-I008
     name: "Aggregation-risk proxy"
@@ -117,7 +118,7 @@ metric_candidates:
     conditions: ["aqueous or biological media", "porphyrinoid/Pc branch"]
     acquisition: [derive, estimate, physics_compute]
     evidence_refs: [R2-I008, R2-E001, R2-E002]
-    expert_status: pending
+    expert_status: "accepted_as_initial_candidate_metric"
     unresolved_fields: ["exact score formula"]
   - metric_id: M-RECAP-SA
     name: "RECAP compatibility and synthetic accessibility"
@@ -132,7 +133,8 @@ metric_candidates:
     conditions: ["fragment RL branch"]
     acquisition: ["rdkit.Chem.Recap.RecapDecompose", "SA score or expert synthesis checker"]
     evidence_refs: [RDKit-DOC, RL-FRAGMENT-REF]
-    expert_status: pending
+    expert_status: "recap_rule_confirmed_fragment_bounds_and_sa_cutoff_unconfirmed"
+    expert_feedback_refs: [PS-EO-R1-INPUTS]
     unresolved_fields: ["SA score cutoff", "approved reactions/fragments"]
 
 metric_decisions:
@@ -155,7 +157,7 @@ metric_decisions:
     evaluator_id: MODEL-003
     decision_status: proposed
     evidence_refs: [USER-PORPHYRIN, SCAFFOLD-RL-REF]
-    expert_feedback_refs: []
+    expert_feedback_refs: [PS-EO-R1-INPUTS]
   - metric_id: R2-I001
     final_role: primary_objective
     rank: 3
@@ -358,3 +360,80 @@ blocking_issues:
   - "DFT method stack and computational budget must be approved."
   - "Decide whether Type-II is the active first branch or whether Type-I should be activated."
   - "Define whether metal-containing candidates are allowed in round1."
+
+expert_feedback_reconciliation:
+  annotation_date: '2026-10-30'
+  annotation_type: retrospective_dialogue_based_status_reconciliation
+  scope: General knowledge, task inputs, candidate metrics, selected optimization metrics and constraint requirements
+    may be confirmed at their own stage. This is retrospective interpretation, not newly completed independent itemwise
+    validation.
+  source_file: multi_round_dialogue_example_EN.txt
+  source_sha256: ebb57f5513ccd2ee131a9971088e81acaa8e6b610f46e7df5afea5890dbc12d8
+  itemwise_expert_verification_completed: false
+  numerical_values_units_and_thresholds_certified: false
+  execution_authorized_by_this_annotation: false
+  note: No original-status fields or new original-file backup are retained in this update. Source dialogue and confirmation
+    scope remain recorded. Unanswered review items, quantitative settings, checkpoint approval and run authorization
+    remain unresolved.
+  feedback_records:
+  - feedback_id: PS-EO-R1-INPUTS
+    source_file: multi_round_dialogue_example_EN.txt
+    source_line: 12
+    source_excerpt: 'Please run the Execution Orchestration Skill. Based on the three output files from the knowledge-alignment
+      stage, design a task-execution workflow. Provide necessary recommendations, especially recommendations for metric
+      ranking and corresponding threshold guidance, preferably supported by evidence. The materials expert provides the
+      following information: molecules are generally represented using SMILES, RECAP is used as the molecular fragmentation
+      rule, and porphyrin is a commonly used scaffold. The computer expert intends to construct a reinforcement-learning
+      framework for molecular-generation optimization. Add the suffix `round1` to the output filenames.'
+    attributed_expert_role: materials expert and computer expert
+    action: provide_task_inputs
+    confirmed_scope: SMILES representation; RECAP fragmentation rule; porphyrin as a common scaffold; intention to use
+      reinforcement learning.
+    not_confirmed: No approval of exact scaffold SMARTS, allowed variants, Type-II-only routing, specific algorithm,
+      validator implementation, SA cutoff or execution.
+    original_expert_review_date: null
+    provenance: User-provided dialogue example; no independent signature or original execution log is supplied.
+  - feedback_id: PS-EO-R2-METRICS
+    source_file: multi_round_dialogue_example_EN.txt
+    source_line: 15
+    source_excerpt: 'The materials scientist requests an updated priority ranking for the following metrics: SOCME, HOMO–LUMO
+      gap, E(S1)−E(T1), E(S1), charge, symmetry, SA, logP, TPSA, and molecular weight (MW). Update the output files and
+      add the suffix `round2`.'
+    attributed_expert_role: materials scientist
+    action: request_metric_reprioritization
+    confirmed_scope: The ten named metrics must be considered in the revised priority organization.
+    not_confirmed: No explicit approval of the generated numerical ranks, objective roles, exact definitions, weights
+      or thresholds.
+    original_expert_review_date: null
+    provenance: User-provided dialogue example; no independent signature or original execution log is supplied.
+  - feedback_id: PS-EO-R3-SELECTION
+    source_file: multi_round_dialogue_example_EN.txt
+    source_line: 18
+    source_excerpt: The computer scientist ultimately selects E(S1)−E(T1), charge, and symmetry as the three metrics.
+      The training framework's metric-configuration files, predictive-model execution paths, and other parameters can
+      be obtained from `SDPD/AGENT_INTERFACE.md`. Inspect and update the model information and interfaces independently,
+      improve the workflow, and report the proposed execution procedure to me for confirmation. Do not run it without
+      authorization. Clearly specify all output paths. Update the previous round's output files and add the suffix `round3`.
+    attributed_expert_role: computer scientist
+    action: select_optimization_metrics
+    confirmed_scope: Exactly ES1-ET1, charge, and symmetry are selected as the optimization metrics; inspect the supplied
+      SDPD interface.
+    not_confirmed: No separate approval of configured weights, checkpoint validity, scientific adequacy, scaffold structure,
+      or model execution; the dialogue expressly requires confirmation before running.
+    original_expert_review_date: null
+    provenance: User-provided dialogue example; no independent signature or original execution log is supplied.
+  - feedback_id: PS-PE-R1-TOOLS
+    source_file: multi_round_dialogue_example_EN.txt
+    source_line: 25
+    source_excerpt: Please run the Performance Evaluation Skill. Performance analysis and statistics are now required
+      for the generated photosensitizer molecules and the model. Based on the previous stage's output files and the `SDPD`
+      directory in the project, establish a workflow and provide the necessary tool parameters and plotting-script plan.
+      The computer expert has provided a runtime environment with a Slurm cluster. The materials expert requests the
+      use of RDKit and ORCA for DFT calculations and statistical analysis. Add the suffix `round1` to the output filenames.
+    attributed_expert_role: materials expert and computer expert
+    action: provide_evaluation_tools_and_environment
+    confirmed_scope: Use RDKit and ORCA; a Slurm runtime environment is stated as provided.
+    not_confirmed: No approval of a specific DFT method, partition, resource values, checkpoint or job submission.
+    original_expert_review_date: null
+    provenance: User-provided dialogue example; no independent signature or original execution log is supplied.
+  status_interpretation: Stage-scoped confirmation inferred from supplied dialogue and subsequent workflow use.

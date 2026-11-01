@@ -1,0 +1,199 @@
+schema_version: "0.5.0"
+round: 2
+language: en
+stage: execution-orchestration
+update_of: "../execution_orchestration_round1/execution_orchestration_round1.yaml"
+based_on:
+  - "../execution_orchestration_round1/execution_orchestration_report_round1.md"
+  - "../execution_orchestration_round1/execution_orchestration_round1.yaml"
+  - "../execution_orchestration_round1/execution_review_queue_round1.yaml"
+project_goal: "Generate condition-specific photosensitizer candidates with molecularly supported photochemistry and experimentally defensible safety and targeting evaluation."
+representation:
+  molecule: "canonical_and_isomeric_SMILES"
+  fragmentation_rule: "RECAP"
+  required_seed_family: "porphyrin"
+  policy: "Preserve Round 1 multi-family Pareto search, family labels, molecule-condition metadata, and edit provenance."
+requested_metrics: [SOCME, HOMO_LUMO_gap, E_S1_minus_E_T1, E_S1, charge, symmetry, SA, logP, TPSA, MW]
+computability_boundary:
+  molecular_descriptor_or_calculation: [SOCME, HOMO_LUMO_gap, E_S1_minus_E_T1, E_S1, charge, symmetry, SA, logP, TPSA, MW]
+  not_direct_predictions: [absolute_PhiDelta, absolute_ROS_rate, cellular_IC50, cellular_EC50, dark_toxicity, localization, photostability_in_cells, pyroptosis_fraction, cytokine_release, immune_response]
+  rule: "Requested descriptors are proxies, feasibility descriptors, or diagnostics; none is direct evidence of biological phototherapeutic performance."
+ranking_basis:
+  criteria: [direct_goal_relevance, evidence_and_interpretability, computational_readiness, candidate_discrimination, cost, uncertainty, applicability_domain, condition_completeness]
+  rank_meaning: "Execution priority for this photosensitizer workflow; not universal scientific importance."
+metric_decisions:
+  - metric_id: E_S1
+    aliases: ["S1 energy", "lowest relevant singlet excitation energy"]
+    final_role: primary_objective
+    rank: 1
+    definition: "Energy of the relevant first singlet excited state under a declared electronic-structure protocol."
+    direction: target_range
+    acquisition: ["TD-DFT or validated excited-state method", "conformer ensemble", "solvent model", "state-character inspection"]
+    threshold: {status: contextual_not_universal, guidance: "Map the selected 600-800 nm or 600-850 nm window to energy and use a soft band; no universal molecule-independent cutoff."}
+    evaluator_id: EVAL-E-S1
+    decision_status: proposed
+    ranking_basis: ["direct light-window relevance", "high discrimination", "fixed-protocol eligible", "more actionable than a generic orbital gap"]
+    unresolved_fields: ["functional", "basis", "solvent", "vertical_or_adiabatic_convention", "state_assignment"]
+    evidence_refs: [R1-D001, R1-report-light-window]
+  - metric_id: E_S1_minus_E_T1
+    aliases: ["singlet-triplet energy gap", "Delta E_ST"]
+    final_role: secondary_objective
+    rank: 2
+    definition: "Energy difference between declared S1 and T1 states, with explicit vertical/adiabatic definitions."
+    direction: context_dependent
+    acquisition: ["TD-DFT/TDA or validated excited-state method", "NTO/state-character analysis", "conformer ensemble"]
+    threshold: {status: no_universal_threshold, guidance: "Use a family-calibrated soft ISC regime; do not assume smaller is always better."}
+    evaluator_id: EVAL-DELTA-EST
+    decision_status: proposed_after_protocol
+    ranking_basis: ["mechanistically relevant to ISC", "complements SOCME", "method-sensitive", "requires state definitions"]
+    unresolved_fields: ["vertical_or_adiabatic_definition", "state_ordering", "functional_reference"]
+    evidence_refs: [R1-D003, R1-D004, R2-review-triplet-protocol]
+  - metric_id: SOCME
+    aliases: ["spin-orbit coupling matrix element", "SOC matrix element"]
+    final_role: secondary_objective_and_diagnostic
+    rank: 3
+    definition: "Relativistic matrix element coupling relevant electronic states and supporting ISC analysis."
+    direction: maximize_conditionally
+    acquisition: ["SOC-enabled relativistic TD-DFT or approved effective-core-potential method", "state-pair specification", "energy-gap and vibronic context"]
+    threshold: {status: no_universal_threshold, guidance: "Normalize within a calibrated scaffold family; never use a universal SOCME cutoff or universal PhiDelta predictor."}
+    evaluator_id: EVAL-SOCME
+    decision_status: proposed_after_calibration
+    ranking_basis: ["direct ISC mechanism descriptor", "higher specificity than a generic gap", "expensive", "relativistic and family-transfer uncertainty"]
+    unresolved_fields: ["relativistic_method", "state_pair", "family_calibration", "uncertainty_model"]
+    evidence_refs: [R1-D005, R1-review-SOC]
+  - metric_id: charge
+    aliases: ["formal charge", "partial charge"]
+    final_role: soft_constraint_and_targeting_descriptor
+    rank: 4
+    definition: "Declared formal charge and protocol-specific partial-charge representation for the selected protonation/counterion state."
+    direction: context_dependent
+    acquisition: ["SMILES/formal valence validation", "declared protonation state", "declared partial-charge method"]
+    threshold: {status: application_specific, guidance: "Use formal-charge validity rules and family/application distributions; no universal optimum."}
+    evaluator_id: EVAL-CHARGE
+    decision_status: proposed
+    ranking_basis: ["affects solubility, aggregation, transport, targeting, and redox", "cheap to validate", "strongly condition-dependent"]
+    unresolved_fields: ["pH", "protonation_state", "counterion", "partial_charge_method"]
+    evidence_refs: [R1-representation-policy, R1-scaffold-supplement]
+  - metric_id: logP
+    aliases: ["lipophilicity", "partition coefficient"]
+    final_role: soft_constraint
+    rank: 5
+    definition: "Measured or predicted hydrophobicity under a declared ionization and method convention."
+    direction: target_range
+    acquisition: ["declared logP method", "pH/protonation metadata", "matched calibration set"]
+    threshold: {status: application_specific, guidance: "No universal interval; calibrate to route, formulation, compartment, and ionization state."}
+    evaluator_id: EVAL-LOGP
+    decision_status: proposed_after_calibration
+    ranking_basis: ["delivery and aggregation relevance", "moderate computational cost", "method/pH dependence", "not a photochemical endpoint"]
+    unresolved_fields: ["method", "pH", "ionization_model", "application_compartment"]
+    evidence_refs: [R1-scaffold-supplement, R1-review-targeting]
+  - metric_id: TPSA
+    aliases: ["topological polar surface area"]
+    final_role: soft_constraint
+    rank: 6
+    definition: "Protocol-defined topological polar surface area for the represented molecular form."
+    direction: target_range
+    acquisition: ["fixed descriptor implementation", "declared atom-inclusion convention"]
+    threshold: {status: application_specific, guidance: "No universal threshold; use a route/compartment-specific trade-off with charge and logP."}
+    evaluator_id: EVAL-TPSA
+    decision_status: proposed_after_calibration
+    ranking_basis: ["hydration and transport relevance", "cheap and reproducible after convention fixed", "cannot establish localization alone"]
+    unresolved_fields: ["atom_inclusion_convention", "application_route", "compartment"]
+    evidence_refs: [R1-scaffold-supplement, R1-representation-policy]
+  - metric_id: MW
+    aliases: ["molecular weight", "molecular mass descriptor"]
+    final_role: soft_constraint
+    rank: 7
+    definition: "Declared molecular mass including an explicit policy for metals, counterions, and formulation components."
+    direction: minimize_conditionally
+    acquisition: ["SMILES/formula calculation", "metal and counterion policy", "formulation annotation"]
+    threshold: {status: family_and_formulation_specific, guidance: "No universal project cutoff; avoid penalizing targeted conjugates or metal complexes without a formulation branch."}
+    evaluator_id: EVAL-MW
+    decision_status: proposed
+    ranking_basis: ["easy to calculate", "affects synthesis, delivery, clearance, and compute cost", "weakly mechanistic", "can bias against useful large designs"]
+    unresolved_fields: ["counterion_policy", "metal_accounting", "formulation_scope"]
+    evidence_refs: [R1-representation-policy, R1-scaffold-supplement]
+  - metric_id: HOMO_LUMO_gap
+    aliases: ["frontier orbital gap", "orbital energy gap"]
+    final_role: diagnostic
+    rank: 8
+    definition: "Difference between declared HOMO and LUMO orbital energies under a specified method and charge/solvent state."
+    direction: context_dependent
+    acquisition: ["ground-state DFT", "functional/basis/solvent declaration", "CT diagnostic"]
+    threshold: {status: no_universal_threshold, guidance: "Use only as a contextual redox/donor-acceptor feature; do not substitute for E(S1) or impose a universal target."}
+    evaluator_id: EVAL-HL-GAP
+    decision_status: proposed
+    ranking_basis: ["useful electronic diagnostic", "cheap relative to excited-state calculations", "not an optical gap", "functional/self-interaction sensitivity"]
+    unresolved_fields: ["functional", "basis", "solvent", "orbital_convention", "CT_error"]
+    evidence_refs: [R1-computer-supplement]
+  - metric_id: symmetry
+    aliases: ["molecular symmetry", "symmetry class"]
+    final_role: diagnostic_and_diversity_control
+    rank: 9
+    definition: "Explicit graph, point-group, or continuous symmetry descriptor defined for the represented conformer/molecule."
+    direction: context_dependent
+    acquisition: ["declared symmetry descriptor", "conformer-aware calculation", "family baseline"]
+    threshold: {status: no_universal_threshold, guidance: "Preserve or alter conditionally; do not infer photophysics from symmetry alone."}
+    evaluator_id: EVAL-SYMMETRY
+    decision_status: proposed_after_representation_definition
+    ranking_basis: ["can affect degeneracy, packing, oscillator distribution, and aggregation", "representation-sensitive", "low direct endpoint evidence"]
+    unresolved_fields: ["descriptor_definition", "conformer_policy", "family_baseline"]
+    evidence_refs: [R1-scaffold-supplement, R1-aggregation-policy]
+  - metric_id: SA
+    aliases: ["synthetic accessibility"]
+    final_role: soft_feasibility_constraint
+    rank: 10
+    definition: "Declared synthetic-accessibility score with explicit direction, reaction inventory, and scaffold calibration."
+    direction: minimize_or_maximize_by_score_convention
+    acquisition: ["fixed SA implementation", "reaction inventory", "expert calibration", "scaffold-family validation"]
+    threshold: {status: no_universal_threshold, guidance: "Use as a low-weight feasibility selector until the project defines score convention and reaction inventory."}
+    evaluator_id: EVAL-SA
+    decision_status: proposed_after_calibration
+    ranking_basis: ["prevents impractical RL exploitation", "not a photochemical property", "generic scores can misjudge porphyrins and metal complexes", "cheap post-generation filter"]
+    unresolved_fields: ["score_definition", "direction", "reaction_inventory", "family_calibration"]
+    evidence_refs: [R1-RECAP-policy, R1-scaffold-supplement]
+reward_update:
+  policy: "Keep validity gate and uncertainty-aware Pareto rewards. Activate requested metrics only after their protocol metadata and applicability domain are defined."
+  provisional_components:
+    - {component_id: RC2-E-S1, metric_id: E_S1, role: objective, direction: target_range, normalization: piecewise, weight: 0.30, status: proposed}
+    - {component_id: RC2-EST-GAP, metric_id: E_S1_minus_E_T1, role: soft_constraint, direction: context_dependent, normalization: custom, weight: 0.15, status: proposed_after_protocol}
+    - {component_id: RC2-SOCME, metric_id: SOCME, role: soft_constraint, direction: maximize_conditionally, normalization: rank, weight: 0.10, uncertainty_penalty: "family calibration and state-pair uncertainty", status: suspended_until_calibration}
+    - {component_id: RC2-CHARGE, metric_id: charge, role: soft_constraint, direction: context_dependent, normalization: custom, weight: 0.10, status: proposed}
+    - {component_id: RC2-DEV, metric_id: logP_TPSA_MW, role: pareto_soft_constraint, direction: context_dependent, normalization: rank, weight: 0.15, status: suspended_until_application_definition}
+    - {component_id: RC2-HL, metric_id: HOMO_LUMO_gap, role: diagnostic, direction: context_dependent, normalization: zscore, weight: 0.05, status: proposed_low_weight}
+    - {component_id: RC2-SYMMETRY, metric_id: symmetry, role: diagnostic, direction: context_dependent, normalization: none, weight: 0.025, status: suspended_until_descriptor_definition}
+    - {component_id: RC2-SA, metric_id: SA, role: soft_constraint, direction: context_dependent, normalization: rank, weight: 0.025, status: suspended_until_calibration}
+  biological_policy: "Do not add biological endpoints to this descriptor reward without harmonized measurements or a separately validated surrogate with uncertainty and applicability-domain reporting."
+interfaces:
+  new_evaluators:
+    - {evaluator_id: EVAL-E-S1, role: physics_calculator, status: proposed, inputs: [SMILES, conformers, charge_state, functional, basis, solvent], outputs: [E_S1, wavelength_nm, state_character, uncertainty]}
+    - {evaluator_id: EVAL-DELTA-EST, role: physics_calculator, status: proposed_after_protocol, inputs: [S1_protocol, T1_protocol, state_definitions], outputs: [E_S1_minus_E_T1, state_ordering, uncertainty]}
+    - {evaluator_id: EVAL-SOCME, role: physics_calculator, status: proposed_after_calibration, inputs: [state_pair, relativistic_method, conformers, solvent], outputs: [SOCME, unit, uncertainty, applicability_domain]}
+    - {evaluator_id: EVAL-CHARGE, role: constraint_checker, status: proposed, inputs: [SMILES, protonation_state, counterion_policy], outputs: [formal_charge, partial_charge, validity]}
+    - {evaluator_id: EVAL-LOGP, role: predictor, status: proposed_after_calibration, inputs: [SMILES, ionization_state, pH, method], outputs: [logP, uncertainty, applicability_domain]}
+    - {evaluator_id: EVAL-TPSA, role: predictor, status: proposed_after_convention, inputs: [SMILES, atom_inclusion_convention], outputs: [TPSA, unit]}
+    - {evaluator_id: EVAL-MW, role: constraint_checker, status: proposed, inputs: [SMILES, metal_policy, counterion_policy], outputs: [MW, formula, unit]}
+    - {evaluator_id: EVAL-HL-GAP, role: physics_calculator, status: proposed, inputs: [geometry, charge, functional, basis, solvent], outputs: [HOMO, LUMO, HOMO_LUMO_gap, CT_diagnostic]}
+    - {evaluator_id: EVAL-SYMMETRY, role: predictor, status: proposed_after_representation_definition, inputs: [SMILES, conformer], outputs: [symmetry_descriptor, symmetry_class]}
+    - {evaluator_id: EVAL-SA, role: predictor, status: proposed_after_calibration, inputs: [SMILES, reaction_inventory, scaffold_family], outputs: [SA, score_direction, uncertainty]}
+parameter_controls:
+  - {parameter_id: P2-W-E-S1, target: reward, name: w_E_S1, current_value: 0.30, allowed_range: [0.20, 0.40], adjustment_mode: expert_approved_auto, trigger: "approved illumination branch change", rollback_value: 0.30}
+  - {parameter_id: P2-W-SOCME, target: reward, name: w_SOCME, current_value: 0.10, allowed_range: [0.00, 0.15], adjustment_mode: manual, trigger: "SOCME calibration evidence", rollback_value: 0.10}
+  - {parameter_id: P2-W-SA, target: reward, name: w_SA, current_value: 0.025, allowed_range: [0.00, 0.10], adjustment_mode: manual, trigger: "SA score and reaction inventory approval", rollback_value: 0.025}
+  - {parameter_id: P2-THRESHOLDS, target: constraint, name: "requested_metric_thresholds", current_value: "contextual/unresolved", allowed_range: [], adjustment_mode: fixed, trigger: "expert approval only", rollback_value: "contextual/unresolved"}
+workflow_update:
+  inherited_workflow_id: WF-EXEC-ROUND1
+  new_nodes:
+    - {node_id: N2-01, action: calculate, model_id: EVAL-E-S1, inputs: [valid_SMILES, conformer_ensemble, fixed_excited_state_protocol], outputs: [E_S1, wavelength_nm], retry_policy: "method failure to manual review", stop_on_failure: false}
+    - {node_id: N2-02, action: calculate, model_id: EVAL-DELTA-EST, inputs: [E_S1, T1, state_protocol], outputs: [E_S1_minus_E_T1], retry_policy: "suspend branch if definitions missing", stop_on_failure: false}
+    - {node_id: N2-03, action: calculate, model_id: EVAL-SOCME, inputs: [state_pair, relativistic_protocol], outputs: [SOCME, uncertainty], retry_policy: "suspend if calibration missing", stop_on_failure: false}
+    - {node_id: N2-04, action: calculate, model_id: EVAL-CHARGE, inputs: [SMILES, protonation, counterion], outputs: [charge_state], retry_policy: "reject invalid state", stop_on_failure: false}
+    - {node_id: N2-05, action: calculate, model_id: EVAL-LOGP, inputs: [SMILES, pH, ionization], outputs: [logP, uncertainty], retry_policy: "manual review if out of domain", stop_on_failure: false}
+    - {node_id: N2-06, action: calculate, model_id: EVAL-TPSA, inputs: [SMILES, TPSA_convention], outputs: [TPSA], retry_policy: "fixed implementation", stop_on_failure: false}
+    - {node_id: N2-07, action: calculate, model_id: EVAL-MW, inputs: [SMILES, metal_counterion_policy], outputs: [MW], retry_policy: "manual review for formulation", stop_on_failure: false}
+    - {node_id: N2-08, action: calculate, model_id: EVAL-HL-GAP, inputs: [ground_state_geometry, charge, protocol], outputs: [HOMO_LUMO_gap], retry_policy: "diagnostic only on method warning", stop_on_failure: false}
+    - {node_id: N2-09, action: calculate, model_id: EVAL-SYMMETRY, inputs: [SMILES, conformer, symmetry_definition], outputs: [symmetry], retry_policy: "skip if descriptor undefined", stop_on_failure: false}
+    - {node_id: N2-10, action: calculate, model_id: EVAL-SA, inputs: [SMILES, reaction_inventory, family], outputs: [SA], retry_policy: "manual review if family out of domain", stop_on_failure: false}
+review_policy:
+  inherited_items: [EXR1-001, EXR1-002, EXR1-003, EXR1-004, EXR1-005, EXR1-006, EXR1-007, EXR1-008, EXR1-009, EXR1-010, EXR1-011, EXR1-012]
+  new_items: [EXR2-001, EXR2-002, EXR2-003, EXR2-004, EXR2-005, EXR2-006, EXR2-007, EXR2-008]

@@ -1,0 +1,88 @@
+project: "Round 2: Eight-component catalyst composition, peak power and cost"
+status: pending
+review_items:
+  - object_id: C001
+    question: "Is Pd-Pt-Cu-Au-Ir-Ce-Nb-Cr the fixed target element set, or only an adjacent CRESt precedent? Does every recipe need all eight elements at positive measured content, or is this an allowed-element space where subsets/zeros are permitted?"
+    required_expert: "Project owner and domain expert"
+    reason: "CRESt reports an octonary space, but its main-text power-focused recipe lists six elements and its cost-normalized recipe lists eight."
+    priority: high
+  - object_id: E001
+    question: "Verify the exact power-focused composition and closure sum against Supplementary Table 1; is the listed 1.001 sum due to rounding or extraction details?"
+    required_expert: "Evidence curator and catalyst characterization expert"
+    reason: "Do not renormalize a reported recipe without knowing its source precision/omitted content. Current transcription sums to 1.001; verify rounding/source precision."
+    priority: high
+  - object_id: I01
+    question: "Confirm target device, reaction, electrode role, cell/stack architecture, active area convention, standard polarization protocol and operating conditions. Is this specifically the direct formate fuel cell precedent?"
+    required_expert: "Electrochemical-device expert"
+    reason: "Peak power is a full-device output and the source uses a study-specific half-cell proxy assumption."
+    priority: high
+  - object_id: I05
+    question: "What exact equation, numerator, denominator, units, reference price vintage, and precious-metal category define required cost-specific performance? Is the paper's Supplementary Table 1 formula the intended project metric?"
+    required_expert: "Materials economist, device expert, and evidence curator"
+    reason: "Paper wording is not sufficient to equate its cost-specific metric with precursor cost per mass or a universal price index."
+    priority: high
+  - object_id: I02
+    question: "For precious-metal cost, should Pd/Pt/Ir be counted as PGMs and Au reported separately or included in the project's precious-metal category? Should cost use atomic mass fraction or catalyst-layer/total-device loading?"
+    required_expert: "Domain expert and cost/accounting owner"
+    reason: "Classification and denominator conventions affect the scalar."
+    priority: high
+  - object_id: I03
+    question: "Approve USGS 2024-vintage public benchmark price proxy despite different product forms (oxide Ce, ferroniobium Nb, chromium metal/ferrochrome alternatives), or provide an alternative price dataset/price year and normalization basis."
+    required_expert: "Computer expert and procurement/cost expert"
+    reason: "Public commodity proxies are reproducible but not interchangeable with alloy precursor costs."
+    priority: high
+  - object_id: I04
+    question: "Supply vendor, region, scale, purity, precursor forms, batch yields and purchasing records needed for actual precursor cost per kg alloy."
+    required_expert: "Synthesis/procurement expert"
+    reason: "Actual formulation costs cannot be calculated from commodity benchmarks alone."
+    priority: high
+  - object_id: I06
+    question: "Confirm at.% rather than wt.% as the canonical input unit; set validated closure tolerance and required distinction between nominal and measured fractions."
+    required_expert: "Computer and analytical-characterization experts"
+    reason: "Canonical unit and assay tolerance determine valid data records."
+    priority: high
+  - object_id: I07
+    question: "If all eight elements must be present, what assay method and LOQ define positive presence for each element? Are trace-level values below LOQ treated as absent, unknown, or censored?"
+    required_expert: "Analytical-characterization expert"
+    reason: "No arbitrary epsilon or universal minimum content is defensible."
+    priority: high
+  - object_id: I06
+    question: "Set element-specific upper/lower bounds based on synthesis feasibility, phase behavior, safety and application; do not adopt generic 5 at.% HEA cutoffs without approval."
+    required_expert: "Materials/synthesis expert"
+    reason: "No approved per-element bounds were provided."
+    priority: high
+  - object_id: element_effects
+    question: "Review each Pd/Pt/Cu/Au/Ir/Ce/Nb/Cr characteristic and plausible fraction-effect statement. Which mechanistic roles are verified for this target, and what tests isolate them from compositional closure, phase and morphology confounding?"
+    required_expert: "Electrocatalysis and alloy experts"
+    reason: "Elementwise effects are hypotheses; CRESt recipe contrasts change multiple fractions and conditions."
+    priority: high
+  - object_id: I01
+    question: "Provide an application-relevant minimum peak-power threshold or benchmark and replicate/uncertainty criterion; otherwise confirm optimization is relative to matched controls only."
+    required_expert: "Domain and device experts"
+    reason: "No universal numeric device-power threshold is supported by the evidence."
+    priority: high
+  - object_id: E016
+    question: "Confirm whether 325 mW cm^-2 peak power at 2.0 mg cm^-2 total metal and about 1.2 mg cm^-2 precious-metal loading is the octonary cost-normalized recipe's device result; confirm reported area basis and benchmark conditions before using as a reference."
+    required_expert: "Electrochemical-device expert and evidence curator"
+    reason: "This observed value is useful context but is study-specific and must be correctly attributed to the recipe/test."
+    priority: medium
+  - object_id: I03
+    question: "Provide maximum raw material cost or confirm no hard cost cap; decide whether cost remains a separate secondary objective."
+    required_expert: "Project owner and computer expert"
+    reason: "Round 2 correctly leaves objective weighting and budget unspecified."
+    priority: high
+  - object_id: I09
+    question: "Should ideal configurational entropy be included only as a descriptive feature, and which HEA definition/entropy cutoff is formally adopted?"
+    required_expert: "Alloy thermodynamics expert"
+    reason: "Entropy descriptor is not itself evidence of catalytic performance and HEA terminology varies."
+    priority: medium
+  - object_id: I10
+    question: "Select atomic-radius/electronegativity data table and descriptor equations if used in downstream features; validate them for this phase/catalyst family."
+    required_expert: "Computer and materials experts"
+    reason: "Property values and descriptor conventions vary; descriptors are not direct outcomes."
+    priority: medium
+  - object_id: all_metrics
+    question: "Approve importance, computability, data-readiness, role, direction, priority and threshold policies for all Round 2 metrics."
+    required_expert: "Domain, experimental, computational and computer experts"
+    reason: "Ratings are provisional under the skill workflow and not formally certified."
+    priority: high

@@ -1,0 +1,195 @@
+metadata:
+  schema_version: "1.0"
+  round: 1
+  language: en
+  stage: performance-evaluation
+  status: "evaluation_workflow_adopted_from_later_dialogue"
+  created_from: execution_orchestration_round3
+  evaluation_execution_authorized: false
+input_snapshots:
+  - path: ../execution_orchestration_round3/execution_orchestration_round3.yaml
+    role: upstream execution configuration
+    status: read
+  - path: ../execution_orchestration_round3/execution_orchestration_report_round3.md
+    role: upstream execution status and interface map
+    status: read
+  - path: ../execution_orchestration_round3/execution_review_queue_round3.yaml
+    role: unresolved review gates
+    status: read
+  - path: ../SDPD/AGENT_INTERFACE_EN.md
+    role: SDPD model/tool interface
+    status: read_only
+  - path: ../execution_orchestration_round3/execution_results/
+    role: expected execution result directory
+    status: not_present
+upstream_inputs:
+  execution_authorized: false
+  candidates: not_available
+  predictor_results: not_available
+  model_run_logs: not_available
+  orca_results: not_available
+  expert_analysis_requests: not_provided
+  expert_adjustment_requests: not_provided
+evaluation_subjects:
+  - subject_id: generated_photosensitizer_molecules
+    family: porphyrin
+    status: candidates_not_available
+    identity_contract: [candidate_id, canonical_smiles, isomeric_smiles, decoration, scaffold, generation_seed, run_id, checkpoint_hash]
+  - subject_id: sdpd_kagnn_3out
+    status: interface_known_not_executed
+    outputs: [S1, T1, ST_Gap]
+    selected_output_index: 2
+    checkpoint: ../SDPD/data_preparation/prediction_model/pretrained_models/best.pth
+  - subject_id: sdpd_rl_actor_and_scorer
+    status: startup_checkpoint_and_scorer_contract_only
+    notes: Updated actor checkpoint is not automatically exported by run_rl.py.
+expert_registry:
+  - expert_id: computer_expert
+    input_status: runtime_environment_with_slurm_reported; cluster_parameters_unprovided
+  - expert_id: materials_expert
+    input_status: requested_rdkit_orca_and_statistical_analysis
+  - expert_id: computational_photochemistry_inferred
+    input_status: inferred_concern_not_expert_statement
+analysis_evidence:
+  - evidence_id: EV-ROUND3-AUTH
+    source: ../execution_orchestration_round3/execution_orchestration_round3.yaml
+    claim: execution_authorized is false; commands_executed is false
+  - evidence_id: EV-ROUND3-METRICS
+    source: ../execution_orchestration_round3/execution_orchestration_round3.yaml
+    claim: ST gap, charge and symmetry proxy are selected; thresholds unresolved
+analysis_concerns:
+  - concern_id: AC-01
+    attribution: skill_inferred
+    role: computer_expert
+    concern: checkpoint identity, model calibration, invalid rate, scaffold coverage and compute cost
+  - concern_id: AC-02
+    attribution: skill_inferred
+    role: materials_expert
+    concern: charge/protonation context, symmetry proxy validity, structure and conformer provenance
+  - concern_id: AC-03
+    attribution: skill_inferred
+    role: computational_photochemistry
+    concern: method-dependent excited-state energies and paired predictor-reference calibration
+expert_analysis_requests:
+  - request_id: EAR-01
+    source: materials_expert
+    request: Use RDKit, ORCA and statistical analysis.
+    status: registered_as_planned_tools
+analysis_tool_interfaces:
+  - tool_id: rdkit
+    role: structure validation, descriptors, fingerprints, conformer preparation
+    parameters: {fingerprint: Morgan, radius: 2, bits: 2048, conformer_generator: ETKDGv3, seed: 20261101, force_field: MMFF94s}
+    status: version_and_availability_preflight_required
+  - tool_id: sdpd_kagnn_3out
+    entrypoint: ../SDPD/data_preparation/prediction_model/rl_compatible_2025/main.py
+    config: ../SDPD/data_preparation/prediction_model/rl_compatible_2025/config/c_path.yaml
+    checkpoint: ../SDPD/data_preparation/prediction_model/pretrained_models/best.pth
+    output_order: [S1, T1, ST_Gap]
+    status: not_invoked
+  - tool_id: sdpd_scorer
+    entrypoint: "multiple_score(smiles_list, weights, config, decorations)"
+    weights_snapshot: [0.1, 0.3, 0.6]
+    component_order: [st_gap, charge_score, symmetry_score]
+    status: not_invoked; proxy_semantics_unresolved
+  - tool_id: orca
+    status: not_installed_or_version_checked
+    proposed_method: PBE0/def2-TZVP with TightSCF and RIJCOSX
+    solvent: CPCM(water) only if aqueous environment approved
+    protocol: same-geometry vertical singlet/triplet TD-DFT; benchmark representative subset with range-separated functional
+    note: proposal only; validate syntax and roots with installed ORCA version
+  - tool_id: slurm
+    status: cluster_reported_parameters_unprovided
+    required_site_values: [partition, account, qos, walltime, memory, cpus_per_task, array_limit, orca_module, scratch_path]
+compute_environments:
+  - environment_id: slurm_cluster
+    status: reported_available_not_inspected
+    submission_performed: false
+    unspecified_parameters: [partition, account, qos, walltime, memory, cpus_per_task, scratch_path, ORCA_version]
+metric_evaluation_bindings:
+  - metric_id: E_S1_minus_E_T1
+    primary: true
+    predictor_output_index: 2
+    direction: minimize_conditionally
+    reference: ORCA vertical E(S1)-E(T1) at matched geometry and conditions
+    threshold: unresolved
+  - metric_id: charge
+    role: application_specific_soft_constraint_and_descriptor
+    required_metadata: [pH, protonation_state, tautomer_policy, counterion_policy, partial_charge_method]
+    threshold: unresolved
+  - metric_id: symmetry
+    role: conditional_descriptor
+    implementation: decoration Morgan-fingerprint/pair heuristic; not general point-group symmetry
+    required_metadata: [decoration_string, attachment_order, symmetry_definition, conformer_policy]
+    threshold: unresolved
+evaluation_protocols:
+  - protocol_id: PROT-RDKit
+    steps: [parse_and_sanitize, canonicalize_and_deduplicate, compute_descriptors, fingerprint_and_scaffold, explicit_hydrogen_ETKDGv3_conformers, MMFF94s_QC]
+    outputs: [canonical_smiles, formal_charge, MW, cLogP, TPSA, HBD, HBA, rotatable_bonds, fingerprint, embedding_status, force_field_status]
+  - protocol_id: PROT-ORCA
+    steps: [same_condition_ground_state_optimization, minimum_frequency_check, vertical_singlet_triplet_TDDFT, compute_ST_gap, representative_method_sensitivity_benchmark]
+    units: eV
+    retain_failed_jobs: true
+  - protocol_id: PROT-STATS
+    primary_model_metrics: [MAE, RMSE, signed_bias, Pearson_r, Spearman_rho]
+    uncertainty: scaffold_grouped_bootstrap_95_percent_CI
+    split: scaffold_grouped_holdout
+    prohibition: no statistics or rankings before observations exist
+analysis_plans:
+  - plan_id: AP-RDKit-QC
+    status: planned_not_run
+    sequence: [input_manifest, structure_QC, descriptor_generation, conformer_QC, exclusion_ledger]
+  - plan_id: AP-model-validation
+    status: blocked_by_candidates_authorization_and_ORCA_reference
+    sequence: [freeze_checkpoint, pair_prediction_and_ORCA, scaffold_grouped_validation, uncertainty_analysis]
+  - plan_id: AP-generation-statistics
+    status: blocked_by_generation_outputs
+    sequence: [validity_uniqueness_coverage, metric_distributions, Pareto_analysis_after_metric_approval]
+analysis_executions: []
+performance_records: []
+benchmark_records: []
+visualization_specs:
+  - {figure_id: fig01_metric_distributions_round1, status: planned, filename: figures_round1/fig01_metric_distributions_round1.png}
+  - {figure_id: fig02_predicted_vs_orca_stgap_round1, status: planned, filename: figures_round1/fig02_predicted_vs_orca_stgap_round1.png}
+  - {figure_id: fig03_residuals_round1, status: planned, filename: figures_round1/fig03_residuals_round1.png}
+  - {figure_id: fig04_metric_tradeoffs_round1, status: planned_after_metric_approval, filename: figures_round1/fig04_metric_tradeoffs_round1.png}
+  - {figure_id: fig05_generation_qc_round1, status: planned, filename: figures_round1/fig05_generation_qc_round1.png}
+  - {figure_id: fig06_resource_performance_round1, status: conditional_on_slurm_accounting, filename: figures_round1/fig06_resource_performance_round1.png}
+analysis_findings: []
+
+expert_feedback_reconciliation:
+  annotation_date: '2026-10-31'
+  annotation_type: dialogue_based_stage_status_reconciliation
+  requested_by: user
+  source_dialogue: ../../multi_round_dialogue_example_EN.txt
+  source_sha256: ebb57f5513ccd2ee131a9971088e81acaa8e6b610f46e7df5afea5890dbc12d8
+  interpretation: Stage-scoped working acceptance from the saved dialogue and subsequent adoption, following the earlier
+    PS reconciliation rules.
+  itemwise_scientific_validation_completed_by_this_update: false
+  numerical_values_units_and_thresholds_certified_by_this_update: false
+  execution_authorized_by_this_update: false
+  existing_disputed_entries_preserved: true
+  unanswered_review_items_and_blocking_flags_preserved: true
+  historical_execution_trace_events_modified: false
+  source_feedback_records:
+  - feedback_id: PS-PE-R1-TOOLS
+    source_line: 25
+    excerpt: Please run the Performance Evaluation Skill. Performance analysis and statistics are now required for the
+      generated photosensitizer molecules and the model. Based on the previous stage's output files and the `SDPD` directory
+      in the project, establish a workflow and provide the necessary tool parameters and plotting-script plan. The computer
+      expert has provided a runtime environment with a Slurm cluster. The materials expert requests the use of RDKit
+      and ORCA for DFT calculations and statistical analysis. Add the suffix `round1` to the output filenames.
+  - feedback_id: PS-PE-R2-EXECUTED
+    source_line: 28
+    excerpt: The evaluation-pipeline scripts have been constructed according to the planned workflow, and the entire
+      workflow has been executed in the `meloculardftcal` folder. Its `AGENT_INTERFACE.md` records the basic configuration.
+      Inspect it and update the relevant toolchain, parameters, and other information in the output files. In addition,
+      provide recommendations for the next optimization step based on the various analysis results. Add the suffix `round2`
+      to the output filenames.
+  updates:
+  - path: metadata/status
+    status: evaluation_workflow_adopted_from_later_dialogue
+    feedback_refs:
+    - PS-PE-R1-TOOLS
+    - PS-PE-R2-EXECUTED
+    scope: The later dialogue says the planned evaluation pipeline was constructed and executed; this does not retrospectively
+      authorize commands in the round-1 artifact.

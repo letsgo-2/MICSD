@@ -1,0 +1,551 @@
+schema_version: "scientific-knowledge-alignment/0.2.0"
+round: 2
+project:
+  name: "Eight-component catalyst composition and cost alignment"
+  goal: "Optimize peak areal power density of a target electrochemical device while accounting for precious-metal/material cost within an eight-element Pd-Pt-Cu-Au-Ir-Ce-Nb-Cr candidate space."
+  domain: "Multicomponent electrocatalysis, direct formate fuel cells (adjacent supplied precedent), composition optimization"
+  application_context: "Exact target device/reaction must be confirmed; primary supplied precedent uses formate oxidation with ORR counter electrode in direct formate fuel cell."
+  expert_request: "Round 2 incorporates domain-expert endorsement of Round 1 concepts plus request for element properties, synergy and composition effects, material cost, computable metrics, and precise data representation."
+  web_search_allowed: true
+  status: "working_knowledge_accepted_with_unresolved_technical_details"
+  evidence_priority: "supplied papers primary; NIST/CIAAW and USGS authoritative terminology/data; other sources supplementary"
+composition_contract:
+  composition_order: ["Pd", "Pt", "Cu", "Au", "Ir", "Ce", "Nb", "Cr"]
+  canonical_unit: "atomic_fraction"
+  data_type: "finite JSON number/double"
+  domain: {minimum: 0.0, maximum: 1.0}
+  closure: "sum(x_i)=1; numeric tolerance is assay/protocol-defined and still pending"
+  presence_policy: "pending; choose subset_allowed or all_positive"
+  null_semantics: "unknown/not measured; not equivalent to zero"
+  nominal_and_measured_composition_separate: true
+  output_schema_file: "composition_data_contract.json"
+  record_grain: "one sample/device run, with batch, protocol, conditions and replicates"
+  cost_price_vintage: "USGS 2025 commodity summary, generally reporting 2024 annual averages/estimates; raw-price forms differ"
+concepts:
+  - concept_id: C001
+    name: "Eight-element candidate space"
+    definition: "The allowed symbols are Pd, Pt, Cu, Au, Ir, Ce, Nb and Cr in fixed canonical order. Candidate space does not imply every optimized recipe has positive content of every allowed element."
+    synonyms: ["octonary element space", "eight-component chemical space"]
+    parent_concept: "Composition design space"
+    ontology_source: {name: "Project-local concept aligned to Zhang et al. 2025", iri_or_url: "https://doi.org/10.1038/s41586-025-09640-5", version_or_access_date: "Accessed 2026-10-27"}
+    mapping_status: "local"
+    evidence: [E001, E002]
+    expert_status: "design_object_or_objective_roles_confirmed_details_unverified"
+  - concept_id: C002
+    name: "Atomic-fraction composition vector"
+    definition: "Ordered vector x=(x_Pd,x_Pt,x_Cu,x_Au,x_Ir,x_Ce,x_Nb,x_Cr) with 0<=x_i<=1 and sum x_i=1 when the record is closed and expressed as atomic fractions."
+    synonyms: ["composition vector", "atomic composition"]
+    parent_concept: "Compositional data"
+    ontology_source: {name: "Compositional data literature; project-local fixed element order", iri_or_url: "https://doi.org/10.1111/j.2517-6161.1982.tb01195.x", version_or_access_date: "Accessed 2026-10-27"}
+    mapping_status: "close"
+    evidence: [E001, E002, E003]
+    expert_status: "pending"
+  - concept_id: C003
+    name: "Precious-metal fraction"
+    definition: "Declared sum of elemental mass fractions over an explicitly listed precious-metal set. Report PGM subset {Pd,Pt,Ir} separately from broader set {Pd,Pt,Ir,Au}; do not treat categories as interchangeable."
+    synonyms: ["PGM loading", "precious-metal loading"]
+    parent_concept: "Mass fraction"
+    ontology_source: {name: "USGS PGM classification plus project-local precious-metal accounting", iri_or_url: "https://pubs.usgs.gov/periodicals/mcs2025/mcs2025-platinum-group.pdf", version_or_access_date: "2025 report; accessed 2026-10-27"}
+    mapping_status: "local"
+    evidence: [E006, E007]
+    expert_status: "accepted_as_working_knowledge_from_dialogue"
+  - concept_id: C004
+    name: "Public-price raw-material cost proxy"
+    definition: "Composition-weighted sum of public elemental/material benchmark prices after declared currency, unit, year, and chemical-form conversion. It is not a supplier quote or synthesized catalyst cost."
+    synonyms: ["composition-weighted commodity cost index"]
+    parent_concept: "Cost indicator"
+    ontology_source: {name: "Project-local metric using USGS Mineral Commodity Summaries benchmarks", iri_or_url: "https://pubs.usgs.gov/publication/mcs2025", version_or_access_date: "2025 summary; accessed 2026-10-27"}
+    mapping_status: "local"
+    evidence: [E007, E008, E009, E010, E011, E012]
+    expert_status: "accepted_as_working_knowledge_from_dialogue"
+  - concept_id: C005
+    name: "Cost-specific device performance"
+    definition: "Device performance divided by a defined catalyst/material cost basis. Numerator, denominator, unit and comparison must be explicit; CRESt wording indicates power density normalized by catalyst cost, but its exact operational equation needs supplementary verification."
+    synonyms: ["power density per catalyst cost", "cost-specific performance"]
+    parent_concept: "Specific performance metric"
+    ontology_source: {name: "Project-local; terminology in Zhang et al. 2025", iri_or_url: "https://doi.org/10.1038/s41586-025-09640-5", version_or_access_date: "Accessed 2026-10-27"}
+    mapping_status: "local"
+    evidence: [E001, E002]
+    expert_status: "accepted_as_working_knowledge_from_dialogue"
+  - concept_id: C006
+    name: "Peak areal device power density"
+    definition: "Maximum of V_cell*I/A_geo over a declared device polarization response. Areal normalization basis and device/test conditions must be fixed."
+    synonyms: ["maximum power density", "maximum areal power density"]
+    parent_concept: "Electrochemical device performance"
+    ontology_source: {name: "Project-local metric; IUPAC nomenclature and FCTESQA test module inform terms/procedure", iri_or_url: "https://doi.org/10.1351/pac199365051009", version_or_access_date: "Accessed 2026-10-27"}
+    mapping_status: "local"
+    evidence: [E001, E002, E013]
+    expert_status: "accepted_as_working_knowledge_from_dialogue"
+elements:
+  - {symbol: "Pd", order: 1, atomic_number: 46, standard_atomic_weight_u: 106.42, catalytic_context: "Primary formate-oxidation active-metal benchmark in supplied CRESt study; reported metallic state under the study's characterization.", possible_synergy: "Co-alloying can change adsorption/poisoning and active-site environments; exact eight-element marginal effect unresolved.", fraction_effect_hypothesis: "More Pd can increase active-metal inventory but raise precious-metal cost and alter site ensemble; non-monotonic power response possible.", evidence: [E001, E002, E004], expert_status: "accepted_as_working_element_prior_not_causal_validation"}
+  - {symbol: "Pt", order: 2, atomic_number: 78, standard_atomic_weight_u: 195.084, catalytic_context: "PGM alloy component; alloy literature supports electronic/intermediate-binding changes in Pt/Pd systems.", possible_synergy: "May tune adsorption, selectivity and poisoning resistance with Pd and other alloy components; exact synergy not isolated.", fraction_effect_hypothesis: "May alter voltage/current and increases precious-metal mass/cost; no monotonic sign established.", evidence: [E001, E002, E004], expert_status: "accepted_as_working_element_prior_not_causal_validation"}
+  - {symbol: "Cu", order: 3, atomic_number: 29, standard_atomic_weight_u: 63.546, catalytic_context: "Lower-cost transition-metal component in ternary Pd-Pt-Cu and octonary space.", possible_synergy: "Potential ligand/ensemble/strain and intermediate-binding effects in Pd/Pt alloys; transfer to octonary system uncertain.", fraction_effect_hypothesis: "Can dilute precious content and change active-site structure; excessive substitution may reduce active-site density; non-monotonic expected.", evidence: [E001, E002, E004], expert_status: "accepted_as_working_element_prior_not_causal_validation"}
+  - {symbol: "Au", order: 4, atomic_number: 79, standard_atomic_weight_u: 196.96657, catalytic_context: "Noble-metal component included in cost-normalized octonary CRESt recipe; alloy FAO studies discuss noble-metal-dependent intermediate binding.", possible_synergy: "Possible changes to adsorption/poisoning/selectivity with Pd/Pt; no isolated CRESt causal effect.", fraction_effect_hypothesis: "May change kinetics and increases raw-material cost; sign and dose response unestablished.", evidence: [E001, E002, E004], expert_status: "accepted_as_working_element_prior_not_causal_validation"}
+  - {symbol: "Ir", order: 5, atomic_number: 77, standard_atomic_weight_u: 192.217, catalytic_context: "PGM in CRESt power-focused six-element recipe and octonary search; Pt/Pd bimetallic theory indicates reactive alloy partners can change intermediate energetics.", possible_synergy: "Could alter formate/intermediate binding and oxidation pathways; multicomponent transfer uncertain.", fraction_effect_hypothesis: "May tune reaction kinetics but increases PGM cost; no monotonic peak-power effect inferred.", evidence: [E001, E002, E004], expert_status: "accepted_as_working_element_prior_not_causal_validation"}
+  - {symbol: "Ce", order: 6, atomic_number: 58, standard_atomic_weight_u: 140.116, catalytic_context: "Rare-earth constituent in both CRESt reported recipes; public benchmark is Ce oxide, not alloyed Ce metal.", possible_synergy: "Possible electronic/interface/oxide effects require direct phase and oxidation-state evidence; do not infer oxide behavior for alloyed Ce.", fraction_effect_hypothesis: "May alter surface state, phase and morphology; sign on device power uncertain.", evidence: [E001, E002, E011], expert_status: "accepted_as_working_element_prior_not_causal_validation"}
+  - {symbol: "Nb", order: 7, atomic_number: 41, standard_atomic_weight_u: 92.90637, catalytic_context: "Present at 10.6 at.% in reported power-focused recipe and 33.8 at.% in cost-normalized recipe; public USGS benchmark is ferroniobium.", possible_synergy: "May tune structure/electronic environment in multielement alloy; exact isolated mechanism not resolved.", fraction_effect_hypothesis: "Observed high recipe-to-recipe variation signals trade-off, not causal dose response; could change dilution, phase and active-site density.", evidence: [E001, E002, E012], expert_status: "accepted_as_working_element_prior_not_causal_validation"}
+  - {symbol: "Cr", order: 8, atomic_number: 24, standard_atomic_weight_u: 51.9961, catalytic_context: "Present at 8.2 at.% in reported cost-normalized CRESt composition; USGS reports metal and ferrochromium prices.", possible_synergy: "Possible phase, surface oxide/passivation and site-ensemble effects require direct characterization.", fraction_effect_hypothesis: "Could improve or impair activity/stability depending on state and conditions; no monotonic direction justified.", evidence: [E001, E002, E010], expert_status: "accepted_as_working_element_prior_not_causal_validation"}
+indicators:
+  - indicator_id: I01
+    name: "Peak areal device power density"
+    definition: "max_k(V_cell,k*I_k/A_geo), equivalently max(V_cell*j_geo), over declared device polarization conditions."
+    unit: "W cm^-2_geo"
+    conditions: ["device/cell/stack", "reaction and electrode role", "geometric active area", "fuel/oxidant/feed/flow", "temperature/pressure/humidity or electrolyte", "conditioning and polarization protocol"]
+    domain_meaning: "Primary device-level outcome, jointly affected by catalyst and full electrode/device."
+    audience: "shared"
+    obtainable_by: ["measure", "derive", "estimate", "machine_learn"]
+    optimization_role: "primary_objective"
+    optimization_direction: "maximize"
+    importance: 5
+    computability: 4
+    data_readiness: 2
+    priority: "P1"
+    methods: ["measure device polarization; derive V*I/A; optionally predict with condition-aware validated model"]
+    related_indicators: [I02, I03, I04, I05, I06]
+    threshold_guidance: "No universal absolute cutoff. Use expert-approved application minimum or matched benchmark-relative target; metric protocol is pending."
+    evidence: [E001, E002, E013]
+    expert_status: "core_objective_confirmed_unit_and_protocol_unconfirmed"
+  - indicator_id: I02
+    name: "PGM and precious-metal mass fractions"
+    definition: "Convert atomic fractions to mass fractions w_i=x_i*M_i/sum_j(x_j*M_j); PGM=sum(Pd,Pt,Ir), broader precious set=sum(Pd,Pt,Ir,Au). Report separately."
+    unit: "mass fraction or wt.%"
+    conditions: ["atomic composition and CIAAW atomic-weight version", "declared PGM/precious category"]
+    domain_meaning: "Material intensity of high-value metals; separate sets avoid classification ambiguity."
+    audience: "shared"
+    obtainable_by: ["derive"]
+    optimization_role: "secondary_objective"
+    optimization_direction: "minimize"
+    importance: 4
+    computability: 5
+    data_readiness: 4
+    priority: "P1"
+    methods: ["derive from measured atomic composition and standard atomic weights"]
+    related_indicators: [I01, I03, I04]
+    threshold_guidance: "No universal threshold. Apply only expert-approved budget/cap or minimize subject to a power floor. CRESt's reported one-quarter loading is context-specific, not a general limit."
+    evidence: [E001, E002, E006, E007, E014]
+    expert_status: "accepted_as_cost_descriptor_threshold_unconfirmed"
+  - indicator_id: I03
+    name: "Composition-weighted public-price raw-material proxy"
+    definition: "C_raw=sum_i(w_i*p_i), where p_i is timestamped price converted to USD/kg elemental-content basis and w_i is mass fraction. Flag nonmatching source forms; do not label as precursor or catalyst cost."
+    unit: "USD kg^-1 alloy (proxy)"
+    conditions: ["price year and source", "commodity form/purity/content basis", "unit/currency conversions", "measured or nominal composition"]
+    domain_meaning: "Approximate comparative cost pressure from bulk commodity references."
+    audience: "shared"
+    obtainable_by: ["derive"]
+    optimization_role: "secondary_objective"
+    optimization_direction: "minimize"
+    importance: 4
+    computability: 4
+    data_readiness: 2
+    priority: "P1"
+    methods: ["normalize public benchmark rows to same currency/unit/basis; calculate mass-weighted sum"]
+    related_indicators: [I02, I04, I05]
+    threshold_guidance: "No absolute threshold justified until sourcing region/scale/material forms chosen; use as proxy-ranked secondary metric or approved budget cap."
+    evidence: [E007, E008, E009, E010, E011, E012]
+    expert_status: "normalized_cost_selected_price_and_formula_unconfirmed"
+  - indicator_id: I04
+    name: "Actual precursor cost per synthesized alloy mass"
+    definition: "Sum of precursor consumed mass times supplier unit price, corrected for elemental assay/stoichiometry, divided by recovered alloy mass; yield and recovery handled explicitly."
+    unit: "USD kg^-1 synthesized alloy"
+    conditions: ["vendor/quote date/region", "precursor form and purity", "batch yield", "recovery and scale"]
+    domain_meaning: "Purchasable material-input cost, closer to laboratory/manufacturing formulation cost than commodity index."
+    audience: "shared"
+    obtainable_by: ["measure", "derive"]
+    optimization_role: "secondary_objective"
+    optimization_direction: "minimize"
+    importance: 4
+    computability: 4
+    data_readiness: 1
+    priority: "P1"
+    methods: ["procurement records and precursor stoichiometric costing"]
+    related_indicators: [I01, I02, I03, I05]
+    threshold_guidance: "Supplier/scale-specific budget only; absent quote data, not evaluable."
+    evidence: [E015]
+    expert_status: "cost_objective_accepted_procurement_data_unavailable"
+  - indicator_id: I05
+    name: "Cost-specific device power"
+    definition: "A declared device power-density numerator divided by an explicitly defined catalyst/material cost denominator; proposed candidate `P_A,max/C_precursor` must not be conflated with CRESt paper metric before supplement verification."
+    unit: "definition-dependent; e.g. W cm^-2 per USD kg^-1"
+    conditions: ["same device protocol as I01", "cost equation, quantity and units", "benchmark and time basis"]
+    domain_meaning: "Joint performance-and-cost measure, distinct from raw cost and peak power."
+    audience: "shared"
+    obtainable_by: ["derive", "measure"]
+    optimization_role: "secondary_objective"
+    optimization_direction: "maximize"
+    importance: 4
+    computability: 3
+    data_readiness: 1
+    priority: "P1"
+    methods: ["derive after I01 and approved cost denominator are available"]
+    related_indicators: [I01, I02, I03, I04]
+    threshold_guidance: "No numeric threshold until equation/basis approved; CRESt 9.3x is study-/benchmark-specific."
+    evidence: [E001, E002]
+    expert_status: "cost_performance_role_accepted_exact_formula_unconfirmed"
+  - indicator_id: I06
+    name: "Ordered composition vector and closure residual"
+    definition: "Eight finite numeric atomic fractions in fixed order; closure residual=abs(sum(x)-1); measured and nominal arrays separate."
+    unit: "dimensionless fraction; at.% display"
+    conditions: ["assay method and uncertainty", "fixed vector order", "declared presence policy"]
+    domain_meaning: "Eight design variables on the compositional simplex, subject to chemistry and synthesis feasibility."
+    audience: "computer_expert"
+    obtainable_by: ["measure", "derive"]
+    optimization_role: "constraint"
+    optimization_direction: "target_range"
+    importance: 5
+    computability: 5
+    data_readiness: 3
+    priority: "P1"
+    methods: ["composition specification and quantitative elemental analysis"]
+    related_indicators: [I07, I08, I09, I10, I11, I12]
+    threshold_guidance: "0<=x_i<=1 and sum=1; numerical tolerance from validated assay precision/reporting; element bounds remain unset."
+    evidence: [E001, E002, E003, E014]
+    expert_status: "pending"
+  - indicator_id: I07
+    name: "Element count and presence policy"
+    definition: "Allowed set size is eight. Actual present count is count of elements above assay-defined detection/quantification/presence threshold."
+    unit: "count"
+    conditions: ["presence policy", "assay LOD/LOQ", "trace contamination convention"]
+    domain_meaning: "Hard feasibility condition only if project requires all eight to be measurably present."
+    audience: "shared"
+    obtainable_by: ["measure", "derive", "expert_only"]
+    optimization_role: "constraint"
+    optimization_direction: "target_range"
+    importance: 5
+    computability: 5
+    data_readiness: 2
+    priority: "P1"
+    methods: ["count measured components above declared threshold"]
+    related_indicators: [I06]
+    threshold_guidance: "Allowed set exactly eight from CRESt; whether actual count must equal 8 is unresolved. Do not invent an epsilon; use assay LOQ."
+    evidence: [E001, E002]
+    expert_status: "composition_constraint_selected_numeric_bounds_or_presence_unconfirmed"
+  - indicator_id: I08
+    name: "Atomic-weighted elemental descriptor"
+    definition: "For property d, calculate d_bar=sum_i(x_i*d_i) with declared units, source/version and composition basis; includes mean atomic weight, radius, electronegativity."
+    unit: "property-specific"
+    conditions: ["data source/version", "property definition", "atomic fraction vector"]
+    domain_meaning: "Computable descriptive feature; not itself a direct peak-power measure or causal law."
+    audience: "computer_expert"
+    obtainable_by: ["derive"]
+    optimization_role: "feature_only"
+    optimization_direction: "none"
+    importance: 2
+    computability: 5
+    data_readiness: 3
+    priority: "P2"
+    methods: ["weighted sum using authoritative elemental-property table"]
+    related_indicators: [I06, I09, I10, I11]
+    threshold_guidance: "No performance threshold; include only with source/version and validate predictive value."
+    evidence: [E003, E014]
+    expert_status: "accepted_as_working_knowledge_from_dialogue"
+  - indicator_id: I09
+    name: "Ideal configurational entropy descriptor"
+    definition: "S_conf/R=-sum_i(x_i*ln(x_i)) for ideal random mixing; define 0*ln(0)=0."
+    unit: "dimensionless S_conf/R"
+    conditions: ["atomic fractions", "ideal random-mixing assumption"]
+    domain_meaning: "Composition-derived feature; does not establish realized phase or activity."
+    audience: "shared"
+    obtainable_by: ["derive"]
+    optimization_role: "feature_only"
+    optimization_direction: "none"
+    importance: 2
+    computability: 5
+    data_readiness: 3
+    priority: "P2"
+    methods: ["derive from ordered atomic fractions"]
+    related_indicators: [I06, I10]
+    threshold_guidance: "No activity/power threshold supported; do not impose a HEA entropy threshold without confirming project nomenclature."
+    evidence: [E003, E014]
+    expert_status: "accepted_as_working_knowledge_from_dialogue"
+  - indicator_id: I10
+    name: "Composition-weighted atomic-radius mismatch descriptor"
+    definition: "A source/table-specific radius mismatch calculation, such as delta=100*sqrt(sum_i(x_i*(1-r_i/r_bar)^2)) with r_bar=sum_i(x_i*r_i); equation and radii convention must be fixed."
+    unit: "%"
+    conditions: ["radius dataset/version and equation", "atomic fraction vector"]
+    domain_meaning: "Potential structural descriptor for phase/lattice context; not a direct activity law."
+    audience: "computer_expert"
+    obtainable_by: ["derive"]
+    optimization_role: "diagnostic"
+    optimization_direction: "context_dependent"
+    importance: 2
+    computability: 4
+    data_readiness: 2
+    priority: "P2"
+    methods: ["calculate using one consistent radius source and explicitly fixed convention"]
+    related_indicators: [I06, I08, I11]
+    threshold_guidance: "Do not transfer generic single-phase thresholds as hard feasibility constraints; validate against this alloy/process."
+    evidence: [E003]
+    expert_status: "accepted_as_working_knowledge_from_dialogue"
+  - indicator_id: I11
+    name: "Electrocatalytic activity proxy for formate oxidation"
+    definition: "Reaction-specific current density at declared potential or peak current from matched formate-oxidation half-cell protocol."
+    unit: "A cm^-2_geo or A mg^-1 catalyst/metal, specify denominator"
+    conditions: ["formate concentration/electrolyte/pH", "reference potential", "scan/hold", "iR correction", "loading and electrode"]
+    domain_meaning: "Intermediate response used as proxy for device power only when calibrated/validated for fixed device configuration."
+    audience: "shared"
+    obtainable_by: ["measure", "derive", "machine_learn"]
+    optimization_role: "intermediate"
+    optimization_direction: "maximize"
+    importance: 4
+    computability: 4
+    data_readiness: 3
+    priority: "P1"
+    methods: ["matched half-cell electrochemical measurement"]
+    related_indicators: [I01, I12]
+    threshold_guidance: "Comparator-relative only under identical conditions; not a substitute for I01."
+    evidence: [E001, E002, E004]
+    expert_status: "accepted_as_working_knowledge_from_dialogue"
+  - indicator_id: I12
+    name: "Morphology and phase/order descriptors"
+    definition: "Phase/ordering and particle morphology outputs; CRESt uses distribution-function slope/bias, particle coverage ratio, and particle count per unit area."
+    unit: "method-specific/categorical"
+    conditions: ["instrument, image scale/field of view, analysis algorithm, sample preparation"]
+    domain_meaning: "Mediators/confounders and diagnostic features for composition-to-device relationship."
+    audience: "shared"
+    obtainable_by: ["measure", "derive"]
+    optimization_role: "diagnostic"
+    optimization_direction: "context_dependent"
+    importance: 3
+    computability: 4
+    data_readiness: 2
+    priority: "P2"
+    methods: ["diffraction/microscopy/SEM image analysis as justified by expert"]
+    related_indicators: [I01, I06, I11]
+    threshold_guidance: "No universal optimum; measure and adjust only with validated structure-performance evidence."
+    evidence: [E001, E002]
+    expert_status: "accepted_as_working_knowledge_from_dialogue"
+claims:
+  - claim_id: K001
+    subject: "Eight-component design vector"
+    relation: "defines"
+    object: "composition-feasible domain with 8 allowed element fields"
+    claim_type: "definition"
+    conditions: ["fixed order Pd, Pt, Cu, Au, Ir, Ce, Nb, Cr; closure if atomic fractions"]
+    evidence: [E001, E002, E003]
+    confidence: "high"
+    expert_status: "accepted_as_working_knowledge_from_dialogue"
+  - claim_id: K002
+    subject: "Element identity/fraction and synthesis conditions"
+    relation: "correlates_with"
+    object: "active-site environments and reaction-specific device power"
+    claim_type: "mechanism"
+    conditions: ["compositionally complex catalyst; formate case is the supplied adjacent precedent; nonlinear and condition dependent"]
+    evidence: [E001, E002, E004]
+    confidence: "medium"
+    expert_status: "accepted_as_working_knowledge_from_dialogue"
+  - claim_id: K003
+    subject: "Greater costly-metal mass fraction"
+    relation: "increases"
+    object: "composition-weighted raw cost index, ceteris paribus and under fixed price vintage"
+    claim_type: "causal"
+    conditions: ["positive benchmark prices; mass basis; full composition closure"]
+    evidence: [E007, E008, E009, E010, E011, E012]
+    confidence: "high"
+    expert_status: "accepted_as_working_knowledge_from_dialogue"
+  - claim_id: K004
+    subject: "Formate-oxidation half-cell current response"
+    relation: "is_proxy_for"
+    object: "fuel-cell peak-power ranking in CRESt setup"
+    claim_type: "correlation"
+    conditions: ["CRESt assumes constant ORR counter-electrode overpotential and reports relatively consistent ranking validated against fuel-cell experiments"]
+    evidence: [E001, E002]
+    confidence: "medium"
+    expert_status: "accepted_as_working_knowledge_from_dialogue"
+  - claim_id: K005
+    subject: "CRESt power-focused and cost-normalized octonary recipes"
+    relation: "tradeoff_with"
+    object: "peak power and power normalized by catalyst cost"
+    claim_type: "correlation"
+    conditions: ["power-focused six-listed-element recipe reports 5.6x; cost-normalized eight-element recipe reports 9.3x; benchmark pure Pd; recipe vectors differ in multiple components"]
+    evidence: [E001, E002]
+    confidence: "medium"
+    expert_status: "accepted_as_working_knowledge_from_dialogue"
+evidence:
+  - evidence_id: E001
+    source_type: "paper"
+    source_name: "Zhang et al. 2025, A multimodal robotic platform for multi-element electrocatalyst discovery"
+    identifier_or_url: "https://doi.org/10.1038/s41586-025-09640-5"
+    location: "Main text, Results around paragraphs describing Formate oxidation campaign; supplied file lines 395-403; Supplementary Table 1 needed to resolve price/recipe details"
+    content_summary: "Names Pd-Pt-Cu-Au-Ir-Ce-Nb-Cr space; reports ternary recipe ~3.5x power at same metal molarity; listed six-element recipe 5.6x power; eight-element recipe 9.3x power normalized by catalyst cost; uses LSV proxy with constant ORR overpotential assumption and states ranking compared against fuel-cell experiments. Listed six fractions sum to 1.001, likely rounding but Supplementary Table 1 must confirm. Main text also reports 325 mW cm^-2 device peak power at 2.0 mg cm^-2 total metal and approximately 1.2 mg cm^-2 precious-metal loading."
+    evidence_use: "value"
+    quality: "high"
+  - evidence_id: E002
+    source_type: "paper"
+    source_name: "26_Zhang_2025_Multimodal_robotic_electrocatalyst_discovery.md"
+    identifier_or_url: "literature_markdown/26_Zhang_2025_Multimodal_robotic_electrocatalyst_discovery.md"
+    location: "Abstract lines 11, Results lines 395-403, methods lines 383-391; Figures 1, 3, 4 and supplementary references"
+    content_summary: "Supplied primary paper content; composition recipe and test/model details must be verified against original Supplementary Information/Data before numeric reuse."
+    evidence_use: "relationship"
+    quality: "high"
+  - evidence_id: E003
+    source_type: "paper"
+    source_name: "33_Egozcue_2018_Modelling_compositional_data.md and 34_Aitchison_1982_Statistical_analysis_of_compositional_data.md"
+    identifier_or_url: "https://doi.org/10.1111/j.2517-6161.1982.tb01195.x"
+    location: "Whole supplied papers"
+    content_summary: "Compositional data require attention to closure and representation; they motivate fixed ordered fractions and explicit sum constraints."
+    evidence_use: "definition"
+    quality: "high"
+  - evidence_id: E004
+    source_type: "paper"
+    source_name: "07_Zhang_2022_High_entropy_alloys_for_electrocatalysis.md; 13_Ren_2023_High_entropy_alloys_in_electrocatalysis.md; 17_Clausen_2023_ML_optimization_of_HEA_catalytic_activity.md"
+    identifier_or_url: "literature_markdown/07_Zhang_2022_High_entropy_alloys_for_electrocatalysis.md; literature_markdown/13_Ren_2023_High_entropy_alloys_in_electrocatalysis.md; literature_markdown/17_Clausen_2023_ML_optimization_of_HEA_catalytic_activity.md"
+    location: "Reviews of alloy effects and HEA site/adsorption modeling"
+    content_summary: "Supports possible strain, ligand, ensemble, site-distribution and adsorption-energy effects as conditional mechanistic frameworks, not additive per-element causal rules."
+    evidence_use: "relationship"
+    quality: "medium"
+  - evidence_id: E006
+    source_type: "database"
+    source_name: "U.S. Geological Survey, Mineral Commodity Summaries 2025: Platinum-Group Metals"
+    identifier_or_url: "https://pubs.usgs.gov/periodicals/mcs2025/mcs2025-platinum-group.pdf"
+    location: "2024 annual price row and footnote 6"
+    content_summary: "2024 annual price benchmarks: Pd $980/troy oz, Pt $950/troy oz, Ir $4,800/troy oz (rounded MCS table); unfabricated metal average, source S&P Global Platts Metals Week. These are not catalyst precursor quotes."
+    evidence_use: "value"
+    quality: "high"
+  - evidence_id: E007
+    source_type: "database"
+    source_name: "USGS Mineral Commodity Summaries 2025: Gold"
+    identifier_or_url: "https://pubs.usgs.gov/periodicals/mcs2025/mcs2025-gold.pdf"
+    location: "Price row, 2024"
+    content_summary: "Gold price benchmark 2024: $2,400/troy oz, annual commodity benchmark; not alloy precursor quote."
+    evidence_use: "value"
+    quality: "high"
+  - evidence_id: E008
+    source_type: "database"
+    source_name: "USGS Mineral Commodity Summaries 2025: Copper"
+    identifier_or_url: "https://pubs.usgs.gov/periodicals/mcs2025/mcs2025-copper.pdf"
+    location: "Price row, 2024"
+    content_summary: "2024 refined Cu benchmarks: U.S. producer cathode 430 cents/lb; COMEX and LME 420 cents/lb. Select one declared basis."
+    evidence_use: "value"
+    quality: "high"
+  - evidence_id: E009
+    source_type: "database"
+    source_name: "USGS Mineral Commodity Summaries 2025: Chromium"
+    identifier_or_url: "https://pubs.usgs.gov/periodicals/mcs2025/mcs2025-chromium.pdf"
+    location: "Price rows, 2024"
+    content_summary: "2024 chromium benchmarks: metal $5.60/lb gross weight; ferrochromium $1.80/lb Cr content; not interchangeable."
+    evidence_use: "value"
+    quality: "high"
+  - evidence_id: E010
+    source_type: "database"
+    source_name: "USGS Mineral Commodity Summaries 2025: Rare Earths"
+    identifier_or_url: "https://pubs.usgs.gov/periodicals/mcs2025/mcs2025-rare-earths.pdf"
+    location: "Price row, 2024"
+    content_summary: "Cerium oxide, minimum 99.5%, average $1/kg in 2024; oxide benchmark is not elemental Ce alloy metal cost."
+    evidence_use: "value"
+    quality: "high"
+  - evidence_id: E011
+    source_type: "database"
+    source_name: "USGS Mineral Commodity Summaries 2026: Niobium (Columbium)"
+    identifier_or_url: "https://pubs.usgs.gov/periodicals/mcs2026/mcs2026-niobium.pdf"
+    location: "Average unit value ferroniobium row and footnote 5; 2024 value"
+    content_summary: "2024 ferroniobium average unit value $26/kg gross material; USGS notes 65% Nb assumed in ferroniobium. This is a trade benchmark, not high-purity Nb metal price."
+    evidence_use: "value"
+    quality: "high"
+  - evidence_id: E012
+    source_type: "ontology"
+    source_name: "CIAAW Standard Atomic Weights 2024 / NIST Periodic Table"
+    identifier_or_url: "https://www.ciaaw.org/atomic-weights.htm; https://www.nist.gov/pml/periodic-table-elements"
+    location: "Element rows for the eight symbols"
+    content_summary: "Authoritative atomic number/weight data for identity checks and atomic-to-mass fraction conversion; not catalyst performance evidence."
+    evidence_use: "definition"
+    quality: "high"
+  - evidence_id: E013
+    source_type: "ontology"
+    source_name: "FCTESQA PEFC SC 5-2 polarization-curve test module"
+    identifier_or_url: "https://joint-research-centre.ec.europa.eu/system/files/2017-02/polarisation_curve_testprocedure.pdf"
+    location: "Test module scope and voltage/power vs current-density definition"
+    content_summary: "PEFC-specific harmonized test procedure; illustrates the need to fix operating conditions and area basis, but is not automatically applicable to direct formate fuel cells or other targets."
+    evidence_use: "method"
+    quality: "high"
+  - evidence_id: E014
+    source_type: "database"
+    source_name: "NIST/CIAAW elemental atomic properties and standard atomic weights"
+    identifier_or_url: "https://www.nist.gov/pml/periodic-table-elements; https://www.ciaaw.org/atomic-weights.htm"
+    location: "Pd, Pt, Cu, Au, Ir, Ce, Nb, Cr element entries"
+    content_summary: "Atomic numbers and standard atomic weights used in the element view and x-to-w conversion."
+    evidence_use: "definition"
+    quality: "high"
+  - evidence_id: E015
+    source_type: "database"
+    source_name: "Project supplier quote / laboratory procurement records"
+    identifier_or_url: "Not yet available"
+    location: "Required future purchase order/vendor/grade/date data"
+    content_summary: "Actual precursor pricing, purity and sourcing costs are absent from current evidence."
+    evidence_use: "method"
+    quality: "low"
+  - evidence_id: E016
+    source_type: "paper"
+    source_name: "Zhang et al. 2025, A multimodal robotic platform for multi-element electrocatalyst discovery"
+    identifier_or_url: "https://doi.org/10.1038/s41586-025-09640-5"
+    location: "Main text, Performance testing paragraph; supplied Markdown line 407; Figures 3-4 and Supplementary Fig. 11 references"
+    content_summary: "Reports 325 mW cm^-2 peak device power in fuel-cell tests with 2.0 mg cm^-2 total metal loading and about 1.2 mg cm^-2 precious-metal loading for the optimized catalyst. Study-specific observed value, not a target threshold."
+    evidence_use: "value"
+    quality: "high"
+expert_reviews: []
+optimization_targets:
+  primary: [I01]
+  secondary: [I02, I03, I04, I05]
+  constraints: [I06, I07]
+  intermediate: [I11]
+  diagnostic: [I10, I12]
+  not_ready: [I01, I02, I03, I04, I05, I07, I10, I11, I12]
+expert_confirmation:
+  domain_expert_round2: "provided current knowledge essentially correct; requested elemental traits/synergies/composition effects and cost"
+  computer_expert_round2: "requested explicit metrics, vector order/format, objective-vs-constraint roles, calculation methods, directions, thresholds, sources"
+  certification_status: "pending formal review record"
+
+dialogue_status_reconciliation:
+  annotation_date: '2026-10-30'
+  basis: Retrospective inference from the supplied dialogue; broad acceptance of task roles and working knowledge, not
+    newly performed expert validation.
+  source_file: multi_round_dialogue_example_EN.txt
+  source_sha256: 759f71d407a9bb2c542208a75279b8477e0833f2f54ee566e3e990870f96a994
+  independent_itemwise_verification_recorded: false
+  quantitative_thresholds_or_prices_approved: false
+  execution_authorized: false
+  composition_basis_caution: Dialogue specifies mass fractions. Atomic-/molar-fraction entries are not upgraded by this
+    annotation; conversion and schema reconciliation remain necessary.
+  feedback:
+  - id: EO1
+    line: 12
+    statement: 'Please run the Execution Orchestration Skill. Based on the three output files from the knowledge-alignment
+      stage and the research methods used in this field, which may be identified from the literature or through online
+      research, design a basic task-execution workflow for optimizing the formulation of an eight-component high-entropy
+      alloy catalyst. Provide necessary recommendations, especially recommendations for metric ranking and corresponding
+      threshold guidance, preferably supported by evidence. Starting from existing experimental data, the workflow should
+      explain how to perform data organization, model training, candidate-composition generation, performance evaluation,
+      candidate screening, and result feedback, but it must not assume a specific model or algorithm that has not yet
+      been confirmed. The materials expert provides the following information: the catalyst consists of eight metals—Pd,
+      Pt, Au, Cr, Ir, Ce, Cu, and Nb—and is generally represented as a mass-fraction vector with a fixed element order;
+      each element''s mass fraction must be nonnegative, and the fractions must sum to 1. The optimization problem therefore
+      involves trade-offs among peak power density, cost, and composition constraints. The computer expert would like
+      to construct a model workflow capable of iterative optimization from existing composition-performance data. Add
+      the suffix `round1` to the output filenames.'
+  - id: EO2
+    line: 16
+    statement: The materials scientist notes that the organization of metrics in the current workflow still needs adjustment.
+      In addition to peak power density, the workflow may consider normalized cost, composition validity, element-content
+      ranges, differences between candidate compositions and existing experimental samples, model-prediction confidence,
+      and the stability of high-performance formulations. The computer expert confirms that peak power density will be
+      the core performance metric for formulation optimization, while nonnegative mass fractions for the eight elements,
+      a total fraction of 1, and a fixed element order will serve as composition constraints. The `AL` folder is now
+      provided as the implemented model execution path. The model architecture, training method, metric-configuration
+      files, runtime parameters, data interfaces, and candidate-result format must be obtained from the code, documentation,
+      and interface documents in the `AL` folder. Inspect and update the model information and interfaces independently,
+      improve the workflow, and report the proposed execution procedure to me for confirmation. Do not run it without
+      authorization. Clearly specify all output paths. Update the previous round's output files and add the suffix `round2`.
+  - id: KA2
+    line: 6
+    statement: The domain expert states that the current knowledge is essentially correct, but it should be supplemented
+      with the principal characteristics of the eight metal elements in the catalytic system, their possible synergistic
+      effects, and the potential influence of changes in each element's content on peak power density. In addition to
+      peak power density, the material cost associated with the use of precious metals must also be considered. Provide
+      the computer expert with metrics that can be calculated or predicted, together with their meanings, and explain
+      the different roles of peak power density, cost, and composition constraints in material-formulation design. The
+      computer expert states that the current descriptions of data representation and optimization metrics are insufficiently
+      clear. Specify the element order, numerical format, target metrics, constraints, and data input/output formats
+      for the eight-component composition data. For metrics that may be used in subsequent iterative optimization, also
+      describe their calculation methods, optimization directions, reasonable threshold ranges, and data sources. Next,
+      update and confirm the knowledge-alignment report according to the experts' requirements, using evidence from the
+      papers and authoritative online sources. Produce clearer supplements to the domain-expert view and the computer-expert
+      optimization metrics.

@@ -1,0 +1,48 @@
+source_file	article_type	direct_design_relevance	notes
+2013_Makhseed_Water-Soluble-Non-Aggregating-Zinc-Phthalocyanine-for-PDT.md	review/context	true	direct photosensitizer or phototherapy evidence
+2014_Odeh_Targeting-Mitochondria-by-ZnII-N-Alkylpyridylporphyrins.md	primary/research	true	direct photosensitizer or phototherapy evidence
+2015_Machacek_Far-Red-Absorbing-Cationic-Phthalocyanine-Photosensitizers.md	primary/research	true	direct photosensitizer or phototherapy evidence
+2015_Simard_Silver-Nanoparticles-Activate-the-NLRP3-Inflammasome.md	primary/research	false	pyroptosis, inflammasome, cell-death, or computational context; no direct photosensitizer signal found by keyword screen
+2020_Singh_Pyroptosis-Targeting-via-Mitochondria-for-COVID-19-Therapies.md	primary/research	false	pyroptosis, inflammasome, cell-death, or computational context; no direct photosensitizer signal found by keyword screen
+2020_Wang_A-Bioorthogonal-System-Reveals-Antitumour-Immune-Function-of-Pyroptosis.md	primary/research	true	direct photosensitizer or phototherapy evidence
+2021_Chen_Gadolinium-Porphyrin-Polymer-Nanotheranostics-for-Imaging-Guided-PDT.md	primary/research	true	direct photosensitizer or phototherapy evidence
+2021_Chen_Gadolinium-Porphyrin-Polymer-Nanotheranostics-for-Imaging-Guided-PDT_SI.md	supplementary	true	direct photosensitizer or phototherapy evidence
+2021_He_Optogenetic-Control-of-Non-Apoptotic-Cell-Death.md	primary/research	true	direct photosensitizer or phototherapy evidence
+2021_Jia_BiW8O30-Exerts-Antitumor-Effect-by-Triggering-Pyroptosis.md	review/context	false	pyroptosis, inflammasome, cell-death, or computational context; no direct photosensitizer signal found by keyword screen
+2021_Li_Photodynamic-Therapy-Induces-Esophageal-Carcinoma-Pyroptosis-via-PKM2-Caspase-GSDME.md	primary/research	true	direct photosensitizer or phototherapy evidence
+2021_Loveless_Pyroptosis-at-the-Forefront-of-Anticancer-Immunity.md	review/context	false	pyroptosis, inflammasome, cell-death, or computational context; no direct photosensitizer signal found by keyword screen
+2021_Ma_A-Bibliometric-Analysis-of-Pyroptosis-from-2001-to-2021.md	review/context	false	pyroptosis, inflammasome, cell-death, or computational context; no direct photosensitizer signal found by keyword screen
+2021_Mayes-Hopfinger_Chloride-Sensing-by-WNK1-Regulates-NLRP3-Activation-and-Pyroptosis.md	primary/research	false	pyroptosis, inflammasome, cell-death, or computational context; no direct photosensitizer signal found by keyword screen
+2021_Peng_Intramolecular-Charge-Transfer-Conjugated-Oligomer-with-Photodynamic-and-Photothermal-Activities.md	primary/research	true	direct photosensitizer or phototherapy evidence
+2021_Ran_Curcumin-Ameliorates-White-Matter-Injury-by-Inhibiting-Pyroptosis.md	primary/research	false	pyroptosis, inflammasome, cell-death, or computational context; no direct photosensitizer signal found by keyword screen
+2021_Ren_Benzimidazoles-Induce-Apoptosis-and-Pyroptosis-of-Glioblastoma-Cells.md	primary/research	false	pyroptosis, inflammasome, cell-death, or computational context; no direct photosensitizer signal found by keyword screen
+2021_Rossi_Photo-Damage-by-Tetracationic-Palladium-Porphyrins-in-Mycobacteria.md	primary/research	true	direct photosensitizer or phototherapy evidence
+2021_Wang_Cancer-Cell-Activated-Synthesis-of-Mitochondria-Targeting-AIE-Photosensitizer.md	primary/research	true	direct photosensitizer or phototherapy evidence
+2021_Wang_Polarity-Sensitive-Probe-for-Monitoring-Lipid-Droplet-and-Nucleus-During-Ferroptosis.md	primary/research	false	pyroptosis, inflammasome, cell-death, or computational context; no direct photosensitizer signal found by keyword screen
+2021_Wu_Activation-of-Pyroptosis-by-Membrane-Anchoring-AIE-Photosensitizer.md	primary/research	true	direct photosensitizer or phototherapy evidence
+2021_Wu_Activation-of-Pyroptosis-by-Membrane-Anchoring-AIE-Photosensitizer_SI.md	supplementary	true	direct photosensitizer or phototherapy evidence
+2021_Wu_Cell-Death-Mediated-by-the-Pyroptosis-Pathway-with-Nanotechnology.md	review/context	true	direct photosensitizer or phototherapy evidence
+2021_Wu_Pyroptosis-a-New-Breakthrough-in-Cancer-Treatment.md	review/context	false	pyroptosis, inflammasome, cell-death, or computational context; no direct photosensitizer signal found by keyword screen
+2021_Xu_Aesculin-Suppresses-NLRP3-Inflammasome-Mediated-Pyroptosis.md	primary/research	false	pyroptosis, inflammasome, cell-death, or computational context; no direct photosensitizer signal found by keyword screen
+2021_Xu_Apaf-1-Pyroptosome-Senses-Mitochondrial-Permeability-Transition.md	primary/research	false	pyroptosis, inflammasome, cell-death, or computational context; no direct photosensitizer signal found by keyword screen
+2021_Zheng_Inflammasome-Induced-Osmotic-Pressure-and-Mechanical-Mechanisms-in-Pyroptosis.md	review/context	false	pyroptosis, inflammasome, cell-death, or computational context; no direct photosensitizer signal found by keyword screen
+2022_Johnson_Bacterial-Gasdermins-Reveal-an-Ancient-Mechanism-of-Cell-Death.md	review/context	false	pyroptosis, inflammasome, cell-death, or computational context; no direct photosensitizer signal found by keyword screen
+2022_Su_CAIX-Anchored-Rhenium-Photosensitizer-Evokes-Pyroptosis.md	primary/research	true	direct photosensitizer or phototherapy evidence
+2022_Su_CAIX-Anchored-Rhenium-Photosensitizer-Evokes-Pyroptosis_SI.md	supplementary	true	direct photosensitizer or phototherapy evidence
+2022_Wang_Pyroptosis-Remodeling-Tumor-Microenvironment-for-Pancreatic-Cancer-Immunotherapy.md	primary/research	true	direct photosensitizer or phototherapy evidence
+2022_Yu_Photocatalytic-Superoxide-Radical-Generator-Induces-Pyroptosis.md	primary/research	true	direct photosensitizer or phototherapy evidence
+2023_Ding_Simultaneous-Activation-of-Pyroptosis-and-cGAS-STING-Pathway.md	review/context	true	direct photosensitizer or phototherapy evidence
+2023_Ding_Sodium-Bicarbonate-Nanoparticles-for-Amplified-Cancer-Immunotherapy.md	review/context	false	pyroptosis, inflammasome, cell-death, or computational context; no direct photosensitizer signal found by keyword screen
+2023_Pei_Zinc-Oxide-Nanoparticles-Trigger-Canonical-Pyroptosis-in-Liver-Toxicity.md	primary/research	false	pyroptosis, inflammasome, cell-death, or computational context; no direct photosensitizer signal found by keyword screen
+2023_Salami_Gasdermin-D-Kills-Bacteria.md	review/context	false	pyroptosis, inflammasome, cell-death, or computational context; no direct photosensitizer signal found by keyword screen
+2023_Tang_Pyroptosis-Mediated-Photodynamic-and-Photothermal-Immunotherapy.md	primary/research	true	direct photosensitizer or phototherapy evidence
+2023_Wang_Pyroptosis-and-Inflammasomes-in-Cancer-and-Inflammation.md	review/context	false	pyroptosis, inflammasome, cell-death, or computational context; no direct photosensitizer signal found by keyword screen
+2023_Zhang_Copper-Bacteriochlorin-Nanosheet-as-a-Specific-Pyroptosis-Inducer.md	primary/research	true	direct photosensitizer or phototherapy evidence
+2024_Lee_Oxidative-Photocatalysis-on-Membranes-Triggers-Non-Canonical-Pyroptosis.md	primary/research	true	direct photosensitizer or phototherapy evidence
+2024_Mehrotra_Oxylipins-from-Pyroptotic-Cells-Promote-Tissue-Repair.md	primary/research	false	pyroptosis, inflammasome, cell-death, or computational context; no direct photosensitizer signal found by keyword screen
+2024_Yi_Mitochondria-Targeting-Type-I-Photodrug-for-Pyroptotic-Oncotherapy.md	primary/research	true	direct photosensitizer or phototherapy evidence
+2024_Yi_Mitochondria-Targeting-Type-I-Photodrug-for-Pyroptotic-Oncotherapy_SI.md	supplementary	true	direct photosensitizer or phototherapy evidence
+Advanced Materials - 2024 - Liu - A General Molecular Structural Design for Highly Efficient Photopyroptosis that can be.md	review/context	true	direct photosensitizer or phototherapy evidence
+Advanced Science - 2024 - Ma - The Current Advances in Design Strategy  Indirect Strategy and Direct Strategy  for Type‐I.md	review/context	true	direct photosensitizer or phototherapy evidence
+PolyRL  reinforcement learning-guided polymer generation for multi-objective polymer discovery.md	primary/research	false	pyroptosis, inflammasome, cell-death, or computational context; no direct photosensitizer signal found by keyword screen
+Targeted photodynamic therapy enhancing efficacy through specific organelle engagement.md	review/context	true	direct photosensitizer or phototherapy evidence

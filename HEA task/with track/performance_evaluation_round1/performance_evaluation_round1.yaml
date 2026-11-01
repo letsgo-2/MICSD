@@ -1,0 +1,297 @@
+metadata:
+  evaluation_id: "PE-HEA-8METAL-ROUND1"
+  version: "1.0.0-draft"
+  suffix: "round1"
+  created: "2026-10-27"
+  status: "planned_only"
+  execution_performed: false
+input_snapshots:
+  - snapshot_id: "INPUT-ORCH-R2"
+    selected_versions: ["execution_orchestration_round2/2.0.0-draft"]
+    inherited_versions: ["knowledge_alignment_round2/round2"]
+    execution_status: "planned_only"
+    available_artifacts: ["Round 2 orchestration YAML/report/review queue", "AL source code and historical workbook/CSV files", "evaluate_round1.py evaluation adapter"]
+    missing_artifacts: ["traceable Round 2 run", "target-compatible measured evaluation CSV", "conditions/device metadata", "actual cost quotes", "replicate measurements", "approved thresholds and closure tolerance"]
+    active_run_ids: []
+    baseline_run_ids: []
+    unresolved_upstream_issues: ["EO2-002", "EO2-003", "EO2-004", "EO2-005", "EO2-007", "EO2-008", "EO2-010", "EO2-013"]
+    evaluation_scope: ["readiness assessment", "data QA protocol", "statistical metric plan", "plotting scripts"]
+upstream_inputs:
+  - {input_id: "UP-001", path: "../execution_orchestration_round2/execution_orchestration_round2.yaml", status: "read"}
+  - {input_id: "UP-002", path: "../execution_orchestration_round2/execution_orchestration_report_round2.md", status: "read"}
+  - {input_id: "UP-003", path: "../execution_orchestration_round2/execution_review_queue_round2.yaml", status: "read"}
+  - {input_id: "UP-004", path: "../knowledge_alignment_round2/knowledge_alignment.yaml", status: "read"}
+  - {input_id: "UP-005", path: "../AL/catalyst_active_learning_runnable/", status: "read_only_inspection"}
+evaluation_subjects:
+  - {subject_id: "SUBJ-AL-PROTOTYPE", subject_type: "workflow", source_refs: ["../AL/catalyst_active_learning_runnable/"], run_id: "", version: "source snapshot inspected 2026-10-27", parent_subject_id: "", evaluation_questions: ["What metrics/interfaces are implemented?", "Are labels measured or virtual?"], status: "registered"}
+  - {subject_id: "SUBJ-HISTORICAL-XLSX", subject_type: "dataset", source_refs: ["../AL/catalyst_active_learning_runnable/data/Data.xlsx:Result 1"], run_id: "", version: "unknown", parent_subject_id: "", evaluation_questions: ["Can max_power be mapped to target peak device power?", "What fraction basis and conditions apply?"], status: "partial"}
+expert_registry:
+  - {expert_id: "EXP-MAT-ROUND2", expert_role: "domain_expert", domain_id: "electrochemical_catalysis", responsibilities: ["mass-fraction order and composition rules", "scientific performance interpretation"], provided_tools: [], provided_rules: ["mass fractions; order Pd, Pt, Au, Cr, Ir, Ce, Cu, Nb; nonnegative and sum to one"], authorized_actions: [], contact_or_reference: "User-provided materials-scientist statement", status: "active"}
+  - {expert_id: "EXP-COMP-ROUND2", expert_role: "computer_expert", domain_id: "computational_evaluation", responsibilities: ["core target and composition constraints", "workflow/model evaluation"], provided_tools: ["Ubuntu runtime availability", "API interface availability (details not supplied)"], provided_rules: ["peak power is core performance metric; mass simplex is hard constraint"], authorized_actions: [], contact_or_reference: "User-provided computer-expert statement", status: "active"}
+  - {expert_id: "EXP-USER-AUTH", expert_role: "interdisciplinary_reviewer", domain_id: "authorization", responsibilities: ["execution authorization"], provided_tools: [], provided_rules: ["round1 evaluation requested; no explicit instruction to run AL or call API"], authorized_actions: ["write evaluation plan/scripts"], contact_or_reference: "User request", status: "active"}
+analysis_evidence:
+  - {evidence_id: "PEE-001", source_type: "execution_configuration", source_ref: "../execution_orchestration_round2/execution_orchestration_round2.yaml", title_or_description: "Round 2 orchestration is proposal-only; no target device/protocol confirmed", domain_id: "computational_evaluation", supported_questions: ["What evaluation state applies?", "Which metrics are proposed?"], supported_metrics: ["M_POWER", "M_ACTUAL_COST", "M_COMP_VALID"], extracted_claim: "No run is authorized or recorded in Round 2 orchestration.", applicability_conditions: ["Round 2 configuration"], retrieval_or_extraction_method: "inherited", retrieved_by: "skill", confidence: "high", verification_status: "cross_checked", limitations: ["does not provide empirical results"]}
+  - {evidence_id: "PEE-002", source_type: "execution_configuration", source_ref: "../AL/catalyst_active_learning_runnable/catalyst_al/model.py", title_or_description: "GBR virtual oracle architecture", domain_id: "computational_evaluation", supported_questions: ["What predictor is implemented?", "What output is predicted?"], supported_metrics: ["M_POWER proxy"], extracted_claim: "GradientBoostingRegressor is trained on composition and one scalar target; code uses a random row split, reports R2/RMSE/MAE, refits all data, and saves a point predictor.", applicability_conditions: ["AL prototype only"], retrieval_or_extraction_method: "manual_review", retrieved_by: "skill", confidence: "high", verification_status: "cross_checked", limitations: ["training labels are described as virtual oracle values; no target condition features or prediction intervals"]}
+  - {evidence_id: "PEE-003", source_type: "execution_configuration", source_ref: "../AL/catalyst_active_learning_runnable/catalyst_al/providers.py", title_or_description: "LLM provider implementation", domain_id: "computational_evaluation", supported_questions: ["What confidence-like output exists?"], supported_metrics: ["LLM prediction dispersion"], extracted_claim: "Repeated LLM numeric predictions yield a committee mean/std; this is not calibrated predictive uncertainty.", applicability_conditions: ["requires API credentials and an explicitly authorized call"], retrieval_or_extraction_method: "manual_review", retrieved_by: "skill", confidence: "high", verification_status: "cross_checked", limitations: ["no API called in current evaluation"]}
+  - {evidence_id: "PEE-004", source_type: "execution_configuration", source_ref: "../AL/catalyst_active_learning_runnable/data/README.md", title_or_description: "GBR training sample provenance", domain_id: "data_quality", supported_questions: ["Is the current 120-row set an unbiased holdout?"], supported_metrics: ["model error estimates"], extracted_claim: "120 rows were selected after sorting 307 eligible records by target then evenly downsampling; they train a virtual GBR and are not new physical experiments.", applicability_conditions: ["bundled package data"], retrieval_or_extraction_method: "manual_review", retrieved_by: "skill", confidence: "high", verification_status: "cross_checked", limitations: ["not a representative independent validation set"]}
+  - {evidence_id: "PEE-005", source_type: "published_literature", source_ref: "https://doi.org/10.1038/s41586-025-09640-5", title_or_description: "CRESt multimodal robotic electrocatalyst discovery", domain_id: "electrochemical_catalysis", supported_questions: ["What context benchmark exists?", "What conditions should be recorded?"], supported_metrics: ["peak device power", "precious metal loading"], extracted_claim: "Direct formate-fuel-cell results are reported at 60 C in 2.0 M KOH + 1.0 M HCOOK with 2.0 mg cm^-2 total loading; condition-specific context only.", applicability_conditions: ["same or explicitly normalized DFFC protocol only"], retrieval_or_extraction_method: "inherited", retrieved_by: "skill", confidence: "high", verification_status: "cross_checked", limitations: ["not established as target device or directly comparable benchmark"]}
+  - {evidence_id: "PEE-006", source_type: "published_literature", source_ref: "https://doi.org/10.1038/s41524-019-0153-8", title_or_description: "Active learning in materials science review", domain_id: "computational_evaluation", supported_questions: ["What iterative evaluation design is appropriate?"], supported_metrics: ["uncertainty-aware selection", "candidate performance"], extracted_claim: "Materials discovery can use iterative prediction/uncertainty to select an experiment, add its outcome and update the model.", applicability_conditions: ["methodological precedent"], retrieval_or_extraction_method: "literature_search", retrieved_by: "skill", confidence: "medium", verification_status: "cross_checked", limitations: ["does not prescribe target-specific metric thresholds"]}
+  - {evidence_id: "PEE-007", source_type: "published_literature", source_ref: "https://doi.org/10.1039/d2dd00113f", title_or_description: "Quantifying ML performance in materials discovery", domain_id: "computational_evaluation", supported_questions: ["How to validate models and sequential learning?"], supported_metrics: ["MAE", "RMSE", "R2", "discovery metrics"], extracted_claim: "Sequential learning iteratively trains, selects candidates, validates predictions and updates data; evaluation design affects discovery claims.", applicability_conditions: ["methodological precedent"], retrieval_or_extraction_method: "literature_search", retrieved_by: "skill", confidence: "medium", verification_status: "cross_checked", limitations: ["model/protocol specifics vary"]}
+  - {evidence_id: "PEE-008", source_type: "published_literature", source_ref: "https://doi.org/10.1021/jacs.3c14486", title_or_description: "Multiobjective HEA electrocatalyst optimization", domain_id: "electrochemical_catalysis", supported_questions: ["How to compare power/cost trade-offs?"], supported_metrics: ["activity", "cost-effectiveness", "entropy"], extracted_claim: "HEA screening can retain Pareto trade-offs across activity, cost and entropy rather than reduce all values to one score.", applicability_conditions: ["ORR virtual-screening precedent; not direct device-power validation"], retrieval_or_extraction_method: "literature_search", retrieved_by: "skill", confidence: "medium", verification_status: "cross_checked", limitations: ["different reaction and objective basis"]}
+  - {evidence_id: "PEE-009", source_type: "published_literature", source_ref: "https://joint-research-centre.ec.europa.eu/system/files/2017-02/polarisation_curve_testprocedure.pdf", title_or_description: "FCTESQA PEFC SC 5-2 polarization test module", domain_id: "fuel_cell_testing", supported_questions: ["What metadata and QA apply to polarization testing?"], supported_metrics: ["voltage", "power vs current density", "measurement variability"], extracted_claim: "The procedure stresses controlled conditions, calibration, conditioning and recording voltage/power versus current density.", applicability_conditions: ["PEFC only; general QA practices may be adapted cautiously"], retrieval_or_extraction_method: "literature_search", retrieved_by: "skill", confidence: "medium", verification_status: "cross_checked", limitations: ["not a direct formate-fuel-cell protocol"]}
+analysis_concerns:
+  - {concern_id: CONC-001, target_perspective: "computer_expert", domain_id: "computational_evaluation", question: "Are labels physical measurements, virtual GBR outputs, LLM predictions, or mixed historical values?", concern_type: "data_quality", source_attribution: {source_type: "skill_inference", source_id: "scientific-performance-evaluator", statement_type: "inference", verification_status: "unverified"}, trigger_refs: ["../AL/catalyst_active_learning_runnable/README.md", "outputs/total_pool.csv"], evidence_refs: ["PEE-002", "PEE-004"], suggested_metric_ids: ["DATA-QA"], suggested_analysis_methods: ["label-source audit", "provenance counts"], suggested_visualization_types: ["value-type bar chart"], priority: "critical", confidence: "high", confirmation_status: "unconfirmed"}
+  - {concern_id: CONC-002, target_perspective: "computer_expert", domain_id: "computational_evaluation", question: "Can the AL predictor generalize across compositions and experimental batches/devices, and are uncertainties calibrated?", concern_type: "model_behavior", source_attribution: {source_type: "skill_inference", source_id: "scientific-performance-evaluator", statement_type: "inference", verification_status: "unverified"}, trigger_refs: ["AL/catalyst_active_learning_runnable/catalyst_al/model.py"], evidence_refs: ["PEE-002", "PEE-007"], suggested_metric_ids: ["MAE", "RMSE", "R2", "interval_coverage"], suggested_analysis_methods: ["grouped holdout", "residual analysis", "interval calibration if available"], suggested_visualization_types: ["predicted-vs-measured", "residual plot", "calibration plot"], priority: "high", confidence: "high", confirmation_status: "unconfirmed"}
+  - {concern_id: CONC-003, target_perspective: "domain_expert", domain_id: "electrochemical_catalysis", question: "Are candidate device-power differences reproducible and comparable under matched reaction, area, loading and operating conditions?", concern_type: "scientific_performance", source_attribution: {source_type: "skill_inference", source_id: "scientific-performance-evaluator", statement_type: "inference", verification_status: "unverified"}, trigger_refs: ["M_POWER"], evidence_refs: ["PEE-005", "PEE-009"], suggested_metric_ids: ["M_POWER", "replicate_SD", "bootstrap_CI"], suggested_analysis_methods: ["condition-stratified summaries", "paired comparison when matched", "replicate variability"], suggested_visualization_types: ["polarization curve", "candidate means with replicate points/intervals"], priority: "critical", confidence: "high", confirmation_status: "unconfirmed"}
+  - {concern_id: CONC-004, target_perspective: "cross_domain_team", domain_id: "materials_cost", question: "How do power, actual cost, normalized-cost proxy and precious-metal loading trade off, and are current cost values on a comparable basis?", concern_type: "comparison", source_attribution: {source_type: "skill_inference", source_id: "scientific-performance-evaluator", statement_type: "inference", verification_status: "unverified"}, trigger_refs: ["M_ACTUAL_COST", "M_NORMALIZED_COST", "M_PGM"], evidence_refs: ["PEE-008", "../AL/catalyst_active_learning_runnable/catalyst_al/costs.py"], suggested_metric_ids: ["M_POWER", "M_ACTUAL_COST", "M_NORMALIZED_COST", "M_PGM"], suggested_analysis_methods: ["separate metric sources", "Pareto analysis after basis approval"], suggested_visualization_types: ["power-cost scatter with value-type/condition annotations"], priority: "high", confidence: "high", confirmation_status: "unconfirmed"}
+expert_analysis_requests: []
+analysis_tool_interfaces:
+  - tool_id: TOOL-EVAL-PY-001
+    name: "Offline evaluation/plotting script"
+    tool_type: "data_processing+statistics+visualization"
+    status: "script_written; not executed on project datasets"
+    source: {type: "local", path: "evaluate_round1.py", version: "1.0.0"}
+    environment_id: "ENV-UBUNTU-PROVIDED-UNVERIFIED"
+    entrypoint: "python evaluate_round1.py --input <approved-results.csv> --output-dir <directory> --closure-tolerance <approved-value>"
+    input_schema: ["candidate_id", "run_id", "value_type", "Pd", "Pt", "Au", "Cr", "Ir", "Ce", "Cu", "Nb", "peak_power_density", "power_unit", "area_basis", "protocol_id", "device_id"]
+    output_schema: ["validated_records_round1.csv", "evaluation_summary_round1.json", "figures/*.png"]
+    supported_metrics: ["data QA", "measured power summaries", "replicate SD/CV", "basic held-out prediction errors if explicit prediction fields", "interval coverage if explicit bounds", "cost plot if actual cost fields"]
+    units: "Input power unit and area basis retained; no implicit unit conversion"
+    failure_states: ["missing required columns", "unapproved closure tolerance omitted", "non-measured rows rejected by default", "no eligible measured rows -> summary only/no figures"]
+    authorization: "No AL API/model execution; script is standalone and requires explicit input path."
+compute_environments:
+  - environment_id: "ENV-UBUNTU-PROVIDED-UNVERIFIED"
+    owner_expert_id: "EXP-COMP-ROUND2"
+    location: "Ubuntu runtime mentioned by user; host/path not supplied"
+    platform: "server"
+    operating_system: "Ubuntu (version unknown)"
+    runtime: "Python version unknown"
+    dependencies: ["pandas", "numpy", "matplotlib"]
+    hardware: {cpu: "", gpu: "", memory: "", accelerator: ""}
+    scheduler: ""
+    access_status: "available_unverified"
+    reproducibility_status: "unregistered"
+    data_access: ["project workspace; actual Ubuntu mount/path unknown"]
+    output_locations: ["performance_evaluation_round1/ (local draft artifacts)"]
+    restrictions: ["No AL run/API call authorized", "runtime details must be logged before execution"]
+metric_evaluation_bindings:
+  - {binding_id: BIND-POWER-001, metric_id: "M_POWER", definition_ref: "execution_orchestration_round2/M_POWER", active_in_execution: false, evaluation_role: "terminal_performance", subject_types: ["candidate", "run"], value_types_allowed: ["measured", "predicted", "simulated", "reported_literature"], evaluator_ids: ["device protocol (not supplied)", "TOOL-EVAL-PY-001"], required_conditions: ["device_id", "protocol_id", "power_unit", "area_basis", "reaction/conditions"], direction: "maximize", threshold: {value: null, status: "unresolved"}, aggregation_level: "candidate", uncertainty_required: true, comparability_requirements: ["same device/protocol/area and value type"], status: "not_observed"}
+  - {binding_id: BIND-COMP-001, metric_id: "M_COMP_VALID", definition_ref: "execution_orchestration_round2/M_COMP_VALID", active_in_execution: false, evaluation_role: "constraint_check", subject_types: ["candidate", "dataset"], value_types_allowed: ["measured", "derived", "predicted"], evaluator_ids: ["TOOL-EVAL-PY-001"], required_conditions: ["basis mass_fraction", "canonical element order", "approved closure tolerance"], direction: "pass", threshold: {sum: 1.0, component_min: 0.0, tolerance: null}, aggregation_level: "candidate_set", uncertainty_required: false, comparability_requirements: ["basis and order verified"], status: "proposed"}
+  - {binding_id: BIND-COST-001, metric_id: "M_ACTUAL_COST", definition_ref: "execution_orchestration_round2/M_ACTUAL_COST", active_in_execution: false, evaluation_role: "diagnostic", subject_types: ["candidate", "run"], value_types_allowed: ["measured", "derived", "reported_literature"], evaluator_ids: ["cost accounting not supplied"], required_conditions: ["currency/date", "precursor grade", "yield", "cost basis"], direction: "minimize", threshold: {value: null, status: "unresolved"}, aggregation_level: "candidate", uncertainty_required: true, comparability_requirements: ["same cost basis and price vintage"], status: "not_observed"}
+evaluation_protocols:
+  - protocol_id: EP-READINESS-001
+    name: "Readiness and data-provenance audit"
+    question: "Which records are eligible for measured-device performance analysis, and which are virtual/predicted/reported?"
+    concern_ids: ["CONC-001"]
+    source_attribution: {source_type: "skill_inference", source_id: "scientific-performance-evaluator", statement_type: "recommendation", verification_status: "unverified"}
+    basis_refs: ["../AL/catalyst_active_learning_runnable/README.md", "../AL/catalyst_active_learning_runnable/data/README.md", "../AL/catalyst_active_learning_runnable/outputs/total_pool.csv", "../AL/catalyst_active_learning_runnable/outputs/total_examples_pool.csv"]
+    external_evidence_refs: []
+    subject_ids: ["SUBJ-AL-PROTOTYPE", "SUBJ-HISTORICAL-XLSX"]
+    metric_bindings: ["BIND-COMP-001", "BIND-POWER-001"]
+    baseline_ids: []
+    filters: ["preserve abandoned rows with status", "separate measured vs predicted/simulated", "quarantine unknown basis/conditions"]
+    grouping_variables: ["value_type", "source_file", "protocol_id", "device_id", "run_id"]
+    statistical_methods: ["counts and missingness summaries", "range/quantile checks", "duplicate ID checks", "simplex and closure checks"]
+    multiple_testing_control: "not applicable"
+    uncertainty_method: "report source uncertainty if available; do not infer"
+    missing_data_policy: "report_missing"
+    outlier_policy: "flag and review; do not delete automatically"
+    minimum_sample_requirement: null
+    tool_ids: ["TOOL-EVAL-PY-001"]
+    visualization_ids: ["VIS-DATA-TYPE-001"]
+    expert_approval_refs: []
+    revision_of: ""
+    confirmation_status: "unconfirmed"
+    status: "draft"
+  - protocol_id: EP-MEASURED-001
+    name: "Condition-stratified measured power evaluation"
+    question: "How do genuinely measured candidate peak powers compare under the same protocol/device conditions, with replicate uncertainty?"
+    concern_ids: ["CONC-003"]
+    source_attribution: {source_type: "skill_inference", source_id: "scientific-performance-evaluator", statement_type: "recommendation", verification_status: "unverified"}
+    basis_refs: ["../execution_orchestration_round2/execution_orchestration_round2.yaml", "../knowledge_alignment_round2/knowledge_alignment_report.md"]
+    external_evidence_refs: ["PEE-005", "PEE-009"]
+    subject_ids: []
+    metric_bindings: ["BIND-POWER-001"]
+    baseline_ids: []
+    filters: ["value_type=measured for primary endpoint", "same unit/area/protocol/device stratum", "only eligible mass-vector rows for composition-linked comparisons"]
+    grouping_variables: ["candidate_id", "iteration", "batch_id", "device_id", "protocol_id"]
+    statistical_methods: ["n, mean, median, SD, min/max", "bootstrap 95% CI for mean when n>=2", "paired differences when experimental design is paired", "report effect size and interval"]
+    multiple_testing_control: "If inferential tests are later requested across many candidates, pre-register family and correction; no tests performed in this round."
+    uncertainty_method: "replicate SD/CV and bootstrap interval; distinguish technical from independent-batch replicates"
+    missing_data_policy: "manual_review"
+    outlier_policy: "show raw points; flag only; no automatic removal"
+    minimum_sample_requirement: 2
+    tool_ids: ["TOOL-EVAL-PY-001"]
+    visualization_ids: ["VIS-POWER-CAND-001", "VIS-POWER-ITER-001"]
+    expert_approval_refs: []
+    revision_of: ""
+    confirmation_status: "unconfirmed"
+    status: "draft"
+  - protocol_id: EP-MODEL-001
+    name: "Held-out predictor evaluation"
+    question: "Does the AL GBR predictor generalize to unseen compositions/batches, and are its prediction errors acceptably calibrated for decision use?"
+    concern_ids: ["CONC-002"]
+    source_attribution: {source_type: "skill_inference", source_id: "scientific-performance-evaluator", statement_type: "recommendation", verification_status: "unverified"}
+    basis_refs: ["../AL/catalyst_active_learning_runnable/catalyst_al/model.py", "../AL/catalyst_active_learning_runnable/data/README.md"]
+    external_evidence_refs: ["PEE-007"]
+    subject_ids: ["SUBJ-AL-PROTOTYPE"]
+    metric_bindings: ["BIND-POWER-001"]
+    baseline_ids: []
+    filters: ["only target-compatible measured labels", "grouped split by batch/device/date if available", "predictions computed without training on evaluation records"]
+    grouping_variables: ["batch_id", "device_id", "date/run_id", "composition neighborhood"]
+    statistical_methods: ["MAE", "RMSE", "R2 when test target variance permits", "residual analysis", "interval coverage/width only if calibrated intervals exist"]
+    multiple_testing_control: "not applicable unless selecting among many models on same validation set; keep final holdout untouched"
+    uncertainty_method: "not available from current GBR point prediction; future calibration must be separately validated"
+    missing_data_policy: "manual_review"
+    outlier_policy: "review residual extremes with source records; do not auto-remove"
+    minimum_sample_requirement: null
+    tool_ids: ["TOOL-EVAL-PY-001"]
+    visualization_ids: ["VIS-PRED-001", "VIS-RESID-001"]
+    expert_approval_refs: []
+    revision_of: ""
+    confirmation_status: "unconfirmed"
+    status: "draft"
+analysis_plans:
+  - plan_id: PLAN-READINESS-001
+    concern_ids: ["CONC-001"]
+    target_perspective: "computer_expert"
+    domain_id: "data_quality"
+    scientific_questions: ["What records exist?", "Are labels measured/predicted/simulated?", "Which conditions and composition basis are missing?"]
+    metric_ids: ["M_COMP_VALID", "M_POWER"]
+    analysis_methods: ["schema validation", "provenance and status audit", "closure/missingness/duplicate summaries"]
+    visualization_spec_ids: ["VIS-DATA-TYPE-001"]
+    preferred_tool_ids: ["TOOL-EVAL-PY-001"]
+    fallback_methods: ["manual source-ledger review"]
+    source_attribution: {source_type: "skill_inference", source_id: "scientific-performance-evaluator", statement_type: "recommendation", verification_status: "unverified"}
+    basis_refs: ["AL README/data README and historical CSV outputs"]
+    external_evidence_refs: []
+    assumptions: ["No actual R2 result file exists in inspected project paths"]
+    expected_decision_use: "Determine whether future result records can be included in empirical evaluation."
+    interpretation_boundaries: ["Readiness counts are not performance evidence", "virtual values stay separate"]
+    revision_of: ""
+    revision_trigger: "initial_inference"
+    change_summary: "Initial plan; current state is planned_only."
+    expert_status: "unconfirmed"
+    status: "draft"
+  - plan_id: PLAN-PERF-001
+    concern_ids: ["CONC-003", "CONC-004"]
+    target_perspective: "cross_domain_team"
+    domain_id: "electrochemical_catalysis"
+    scientific_questions: ["Which candidates have higher measured peak power under comparable conditions?", "How does actual cost trade off?", "Are high-performing recipes reproducible?"]
+    metric_ids: ["M_POWER", "M_ACTUAL_COST", "M_FORMULATION_STABILITY"]
+    analysis_methods: ["condition-stratified summaries", "replicate SD/CV/interval", "Pareto display if comparable actual cost exists"]
+    visualization_spec_ids: ["VIS-POWER-CAND-001", "VIS-POWER-ITER-001", "VIS-POWER-COST-001", "VIS-RECIPE-STABILITY-001"]
+    preferred_tool_ids: ["TOOL-EVAL-PY-001"]
+    fallback_methods: ["tables with missingness/status if sample coverage insufficient"]
+    source_attribution: {source_type: "skill_inference", source_id: "scientific-performance-evaluator", statement_type: "recommendation", verification_status: "unverified"}
+    basis_refs: ["execution_orchestration_round2", "knowledge_alignment_round2"]
+    external_evidence_refs: ["PEE-005", "PEE-009"]
+    assumptions: ["Future CSV contains measured records and condition keys", "Actual cost field is populated and consistently defined before cost plot"]
+    expected_decision_use: "Support expert review of candidate and trade-off evidence without scalar ranking by default."
+    interpretation_boundaries: ["No direct comparison across unmatched protocols", "No literature superiority claim from CRESt context-only benchmark", "No stability claim without independent replicates"]
+    revision_of: ""
+    revision_trigger: "initial_inference"
+    change_summary: "Initial plan; no run data available."
+    expert_status: "unconfirmed"
+    status: "draft"
+analysis_executions:
+  - execution_id: EXEC-SCRIPT-WRITTEN-001
+    plan_id: PLAN-READINESS-001
+    purpose: "data_processing"
+    scientific_question: "Can an explicitly supplied future evaluation CSV be checked and summarized without changing raw data or conflating predicted and measured values?"
+    concern_ids: ["CONC-001"]
+    specification_refs: ["PLAN-READINESS-001", "../execution_orchestration_round2/execution_orchestration_round2.yaml"]
+    input_artifacts: ["Explicit future CSV only; no default file is read"]
+    input_schema: ["candidate_id", "run_id", "value_type", "Pd", "Pt", "Au", "Cr", "Ir", "Ce", "Cu", "Nb", "peak_power_density", "power_unit", "area_basis", "protocol_id", "device_id"]
+    required_transformations: ["parse numbers", "compute closure residual", "flag invalid/missing/duplicate/condition fields", "do not renormalize", "exclude non-measured rows from measured summaries"]
+    required_methods: ["mean/median/SD/range", "bootstrap CI when n>=2", "MAE/RMSE/R2 if held-out prediction column exists", "replicate SD/CV", "Pareto count only with actual cost field"]
+    visualization_spec_ids: ["VIS-POWER-CAND-001", "VIS-POWER-ITER-001", "VIS-POWER-COST-001", "VIS-RECIPE-STABILITY-001", "VIS-COMP-MATRIX-001", "VIS-PRED-001"]
+    tool_ids: ["TOOL-EVAL-PY-001"]
+    environment_id: "ENV-UBUNTU-PROVIDED-UNVERIFIED"
+    script_requirements: ["explicit --input and --output-dir", "explicit --closure-tolerance", "no AL import/API", "condition-stratify plots", "figures exploratory"]
+    prohibited_changes: ["do not run model/training/API", "do not modify raw data", "do not infer missing unit/conditions", "do not change scientific settings"]
+    expected_outputs: ["validated_records_round1.csv", "evaluation_summary_round1.json", "figures/*.png when eligible measured rows exist"]
+    validation_checks: ["required columns", "number parsing", "finite values", "mass simplex", "approved closure tolerance", "value type", "duplicates", "device/protocol/unit/area metadata"]
+    script_paths: ["evaluate_round1.py"]
+    data_paths: []
+    figure_paths: ["figures/ measured_power_by_candidate_round1_stratum_*.png", "figures/measured_performance_by_iteration_round1_stratum_*.png", "figures/measured_power_cost_tradeoff_round1_stratum_*.png", "figures/candidate_composition_matrix_round1.png", "figures/prediction_vs_measurement_round1.png"]
+    implementation_notes: ["Script syntax is validated only; it has not been run on project data.", "A closure tolerance is mandatory CLI input and must be expert-approved."]
+    status: "written_not_executed"
+performance_records: []
+benchmark_records:
+  - benchmark_id: BM-CREST-DFFC-2025
+    name: "CRESt direct formate fuel cell optimized catalyst"
+    source_type: "published_work"
+    source_ref: "https://doi.org/10.1038/s41586-025-09640-5"
+    subject_definition: "CRESt octonary/formate system; 60 C, 2.0 M KOH + 1.0 M HCOOK, total metal loading 2.0 mg cm^-2"
+    metric_id: "M_POWER"
+    value: 325
+    unit: "mW cm^-2_geo"
+    value_type: "reported_literature"
+    conditions: {temperature_C: 60, electrolyte: "2.0 M KOH + 1.0 M HCOOK", total_metal_loading_mg_cm2: 2.0, device: "direct formate fuel cell"}
+    sample_size: null
+    method: "device polarization test per paper; see paper/supplement"
+    uncertainty: {value: null, method: "not captured in current alignment record"}
+    extraction_method: "inherited"
+    comparability: "context_only"
+    comparability_notes: ["target device/reaction/protocol not confirmed", "do not calculate improvement ratio or significance"]
+    status: "registered"
+visualization_specs:
+  - {visualization_id: VIS-DATA-TYPE-001, plan_id: PLAN-READINESS-001, concern_ids: [CONC-001], title: "Input value-type and data-quality coverage", audience: "computer_expert", domain_id: "data_quality", source_attribution: {source_type: "skill_inference", source_id: "scientific-performance-evaluator"}, basis_refs: ["AL historical data inventory"], external_evidence_refs: [], scientific_question: "What fraction of records are measured, predicted, simulated, missing, or invalid?", subject_ids: ["SUBJ-HISTORICAL-XLSX", "SUBJ-AL-PROTOTYPE"], metric_ids: ["DATA-QA"], chart_type: "bar chart", x_field: "value_type or QA issue", y_fields: ["record_count"], grouping: ["source_file"], filters: [], transformations: ["count only; preserve raw records"], uncertainty_display: "none", threshold_display: [], comparison_refs: [], annotation_rules: ["missing provenance is explicit"], preferred_tool_ids: ["TOOL-EVAL-PY-001"], analysis_execution_id: "EXEC-SCRIPT-WRITTEN-001", output_format: ["PNG"], script_path: "evaluate_round1.py", data_path: "explicit future CSV", figure_path: "figures/data_type_coverage_round1.png (not implemented in current script)", interpretation_limits: ["counts do not establish performance"], revision_of: "", revision_reason: "", expert_status: "unconfirmed", status: "planned"}
+  - {visualization_id: VIS-POWER-CAND-001, plan_id: PLAN-PERF-001, concern_ids: [CONC-003], title: "Measured peak power by candidate", audience: "domain_expert", domain_id: "electrochemical_catalysis", source_attribution: {source_type: "skill_inference", source_id: "scientific-performance-evaluator"}, basis_refs: ["Round 2 orchestration M_POWER"], external_evidence_refs: ["PEE-009"], scientific_question: "How does measured peak power vary across candidates under matched conditions?", subject_ids: [], metric_ids: ["M_POWER"], chart_type: "bar with raw replicate points/error bars", x_field: "candidate_id", y_fields: ["peak_power_density"], grouping: ["protocol_id", "device_id", "power_unit", "area_basis"], filters: ["value_type=measured", "evaluation_eligible=true"], transformations: ["mean; SD for n>1"], uncertainty_display: "SD/error bars, show raw points", threshold_display: [], comparison_refs: [], annotation_rules: ["stratify conditions", "never combine units/area basis"], preferred_tool_ids: ["TOOL-EVAL-PY-001"], analysis_execution_id: "EXEC-SCRIPT-WRITTEN-001", output_format: ["PNG"], script_path: "evaluate_round1.py", data_path: "explicit future CSV", figure_path: "figures/measured_power_by_candidate_round1_stratum_*.png", interpretation_limits: ["exploratory; protocol and application threshold pending"], revision_of: "", revision_reason: "", expert_status: "unconfirmed", status: "planned"}
+  - {visualization_id: VIS-POWER-ITER-001, plan_id: PLAN-PERF-001, concern_ids: [CONC-002, CONC-003], title: "Measured power by iteration", audience: "cross_domain_team", domain_id: "electrochemical_catalysis", source_attribution: {source_type: "skill_inference", source_id: "scientific-performance-evaluator"}, basis_refs: ["Round 2 workflow feedback loop"], external_evidence_refs: ["PEE-006", "PEE-007"], scientific_question: "Does measured candidate performance improve across optimization rounds?", subject_ids: [], metric_ids: ["M_POWER"], chart_type: "line plot with mean and best measured per iteration", x_field: "iteration", y_fields: ["mean", "max", "SD"], grouping: ["condition stratum"], filters: ["value_type=measured"], transformations: ["group summary"], uncertainty_display: "SD band when available", threshold_display: [], comparison_refs: [], annotation_rules: ["predicted/virtual curves separate and labeled"], preferred_tool_ids: ["TOOL-EVAL-PY-001"], analysis_execution_id: "EXEC-SCRIPT-WRITTEN-001", output_format: ["PNG"], script_path: "evaluate_round1.py", data_path: "explicit future CSV", figure_path: "figures/measured_performance_by_iteration_round1_stratum_*.png", interpretation_limits: ["requires run/iteration ID and comparable conditions"], revision_of: "", revision_reason: "", expert_status: "unconfirmed", status: "planned"}
+  - {visualization_id: VIS-POWER-COST-001, plan_id: PLAN-PERF-001, concern_ids: [CONC-004], title: "Measured power versus actual cost", audience: "decision_maker", domain_id: "materials_cost", source_attribution: {source_type: "skill_inference", source_id: "scientific-performance-evaluator"}, basis_refs: ["Round 2 M_ACTUAL_COST"], external_evidence_refs: ["PEE-008"], scientific_question: "Which measured candidates are non-dominated in device power and actual cost?", subject_ids: [], metric_ids: ["M_POWER", "M_ACTUAL_COST"], chart_type: "scatter/Pareto display", x_field: "actual_cost", y_fields: ["peak_power_density"], grouping: ["condition stratum"], filters: ["value_type=measured", "actual_cost present"], transformations: ["none beyond approved unit normalization"], uncertainty_display: "replicate intervals if available", threshold_display: [], comparison_refs: [], annotation_rules: ["never substitute legacy normalized-cost proxy for actual cost without separate label"], preferred_tool_ids: ["TOOL-EVAL-PY-001"], analysis_execution_id: "EXEC-SCRIPT-WRITTEN-001", output_format: ["PNG"], script_path: "evaluate_round1.py", data_path: "explicit future CSV", figure_path: "figures/measured_power_cost_tradeoff_round1_stratum_*.png", interpretation_limits: ["actual cost basis and budget pending"], revision_of: "", revision_reason: "", expert_status: "unconfirmed", status: "planned"}
+  - {visualization_id: VIS-RECIPE-STABILITY-001, plan_id: PLAN-PERF-001, concern_ids: [CONC-003], title: "Replicate stability of high-performing recipes", audience: "domain_expert", domain_id: "electrochemical_catalysis", source_attribution: {source_type: "skill_inference", source_id: "scientific-performance-evaluator"}, basis_refs: ["Round 2 M_FORMULATION_STABILITY"], external_evidence_refs: [], scientific_question: "Are top recipes reproducible across independent batches/devices?", subject_ids: [], metric_ids: ["M_FORMULATION_STABILITY"], chart_type: "replicate dot/box/interval plot", x_field: "candidate_id", y_fields: ["peak_power_density"], grouping: ["batch_id", "device_id", "protocol_id"], filters: ["independent physical replicates only"], transformations: ["mean, SD, CV only with n>=2"], uncertainty_display: "raw replicates and intervals", threshold_display: [], comparison_refs: [], annotation_rules: ["do not call this durability unless a stress protocol/time dimension exists"], preferred_tool_ids: ["TOOL-EVAL-PY-001"], analysis_execution_id: "EXEC-SCRIPT-WRITTEN-001", output_format: ["PNG"], script_path: "evaluate_round1.py", data_path: "future replicate CSV", figure_path: "figures/recipe_stability_round1.png (script summary exists; figure pending implementation)", interpretation_limits: ["no replicate data currently"], revision_of: "", revision_reason: "", expert_status: "unconfirmed", status: "planned"}
+  - {visualization_id: VIS-COMP-MATRIX-001, plan_id: PLAN-READINESS-001, concern_ids: [CONC-001], title: "Measured candidate composition matrix", audience: "computer_expert", domain_id: "data_quality", source_attribution: {source_type: "skill_inference", source_id: "scientific-performance-evaluator"}, basis_refs: ["Round 2 fixed mass order"], external_evidence_refs: [], scientific_question: "How do verified candidate mass fractions vary across recipes?", subject_ids: [], metric_ids: ["M_COMP_VALID"], chart_type: "heatmap", x_field: "fixed element order", y_fields: ["candidate_id"], grouping: [], filters: ["measured composition basis confirmed"], transformations: ["none"], uncertainty_display: "assay uncertainty not yet implemented", threshold_display: [], comparison_refs: [], annotation_rules: ["fixed order Pd,Pt,Au,Cr,Ir,Ce,Cu,Nb"], preferred_tool_ids: ["TOOL-EVAL-PY-001"], analysis_execution_id: "EXEC-SCRIPT-WRITTEN-001", output_format: ["PNG"], script_path: "evaluate_round1.py", data_path: "explicit future CSV", figure_path: "figures/candidate_composition_matrix_round1.png", interpretation_limits: ["descriptive, not causal"], revision_of: "", revision_reason: "", expert_status: "unconfirmed", status: "planned"}
+  - {visualization_id: VIS-PRED-001, plan_id: PLAN-MODEL-001, concern_ids: [CONC-002], title: "Held-out measured versus predicted power", audience: "computer_expert", domain_id: "computational_evaluation", source_attribution: {source_type: "skill_inference", source_id: "scientific-performance-evaluator"}, basis_refs: ["AL model.py"], external_evidence_refs: ["PEE-007"], scientific_question: "Does the predictor generalize to genuinely held-out measured records?", subject_ids: ["SUBJ-AL-PROTOTYPE"], metric_ids: ["M_POWER"], chart_type: "scatter with identity line and interval if available", x_field: "measured peak_power_density", y_fields: ["predicted_power_density"], grouping: ["protocol/device/batch if appropriate"], filters: ["held-out measured rows only"], transformations: ["same units only"], uncertainty_display: "interval only if calibrated and supplied", threshold_display: [], comparison_refs: [], annotation_rules: ["never mix virtual outputs with measurements as one series"], preferred_tool_ids: ["TOOL-EVAL-PY-001"], analysis_execution_id: "EXEC-SCRIPT-WRITTEN-001", output_format: ["PNG"], script_path: "evaluate_round1.py", data_path: "explicit future CSV", figure_path: "figures/prediction_vs_measurement_round1.png", interpretation_limits: ["no results currently"], revision_of: "", revision_reason: "", expert_status: "unconfirmed", status: "planned"}
+analysis_findings: []
+cross_domain_findings: []
+candidate_or_run_decisions: []
+comparison_runs: []
+adjustment_proposals:
+  - proposal_id: ADJ-001
+    source_attribution: {source_type: "skill_analysis", source_id: "scientific-performance-evaluator", statement_type: "recommendation", verification_status: "cross_checked"}
+    proposal_layer: "skill_generated"
+    target_stage: "execution_orchestration"
+    target_type: "dataset"
+    target_id: "AL training/evaluation dataset"
+    current_state: "Raw workbook includes flagged abandoned rows; packaged 120-row subset is target-sorted/downsampled; device conditions and label provenance absent from schema."
+    proposed_change: "Create an immutable provenance-aware evaluation table; separate measured/predicted/simulated/reported values; verify mass basis/order and protocol conditions; use group-aware holdout."
+    proposed_value: null
+    proposed_range: []
+    based_on_plan_ids: ["PLAN-READINESS-001", "PLAN-MODEL-001"]
+    based_on_visualization_ids: ["VIS-DATA-TYPE-001", "VIS-PRED-001"]
+    based_on_finding_ids: []
+    trigger_findings: ["Missing condition and value-type fields in current artifacts"]
+    supporting_records: []
+    supporting_evidence_refs: ["PEE-002", "PEE-004", "AL:data/Data.xlsx:Result 1"]
+    derivation_method: "Direct schema/provenance inspection"
+    rationale: "Current subset and AL virtual loop cannot support unbiased empirical device-performance claims."
+    expected_effects: ["More defensible model metrics", "Clear separation of measured from virtual labels"]
+    possible_side_effects: ["Fewer usable records until metadata are recovered"]
+    dependencies: ["Expert target protocol and mass-basis confirmation"]
+    validation_plan: ["Audit source rows", "verify joins/units", "test grouped split and leakage checks"]
+    rollback_plan: "Keep original files read-only; version cleaned tables separately."
+    priority: "critical"
+    confidence: "high"
+    authorization_required: true
+    required_experts: ["computer expert", "domain/device expert", "data owner"]
+    status: "proposed"
+expert_adjustment_requests: []
+expert_feedback_history: []
+expert_activity_log:
+  - {activity_id: EA-COMP-001, expert_id: "EXP-COMP-ROUND2", expert_role: "computer_expert", domain_id: "computational_evaluation", action_type: "define_metric", target_type: "metric", target_id: "M_POWER/M_COMP_VALID", contribution: "Peak power is the core performance metric; mass fractions in order Pd,Pt,Au,Cr,Ir,Ce,Cu,Nb are nonnegative and sum to one.", decision_or_effect: "Inherited as confirmed primary/constraint definitions; no threshold or target test conditions were provided.", evidence_refs: ["execution_orchestration_round2/execution_orchestration_round2.yaml"], timestamp: "2026-10-27", status: "applied"}
+  - {activity_id: EA-USER-001, expert_id: "EXP-USER-AUTH", expert_role: "interdisciplinary_reviewer", domain_id: "authorization", action_type: "provide_tool", target_type: "environment", target_id: "ENV-UBUNTU-PROVIDED-UNVERIFIED", contribution: "Ubuntu runtime and API interface are stated to be provided.", decision_or_effect: "Registered as unverified environment availability; no credentials/runtime details or authorization to call API were supplied.", evidence_refs: ["user request"], timestamp: "2026-10-27", status: "recorded"}
+artifact_manifest:
+  - {artifact_id: ART-EVAL-SCRIPT-001, path: "evaluate_round1.py", artifact_type: "script", purpose: "Validate explicit evaluation CSV, compute summaries, and produce condition-stratified exploratory plots", generation_method: "written by Skill; not run on project data", dependencies: ["Python 3", "pandas", "numpy", "matplotlib"], input_sources: ["explicit future CSV only"], validation: "LSP checked; Python syntax compiled; no project data execution"}
+  - {artifact_id: ART-REPORT-001, path: "performance_evaluation_report_round1.md", artifact_type: "report", purpose: "Readiness, protocol, statistical and plotting plan", generation_method: "manual synthesis from upstream and sources", dependencies: [], input_sources: ["Round 2 orchestration", "AL source inspection", "literature citations"], validation: "content checked against source inventory"}
+  - {artifact_id: ART-QUEUE-001, path: "performance_review_queue_round1.yaml", artifact_type: "review_queue", purpose: "Blocking data, protocol, metric and threshold questions", generation_method: "manual synthesis", dependencies: [], input_sources: ["Round 2 orchestration review queue", "performance readiness analysis"], validation: "YAML parsed"}
+  - {artifact_id: ART-TRACE-001, path: "execution_trace_round1.jsonl", artifact_type: "execution_trace", purpose: "Auditable task and tool event summaries", generation_method: "manual event logging", dependencies: [], input_sources: ["current OpenCode task events"], validation: "JSONL parsed"}
+workflow:
+  current_state: "planned_only"
+  execution_authorized: false
+  next_gate: "Obtain target protocol, data provenance and expert-approved mass closure tolerance, then register result artifact and rerun evaluation."
+  stop_reasons: ["No current R2 run outputs", "Target device/conditions missing", "Evaluation script requires explicit input and closure tolerance"]
+run_history: []
+version_history:
+  - {version: "1.0.0-round1", date: "2026-10-27", change: "Initial evaluation readiness and script plan; no project data figures generated", previous_version: null}

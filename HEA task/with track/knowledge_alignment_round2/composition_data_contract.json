@@ -1,0 +1,35 @@
+{
+  "schema_version": "hee-formulation-record/2.0",
+  "composition_order": ["Pd", "Pt", "Cu", "Au", "Ir", "Ce", "Nb", "Cr"],
+  "canonical_unit": "atomic_fraction",
+  "numeric_type": "JSON number (IEEE-754 double); finite",
+  "valid_domain": {"minimum_inclusive": 0.0, "maximum_inclusive": 1.0},
+  "closure": {"equation": "sum(x_i)=1", "tolerance": null, "tolerance_source": "set from validated assay/reporting protocol; do not invent"},
+  "presence_policy": {"allowed_values": ["subset_allowed", "all_positive"], "default": null, "source_semantics": "CRESt octonary chemical space includes a reported optimized recipe with only six listed nonzero elements; project owner must choose"},
+  "missing_value_semantics": {"zero": "explicitly absent or below an explicitly recorded presence rule", "null": "unknown/not measured; never impute as zero without method"},
+  "separate_fields": ["composition_nominal", "composition_measured", "composition_uncertainty", "composition_atomic_percent_display", "composition_mass_fraction_derived"],
+  "conversion": {"mass_fraction": "w_i=(x_i*M_i)/sum_j(x_j*M_j)", "atomic_percent": "100*x_i", "atomic_weights_source": "CIAAW Standard Atomic Weights 2024"},
+  "record_grain": "one physical sample/device test; record synthesis batch, protocol, device, operating conditions, replicate and source IDs",
+  "input_formats": {
+    "jsonl": "one UTF-8 JSON object per sample/test; recommended canonical format",
+    "csv": {"first_eight_columns_exact_order": ["x_Pd", "x_Pt", "x_Cu", "x_Au", "x_Ir", "x_Ce", "x_Nb", "x_Cr"], "null_handling": "empty field plus companion status; do not convert empty to zero", "metadata": "separate versioned metadata file required for units, test conditions and protocol"}
+  },
+  "output_metrics": ["measured_peak_areal_power_density_W_cm2_geo", "predicted_peak_areal_power_density_W_cm2_geo_with_interval", "precious_metal_mass_fraction", "PGM_mass_fraction", "public_price_raw_cost_proxy_USD_per_kg_alloy", "actual_precursor_cost_USD_per_kg_alloy", "cost_specific_power_with_definition_id"],
+  "output_status_fields": ["measured|predicted|derived|not_measured", "conditions_id", "source_ids", "price_vintage", "model_version", "uncertainty"],
+  "example_input": {
+    "schema_version": "hee-formulation-record/2.0",
+    "record_id": "run-000001",
+    "composition_order": ["Pd", "Pt", "Cu", "Au", "Ir", "Ce", "Nb", "Cr"],
+    "composition_unit": "atomic_fraction",
+    "composition_nominal": [0.381, 0.08, 0.009, 0.004, 0.02, 0.086, 0.338, 0.082],
+    "composition_measured": null,
+    "composition_uncertainty": null,
+    "presence_policy": "subset_allowed",
+    "synthesis": {"method": null, "batch_id": null, "support": null, "precursor_lots": null},
+    "electrode_device": {"reaction": "formate_oxidation", "device_type": null, "electrode_role": null, "area_basis": null, "conditions": {}},
+    "responses": {"peak_areal_power_density_W_cm2_geo": null, "PGM_mass_fraction": null, "PM_mass_fraction_including_Au": null, "public_price_raw_cost_proxy_USD_per_kg_alloy": null, "actual_precursor_cost_USD_per_kg_alloy": null, "cost_specific_power": null},
+    "response_status": "not_measured",
+    "source_ids": [],
+    "uncertainty_or_replicates": null
+  }
+}

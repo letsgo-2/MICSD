@@ -312,3 +312,7 @@ Formal performance statistics require new or approved run outputs. The current p
 3. Whether the installed KA-GNN checkpoint is approved for model-performance evaluation.
 4. Which ORCA version, solvent, functional, basis set, charge/multiplicity protocol, and metal treatment should be locked.
 5. The Slurm partition, maximum array concurrency, ORCA module path, wall-time limits, and scratch policy.
+
+## 阶段确认状态更新 2026-10-30
+
+本次依照对话语义及后续阶段采用情况，直接确认相应阶段的知识认可、输入条件、指标考虑范围、最终优化指标和可合成性约束要求；不另存原件，也不在当前文件保留原状态字段。知识对齐第二轮的总体认可对应原有30条知识的原则确认，新增6类骨架仅确认其参考或工作骨架角色。执行编排第三轮明确选择 S1–T1 能隙、charge、symmetry；这一确认不扩展到奖励权重、检查点、具体阈值或科学有效性。具体数值、单位、阈值、精确骨架规则、计算参数和运行许可仍须单独确认。来源对话、行号和确认边界见对应 YAML 的 expert_feedback_reconciliation。此为事后状态解释，不新增独立专家签字或逐项核验记录。

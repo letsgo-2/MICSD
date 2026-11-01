@@ -1,0 +1,41 @@
+review_items:
+  - issue_id: PE3-001
+    category: metric
+    question: Should SA_Score be a hard exclusion, a soft constraint, or a Pareto objective, and what threshold and exception policy are scientifically justified for this photosensitizer scaffold?
+    affected_ids: [SA_Score, ADJ3-01]
+    recommendation: Approve threshold and macrocycle/scaffold exceptions with rationale; until then report score continuously and do not reject candidates.
+    evidence_refs: [../meloculardftcal/AGENT_INTERFACE_EN.md, ../meloculardftcal/reports/pic16_s1/metrics.json]
+    required_expert_ids: [materials_scientist]
+    priority: high
+    blocking: true
+    status: open
+  - issue_id: PE3-002
+    category: protocol
+    question: What route-level review standard is required to label a finalist synthetically feasible?
+    affected_ids: [route_feasibility_review]
+    recommendation: Define route evidence, building-block availability checks, number/risk of steps, reviewer and confidence labels; distinguish unknown from infeasible.
+    evidence_refs: [performance_evaluation_report_round3.md]
+    required_expert_ids: [materials_scientist, synthetic_chemist]
+    priority: high
+    blocking: true
+    status: open
+  - issue_id: PE3-003
+    category: metric
+    question: How should overlap between SA score's symmetry contribution and the separate decoration-symmetry objective be handled?
+    affected_ids: [SA_Score, symmetry]
+    recommendation: Keep raw metrics separate; quantify correlation and conduct ablation before assigning joint reward weights.
+    evidence_refs: [../meloculardftcal/04_data_processing/sascorer.py, ../performance_evaluation_round2/performance_evaluation_round2.yaml]
+    required_expert_ids: [materials_scientist, computer_expert]
+    priority: medium
+    blocking: false
+    status: open
+  - issue_id: PE3-004
+    category: provenance
+    question: Is the SA score implementation and fragment-score file version/hash documented for both cohort CSVs and the core data?
+    affected_ids: [PR3-SA-core, PR3-SA-cohort-round1, PR3-SA-cohort-round2]
+    recommendation: Record implementation commit/hash, fragment-score data hash and scoring timestamp; recompute only in an isolated, versioned audit if provenance is insufficient.
+    evidence_refs: [../meloculardftcal/04_data_processing/sascorer.py, ../meloculardftcal/04_data_processing/addrdkit.py]
+    required_expert_ids: [computer_expert]
+    priority: medium
+    blocking: false
+    status: open

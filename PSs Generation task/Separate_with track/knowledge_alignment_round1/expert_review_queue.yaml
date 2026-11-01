@@ -1,0 +1,92 @@
+round: 1
+status: "working_knowledge_confirmed_review_questions_unresolved"
+items:
+  - id: RQ001
+    object: I001
+    issue: "Confirm whether reported PhiDelta values use comparable standards, wavelengths, media, oxygenation, and aggregation states."
+    requested_expert: photochemistry
+    action: request_more_evidence
+  - id: RQ002
+    object: I002
+    issue: "Define operational Type-I ROS assay requirements and decide whether species-specific rates can be pooled."
+    requested_expert: photochemistry
+    action: revise
+  - id: RQ003
+    object: I005
+    issue: "Confirm the project definition and ratio direction for phototherapeutic index; sources use EC50, IC50, and TC50 inconsistently."
+    requested_expert: pharmacology
+    action: revise
+  - id: RQ004
+    object: I006
+    issue: "Specify acceptable localization measurements and controls for mitochondria, lysosome, membrane, and CAIX targeting."
+    requested_expert: cell_biology
+    action: request_more_evidence
+  - id: RQ005
+    object: I009
+    issue: "Do not infer pyroptosis from LDH or morphology alone. Confirm required GSDMD/GSDME cleavage, pore, caspase, and cytokine evidence."
+    requested_expert: cell_death_biology
+    action: revise
+  - id: RQ006
+    object: K001
+    issue: "Verify that the anti-aggregation interpretation is supported for the exact concentration and medium, not only for the molecular design rationale."
+    requested_expert: materials_chemistry
+    action: approve
+  - id: RQ007
+    object: K002
+    issue: "Confirm whether ICT is causal for enhanced ISC/ROS in the Peng system or a reported mechanistic interpretation requiring controls."
+    requested_expert: photophysics
+    action: revise
+  - id: RQ008
+    object: K004
+    issue: "Validate the relationship between Type-I chemistry and hypoxia tolerance; retain as a hypothesis until oxygen-controlled ROS and efficacy data are aligned."
+    requested_expert: photochemistry
+    action: request_more_evidence
+  - id: RQ009
+    object: terminology
+    issue: "Establish authoritative exact mappings for photosensitizer, Type-I/Type-II PDT, AIE, photothermal conversion efficiency, and pyroptosis."
+    requested_expert: ontology_and_domain_experts
+    action: request_more_evidence
+  - id: RQ010
+    object: corpus_comparability
+    issue: "Extract and normalize wavelength, irradiance, fluence, incubation, oxygen, cell line, concentration, and endpoint for every reported potency value before model training."
+    requested_expert: data_engineering_and_experimental
+    action: request_more_evidence
+  - id: RQ011
+    object: candidate_scope
+    issue: "Decide whether microbial PDT and antibacterial phototherapy metrics should share a model with anticancer phototherapy or be separated by task."
+    requested_expert: project_team
+    action: revise
+
+expert_feedback_reconciliation:
+  annotation_date: '2026-10-31'
+  annotation_type: dialogue_based_stage_status_reconciliation
+  requested_by: user
+  source_dialogue: ../../multi_round_dialogue_example_EN.txt
+  source_sha256: ebb57f5513ccd2ee131a9971088e81acaa8e6b610f46e7df5afea5890dbc12d8
+  interpretation: Stage-scoped working acceptance from the saved dialogue and subsequent adoption, following the earlier
+    PS reconciliation rules.
+  itemwise_scientific_validation_completed_by_this_update: false
+  numerical_values_units_and_thresholds_certified_by_this_update: false
+  execution_authorized_by_this_update: false
+  existing_disputed_entries_preserved: true
+  unanswered_review_items_and_blocking_flags_preserved: true
+  historical_execution_trace_events_modified: false
+  source_feedback_records:
+  - feedback_id: PS-KA-R2-BASE
+    source_line: 6
+    excerpt: The domain expert states that the current knowledge is essentially correct, but an analysis of advantageous
+      photosensitizer scaffolds and their characteristics should be added. In addition, most current metrics require
+      biological experiments, so the computer expert should be provided with metrics that can be calculated numerically
+      using DFT, together with their meanings. The computer expert states that the current description of metric computability
+      is insufficiently clear and needs to identify the performance metrics that can genuinely be used in an iterative
+      optimization framework, their calculation methods, and threshold information for designing rewards from selected
+      performance metrics. Next, update and confirm the knowledge-alignment report according to the domain expert's requirements,
+      using evidence from the papers and authoritative online sources. Produce clearer supplements to the domain-expert
+      view and the computer-expert optimization metrics.
+  updates:
+  - path: status
+    status: working_knowledge_confirmed_review_questions_unresolved
+    feedback_refs:
+    - PS-KA-R2-BASE
+    scope: Stage-level intent is confirmed; existing review questions, blocking flags and unanswered details are retained,
+      not marked resolved.

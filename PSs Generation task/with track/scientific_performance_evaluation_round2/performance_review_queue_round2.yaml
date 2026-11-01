@@ -1,0 +1,118 @@
+{
+  "review_items": [
+    {
+      "issue_id": "PE-R2-001",
+      "category": "environment",
+      "question": "Re-establish the intended ORCA/Slurm environment and produce a fresh capability report with ORCA_BIN, sbatch, squeue and target versions available.",
+      "affected_ids": [
+        "ENV-R2-LOCAL",
+        "TOOL-R2-ORCA"
+      ],
+      "recommendation": "Do this before any next optimization or reward update.",
+      "evidence_refs": [
+        "environment.json",
+        "AGENT_INTERFACE_EN.md:78-96"
+      ],
+      "required_expert": "computer expert",
+      "priority": "critical",
+      "blocking": true,
+      "status": "open"
+    },
+    {
+      "issue_id": "PE-R2-002",
+      "category": "protocol",
+      "question": "Provide raw ORCA logs or normal-termination counts for the 222-row completed table and confirm whether all values are generated under one protocol.",
+      "affected_ids": [
+        "PR-R2-001",
+        "PR-R2-002",
+        "FIND-R2-001"
+      ],
+      "recommendation": "Archive logs/manifests and separate protocol-incompatible data before comparison.",
+      "evidence_refs": [
+        "metrics.json normal_termination_note",
+        "AGENT_INTERFACE_EN.md:49-52"
+      ],
+      "required_expert": "materials expert",
+      "priority": "critical",
+      "blocking": true,
+      "status": "open"
+    },
+    {
+      "issue_id": "PE-R2-003",
+      "category": "quality",
+      "question": "Diagnose the 31 imaginary-frequency candidates and decide the QC inclusion rule for Pareto/ranking.",
+      "affected_ids": [
+        "FIND-R2-002",
+        "ADJ-R2-002"
+      ],
+      "recommendation": "Retain rows but label them; use no-imaginary as primary QC sensitivity analysis until raw logs resolve the cause.",
+      "evidence_refs": [
+        "PR-R2-002",
+        "metrics.json"
+      ],
+      "required_expert": "materials expert",
+      "priority": "high",
+      "blocking": true,
+      "status": "open"
+    },
+    {
+      "issue_id": "PE-R2-004",
+      "category": "calibration",
+      "question": "Run stratified SDPD-vs-ORCA agreement analysis for the Pareto candidates and interior/boundary candidates before changing RL reward weights.",
+      "affected_ids": [
+        "FIND-R2-003",
+        "ADJ-R2-003"
+      ],
+      "recommendation": "Use MAE, RMSE, bias and Bland-Altman with convergence labels; do not use the current reference as a validated minimum.",
+      "evidence_refs": [
+        "PR-R2-003",
+        "PR-R2-004",
+        "metrics.json reference warning"
+      ],
+      "required_expert": "materials and computer experts",
+      "priority": "critical",
+      "blocking": true,
+      "status": "open"
+    },
+    {
+      "issue_id": "PE-R2-005",
+      "category": "metric",
+      "question": "Approve a scaffold-specific replacement or removal of the generic LogP/TPSA window that produced zero hits.",
+      "affected_ids": [
+        "FIND-R2-004",
+        "ADJ-R2-004"
+      ],
+      "recommendation": "Keep the current window context-only; do not activate it as a hard constraint.",
+      "evidence_refs": [
+        "PR-R2-006",
+        "metrics.json targeting_window"
+      ],
+      "required_expert": "materials expert",
+      "priority": "high",
+      "blocking": true,
+      "status": "open"
+    },
+    {
+      "issue_id": "PE-R2-006",
+      "category": "optimization",
+      "question": "After QC and proxy calibration, select whether the next optimization should alter the ST-gap reward, add SOCME/gap-ratio calibration, or prioritize chemical validity/robustness.",
+      "affected_ids": [
+        "ADJ-R2-001",
+        "ADJ-R2-002",
+        "ADJ-R2-003",
+        "ADJ-R2-004"
+      ],
+      "recommendation": "Default recommendation: environment/QC/proxy calibration first; only then run a constrained reward ablation.",
+      "evidence_refs": [
+        "FIND-R2-001",
+        "FIND-R2-002",
+        "FIND-R2-003",
+        "FIND-R2-004"
+      ],
+      "required_expert": "joint computer/materials experts",
+      "priority": "critical",
+      "blocking": true,
+      "status": "open"
+    }
+  ]
+}

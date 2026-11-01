@@ -1,0 +1,94 @@
+project: "Performance Evaluation: Eight-Component HEA Catalyst, Round 1"
+input_state: "planned_only"
+status: "open"
+review_items:
+  - issue_id: PE-ISSUE-001
+    category: "input"
+    question: "Provide traceable evaluation results from an authorized run, including candidate IDs, run IDs, measured/predicted value type, source/model version and conditions."
+    affected_ids: ["SUBJ-AL-PROTOTYPE", "PLAN-READINESS-001", "PLAN-PERF-001"]
+    recommendation: "Do not evaluate legacy total_pool files as measured results until provenance is reconciled; the current workspace contains no Round 2 run artifacts."
+    evidence_refs: ["execution_orchestration_round2/execution_orchestration_round2.yaml", "../AL/catalyst_active_learning_runnable/README.md"]
+    required_expert_ids: ["EXP-COMP-ROUND2", "data_owner"]
+    priority: "critical"
+    blocking: true
+    status: "open"
+  - issue_id: PE-ISSUE-002
+    category: "metric"
+    question: "Confirm target-device peak-power unit, area basis, reaction, electrode role, and device test protocol. Is the target comparable to the CRESt DFFC condition?"
+    affected_ids: ["M_POWER", "BIND-POWER-001", "EP-MEASURED-001"]
+    recommendation: "Require protocol metadata and stratify nonmatching conditions; use CRESt only as context unless directly comparable."
+    evidence_refs: ["PEE-005", "PEE-009", "execution_orchestration_round2/execution_review_queue_round2.yaml:EO2-003"]
+    required_expert_ids: ["EXP-MAT-ROUND2", "electrochemical_device_expert"]
+    priority: "critical"
+    blocking: true
+    status: "open"
+  - issue_id: PE-ISSUE-003
+    category: "provenance"
+    question: "Label every historical and future target as measured, derived, predicted, simulated, or reported literature, with source and model/run identifiers."
+    affected_ids: ["SUBJ-HISTORICAL-XLSX", "PEE-002", "PEE-004"]
+    recommendation: "Keep GBR oracle, LLM committee and physical measurements as separate value types and analysis strata."
+    evidence_refs: ["../AL/catalyst_active_learning_runnable/data/README.md", "../AL/catalyst_active_learning_runnable/README.md"]
+    required_expert_ids: ["data_owner", "EXP-COMP-ROUND2"]
+    priority: "critical"
+    blocking: true
+    status: "open"
+  - issue_id: PE-ISSUE-004
+    category: "input"
+    question: "Confirm each source vector's fraction basis and approve the closure tolerance for fixed mass order [Pd,Pt,Au,Cr,Ir,Ce,Cu,Nb]."
+    affected_ids: ["BIND-COMP-001", "TOOL-EVAL-PY-001"]
+    recommendation: "Provide explicit tolerance via the required script option. Do not infer basis from sum-to-one or auto-renormalize raw values."
+    evidence_refs: ["execution_orchestration_round2/execution_orchestration_round2.yaml:composition_migration"]
+    required_expert_ids: ["EXP-MAT-ROUND2", "analytical_characterization_expert"]
+    priority: "critical"
+    blocking: true
+    status: "open"
+  - issue_id: PE-ISSUE-005
+    category: "environment"
+    question: "Provide actual Ubuntu host/runtime version, Python version, package versions, data mount, and output location before executing the plotting script."
+    affected_ids: ["ENV-UBUNTU-PROVIDED-UNVERIFIED", "TOOL-EVAL-PY-001"]
+    recommendation: "Record environment snapshot and test dependencies on a non-sensitive sample file; no API call is required for the evaluation script."
+    evidence_refs: ["user request"]
+    required_expert_ids: ["EXP-COMP-ROUND2"]
+    priority: "medium"
+    blocking: false
+    status: "open"
+  - issue_id: PE-ISSUE-006
+    category: "metric"
+    question: "Approve replicate unit/count and whether reported stability means recipe reproducibility, long-term electrochemical durability, or both. Set any acceptance threshold only after defining conditions."
+    affected_ids: ["M_FORMULATION_STABILITY", "VIS-RECIPE-STABILITY-001"]
+    recommendation: "Keep preparation reproducibility and lifetime durability separate; current data have no replicate/batch IDs."
+    evidence_refs: ["execution_orchestration_round2/execution_review_queue_round2.yaml:EO2-008"]
+    required_expert_ids: ["EXP-MAT-ROUND2", "experimental_expert"]
+    priority: "high"
+    blocking: true
+    status: "open"
+  - issue_id: PE-ISSUE-007
+    category: "metric"
+    question: "Supply actual cost fields and approve the cost basis before calculating measured power-cost trade-offs."
+    affected_ids: ["M_ACTUAL_COST", "VIS-POWER-COST-001"]
+    recommendation: "Do not plot legacy normalized_cost as actual cost; public-price proxies and actual costs must be separate series."
+    evidence_refs: ["../AL/catalyst_active_learning_runnable/catalyst_al/costs.py", "execution_orchestration_round2/execution_review_queue_round2.yaml:EO2-007"]
+    required_expert_ids: ["procurement_expert", "EXP-COMP-ROUND2"]
+    priority: "high"
+    blocking: true
+    status: "open"
+  - issue_id: PE-ISSUE-008
+    category: "comparison"
+    question: "Confirm which historical rows qualify as measured data and whether source conditions permit comparison; identify target-specific control candidates."
+    affected_ids: ["BM-CREST-DFFC-2025", "SUBJ-HISTORICAL-XLSX"]
+    recommendation: "Use literature reference as context-only until protocol match is proven; direct improvement ratios require comparability."
+    evidence_refs: ["PEE-005", "../AL/catalyst_active_learning_runnable/data/Data.xlsx"]
+    required_expert_ids: ["electrochemical_device_expert", "data_owner"]
+    priority: "high"
+    blocking: true
+    status: "open"
+  - issue_id: PE-ISSUE-009
+    category: "analysis_plan"
+    question: "Approve statistical acceptance criteria for model error and prediction uncertainty after a valid group-aware holdout set is assembled."
+    affected_ids: ["EP-MODEL-001", "VIS-PRED-001"]
+    recommendation: "Do not use generic MAE/RMSE/R2 thresholds; judge against measurement repeatability, decision tolerance and independent validation coverage."
+    evidence_refs: ["PEE-007", "execution_orchestration_round2/execution_review_queue_round2.yaml:EO2-005"]
+    required_expert_ids: ["EXP-COMP-ROUND2", "model_owner"]
+    priority: "high"
+    blocking: true
+    status: "open"

@@ -1,0 +1,189 @@
+{
+  "reports": [
+    {
+      "source": "initial_examples.csv",
+      "rows": 10,
+      "columns": [
+        "Pd",
+        "Pt",
+        "Cu",
+        "Au",
+        "Ir",
+        "Ce",
+        "Nb",
+        "Cr",
+        "power_density"
+      ],
+      "composition_order_observed": [
+        "Pd",
+        "Pt",
+        "Cu",
+        "Au",
+        "Ir",
+        "Ce",
+        "Nb",
+        "Cr"
+      ],
+      "required_elements_present": true,
+      "duplicate_rows": 0,
+      "missing_cells": 0,
+      "non_numeric_composition_rows": 0,
+      "negative_composition_rows": 0,
+      "closure_tolerance": 1e-09,
+      "closure_error_max": 0.0,
+      "closure_failures": 0,
+      "valid_composition_rows": 10,
+      "target_summary": {
+        "n": 10,
+        "missing": 0,
+        "mean": 20.9985,
+        "std_sample": 12.069543867382341,
+        "median": 19.845,
+        "min": 0.545,
+        "max": 39.61,
+        "q25": 13.7825,
+        "q75": 25.825
+      }
+    },
+    {
+      "source": "oracle_training_sample.csv",
+      "rows": 120,
+      "columns": [
+        "Pd",
+        "Pt",
+        "Cu",
+        "Au",
+        "Ir",
+        "Ce",
+        "Nb",
+        "Cr",
+        "power_density"
+      ],
+      "composition_order_observed": [
+        "Pd",
+        "Pt",
+        "Cu",
+        "Au",
+        "Ir",
+        "Ce",
+        "Nb",
+        "Cr"
+      ],
+      "required_elements_present": true,
+      "duplicate_rows": 0,
+      "missing_cells": 0,
+      "non_numeric_composition_rows": 0,
+      "negative_composition_rows": 0,
+      "closure_tolerance": 1e-09,
+      "closure_error_max": 1.1000000910144081e-10,
+      "closure_failures": 0,
+      "valid_composition_rows": 120,
+      "target_summary": {
+        "n": 120,
+        "missing": 0,
+        "mean": 45.34054341666667,
+        "std_sample": 23.8375751115025,
+        "median": 55.34,
+        "min": 0.02709,
+        "max": 75.45,
+        "q25": 27.78,
+        "q75": 64.25999999999999
+      }
+    },
+    {
+      "source": "total_examples_pool.csv",
+      "rows": 160,
+      "columns": [
+        "example_id",
+        "Pd",
+        "Pt",
+        "Cu",
+        "Au",
+        "Ir",
+        "Ce",
+        "Nb",
+        "Cr",
+        "power_density",
+        "timestamp"
+      ],
+      "composition_order_observed": [
+        "Pd",
+        "Pt",
+        "Cu",
+        "Au",
+        "Ir",
+        "Ce",
+        "Nb",
+        "Cr"
+      ],
+      "required_elements_present": true,
+      "duplicate_rows": 0,
+      "missing_cells": 0,
+      "non_numeric_composition_rows": 0,
+      "negative_composition_rows": 0,
+      "closure_tolerance": 1e-09,
+      "closure_error_max": 7.771561172376096e-16,
+      "closure_failures": 0,
+      "valid_composition_rows": 160,
+      "target_summary": {
+        "n": 160,
+        "missing": 0,
+        "mean": 57.778306226748725,
+        "std_sample": 12.604902137691056,
+        "median": 61.749830854275146,
+        "min": 1.007,
+        "max": 69.72944252689389,
+        "q25": 56.783035557474385,
+        "q75": 64.56964271667698
+      }
+    },
+    {
+      "source": "total_pool.csv",
+      "rows": 160,
+      "columns": [
+        "id",
+        "ratio",
+        "power_density",
+        "normalized_cost",
+        "Pd",
+        "Pt",
+        "Cu",
+        "Au",
+        "Ir",
+        "Ce",
+        "Nb",
+        "Cr"
+      ],
+      "composition_order_observed": [
+        "Pd",
+        "Pt",
+        "Cu",
+        "Au",
+        "Ir",
+        "Ce",
+        "Nb",
+        "Cr"
+      ],
+      "required_elements_present": true,
+      "duplicate_rows": 0,
+      "missing_cells": 0,
+      "non_numeric_composition_rows": 0,
+      "negative_composition_rows": 0,
+      "closure_tolerance": 1e-09,
+      "closure_error_max": 4.440892098500626e-16,
+      "closure_failures": 0,
+      "valid_composition_rows": 160,
+      "target_summary": {
+        "n": 160,
+        "missing": 0,
+        "mean": 54.799770405062496,
+        "std_sample": 14.800752689074505,
+        "median": 60.06957452,
+        "min": 0.4594,
+        "max": 68.58106887,
+        "q25": 50.37789238,
+        "q75": 63.8784222425
+      }
+    }
+  ]
+}

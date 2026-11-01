@@ -1,0 +1,394 @@
+project:
+  title: "Scientific Knowledge Alignment Round 2: octonary HEA catalyst formulation"
+  goal: "Increase electrochemical-device peak power density while accounting for precious-metal material cost and formulation feasibility."
+  domain: "HEA electrocatalysis, octonary composition optimization, electrochemical devices, active learning"
+  language: "English"
+  round: 2
+  prior_round: "../knowledge_alignment_round1"
+  uploaded_markdown_count: 43
+  evidence_policy: "Uploaded papers are primary; authoritative online sources support definitions and provenance only."
+  expert_status: "working_knowledge_accepted_with_unresolved_technical_details"
+composition_schema:
+  canonical_example_element_order: [Pd, Pt, Cu, Au, Ir, Ce, Nb, Cr]
+  order_status: "eight_element_identity_confirmed_example_order_differs_from_project_order"
+  vector_fields: [x_nominal, x_measured_bulk, x_measured_surface]
+  basis: "atomic_or_molar_fraction"
+  numeric_format: "float64 decimal in [0,1], recommended precision 1e-6, percentages forbidden in vector fields"
+  closure: "sum(x)=1; abs(sum-1)<=1e-6 after declared rounding"
+  zero_semantics: "zero or below declared detection/presence threshold; not automatically physical absence"
+  support_rule: "K=count(x_i>=epsilon_presence); exact K=8 and epsilon_presence require expert confirmation"
+  row_granularity: "candidate_id x synthesis_run_id x test_condition_id x replicate_id"
+  preferred_format: JSONL
+  flat_format: "CSV plus metadata sidecar"
+  metadata_required: [element_order, fraction_basis, units, closure_tolerance, epsilon_presence, price_source, price_date, condition_definitions]
+concepts:
+  - {concept_id: C201, name: "Explicit octonary Pd-Pt-Cu-Au-Ir-Ce-Nb-Cr example", mapping_status: local, expert_status: "eight_element_identity_confirmed_example_order_requires_reconciliation", evidence: [E201]}
+  - {concept_id: C202, name: "Eight-element composition vector", mapping_status: exact, expert_status: "composition_constraint_role_confirmed_mass_basis_reconciliation_required", evidence: [E202, E203]}
+  - {concept_id: C203, name: "Nominal versus measured composition", mapping_status: local, expert_status: "accepted_as_working_knowledge_from_dialogue", evidence: [E204]}
+  - {concept_id: C204, name: "Precious-metal cost burden", mapping_status: close, expert_status: "accepted_as_working_knowledge_from_dialogue", evidence: [E205, E206]}
+  - {concept_id: C205, name: "Composition-to-device mapping", mapping_status: local, expert_status: "accepted_as_working_knowledge_from_dialogue", evidence: [E201, E204]}
+  - {concept_id: C206, name: "Element synergy hypothesis", mapping_status: local, expert_status: "accepted_as_working_knowledge_from_dialogue", evidence: [E207, E208, E209]}
+elements:
+  - {symbol: Pd, atomic_number: 46, group: "noble transition metal", cost_class: precious, domain_role: "activity/electronic interaction hypothesis", power_effect_status: unresolved, evidence: [E201, E210]}
+  - {symbol: Pt, atomic_number: 78, group: "platinum-group noble metal", cost_class: precious, domain_role: "benchmark activity/adsorption hypothesis", power_effect_status: unresolved, evidence: [E209, E210]}
+  - {symbol: Cu, atomic_number: 29, group: "coinage transition metal", cost_class: base_or_lower_cost, domain_role: "conductivity/dilution/ensemble hypothesis", power_effect_status: unresolved, evidence: [E201, E207]}
+  - {symbol: Au, atomic_number: 79, group: "noble coinage metal", cost_class: precious, domain_role: "stability/surface electronic hypothesis", power_effect_status: unresolved, evidence: [E201, E210]}
+  - {symbol: Ir, atomic_number: 77, group: "platinum-group noble metal", cost_class: precious, domain_role: "oxidation stability/electronic interaction hypothesis", power_effect_status: unresolved, evidence: [E201, E210]}
+  - {symbol: Ce, atomic_number: 58, group: "rare-earth element", cost_class: context_dependent, domain_role: "redox/defect/interface hypothesis", power_effect_status: unresolved, evidence: [E201, E211]}
+  - {symbol: Nb, atomic_number: 41, group: "refractory early transition metal", cost_class: context_dependent, domain_role: "structure/oxide/interface hypothesis", power_effect_status: unresolved, evidence: [E201, E211]}
+  - {symbol: Cr, atomic_number: 24, group: "oxide-forming transition metal", cost_class: base_or_lower_cost, domain_role: "structure/electronic/oxide hypothesis", power_effect_status: unresolved, evidence: [E201, E211]}
+indicators:
+  - {indicator_id: I201, name: "Peak power density", unit: "W cm^-2", formula: "max(V_j*j_j)", optimization_role: primary_objective, optimization_direction: maximize, threshold_status: baseline_relative, threshold: "P_peak > fixed-device baseline; no universal range", importance: 5, computability: 4, data_readiness: 1, priority: P0, expert_status: "core_objective_confirmed_unit_and_protocol_unconfirmed", evidence: [E201, E212]}
+  - {indicator_id: I202, name: "Precious-metal material cost", unit: "USD g_cat^-1 or declared basis", formula: "M_cat*sum(x_i*M_i/M_mix*p_i)", optimization_role: secondary_objective, optimization_direction: minimize, threshold_status: expert_provisional, threshold: "budget ceiling or baseline-relative cap; no universal value", importance: 5, computability: 5, data_readiness: 2, priority: P1, expert_status: "cost_objective_accepted_procurement_data_unavailable", evidence: [E201, E205, E206]}
+  - {indicator_id: I203, name: "Cost-specific peak power", unit: "W USD^-1", formula: "P_peak/C_mass", optimization_role: secondary_objective, optimization_direction: maximize, threshold_status: baseline_relative, threshold: "exceed same-basis baseline; no universal value", importance: 4, computability: 4, data_readiness: 1, priority: P1, expert_status: "cost_performance_role_accepted_exact_formula_unconfirmed", evidence: [E201]}
+  - {indicator_id: I204, name: "Eight elemental fractions", unit: "atomic_or_molar_fraction", formula: "x=[x_Pd,x_Pt,x_Cu,x_Au,x_Ir,x_Ce,x_Nb,x_Cr]", optimization_role: constraint, optimization_direction: target_range, threshold_status: validated_hard, threshold: "0<=x_i<=1 and sum=1 within 1e-6", importance: 5, computability: 5, data_readiness: 4, priority: P0, expert_status: "composition_constraint_role_confirmed_mass_basis_reconciliation_required", evidence: [E202, E203]}
+  - {indicator_id: I205, name: "Element support count", unit: "count", formula: "count(x_i>=epsilon_presence)", optimization_role: constraint, optimization_direction: target_range, threshold_status: expert_provisional, threshold: "K=8 if project confirms; epsilon requires definition", importance: 5, computability: 5, data_readiness: 3, priority: P0, expert_status: "eight_component_design_confirmed_presence_threshold_unconfirmed", evidence: [E201, E204]}
+  - {indicator_id: I206, name: "Precious-metal fraction", unit: "fraction", formula: "sum(x_i for project-defined precious set)", optimization_role: constraint, optimization_direction: minimize, threshold_status: expert_provisional, threshold: "project-defined cap; no universal value", importance: 4, computability: 5, data_readiness: 2, priority: P1, expert_status: "precious_metal_cost_descriptor_accepted_threshold_unconfirmed", evidence: [E201, E205]}
+  - {indicator_id: I207, name: "Phase and ordering feasibility", unit: "categorical plus uncertainty", formula: "characterization_or_phase_model", optimization_role: constraint, optimization_direction: target_range, threshold_status: expert_provisional, threshold: "allowed state labels require expert definition", importance: 5, computability: 3, data_readiness: 2, priority: P1, expert_status: "accepted_as_working_knowledge_from_dialogue", evidence: [E209, E213]}
+  - {indicator_id: I208, name: "Condition-specific current density", unit: "mA cm^-2", formula: "j at fixed reaction/potential/condition", optimization_role: secondary_objective, optimization_direction: maximize, threshold_status: data_percentile, threshold: "matched-condition baseline/percentile", importance: 4, computability: 5, data_readiness: 3, priority: P1, expert_status: "accepted_as_working_knowledge_from_dialogue", evidence: [E214]}
+  - {indicator_id: I209, name: "Overpotential", unit: "mV", formula: "declared potential minus thermodynamic/reference potential at j_ref", optimization_role: secondary_objective, optimization_direction: minimize, threshold_status: data_percentile, threshold: "reaction-specific; no universal range", importance: 4, computability: 5, data_readiness: 3, priority: P1, expert_status: "accepted_as_working_knowledge_from_dialogue", evidence: [E214]}
+  - {indicator_id: I210, name: "Stability retention", unit: "%", formula: "100*y(t)/y(0)", optimization_role: constraint, optimization_direction: maximize, threshold_status: expert_provisional, threshold: "minimum at fixed time/cycles requires expert definition", importance: 5, computability: 3, data_readiness: 2, priority: P1, expert_status: "accepted_as_working_knowledge_from_dialogue", evidence: [E209]}
+  - {indicator_id: I211, name: "ECSA-normalized activity", unit: "A cm^-2_ECSA", formula: "j/ECSA", optimization_role: intermediate, optimization_direction: maximize, threshold_status: data_percentile, threshold: "matched-method baseline", importance: 3, computability: 3, data_readiness: 1, priority: P2, expert_status: "accepted_as_working_knowledge_from_dialogue", evidence: [E214]}
+  - {indicator_id: I212, name: "Configurational entropy", unit: "J mol^-1 K^-1", formula: "-R*sum(x_i*ln(x_i))", optimization_role: intermediate, optimization_direction: context_dependent, threshold_status: expert_provisional, threshold: "no generic cutoff; phase-screening range requires expert definition", importance: 4, computability: 5, data_readiness: 3, priority: P1, expert_status: "accepted_as_working_knowledge_from_dialogue", evidence: [E215]}
+  - {indicator_id: I213, name: "Adsorption/binding descriptor", unit: "eV", formula: "DFT_or_validated_ML_energy", optimization_role: feature_only, optimization_direction: target_range, threshold_status: data_percentile, threshold: "reaction/site/model-specific", importance: 4, computability: 2, data_readiness: 2, priority: P2, expert_status: "accepted_as_working_knowledge_from_dialogue", evidence: [E208, E216]}
+  - {indicator_id: I214, name: "Predictive uncertainty", unit: "model-specific", formula: "calibrated_interval_width_or_posterior_sd", optimization_role: diagnostic, optimization_direction: context_dependent, threshold_status: validated_hard, threshold: "held-out calibration coverage required", importance: 3, computability: 5, data_readiness: 2, priority: P2, expert_status: "diagnostic_requested_calibration_unconfirmed", evidence: [E217]}
+  - {indicator_id: I215, name: "Synthesis reproducibility", unit: "%CV", formula: "100*sd(y_rep)/mean(y_rep)", optimization_role: constraint, optimization_direction: minimize, threshold_status: expert_provisional, threshold: "project-defined maximum CV requires expert definition", importance: 5, computability: 3, data_readiness: 1, priority: P1, expert_status: "accepted_as_working_knowledge_from_dialogue", evidence: [E218]}
+claims:
+  - {claim_id: K201, subject: "Pd-Pt-Cu-Au-Ir-Ce-Nb-Cr", relation: defines, object: "explicit octonary chemical space in CRESt", claim_type: definition, confidence: high, expert_status: "accepted_as_working_knowledge_from_dialogue", evidence: [E201]}
+  - {claim_id: K202, subject: "Elemental fractions", relation: requires, object: "simplex closure-aware representation", claim_type: definition, confidence: high, expert_status: "accepted_as_working_knowledge_from_dialogue", evidence: [E202, E203]}
+  - {claim_id: K203, subject: "Precious-metal fractions", relation: increases, object: "material-cost burden under positive prices", claim_type: hypothesis, confidence: medium, expert_status: "accepted_as_working_knowledge_from_dialogue", evidence: [E205, E206]}
+  - {claim_id: K204, subject: "Element content", relation: correlates_with, object: "peak power density through realized structure and device conditions", claim_type: hypothesis, confidence: low, expert_status: "accepted_as_working_knowledge_from_dialogue", evidence: [E201, E204, E209]}
+  - {claim_id: K205, subject: "Multi-element interactions", relation: promotes, object: "study-specific electronic/adsorption synergy", claim_type: mechanism, confidence: medium, expert_status: "accepted_as_working_knowledge_from_dialogue", evidence: [E207, E208]}
+  - {claim_id: K206, subject: "Chemical ordering", relation: promotes, object: "reported Pt4FeCoCuNi HER/ORR performance and stability", claim_type: correlation, confidence: medium, expert_status: "accepted_as_working_knowledge_from_dialogue", evidence: [E209]}
+  - {claim_id: K207, subject: "Cost-specific performance", relation: is_proxy_for, object: "joint power-cost trade-off", claim_type: definition, confidence: medium, expert_status: "accepted_as_working_knowledge_from_dialogue", evidence: [E201]}
+evidence:
+  - {evidence_id: E201, source_type: paper, source_name: "Multimodal robotic platform", identifier_or_url: "literature_markdown/26_Zhang_2025_Multimodal_robotic_electrocatalyst_discovery.md", location: "lines 5-13", evidence_use: value, quality: high}
+  - {evidence_id: E202, source_type: paper, source_name: "Modelling Compositional Data", identifier_or_url: "literature_markdown/33_Egozcue_2018_Modelling_compositional_data.md", location: "lines 9-13, 29-35", evidence_use: definition, quality: high}
+  - {evidence_id: E203, source_type: paper, source_name: "Statistical Analysis of Compositional Data", identifier_or_url: "literature_markdown/34_Aitchison_1982_Statistical_analysis_of_compositional_data.md", location: "lines 21-29", evidence_use: method, quality: high}
+  - {evidence_id: E204, source_type: paper, source_name: "Active Learning-Driven HENPs", identifier_or_url: "literature_markdown/23_Perumal_2025_Active_learning_for_high_entropy_nanocatalysts.md", location: "lines 12-16", evidence_use: relationship, quality: high}
+  - {evidence_id: E205, source_type: paper, source_name: "Multimodal robotic platform", identifier_or_url: "literature_markdown/26_Zhang_2025_Multimodal_robotic_electrocatalyst_discovery.md", location: "line 11", evidence_use: value, quality: high}
+  - {evidence_id: E206, source_type: database, source_name: "USGS Mineral Commodity Summaries", identifier_or_url: "https://www.usgs.gov/centers/national-minerals-information-center/mineral-commodity-summaries", location: "commodity context; access attempted 2026-10-27", evidence_use: method, quality: medium}
+  - {evidence_id: E207, source_type: paper, source_name: "PtRuCuCoNi nanosponges", identifier_or_url: "literature_markdown/04_Li_2026_PtRuCuCoNi_nanosponges_for_lactic_acid_oxidation.md", location: "abstract lines 25-27", evidence_use: relationship, quality: high}
+  - {evidence_id: E208, source_type: paper, source_name: "High-throughput Pt-based HEAs", identifier_or_url: "literature_markdown/12_Pan_2024_High_throughput_screening_of_Pt_based_HEAs.md", location: "lines 15-19", evidence_use: relationship, quality: high}
+  - {evidence_id: E209, source_type: paper, source_name: "Ordering-dependent Pt4FeCoCuNi", identifier_or_url: "literature_markdown/21_Wang_2023_Ordering_dependent_electrocatalysis_of_Pt4FeCoCuNi.md", location: "lines 7-13", evidence_use: relationship, quality: high}
+  - {evidence_id: E210, source_type: ontology, source_name: "IUPAC Gold Book and PubChem element records", identifier_or_url: "https://goldbook.iupac.org/; https://pubchem.ncbi.nlm.nih.gov/", location: "identity/terminology; access attempted 2026-10-27; some requests blocked", evidence_use: definition, quality: medium}
+  - {evidence_id: E211, source_type: paper, source_name: "HEA reviews and phase studies", identifier_or_url: "literature_markdown/03_Miracle_2017_Critical_review_of_high_entropy_alloys.md; literature_markdown/06_Li_2016_Metastable_high_entropy_dual_phase_alloys.md", location: "paper-level", evidence_use: relationship, quality: medium}
+  - {evidence_id: E212, source_type: expert, source_name: "Project objective", identifier_or_url: "user request", location: "prompt", evidence_use: expert_rule, quality: medium}
+  - {evidence_id: E213, source_type: paper, source_name: "HEA ordering and phase literature", identifier_or_url: "literature_markdown/21_Wang_2023_Ordering_dependent_electrocatalysis_of_Pt4FeCoCuNi.md; literature_markdown/25_Qi_2020_Navigating_HEA_compositional_landscape.md", location: "abstracts", evidence_use: relationship, quality: high}
+  - {evidence_id: E214, source_type: paper, source_name: "HEA electrocatalysis review", identifier_or_url: "literature_markdown/07_Zhang_2022_High_entropy_alloys_for_electrocatalysis.md", location: "abstract/introduction", evidence_use: definition, quality: medium}
+  - {evidence_id: E215, source_type: paper, source_name: "HEA composition/entropy literature", identifier_or_url: "literature_markdown/02_Cantor_2004_Microstructural_development_in_equiatomic_multicomponent_alloys.md; literature_markdown/03_Miracle_2017_Critical_review_of_high_entropy_alloys.md; literature_markdown/39_Xu_2024_Multiobjective_optimization_of_HEA_electrocatalysts.md", location: "paper-level", evidence_use: method, quality: high}
+  - {evidence_id: E216, source_type: paper, source_name: "ML/DFT HEA catalysis", identifier_or_url: "literature_markdown/17_Clausen_2023_ML_optimization_of_HEA_catalytic_activity.md", location: "abstract lines 9-13", evidence_use: method, quality: high}
+  - {evidence_id: E217, source_type: paper, source_name: "Active learning/BO methods", identifier_or_url: "literature_markdown/14_Lookman_2019_Active_learning_in_materials_science.md; literature_markdown/20_Niu_2025_Bayesian_optimization_of_bimetallic_catalysts.md; literature_markdown/23_Perumal_2025_Active_learning_for_high_entropy_nanocatalysts.md", location: "paper-level", evidence_use: method, quality: high}
+  - {evidence_id: E218, source_type: expert, source_name: "Round2 data-readiness requirement", identifier_or_url: "user request and skill", location: "prompt", evidence_use: expert_rule, quality: medium}
+expert_reviews: []
+optimization_targets:
+  primary: [I201]
+  secondary: [I202, I203, I208, I209]
+  constraints: [I204, I205, I206, I207, I210, I215]
+  intermediate: [I211, I212]
+  diagnostic: [I214]
+  not_ready: [I201, I202, I203, I207, I210, I215]
+
+expert_feedback_reconciliation:
+  annotation_date: '2026-10-31'
+  annotation_type: dialogue_based_stage_status_reconciliation
+  requested_by: user
+  source_dialogue: ../../multi_round_dialogue_example_EN.txt
+  source_sha256: 759f71d407a9bb2c542208a75279b8477e0833f2f54ee566e3e990870f96a994
+  interpretation: Stage-scoped working acceptance and task roles from the saved dialogue, following earlier HEA and PS
+    reconciliation rules.
+  itemwise_scientific_verification_completed_by_this_update: false
+  numerical_thresholds_prices_and_model_calibration_certified: false
+  execution_authorized_by_this_update: false
+  historical_version_snapshots_modified: false
+  composition_basis_caution: The project specifies mass fractions. Atomic/molar fraction entries and literature/AL element-order
+    differences require explicit reconciliation; none are silently converted.
+  unanswered_review_questions_and_blocking_flags_preserved: true
+  source_feedback_records:
+  - feedback_id: EO1
+    source_line: 12
+    excerpt: 'Please run the Execution Orchestration Skill. Based on the three output files from the knowledge-alignment
+      stage and the research methods used in this field, which may be identified from the literature or through online
+      research, design a basic task-execution workflow for optimizing the formulation of an eight-component high-entropy
+      alloy catalyst. Provide necessary recommendations, especially recommendations for metric ranking and corresponding
+      threshold guidance, preferably supported by evidence. Starting from existing experimental data, the workflow should
+      explain how to perform data organization, model training, candidate-composition generation, performance evaluation,
+      candidate screening, and result feedback, but it must not assume a specific model or algorithm that has not yet
+      been confirmed. The materials expert provides the following information: the catalyst consists of eight metals—Pd,
+      Pt, Au, Cr, Ir, Ce, Cu, and Nb—and is generally represented as a mass-fraction vector with a fixed element order;
+      each element''s mass fraction must be nonnegative, and the fractions must sum to 1. The optimization problem therefore
+      involves trade-offs among peak power density, cost, and composition constraints. The computer expert would like
+      to construct a model workflow capable of iterative optimization from existing composition-performance data. Add
+      the suffix `round1` to the output filenames.'
+  - feedback_id: EO2
+    source_line: 16
+    excerpt: The materials scientist notes that the organization of metrics in the current workflow still needs adjustment.
+      In addition to peak power density, the workflow may consider normalized cost, composition validity, element-content
+      ranges, differences between candidate compositions and existing experimental samples, model-prediction confidence,
+      and the stability of high-performance formulations. The computer expert confirms that peak power density will be
+      the core performance metric for formulation optimization, while nonnegative mass fractions for the eight elements,
+      a total fraction of 1, and a fixed element order will serve as composition constraints. The `AL` folder is now
+      provided as the implemented model execution path. The model architecture, training method, metric-configuration
+      files, runtime parameters, data interfaces, and candidate-result format must be obtained from the code, documentation,
+      and interface documents in the `AL` folder. Inspect and update the model information and interfaces independently,
+      improve the workflow, and report the proposed execution procedure to me for confirmation. Do not run it without
+      authorization. Clearly specify all output paths. Update the previous round's output files and add the suffix `round2`.
+  - feedback_id: KA2
+    source_line: 6
+    excerpt: The domain expert states that the current knowledge is essentially correct, but it should be supplemented
+      with the principal characteristics of the eight metal elements in the catalytic system, their possible synergistic
+      effects, and the potential influence of changes in each element's content on peak power density. In addition to
+      peak power density, the material cost associated with the use of precious metals must also be considered. Provide
+      the computer expert with metrics that can be calculated or predicted, together with their meanings, and explain
+      the different roles of peak power density, cost, and composition constraints in material-formulation design. The
+      computer expert states that the current descriptions of data representation and optimization metrics are insufficiently
+      clear. Specify the element order, numerical format, target metrics, constraints, and data input/output formats
+      for the eight-component composition data. For metrics that may be used in subsequent iterative optimization, also
+      describe their calculation methods, optimization directions, reasonable threshold ranges, and data sources. Next,
+      update and confirm the knowledge-alignment report according to the experts' requirements, using evidence from the
+      papers and authoritative online sources. Produce clearer supplements to the domain-expert view and the computer-expert
+      optimization metrics.
+  updates:
+  - path: project/expert_status
+    status: working_knowledge_accepted_with_unresolved_technical_details
+    feedback_refs:
+    - KA2
+    - EO1
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: composition_schema/order_status
+    status: eight_element_identity_confirmed_example_order_differs_from_project_order
+    feedback_refs:
+    - EO1
+    - EO2
+    scope: Record confirmed requirements while preserving missing definitions, approval conditions and execution restrictions.
+  - path: composition_schema/support_rule
+    status: K=count(x_i>=epsilon_presence); exact K=8 and epsilon_presence require expert confirmation
+    feedback_refs:
+    - EO1
+    - EO2
+    scope: Record confirmed requirements while preserving missing definitions, approval conditions and execution restrictions.
+  - path: concepts/0/expert_status
+    status: eight_element_identity_confirmed_example_order_requires_reconciliation
+    feedback_refs:
+    - KA2
+    - EO1
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: concepts/1/expert_status
+    status: composition_constraint_role_confirmed_mass_basis_reconciliation_required
+    feedback_refs:
+    - KA2
+    - EO1
+    - EO2
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: concepts/2/expert_status
+    status: accepted_as_working_knowledge_from_dialogue
+    feedback_refs:
+    - KA2
+    - EO1
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: concepts/3/expert_status
+    status: accepted_as_working_knowledge_from_dialogue
+    feedback_refs:
+    - KA2
+    - EO1
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: concepts/4/expert_status
+    status: accepted_as_working_knowledge_from_dialogue
+    feedback_refs:
+    - KA2
+    - EO1
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: concepts/5/expert_status
+    status: accepted_as_working_knowledge_from_dialogue
+    feedback_refs:
+    - KA2
+    - EO1
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: indicators/0/expert_status
+    status: core_objective_confirmed_unit_and_protocol_unconfirmed
+    feedback_refs:
+    - EO2
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: indicators/1/expert_status
+    status: cost_objective_accepted_procurement_data_unavailable
+    feedback_refs:
+    - KA2
+    - EO1
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: indicators/2/expert_status
+    status: cost_performance_role_accepted_exact_formula_unconfirmed
+    feedback_refs:
+    - KA2
+    - EO1
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: indicators/3/expert_status
+    status: composition_constraint_role_confirmed_mass_basis_reconciliation_required
+    feedback_refs:
+    - KA2
+    - EO1
+    - EO2
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: indicators/4/threshold
+    status: K=8 if project confirms; epsilon requires definition
+    feedback_refs:
+    - EO1
+    - EO2
+    scope: Record confirmed requirements while preserving missing definitions, approval conditions and execution restrictions.
+  - path: indicators/4/expert_status
+    status: eight_component_design_confirmed_presence_threshold_unconfirmed
+    feedback_refs:
+    - EO1
+    - EO2
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: indicators/5/expert_status
+    status: precious_metal_cost_descriptor_accepted_threshold_unconfirmed
+    feedback_refs:
+    - KA2
+    - EO1
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: indicators/6/threshold
+    status: allowed state labels require expert definition
+    feedback_refs:
+    - KA2
+    - EO2
+    scope: Record confirmed requirements while preserving missing definitions, approval conditions and execution restrictions.
+  - path: indicators/6/expert_status
+    status: accepted_as_working_knowledge_from_dialogue
+    feedback_refs:
+    - KA2
+    - EO1
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: indicators/7/expert_status
+    status: accepted_as_working_knowledge_from_dialogue
+    feedback_refs:
+    - KA2
+    - EO1
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: indicators/8/expert_status
+    status: accepted_as_working_knowledge_from_dialogue
+    feedback_refs:
+    - KA2
+    - EO1
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: indicators/9/threshold
+    status: minimum at fixed time/cycles requires expert definition
+    feedback_refs:
+    - KA2
+    - EO2
+    scope: Record confirmed requirements while preserving missing definitions, approval conditions and execution restrictions.
+  - path: indicators/9/expert_status
+    status: accepted_as_working_knowledge_from_dialogue
+    feedback_refs:
+    - KA2
+    - EO1
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: indicators/10/expert_status
+    status: accepted_as_working_knowledge_from_dialogue
+    feedback_refs:
+    - KA2
+    - EO1
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: indicators/11/threshold
+    status: no generic cutoff; phase-screening range requires expert definition
+    feedback_refs:
+    - KA2
+    scope: Record confirmed requirements while preserving missing definitions, approval conditions and execution restrictions.
+  - path: indicators/11/expert_status
+    status: accepted_as_working_knowledge_from_dialogue
+    feedback_refs:
+    - KA2
+    - EO1
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: indicators/12/expert_status
+    status: accepted_as_working_knowledge_from_dialogue
+    feedback_refs:
+    - KA2
+    - EO1
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: indicators/13/expert_status
+    status: diagnostic_requested_calibration_unconfirmed
+    feedback_refs:
+    - EO2
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: indicators/14/threshold
+    status: project-defined maximum CV requires expert definition
+    feedback_refs:
+    - KA2
+    scope: Record confirmed requirements while preserving missing definitions, approval conditions and execution restrictions.
+  - path: indicators/14/expert_status
+    status: accepted_as_working_knowledge_from_dialogue
+    feedback_refs:
+    - KA2
+    - EO1
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: claims/0/expert_status
+    status: accepted_as_working_knowledge_from_dialogue
+    feedback_refs:
+    - KA2
+    - EO1
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: claims/1/expert_status
+    status: accepted_as_working_knowledge_from_dialogue
+    feedback_refs:
+    - KA2
+    - EO1
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: claims/2/expert_status
+    status: accepted_as_working_knowledge_from_dialogue
+    feedback_refs:
+    - KA2
+    - EO1
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: claims/3/expert_status
+    status: accepted_as_working_knowledge_from_dialogue
+    feedback_refs:
+    - KA2
+    - EO1
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: claims/4/expert_status
+    status: accepted_as_working_knowledge_from_dialogue
+    feedback_refs:
+    - KA2
+    - EO1
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: claims/5/expert_status
+    status: accepted_as_working_knowledge_from_dialogue
+    feedback_refs:
+    - KA2
+    - EO1
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.
+  - path: claims/6/expert_status
+    status: accepted_as_working_knowledge_from_dialogue
+    feedback_refs:
+    - KA2
+    - EO1
+    scope: Working acceptance or task role only; details explicitly marked unresolved remain unverified. Candidate retention
+      does not mean expert selection.

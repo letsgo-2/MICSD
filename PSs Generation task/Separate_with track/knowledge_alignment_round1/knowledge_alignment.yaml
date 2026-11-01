@@ -1,0 +1,420 @@
+schema_version: "0.2.0"
+round: 1
+language: en
+project_goal: "Develop candidate molecules with improved photosensitizing performance."
+domain: "Photosensitizer and photopyroptosis molecular design"
+corpus_count: 47
+concepts:
+  - concept_id: C001
+    name: photosensitizer
+    definition: "A light-activated agent whose excited-state chemistry can produce reactive species or other phototherapeutic effects; paper operational definitions are retained per assay."
+    synonyms: [PS, photodrug]
+    parent_concept: photochemical_agent
+    ontology_source: {name: "local project concept", iri_or_url: "", version_or_access_date: "2026-10-31"}
+    mapping_status: local
+    evidence: [E001, E002]
+    expert_status: "confirmed_in_principle_from_dialogue"
+  - concept_id: C002
+    name: reactive oxygen species
+    definition: "Molecules or ions formed by the incomplete one-electron reduction of oxygen."
+    synonyms: [ROS]
+    parent_concept: oxygen_molecular_entity
+    ontology_source: {name: ChEBI, iri_or_url: "https://www.ebi.ac.uk/chebi/searchId.do?chebiId=CHEBI:26523", version_or_access_date: "2026-10-31"}
+    mapping_status: exact
+    evidence: [E003]
+    expert_status: "confirmed_in_principle_from_dialogue"
+  - concept_id: C003
+    name: photodynamic therapy
+    definition: "Therapy using a photosensitizing agent followed by exposure to light, as represented in the NLM controlled vocabulary."
+    synonyms: [PDT, photochemotherapy]
+    parent_concept: therapy
+    ontology_source: {name: NLM MeSH, iri_or_url: "https://www.ncbi.nlm.nih.gov/mesh/?term=photodynamic%20therapy", version_or_access_date: "2026-10-31"}
+    mapping_status: close
+    evidence: [E004]
+    expert_status: "confirmed_in_principle_from_dialogue"
+  - concept_id: C004
+    name: pyroptosis
+    definition: "A lytic inflammatory regulated cell-death concept used in the corpus; exact ontology mapping requires validation."
+    synonyms: [inflammatory lytic cell death]
+    parent_concept: regulated_cell_death
+    ontology_source: {name: "authoritative mapping not yet established", iri_or_url: "", version_or_access_date: "2026-10-31"}
+    mapping_status: local
+    evidence: [E005, E006]
+    expert_status: "confirmed_in_principle_from_dialogue"
+  - concept_id: C005
+    name: type-I/type-II photochemistry
+    definition: "Project-level mechanism labels for radical/electron-transfer-dominated and singlet-oxygen-dominated photochemistry; operational criteria remain paper- and assay-dependent."
+    synonyms: [Type I PDT, Type II PDT]
+    parent_concept: photochemical_mechanism
+    ontology_source: {name: "local project concept", iri_or_url: "", version_or_access_date: "2026-10-31"}
+    mapping_status: local
+    evidence: [E007, E008, E009]
+    expert_status: "confirmed_in_principle_from_dialogue"
+indicators:
+  - indicator_id: I001
+    name: singlet_oxygen_quantum_yield
+    definition: "Measured singlet-oxygen yield under a declared excitation, medium, concentration, oxygen condition, reference, and method."
+    unit: dimensionless_fraction
+    conditions: [excitation_wavelength, solvent_or_medium, concentration, oxygen, assay_reference, method]
+    domain_meaning: "Type-II photochemical output."
+    audience: shared
+    obtainable_by: [measure, physics_compute, machine_learn]
+    optimization_role: primary_objective
+    optimization_direction: maximize
+    importance: 5
+    computability: 4
+    data_readiness: 3
+    priority: P0
+    methods: [relative_quantum_yield_assay]
+    related_indicators: [I002, I003]
+    evidence: [E010, E011]
+    expert_status: "confirmed_in_principle_from_dialogue"
+  - indicator_id: I002
+    name: type_I_ros_output
+    definition: "Measured identity and output of Type-I ROS under declared oxygen and light conditions."
+    unit: method_dependent
+    conditions: [oxygen, excitation, irradiance, assay, scavenger_controls]
+    domain_meaning: "Oxygen-tolerant radical photochemistry candidate endpoint."
+    audience: shared
+    obtainable_by: [measure, physics_compute]
+    optimization_role: primary_objective
+    optimization_direction: maximize
+    importance: 5
+    computability: 3
+    data_readiness: 2
+    priority: P1
+    methods: [species_specific_assay]
+    related_indicators: [I001, I009]
+    evidence: [E012, E013]
+    expert_status: "confirmed_in_principle_from_dialogue"
+  - indicator_id: I003
+    name: light_conditioned_phototoxic_potency
+    definition: "Light-versus-dark biological potency measured in a specified cell/system and protocol."
+    unit: concentration
+    conditions: [cell_type, incubation, wavelength, irradiance, fluence, oxygen, endpoint]
+    domain_meaning: "Primary biological efficacy endpoint."
+    audience: shared
+    obtainable_by: [measure, machine_learn]
+    optimization_role: primary_objective
+    optimization_direction: minimize
+    importance: 5
+    computability: 4
+    data_readiness: 3
+    priority: P0
+    methods: [IC50, EC50]
+    related_indicators: [I004, I005]
+    evidence: [E014, E015, E016]
+    expert_status: "confirmed_in_principle_from_dialogue"
+  - indicator_id: I004
+    name: dark_toxicity
+    definition: "Toxicity measured without irradiation under a matched exposure protocol."
+    unit: concentration
+    conditions: [cell_type, incubation, formulation]
+    domain_meaning: "Safety constraint."
+    audience: shared
+    obtainable_by: [measure, machine_learn]
+    optimization_role: constraint
+    optimization_direction: minimize
+    importance: 5
+    computability: 4
+    data_readiness: 3
+    priority: P0
+    methods: [TC50, dark_IC50]
+    related_indicators: [I003, I005]
+    evidence: [E014, E015]
+    expert_status: "confirmed_in_principle_from_dialogue"
+  - indicator_id: I005
+    name: phototherapeutic_index
+    definition: "A matched light/dark selectivity ratio or paired comparison only when the source defines the calculation."
+    unit: dimensionless_ratio
+    conditions: [matched_light_dark_assays]
+    domain_meaning: "Selectivity proxy."
+    audience: computer_expert
+    obtainable_by: [derive, machine_learn]
+    optimization_role: secondary_objective
+    optimization_direction: maximize
+    importance: 5
+    computability: 3
+    data_readiness: 2
+    priority: P1
+    methods: [derived_ratio]
+    related_indicators: [I003, I004]
+    evidence: [E014, E015]
+    expert_status: disputed
+  - indicator_id: I006
+    name: target_site_localization
+    definition: "Measured enrichment at a desired organelle or membrane relative to controls."
+    unit: image_or_fraction_metric
+    conditions: [cell_type, probe, imaging_method, controls]
+    domain_meaning: "Converts bulk ROS into site-specific damage."
+    audience: shared
+    obtainable_by: [measure, machine_learn]
+    optimization_role: intermediate
+    optimization_direction: target_range
+    importance: 5
+    computability: 3
+    data_readiness: 2
+    priority: P1
+    methods: [colocalization, organelle_imaging]
+    related_indicators: [I003, I009]
+    evidence: [E017, E018]
+    expert_status: "confirmed_in_principle_from_dialogue"
+  - indicator_id: I007
+    name: excitation_compatibility
+    definition: "Absorption/emission behavior compatible with the intended light-delivery window."
+    unit: nm_and_spectral_strength
+    conditions: [medium, concentration, aggregation_state]
+    domain_meaning: "Controls usable excitation, not efficacy by itself."
+    audience: shared
+    obtainable_by: [measure, physics_compute]
+    optimization_role: constraint
+    optimization_direction: target_range
+    importance: 4
+    computability: 5
+    data_readiness: 4
+    priority: P0
+    methods: [UV_vis_spectroscopy]
+    related_indicators: [I008]
+    evidence: [E015, E019]
+    expert_status: "confirmed_in_principle_from_dialogue"
+  - indicator_id: I008
+    name: photostability
+    definition: "Retention of chemical or photophysical function after a declared light exposure."
+    unit: retention_fraction
+    conditions: [wavelength, irradiance, fluence, medium, oxygen, time]
+    domain_meaning: "Prevents dose drift and degradation."
+    audience: shared
+    obtainable_by: [measure, machine_learn]
+    optimization_role: constraint
+    optimization_direction: maximize
+    importance: 4
+    computability: 4
+    data_readiness: 2
+    priority: P1
+    methods: [time_course_spectroscopy]
+    related_indicators: []
+    evidence: [E020]
+    expert_status: "confirmed_in_principle_from_dialogue"
+  - indicator_id: I009
+    name: validated_pyroptosis_pathway_fraction
+    definition: "Fraction or strength of a validated pyroptotic response with pathway markers, not merely a generic death label."
+    unit: fraction_or_marker_panel
+    conditions: [cell_type, gasdermin_status, caspase_status, light, dose]
+    domain_meaning: "Therapeutic phenotype for photopyroptosis."
+    audience: shared
+    obtainable_by: [measure, expert_only]
+    optimization_role: secondary_objective
+    optimization_direction: target_range
+    importance: 4
+    computability: 2
+    data_readiness: 1
+    priority: P1
+    methods: [gasdermin_cleavage, pore_assay, LDH, cytokines]
+    related_indicators: [I003, I006]
+    evidence: [E021, E022, E023]
+    expert_status: "confirmed_in_principle_from_dialogue"
+claims:
+  - claim_id: K001
+    subject: peripheral_ionic_and_steric_substitution
+    relation: decreases
+    object: aqueous_phthalocyanine_aggregation
+    claim_type: mechanism
+    conditions: [aqueous_medium, zinc_phthalocyanine]
+    evidence: [E014]
+    confidence: medium
+    expert_status: "confirmed_in_principle_from_dialogue"
+  - claim_id: K002
+    subject: ICT_donor_acceptor_architecture
+    relation: promotes
+    object: intersystem_crossing_and_ros_generation
+    claim_type: mechanism
+    conditions: [CDT_BODIPY_oligomer]
+    evidence: [E024]
+    confidence: medium
+    expert_status: "confirmed_in_principle_from_dialogue"
+  - claim_id: K003
+    subject: membrane_or_organelle_targeting
+    relation: promotes
+    object: localized_photodamage
+    claim_type: causal
+    conditions: [matched_cell_and_light_assay]
+    evidence: [E017, E018, E025]
+    confidence: medium
+    expert_status: "confirmed_in_principle_from_dialogue"
+  - claim_id: K004
+    subject: type_I_photochemistry
+    relation: correlates_with
+    object: hypoxia_tolerance
+    claim_type: hypothesis
+    conditions: [declared_oxygen_level, validated_ros_identity]
+    evidence: [E012, E013, E026]
+    confidence: low
+    expert_status: disputed
+evidence:
+  - {evidence_id: E001, source_type: paper, source_name: "Makhseed 2013", identifier_or_url: "10.1039/c3cc44609c", location: "abstract and introduction", content_summary: "Water-soluble non-aggregating zinc phthalocyanine design and PDT objective.", evidence_use: relationship, quality: high}
+  - {evidence_id: E002, source_type: paper, source_name: "Machacek 2015", identifier_or_url: "ACS J Med Chem article", location: abstract, content_summary: "Metal/substitution series and photophysical/biological ranges.", evidence_use: value, quality: high}
+  - {evidence_id: E003, source_type: ontology, source_name: ChEBI, identifier_or_url: "https://www.ebi.ac.uk/chebi/searchId.do?chebiId=CHEBI:26523", location: CHEBI:26523, content_summary: "Definition of reactive oxygen species.", evidence_use: definition, quality: high}
+  - {evidence_id: E004, source_type: ontology, source_name: NLM MeSH, identifier_or_url: "https://www.ncbi.nlm.nih.gov/mesh/?term=photodynamic%20therapy", location: D010778, content_summary: "Controlled-vocabulary entry for photochemotherapy/PDT.", evidence_use: definition, quality: high}
+  - {evidence_id: E005, source_type: paper, source_name: "Wu 2021", identifier_or_url: "10.1002/anie.202016399", location: abstract/introduction, content_summary: "Membrane-targeted AIE PS and pyroptosis markers.", evidence_use: relationship, quality: high}
+  - {evidence_id: E006, source_type: paper, source_name: "Yi 2024", identifier_or_url: "10.1021/jacs.4c01929", location: abstract, content_summary: "Mitochondria-targeted type-I M-TOP and dose-dependent apoptosis/pyroptosis.", evidence_use: relationship, quality: high}
+  - {evidence_id: E007, source_type: paper, source_name: "Su 2022", identifier_or_url: "10.1002/anie.202115800", location: abstract, content_summary: "CAIX-anchored Re PS, type-I/type-II PDT under hypoxia, GSDMD pyroptosis.", evidence_use: relationship, quality: high}
+  - {evidence_id: E008, source_type: paper, source_name: "Yu 2022", identifier_or_url: "10.1021/jacs.2c03256", location: abstract, content_summary: "NI-TA superoxide generation, oxygen recycling, GSDME pathway.", evidence_use: relationship, quality: high}
+  - {evidence_id: E009, source_type: paper, source_name: "Peng 2021", identifier_or_url: "10.1021/acsabm.1c00719", location: abstract, content_summary: "ICT D-A-D oligomer, dual emission, ROS, 33.1% photothermal efficiency.", evidence_use: value, quality: high}
+  - {evidence_id: E010, source_type: paper, source_name: "Makhseed 2013", identifier_or_url: "10.1039/c3cc44609c", location: abstract, content_summary: "PhiDelta > 0.33 in water.", evidence_use: value, quality: high}
+  - {evidence_id: E011, source_type: paper, source_name: "Machacek 2015", identifier_or_url: "ACS J Med Chem article", location: abstract, content_summary: "PhiDelta up to 0.91 and lambda max up to 750 nm.", evidence_use: value, quality: high}
+  - {evidence_id: E012, source_type: paper, source_name: "Su 2022", identifier_or_url: "10.1002/anie.202115800", location: abstract, content_summary: "High efficiency under hypoxia and nanomolar phototoxicity claim.", evidence_use: relationship, quality: high}
+  - {evidence_id: E013, source_type: paper, source_name: "Yu 2022", identifier_or_url: "10.1021/jacs.2c03256", location: abstract, content_summary: "Superoxide generator active at <=2% oxygen.", evidence_use: condition, quality: high}
+  - {evidence_id: E014, source_type: paper, source_name: "Makhseed 2013", identifier_or_url: "10.1039/c3cc44609c", location: abstract, content_summary: "EC50 36.7 nM and dark TC50 395 micromolar.", evidence_use: value, quality: high}
+  - {evidence_id: E015, source_type: paper, source_name: "Machacek 2015", identifier_or_url: "ACS J Med Chem article", location: abstract, content_summary: "Zn submicromolar IC50, dark TC50 about 1500 micromolar, Mg inactive >100 micromolar.", evidence_use: value, quality: high}
+  - {evidence_id: E016, source_type: paper, source_name: "Su 2022", identifier_or_url: "10.1002/anie.202115800", location: abstract, content_summary: "Nanomolar-level phototoxicity claim; exact protocol retained in source.", evidence_use: value, quality: medium}
+  - {evidence_id: E017, source_type: paper, source_name: "Odeh 2014", identifier_or_url: "uploaded Markdown", location: article tables and discussion, content_summary: "Zn(II) N-alkylpyridylporphyrin mitochondrial targeting axis.", evidence_use: relationship, quality: medium}
+  - {evidence_id: E018, source_type: paper, source_name: "Wang 2021", identifier_or_url: "10.1002/anie.202017350", location: abstract, content_summary: "Cancer-cell-activated mitochondria-targeting AIE PS synthesis.", evidence_use: relationship, quality: high}
+  - {evidence_id: E019, source_type: paper, source_name: "Machacek 2015", identifier_or_url: "ACS J Med Chem article", location: abstract, content_summary: "Far-red lambda max up to 750 nm.", evidence_use: value, quality: high}
+  - {evidence_id: E020, source_type: paper, source_name: "corpus-wide", identifier_or_url: "uploaded Markdown", location: methods/results, content_summary: "Photostability data and protocols are not harmonized across the corpus.", evidence_use: method, quality: low}
+  - {evidence_id: E021, source_type: paper, source_name: "Wu 2021", identifier_or_url: "10.1002/anie.202016399", location: abstract, content_summary: "Membrane anchoring increases pyroptosis dominance; ROS causes membrane damage.", evidence_use: relationship, quality: high}
+  - {evidence_id: E022, source_type: paper, source_name: "Su 2022", identifier_or_url: "10.1002/anie.202115800", location: abstract, content_summary: "GSDMD-mediated pyroptosis and immune activation.", evidence_use: relationship, quality: high}
+  - {evidence_id: E023, source_type: paper, source_name: "Yu 2022", identifier_or_url: "10.1021/jacs.2c03256", location: abstract, content_summary: "Caspase-3/GSDME pyroptosis under photoexcitation.", evidence_use: relationship, quality: high}
+  - {evidence_id: E024, source_type: paper, source_name: "Peng 2021", identifier_or_url: "10.1021/acsabm.1c00719", location: abstract, content_summary: "ICT effect reported to enhance ISC and ROS; 33.1% photothermal conversion.", evidence_use: relationship, quality: high}
+  - {evidence_id: E025, source_type: paper, source_name: "Wu 2021", identifier_or_url: "10.1002/anie.202016399", location: abstract, content_summary: "Membrane anchoring and cell ablation.", evidence_use: relationship, quality: high}
+  - {evidence_id: E026, source_type: paper, source_name: "Yi 2024", identifier_or_url: "10.1021/jacs.4c01929", location: abstract, content_summary: "Type-I photodrug less oxygen-dependent under hypoxia.", evidence_use: relationship, quality: high}
+optimization_targets:
+  primary: [I001, I002, I003]
+  secondary: [I005, I006, I009]
+  constraints: [I004, I007, I008]
+  intermediate: [I010, I011, I006]
+  diagnostic: [I002, I009]
+  not_ready: [pooled_cross_paper_IC50, universal_type_I_type_II_score, structure_only_pyroptosis_prediction]
+
+expert_feedback_reconciliation:
+  annotation_date: '2026-10-31'
+  annotation_type: dialogue_based_stage_status_reconciliation
+  requested_by: user
+  source_dialogue: ../../multi_round_dialogue_example_EN.txt
+  source_sha256: ebb57f5513ccd2ee131a9971088e81acaa8e6b610f46e7df5afea5890dbc12d8
+  interpretation: Stage-scoped working acceptance from the saved dialogue and subsequent adoption, following the earlier
+    PS reconciliation rules.
+  itemwise_scientific_validation_completed_by_this_update: false
+  numerical_values_units_and_thresholds_certified_by_this_update: false
+  execution_authorized_by_this_update: false
+  existing_disputed_entries_preserved: true
+  unanswered_review_items_and_blocking_flags_preserved: true
+  historical_execution_trace_events_modified: false
+  source_feedback_records:
+  - feedback_id: PS-KA-R2-BASE
+    source_line: 6
+    excerpt: The domain expert states that the current knowledge is essentially correct, but an analysis of advantageous
+      photosensitizer scaffolds and their characteristics should be added. In addition, most current metrics require
+      biological experiments, so the computer expert should be provided with metrics that can be calculated numerically
+      using DFT, together with their meanings. The computer expert states that the current description of metric computability
+      is insufficiently clear and needs to identify the performance metrics that can genuinely be used in an iterative
+      optimization framework, their calculation methods, and threshold information for designing rewards from selected
+      performance metrics. Next, update and confirm the knowledge-alignment report according to the domain expert's requirements,
+      using evidence from the papers and authoritative online sources. Produce clearer supplements to the domain-expert
+      view and the computer-expert optimization metrics.
+  updates:
+  - path: concepts/0/expert_status
+    status: confirmed_in_principle_from_dialogue
+    feedback_refs:
+    - PS-KA-R2-BASE
+    scope: Current knowledge is generally accepted for task use. Scientific values, ontology mappings, comparability
+      and mechanisms are not independently verified by this annotation.
+  - path: concepts/1/expert_status
+    status: confirmed_in_principle_from_dialogue
+    feedback_refs:
+    - PS-KA-R2-BASE
+    scope: Current knowledge is generally accepted for task use. Scientific values, ontology mappings, comparability
+      and mechanisms are not independently verified by this annotation.
+  - path: concepts/2/expert_status
+    status: confirmed_in_principle_from_dialogue
+    feedback_refs:
+    - PS-KA-R2-BASE
+    scope: Current knowledge is generally accepted for task use. Scientific values, ontology mappings, comparability
+      and mechanisms are not independently verified by this annotation.
+  - path: concepts/3/definition
+    status: A lytic inflammatory regulated cell-death concept used in the corpus; exact ontology mapping requires validation.
+    feedback_refs:
+    - PS-KA-R2-BASE
+    scope: Keep the exact ontology mapping unresolved; clarify wording without asserting a mapping.
+  - path: concepts/3/ontology_source/name
+    status: authoritative mapping not yet established
+    feedback_refs:
+    - PS-KA-R2-BASE
+    scope: No authoritative ontology mapping is supplied by this update.
+  - path: concepts/3/expert_status
+    status: confirmed_in_principle_from_dialogue
+    feedback_refs:
+    - PS-KA-R2-BASE
+    scope: Current knowledge is generally accepted for task use. Scientific values, ontology mappings, comparability
+      and mechanisms are not independently verified by this annotation.
+  - path: concepts/4/expert_status
+    status: confirmed_in_principle_from_dialogue
+    feedback_refs:
+    - PS-KA-R2-BASE
+    scope: Current knowledge is generally accepted for task use. Scientific values, ontology mappings, comparability
+      and mechanisms are not independently verified by this annotation.
+  - path: indicators/0/expert_status
+    status: confirmed_in_principle_from_dialogue
+    feedback_refs:
+    - PS-KA-R2-BASE
+    scope: Current knowledge is generally accepted for task use. Scientific values, ontology mappings, comparability
+      and mechanisms are not independently verified by this annotation.
+  - path: indicators/1/expert_status
+    status: confirmed_in_principle_from_dialogue
+    feedback_refs:
+    - PS-KA-R2-BASE
+    scope: Current knowledge is generally accepted for task use. Scientific values, ontology mappings, comparability
+      and mechanisms are not independently verified by this annotation.
+  - path: indicators/2/expert_status
+    status: confirmed_in_principle_from_dialogue
+    feedback_refs:
+    - PS-KA-R2-BASE
+    scope: Current knowledge is generally accepted for task use. Scientific values, ontology mappings, comparability
+      and mechanisms are not independently verified by this annotation.
+  - path: indicators/3/expert_status
+    status: confirmed_in_principle_from_dialogue
+    feedback_refs:
+    - PS-KA-R2-BASE
+    scope: Current knowledge is generally accepted for task use. Scientific values, ontology mappings, comparability
+      and mechanisms are not independently verified by this annotation.
+  - path: indicators/5/expert_status
+    status: confirmed_in_principle_from_dialogue
+    feedback_refs:
+    - PS-KA-R2-BASE
+    scope: Current knowledge is generally accepted for task use. Scientific values, ontology mappings, comparability
+      and mechanisms are not independently verified by this annotation.
+  - path: indicators/6/expert_status
+    status: confirmed_in_principle_from_dialogue
+    feedback_refs:
+    - PS-KA-R2-BASE
+    scope: Current knowledge is generally accepted for task use. Scientific values, ontology mappings, comparability
+      and mechanisms are not independently verified by this annotation.
+  - path: indicators/7/expert_status
+    status: confirmed_in_principle_from_dialogue
+    feedback_refs:
+    - PS-KA-R2-BASE
+    scope: Current knowledge is generally accepted for task use. Scientific values, ontology mappings, comparability
+      and mechanisms are not independently verified by this annotation.
+  - path: indicators/8/expert_status
+    status: confirmed_in_principle_from_dialogue
+    feedback_refs:
+    - PS-KA-R2-BASE
+    scope: Current knowledge is generally accepted for task use. Scientific values, ontology mappings, comparability
+      and mechanisms are not independently verified by this annotation.
+  - path: claims/0/expert_status
+    status: confirmed_in_principle_from_dialogue
+    feedback_refs:
+    - PS-KA-R2-BASE
+    scope: Current knowledge is generally accepted for task use. Scientific values, ontology mappings, comparability
+      and mechanisms are not independently verified by this annotation.
+  - path: claims/1/expert_status
+    status: confirmed_in_principle_from_dialogue
+    feedback_refs:
+    - PS-KA-R2-BASE
+    scope: Current knowledge is generally accepted for task use. Scientific values, ontology mappings, comparability
+      and mechanisms are not independently verified by this annotation.
+  - path: claims/2/expert_status
+    status: confirmed_in_principle_from_dialogue
+    feedback_refs:
+    - PS-KA-R2-BASE
+    scope: Current knowledge is generally accepted for task use. Scientific values, ontology mappings, comparability
+      and mechanisms are not independently verified by this annotation.

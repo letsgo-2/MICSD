@@ -1,0 +1,81 @@
+review_items:
+  - issue_id: PE-ISSUE-001
+    category: authorization
+    question: Is evaluation authorized beyond static workflow preparation, including SDPD prediction/scoring, ORCA jobs and Slurm submission?
+    affected_ids: [AP-RDKit-QC, AP-model-validation]
+    recommendation: Record explicit scope, approved input snapshot and output location before execution.
+    evidence_refs: [../execution_orchestration_round3/execution_orchestration_round3.yaml]
+    required_expert_ids: [project_owner, computer_expert]
+    priority: critical
+    blocking: true
+    status: open
+  - issue_id: PE-ISSUE-002
+    category: input
+    question: Where are the generated candidate SMILES, generation metadata, predictor outputs, run logs and checkpoint identity for Round 3?
+    affected_ids: [generated_photosensitizer_molecules, sdpd_kagnn_3out]
+    recommendation: Provide immutable candidate/result manifests and preserve per-candidate IDs and failures.
+    evidence_refs: [../execution_orchestration_round3/execution_orchestration_report_round3.md]
+    required_expert_ids: [computer_expert, project_owner]
+    priority: critical
+    blocking: true
+    status: open
+  - issue_id: PE-ISSUE-003
+    category: metric
+    question: Approve E(S1)-E(T1) semantics, mechanism direction and method/condition-specific interpretation.
+    affected_ids: [E_S1_minus_E_T1]
+    recommendation: Confirm state definitions, geometry, solvent, units and calibration regime before ranking.
+    evidence_refs: [../execution_orchestration_round3/execution_orchestration_round3.yaml]
+    required_expert_ids: [computer_expert, computational_photochemist, materials_expert]
+    priority: high
+    blocking: true
+    status: open
+  - issue_id: PE-ISSUE-004
+    category: metric
+    question: Define pH, protonation/tautomer and counterion policies and whether charge scorer is a valid application proxy.
+    affected_ids: [charge]
+    recommendation: Specify target compartment and charge calculation method; retain formal and partial charge descriptors separately.
+    evidence_refs: [../execution_orchestration_round3/execution_review_queue_round3.yaml]
+    required_expert_ids: [materials_expert, formulation_expert]
+    priority: high
+    blocking: true
+    status: open
+  - issue_id: PE-ISSUE-005
+    category: metric
+    question: Is the decoration fingerprint/pair heuristic sufficient, or is a graph/point-group/conformer-aware symmetry descriptor required?
+    affected_ids: [symmetry]
+    recommendation: Approve the operational definition before Pareto analysis or reward interpretation.
+    evidence_refs: [../execution_orchestration_round3/execution_review_queue_round3.yaml]
+    required_expert_ids: [materials_expert, computer_expert]
+    priority: high
+    blocking: true
+    status: open
+  - issue_id: PE-ISSUE-006
+    category: tool
+    question: Which installed RDKit/ORCA versions and ORCA method, basis, solvent, excited-state roots and conformer policy are approved?
+    affected_ids: [rdkit, orca]
+    recommendation: Run version/interface preflight; approve method sensitivity benchmark on representative structures.
+    evidence_refs: [performance_evaluation_report_round1.md]
+    required_expert_ids: [materials_expert, computational_photochemist, computer_expert]
+    priority: high
+    blocking: true
+    status: open
+  - issue_id: PE-ISSUE-007
+    category: environment
+    question: What are the approved Slurm partition, account, QoS, walltime, memory, CPU, array and scratch limits, and ORCA module?
+    affected_ids: [slurm_cluster]
+    recommendation: Populate site-approved values; keep placeholders and do not submit until confirmed.
+    evidence_refs: [performance_evaluation_report_round1.md]
+    required_expert_ids: [computer_expert]
+    priority: high
+    blocking: true
+    status: open
+  - issue_id: PE-ISSUE-008
+    category: comparison
+    question: What reference molecules, experimental data or approved baseline runs are available for contextually consistent comparisons?
+    affected_ids: [benchmark_records, comparison_runs]
+    recommendation: Register source, conditions, units and comparability limitations before comparison.
+    evidence_refs: [performance_evaluation_report_round1.md]
+    required_expert_ids: [materials_expert, computational_photochemist]
+    priority: medium
+    blocking: false
+    status: open

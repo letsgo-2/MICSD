@@ -1,0 +1,50 @@
+metadata:
+  title: "Performance evaluation: eight-component HEA catalyst AL artifacts"
+  round: 1
+  language: English
+  state: partially_executed
+  upstream: "../execution_orchestration_round2/"
+  implementation_root: "../AL/catalyst_active_learning_runnable/"
+  output_directory: "performance_evaluation_round1/"
+evaluation_subject:
+  subject_id: "HEA-AL-ROUND1"
+  subject_type: "candidate_set"
+  source_refs:
+    - "../execution_orchestration_round2/execution_orchestration_round2.yaml"
+    - "../execution_orchestration_round2/execution_orchestration_report_round2.md"
+    - "../execution_orchestration_round2/execution_review_queue_round2.yaml"
+    - "../AL/catalyst_active_learning_runnable/data/initial_examples.csv"
+    - "../AL/catalyst_active_learning_runnable/data/oracle_training_sample.csv"
+    - "../AL/catalyst_active_learning_runnable/outputs/total_pool.csv"
+  status: partial
+metrics:
+  primary:
+    id: "M-PPOWER"
+    name: "device peak power density"
+    status: "not_validated_as_measured"
+    unit: null
+  secondary:
+    - "relative normalized cost index"
+    - "composition closure and nonnegativity"
+    - "pool support and distance diagnostics"
+  prohibited_conflations:
+    - "virtual oracle labels with measured performance"
+    - "relative cost index with USD/g"
+    - "LLM committee outputs with calibrated uncertainty"
+analysis:
+  scripts:
+    - "evaluate_performance_round1.py"
+    - "plot_performance_round1.py"
+  outputs:
+    - "performance_evaluation_report_round1.md"
+    - "data_checks_round1.json"
+    - "statistical_metrics_round1.json"
+    - "candidate_ranking_virtual_round1.csv"
+    - "plot_plan_round1.md"
+  figures_directory: "figures_round1/"
+blocking_issues:
+  - "EO2-001: explicit project/AL order and basis validation"
+  - "EO2-002: source provenance, units, device protocol, conditions, replicates"
+  - "EO2-003: cost definition and price provenance"
+  - "EO2-004: approved composition bounds and closure policy"
+  - "EO2-005: model validation and uncertainty"

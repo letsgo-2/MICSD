@@ -1,0 +1,84 @@
+project: "Eight-component HEA catalyst composition optimization for electrochemical-device peak power density"
+round: 1
+status: pending
+review_items:
+  - object_id: C001
+    question: "Which HEA definition is adopted for this project: five-or-more principal elements with specified atomic-fraction bounds, ideal configurational entropy threshold, or a project-defined rule? Does exactly eight elements imply any minimum fraction?"
+    required_expert: "Alloy/materials expert"
+    reason: "The literature contains multiple non-equivalent HEA definitions; no universal concentration bound follows from element count alone."
+    priority: high
+  - object_id: C002
+    question: "Which exact eight elements are permitted, and are minor elements, dopants, supports, or surface segregants counted among the eight?"
+    required_expert: "Materials expert and project owner"
+    reason: "Element identity determines the feasible composition space and interpretation of component count."
+    priority: high
+  - object_id: I09
+    question: "What are the allowed atomic-fraction bounds, assay method, and tolerances for each element? Is composition specified as atomic or mass fraction?"
+    required_expert: "Materials/synthesis and characterization experts"
+    reason: "The simplex constraint is known, but practical bounds and measured composition are not."
+    priority: high
+  - object_id: I01
+    question: "What electrochemical device, reaction, electrode role, cell/stack level, and power-density basis (active area, electrode area, or volume) define the target endpoint?"
+    required_expert: "Electrochemical-device expert"
+    reason: "Areal/volumetric and full-cell/half-cell power are different quantities; peak power is not catalyst-intrinsic."
+    priority: high
+  - object_id: I01
+    question: "What is the required polarization-curve protocol, including device architecture, active area, catalyst loading, support/ionomer, reactant composition/flow/stoichiometry, temperature, pressure, humidity/electrolyte, conditioning, steady-state criteria, and uncertainty?"
+    required_expert: "Experimental/device expert"
+    reason: "Peak power is only comparable under declared, reproducible operating and data-processing conditions."
+    priority: high
+  - object_id: E050
+    question: "Is the target reaction/device comparable to Zhang et al. 2025's octonary Pd-Pt-Cu-Au-Ir-Ce-Nb-Cr formate-oxidation catalyst and direct formate fuel cell? If not, confirm it is adjacent methodological evidence only."
+    required_expert: "Electrochemical-device and reaction-domain experts"
+    reason: "This is the closest supplied precedent for octonary composition plus device-level power, but transferability depends on reaction, architecture, and composition family."
+    priority: high
+  - object_id: E051
+    question: "Verify the review-cited 0.72 W cm^-2 at 60 C and >1200 h direct ethanol fuel-cell result against its cited primary paper and confirm the reported area/measurement basis."
+    required_expert: "Evidence curator and fuel-cell expert"
+    reason: "The current source is a review and the Markdown conversion contains potentially garbled unit typography."
+    priority: medium
+  - object_id: I03
+    question: "Which reaction-specific half-cell metrics, reference scale, area/mass normalization, iR correction, rotation/transport conditions, and potential/current points should be recorded as supporting—not substitute—endpoints?"
+    required_expert: "Electrocatalysis experimental expert"
+    reason: "Corpus activity metrics vary by reaction and normalization and are not directly comparable."
+    priority: high
+  - object_id: I07
+    question: "What durability protocol and acceptance threshold are required (hold time/cycles, start/end metric, retention or degradation limit)?"
+    required_expert: "Materials and device experts"
+    reason: "No common durability definition or threshold is specified."
+    priority: high
+  - object_id: I08
+    question: "Is selectivity/Faradaic efficiency relevant to the target reaction, and what product/acceptance threshold applies?"
+    required_expert: "Reaction-domain expert"
+    reason: "The target reaction is unspecified and selectivity may not be a meaningful criterion for every device."
+    priority: medium
+  - object_id: I11
+    question: "Which phase/order/surface-state descriptors are scientifically necessary and experimentally measurable for this catalyst family, and which are mechanistic observations versus acceptance constraints?"
+    required_expert: "Alloy characterization expert"
+    reason: "Ordered, disordered, multiphase, segregated, and reconstructed states may produce different active surfaces."
+    priority: medium
+  - object_id: I12
+    question: "Which morphology, size, support, porosity, and accessible-area variables must be held fixed or recorded to attribute a device response to composition?"
+    required_expert: "Synthesis and electrode-fabrication experts"
+    reason: "These variables can confound apparent composition effects."
+    priority: high
+  - object_id: I13
+    question: "Should ideal configurational entropy be retained as a descriptive feature only, and what entropy model/phase assumptions are defensible for this system?"
+    required_expert: "Thermodynamics/alloy expert"
+    reason: "Ideal composition-derived entropy does not establish realized phase stability or catalytic benefit."
+    priority: medium
+  - object_id: I14
+    question: "Are computed adsorption energies or site-distribution summaries relevant to the named reaction, and which surface/solvation/potential assumptions would make them comparable to experiments?"
+    required_expert: "Computational electrocatalysis expert"
+    reason: "These are model-dependent proxies over diverse HEA sites, not direct device outcomes."
+    priority: medium
+  - object_id: all_claims
+    question: "Verify each paper-specific quantitative value and condition against its original tables, figures, and supplementary information before assembling comparable data. Confirm contradictions rather than averaging them."
+    required_expert: "Evidence curator and relevant domain experts"
+    reason: "This first round aligns concepts and records evidence families; systematic numeric transcription is required before data modeling."
+    priority: high
+  - object_id: all_indicators
+    question: "Approve, revise, or reject importance, computability, data-readiness, optimization role/direction, and priority ratings."
+    required_expert: "Materials, experimental, computational, and computer experts"
+    reason: "All scores in round 1 are provisional and uncertified."
+    priority: high

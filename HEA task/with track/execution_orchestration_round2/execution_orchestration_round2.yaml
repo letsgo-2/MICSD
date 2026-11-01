@@ -1,0 +1,308 @@
+metadata:
+  orchestration_id: "EO-HEA-8METAL-ROUND2"
+  version: "2.0.0-draft"
+  status: "proposed; execution prohibited until explicit user confirmation"
+  language: "English"
+  filename_suffix: "round2"
+  created: "2026-10-27"
+  prior_version: "../execution_orchestration_round1/"
+  exact_outputs:
+    report: "/Users/jimmmmmies/Desktop/催化剂案例/execution_orchestration_round2/execution_orchestration_report_round2.md"
+    config: "/Users/jimmmmmies/Desktop/催化剂案例/execution_orchestration_round2/execution_orchestration_round2.yaml"
+    review_queue: "/Users/jimmmmmies/Desktop/催化剂案例/execution_orchestration_round2/execution_review_queue_round2.yaml"
+    trace: "/Users/jimmmmmies/Desktop/催化剂案例/execution_orchestration_round2/execution_trace_round2.jsonl"
+upstream_inputs:
+  alignment_directory: "../knowledge_alignment_round2/"
+  alignment_files: ["knowledge_alignment.yaml", "knowledge_alignment_report.md", "expert_review_queue.yaml"]
+  prior_orchestration_directory: "../execution_orchestration_round1/"
+  implementation_root: "../AL/catalyst_active_learning_runnable/"
+  implementation_files:
+    - "README.md"
+    - "config.json"
+    - "run.py"
+    - "check_environment.py"
+    - "catalyst_al/costs.py"
+    - "catalyst_al/data.py"
+    - "catalyst_al/model.py"
+    - "catalyst_al/providers.py"
+    - "catalyst_al/sampling.py"
+    - "catalyst_al/pareto.py"
+    - "catalyst_al/pipeline.py"
+    - "tests/test_core.py"
+    - "data/README.md"
+    - "data/Data.xlsx:Result 1"
+    - "data/initial_examples.csv"
+    - "data/oracle_training_sample.csv"
+    - "outputs/total_examples_pool.csv"
+execution_context:
+  goal: "Optimize peak device power density as the core performance metric while considering cost and formulation quality/stability."
+  authorization: "NO EXECUTION AUTHORIZED; this artifact is a proposal only. Do not run training, candidate generation, scoring, LLM/API calls, or experiments without explicit user confirmation."
+  target_device: null
+  target_reaction: null
+  confirmed_expert_decisions:
+    core_performance_metric: "peak power density"
+    composition_unit: "mass_fraction"
+    fixed_composition_order: ["Pd", "Pt", "Au", "Cr", "Ir", "Ce", "Cu", "Nb"]
+    composition_constraints: ["all fractions finite and nonnegative", "sum of eight mass fractions equals one"]
+  composition_migration:
+    source_order_in_al: ["Pd", "Pt", "Cu", "Au", "Ir", "Ce", "Nb", "Cr"]
+    target_order: ["Pd", "Pt", "Au", "Cr", "Ir", "Ce", "Cu", "Nb"]
+    source_fraction_basis: "unknown/unverified per table until source provenance checked"
+    rule: "Map by column header; preserve original vector and basis. Convert to mass fraction only if source is verified atomic fraction, using an explicitly versioned atomic-weight table. Never relabel or silently normalize."
+    closure_tolerance: null
+    per_element_bounds: null
+    all_elements_must_be_positive: null
+  execution_state: "proposal_only"
+  no_run_evidence: "No AL script, model training, model inference, API call, candidate generation, or physical experiment was run in Round 2."
+data_inventory:
+  raw_workbook: {path: "../AL/catalyst_active_learning_runnable/data/Data.xlsx", sheet: "Result 1", n_rows: 703, target_column: "max_power", condition_fields_present_in_sheet: false}
+  abandonment: {flagged_abandoned: 396, unflagged: 307, meanings: "abandoned rows include sample prep and other failure/retest reasons; retain with status; unflagged not yet confirmed target-compatible experimental set"}
+  training_subset: {path: "../AL/catalyst_active_learning_runnable/data/oracle_training_sample.csv", n_rows: 120, sampling: "target-sorted then evenly thinned from 307", use: "reference only; not unbiased holdout"}
+  seed_data: {path: "../AL/catalyst_active_learning_runnable/data/initial_examples.csv", n_rows: 10}
+  accumulated_pool: {path: "../AL/catalyst_active_learning_runnable/outputs/total_examples_pool.csv", n_rows: 160, provenance: "must reconcile; not assumed all measured"}
+  missing_or_unverified: ["measurement units/device conditions for workbook max_power", "fraction basis for each source table", "replicate/batch/device IDs", "actual precursor price and yield", "target protocol equivalence"]
+metric_candidates:
+  - metric_id: M_COMP_VALID
+    name: "Composition validity"
+    aliases: ["mass-fraction feasibility", "simplex validity"]
+    definition: "For w in order [Pd,Pt,Au,Cr,Ir,Ce,Cu,Nb], each value is finite and >=0; sum(w)=1 within a tolerance fixed from validated measurement/reporting precision."
+    proposed_roles: ["hard_constraint"]
+    direction: "target_range"
+    threshold: {component_min: 0.0, component_max: null, sum: 1.0, tolerance: null, unit: "mass fraction", status: "expert-approved rules; tolerance pending"}
+    conditions: ["canonical mass basis", "target header order", "nominal vs measured distinction"]
+    acquisition: ["rule-based validator before all prediction/screening"]
+    evidence_refs: ["USER:computer-expert-round2", "USER:materials-expert-round2"]
+    expert_status: "approved"
+    unresolved_fields: ["numeric closure tolerance", "per-element bounds", "zero/presence policy"]
+  - metric_id: M_POWER
+    name: "Peak areal device power density"
+    aliases: ["peak power density", "maximum power density"]
+    definition: "max_k(V_cell,k*I_k/A_geo) or max(V_cell*j_geo) from target-device polarization curve."
+    unit: "mW cm^-2_geo or W cm^-2_geo; choose one canonical storage unit"
+    proposed_roles: ["primary_objective"]
+    direction: "maximize"
+    threshold: {value: null, range: [], unit: "device-specific", status: "unresolved; do not inherit CRESt number as universal target"}
+    conditions: ["device/reaction/electrode role", "area basis", "fuel/electrolyte/feed", "catalyst loading", "temperature/pressure/flow", "conditioning and polarization protocol"]
+    acquisition: ["AL virtual predictor outputs are separate from physical measurement; direct device evaluator/interface still required"]
+    evidence_refs: ["EA-KA:E001", "EA-KA:E002", "WEB:CREST2025", "WEB:FCTESQA2010"]
+    expert_status: "core_objective_confirmed_unit_and_protocol_unconfirmed"
+    unresolved_fields: ["target device and reaction", "unit/area basis", "measurement protocol", "acceptance threshold/uncertainty"]
+  - metric_id: M_NORMALIZED_COST
+    name: "Normalized cost proxy"
+    aliases: ["legacy normalized cost", "cost relative to pure Pd"]
+    definition: "AL implementation computes dot(composition, hard-coded METAL_PRICES)/Pd_price*100. The code does not document price units/vintage. This is a legacy relative proxy, not actual precursor cost."
+    proposed_roles: ["diagnostic", "secondary_objective only after approval"]
+    direction: "minimize"
+    threshold: {value: null, range: [], unit: "legacy relative cost index", status: "unresolved; code's target values are unapproved"}
+    conditions: ["old AL element order", "embedded price vector", "unit/vintage/source not in code"]
+    acquisition: ["existing catalyst_al/costs.py function calculate_normalized_cost"]
+    evidence_refs: ["AL:catalyst_al/costs.py", "AL:README.md", "EA-KA:E015"]
+    expert_status: "cost_proxy_selected_price_and_formula_unconfirmed"
+    unresolved_fields: ["source prices and units", "actual cost relation", "target cost cap", "double-counting with cost metric"]
+  - metric_id: M_ELEMENT_BOUNDS
+    name: "Element-content bounds/presence"
+    aliases: ["component feasibility region"]
+    definition: "Optional per-element lower/upper mass-fraction limits and optional all-eight-positive policy."
+    proposed_roles: ["hard_constraint after approval"]
+    direction: "target_range"
+    threshold: {per_element_min: null, per_element_max: null, unit: "mass fraction", status: "unresolved"}
+    conditions: ["synthesis feasibility", "assay LOQ", "project definition of eight-component material"]
+    acquisition: ["expert-provided schema and process feasibility review"]
+    evidence_refs: ["EA-KA:E001", "EA-KA:E002"]
+    expert_status: "constraint_role_confirmed_numeric_bounds_and_presence_unconfirmed"
+    unresolved_fields: ["all-positive rule", "LOQ", "component bounds"]
+  - metric_id: M_NOVELTY_DISTANCE
+    name: "Distance from candidate to existing measured samples"
+    aliases: ["composition novelty", "nearest measured-neighbor distance"]
+    definition: "Minimum declared composition-space distance between candidate and eligible measured samples after correct mass-order migration. Current AL uses CLR(log-ratio) with epsilon 1e-6 and Euclidean norm; candidate library diversity uses AK-DAS Gaussian-kernel relevance/diversity."
+    proposed_roles: ["diagnostic", "batch-diversity signal"]
+    direction: "context_dependent"
+    threshold: {value: null, range: [], unit: "distance in declared transformed space", status: "no universal novelty cutoff"}
+    conditions: ["measured-only reference pool preferred", "representation and zero handling fixed", "exclude non-comparable protocols or stratify them"]
+    acquisition: ["existing find_similar_examples and AKDAS after schema adapter; output is not implemented as an explicit screening field today"]
+    evidence_refs: ["AL:catalyst_al/sampling.py", "AL:catalyst_al/pipeline.py"]
+    expert_status: "diagnostic_requested_distance_definition_unconfirmed"
+    unresolved_fields: ["distance interpretation after mass-basis migration", "epsilon/zero policy", "measured vs predicted reference pool"]
+  - metric_id: M_MODEL_CONFIDENCE
+    name: "Model prediction confidence/uncertainty"
+    aliases: ["uncertainty", "confidence status"]
+    definition: "Current GBR oracle returns point prediction only. Current LLM committee produces repeated-prompt mean/std, which is prompt dispersion and not calibrated predictive confidence."
+    proposed_roles: ["screening gate", "diagnostic"]
+    direction: "context_dependent"
+    threshold: {value: null, range: [], unit: "calibrated interval/dispersion metric", status: "not defined/calibrated"}
+    conditions: ["validated held-out data", "applicability-domain flag", "distinguish GBR/LLM/model/measurement uncertainty"]
+    acquisition: ["AL pipeline computes LLM committee mean/std; current GBR has no uncertainty API"]
+    evidence_refs: ["AL:catalyst_al/model.py", "AL:catalyst_al/providers.py", "AL:catalyst_al/pipeline.py"]
+    expert_status: "diagnostic_requested_calibration_unconfirmed"
+    unresolved_fields: ["calibration method/criteria", "allowed risk for selection", "how to act on OOD candidates"]
+  - metric_id: M_FORMULATION_STABILITY
+    name: "High-performance formulation stability/reproducibility"
+    aliases: ["recipe robustness", "high-performing formulation stability"]
+    definition: "Variation of measured device power across independent synthesis/device replicates for the same mass recipe under a locked protocol; separate from long-term electrochemical durability."
+    proposed_roles: ["soft_constraint", "diagnostic", "possible secondary objective"]
+    direction: "minimize"
+    threshold: {value: null, range: [], unit: "replicate SD/CV or interval width", status: "no replicate protocol or threshold supplied"}
+    conditions: ["independent batches/devices", "identical nominal recipe/process/device test", "measurement uncertainty separated from batch variation"]
+    acquisition: ["requires new/reconciled replicate measurements; cannot derive from a single recipe score"]
+    evidence_refs: ["EA-KA:E001", "EA-KA:E002", "WEB:FCTESQA2010"]
+    expert_status: "diagnostic_requested_stability_definition_unconfirmed"
+    unresolved_fields: ["replicate count", "robustness statistic", "acceptance threshold", "distinguish durability lifetime"]
+  - metric_id: M_ACTUAL_COST
+    name: "Actual material/precursor cost"
+    aliases: ["actual cost", "bill of materials"]
+    definition: "Quote- and mass-balance-derived material cost at specified precursor grade, yield, scale, date and currency; distinct from legacy normalized cost."
+    proposed_roles: ["secondary_objective", "hard budget constraint if specified"]
+    direction: "minimize"
+    threshold: {value: null, range: [], unit: "currency per declared mass/batch basis", status: "missing quote data and budget"}
+    conditions: ["precursor form/purity", "yield/recovery", "region/date/scale", "denominator"]
+    acquisition: ["no direct implementation in inspected AL package"]
+    evidence_refs: ["EA-KA:E015"]
+    expert_status: "cost_objective_accepted_procurement_data_unavailable"
+    unresolved_fields: ["price inputs", "cost basis", "budget/cost requirement"]
+metric_decisions:
+  - {metric_id: M_COMP_VALID, final_role: "hard_constraint", rank: 0, ranking_basis: ["computer expert explicitly confirms nonnegative mass fractions, sum one, fixed order"], direction: "target_range", threshold: {sum: 1.0, component_min: 0.0, tolerance: null, status: "expert-confirmed rule; assay tolerance pending"}, evaluator_id: "AL existing normalization logic requires adaptation; no execution", decision_status: "expert_approved", evidence_refs: ["USER:computer-expert-round2"]}
+  - {metric_id: M_POWER, final_role: "primary_objective", rank: 1, ranking_basis: ["computer expert says core performance metric", "direct requested outcome"], direction: "maximize", threshold: {value: null, status: "target protocol and acceptance rule unresolved"}, evaluator_id: "AL GBR virtual oracle predicts scalar power_density; requires validation and does not measure experiment", decision_status: "proposed; activation blocked", evidence_refs: ["EA-KA:E001", "AL:catalyst_al/model.py"]}
+  - {metric_id: M_ACTUAL_COST, final_role: "secondary_objective", rank: 2, ranking_basis: ["material cost is an explicit trade-off", "actual cost is not implemented in AL"], direction: "minimize", threshold: {value: null, status: "budget not supplied"}, evaluator_id: "not implemented; procurement interface needed", decision_status: "proposed", evidence_refs: ["EA-KA:E015"]}
+  - {metric_id: M_NORMALIZED_COST, final_role: "diagnostic", rank: 5, ranking_basis: ["existing code computes it", "price source/vintage/unit undocumented and may not equal cost"], direction: "minimize", threshold: {value: null, status: "legacy config target values unapproved"}, evaluator_id: "calculate_normalized_cost in catalyst_al/costs.py", decision_status: "proposed; do not use as actual cost", evidence_refs: ["AL:catalyst_al/costs.py", "AL/config.json"]}
+  - {metric_id: M_ELEMENT_BOUNDS, final_role: "deferred", rank: 4, ranking_basis: ["could be hard constraints but values/presence rule absent"], direction: "target_range", threshold: {value: null, status: "deferred pending domain approval"}, evaluator_id: "none until bounds set", decision_status: "deferred", evidence_refs: ["EA-KA:E001"]}
+  - {metric_id: M_NOVELTY_DISTANCE, final_role: "diagnostic", rank: 6, ranking_basis: ["AL has CLR nearest-neighbor and AK-DAS diversity components", "representation/epsilon need migration check"], direction: "context_dependent", threshold: {value: null, status: "diagnostic only"}, evaluator_id: "find_similar_examples / AKDAS in catalyst_al/sampling.py", decision_status: "proposed", evidence_refs: ["AL:catalyst_al/sampling.py"]}
+  - {metric_id: M_MODEL_CONFIDENCE, final_role: "diagnostic", rank: 3, ranking_basis: ["needed to manage risk", "current AL signals are not calibrated confidence"], direction: "context_dependent", threshold: {value: null, status: "blocked pending validation/calibration"}, evaluator_id: "LLM committee mean/std and GBR point predictor; neither calibrated as coded", decision_status: "proposed; not active gate yet", evidence_refs: ["AL:catalyst_al/providers.py", "AL:catalyst_al/model.py"]}
+  - {metric_id: M_FORMULATION_STABILITY, final_role: "soft_constraint", rank: 7, ranking_basis: ["scientist requests stability of high-performing formulations", "requires independent replicates, absent from current workflow"], direction: "minimize", threshold: {value: null, status: "no replicate criterion supplied"}, evaluator_id: "future replicate evaluator; not implemented", decision_status: "proposed", evidence_refs: ["EA-KA:E001"]}
+model_interfaces:
+  - model_id: AL-MODEL-GBR-001
+    name: "GradientBoostingRegressor virtual oracle"
+    role: "predictor"
+    status: "available_inspected; validation not approved"
+    source: {type: "local", location: "../AL/catalyst_active_learning_runnable/catalyst_al/model.py", version: "as inspected 2026-10-27; no commit/hash captured"}
+    entrypoint: {command: "run.py / pipeline invokes load_or_train_oracle", script: "catalyst_al/model.py", environment: "requirements.txt; README recommends Python 3.10-3.12", working_directory: "../AL/catalyst_active_learning_runnable/"}
+    human_provision: {model_information_provided: true, script_location_provided: true, executable_interface_exposed: true, parameter_interface_exposed: "config and code exist; mutation/auto-tuning authority not granted", access_level: "inspect_only", authorized_parameters: [], prohibited_actions: ["do not run without user confirmation", "do not label virtual predictions as measured experiments", "do not change model/source code"], provided_by: "existing AL implementation inspected", confirmation_ref: "user says AL is provided as implemented path; no run authorization"}
+    input_schema: ["8 numeric ratios in old order Pd,Pt,Cu,Au,Ir,Ce,Nb,Cr", "single scalar training target power_density"]
+    output_schema: ["single scalar prediction power_density"]
+    supported_metrics: ["M_POWER (virtual estimate only)"]
+    parameters: {algorithm: "sklearn GradientBoostingRegressor", n_estimators: 512, learning_rate: 0.03, max_depth: 3, loss: "squared_error", random_seed: 42, validation_split: "random 80/20 row split in train_oracle"}
+    validation: {test_data: "oracle_training_sample.csv; target-sorted/thinned 120-row sample", metrics: ["R2", "RMSE", "MAE"], applicability_domain: "not assessed", known_failures: ["split may leak similar/batch-related records", "no device condition features", "no uncertainty output", "training subset may be selection-biased"]}
+    evidence_refs: ["AL:catalyst_active_learning_runnable/catalyst_al/model.py", "AL:catalyst_active_learning_runnable/data/README.md"]
+  - model_id: AL-LLM-GENERATOR-001
+    name: "OpenAI-compatible LLM composition generator and committee predictor"
+    role: "generator"
+    status: "available_inspected; API call requires explicit run authorization and credentials"
+    source: {type: "api", location: "catalyst_al/providers.py; env OPENAI_API_KEY, OPENAI_MODEL, optional OPENAI_BASE_URL", version: "OpenAI-compatible SDK; provider/model runtime value not inspected"}
+    entrypoint: {command: "pipeline.run invokes DesignProvider", script: "catalyst_al/providers.py", environment: "requirements.txt and .env", working_directory: "../AL/catalyst_active_learning_runnable/"}
+    human_provision: {model_information_provided: true, script_location_provided: true, executable_interface_exposed: true, parameter_interface_exposed: true, access_level: "inspect_only; no API/run authorization", authorized_parameters: [], prohibited_actions: ["no LLM/API calls in this orchestration", "do not copy secrets", "do not treat repeated prompting as calibrated uncertainty"], provided_by: "existing AL implementation; exact deployed model/config not inspected", confirmation_ref: "explicit user confirmation required before run"}
+    input_schema: ["target_pd", "target_cost", "reference examples in old element order"]
+    output_schema: ["parsed eight-value ratio, normalized by provider", "committee numeric predictions with mean/std in pipeline"]
+    supported_metrics: ["M_POWER prediction (unvalidated)", "M_NORMALIZED_COST target (legacy proxy)"]
+    parameters: {temperature: 0.2, max_tokens_generator: 120, max_tokens_prediction: 20, committee_size_default: 3}
+    validation: {test_data: "FakeLLMProvider unit smoke test only", metrics: {}, applicability_domain: "unknown", known_failures: ["prompt uses old element order", "prompt cost target uses legacy hard-coded proxy", "LLM committee std is not calibrated confidence"]}
+    evidence_refs: ["AL:catalyst_active_learning_runnable/catalyst_al/providers.py", "AL:catalyst_active_learning_runnable/tests/test_core.py"]
+  - model_id: AL-CANDIDATE-PIPELINE-001
+    name: "Dirichlet candidate pool + CLR/AK-DAS + LLM committee + Pareto/min-max ranking + GBR virtual evaluation"
+    role: "generator"
+    status: "available_inspected; simulated feedback path, no run authorized"
+    source: {type: "local", location: "../AL/catalyst_active_learning_runnable/catalyst_al/pipeline.py", version: "as inspected 2026-10-27"}
+    entrypoint: {command: "python run.py [arguments]", script: "run.py", environment: "README dependencies and .env", working_directory: "../AL/catalyst_active_learning_runnable/"}
+    human_provision: {model_information_provided: true, script_location_provided: true, executable_interface_exposed: true, parameter_interface_exposed: true, access_level: "inspect_only; execution prohibited until user confirms", authorized_parameters: [], prohibited_actions: ["no candidate generation", "no training/inference", "no CSV output modification", "no experiments"] , provided_by: "existing AL package", confirmation_ref: "current user says do not run without authorization"}
+    input_schema: ["initial_examples.csv", "oracle_training_sample.csv", "config.json", "API credentials for actual run"]
+    output_schema: ["total_pool.csv", "iteration_log.csv", "query_log.csv", "generated_ratios.csv", "summary.json"]
+    supported_metrics: ["virtual power_density", "legacy normalized_cost", "LLM committee mean/std", "CLR distance indirectly used in nearest-neighbor and AK-DAS"]
+    parameters: {num_iterations: 10, candidate_pool_size: 20000, kdas_select_size: 10, query_top_k: 8, retain_top_k: 3, committee_size: 3, similar_examples_k: 3, lambda_start: 0.5, lambda_end: 0.7, kdas_sigma: 1.5, ucb_exploration_weight: 1.0, performance_weight: 0.6, performance_threshold: 200.0, target_pd_improvement_mean: 0.06, target_pd_improvement_std: 0.02, target_cost_reduction_mean: 0.03, target_cost_reduction_std: 0.01}
+    validation: {test_data: "unit tests use FakeLLMProvider; no AL package tests run in this orchestration", metrics: ["shape/simplex assertions", "GBR random split R2/RMSE/MAE"], applicability_domain: "not established for mass-order or device conditions", known_failures: ["cost hardcoded", "objective weights/targets unapproved", "GBR scores are virtual feedback", "output rows lack target expert's mass-order schema", "LLM API has real external side effects"]}
+    evidence_refs: ["AL:catalyst_active_learning_runnable/catalyst_al/pipeline.py", "AL/catalyst_active_learning_runnable/config.json", "AL/catalyst_active_learning_runnable/README.md"]
+  - model_id: AL-REPLICATE-STABILITY-001
+    name: "High-performance formulation replicate stability evaluator"
+    role: "uncertainty_model"
+    status: "proposed; not implemented"
+    source: {type: "local", location: "future measured-replicate table/interface", version: "none"}
+    entrypoint: {command: "", script: "", environment: "", working_directory: ""}
+    human_provision: {model_information_provided: false, script_location_provided: false, executable_interface_exposed: false, parameter_interface_exposed: false, access_level: "none", authorized_parameters: [], prohibited_actions: ["do not infer formulation robustness from LLM or GBR dispersion"], provided_by: "", confirmation_ref: ""}
+    input_schema: ["same nominal mass recipe", "independent batches/devices", "fixed condition/protocol IDs", "measured power and failure flags"]
+    output_schema: ["mean", "SD/CV or interval width", "failure rate", "replicate count", "protocol/batch spread"]
+    supported_metrics: ["M_FORMULATION_STABILITY"]
+    parameters: {}
+    validation: {test_data: "none", metrics: {}, applicability_domain: "unavailable until physical replicates", known_failures: ["distinguish measurement noise, batch variation, and long-term electrochemical durability"]}
+    evidence_refs: ["EA-KA:E001"]
+reward_components:
+  - {component_id: RC-COMPOSITION-001, metric_id: M_COMP_VALID, evaluator_id: "AL adapter; not implemented", role: "hard_constraint", direction: "target_range", threshold: {sum: 1.0, component_min: 0.0, tolerance: null}, normalization: "none", weight: null, uncertainty_penalty: "invalid or unknown-basis candidate rejected/quarantined", missing_policy: "reject", status: "proposed", evidence_refs: ["USER:computer-expert-round2"]}
+  - {component_id: RC-POWER-001, metric_id: M_POWER, evaluator_id: "AL GBR currently emits virtual point estimates only", role: "objective", direction: "maximize", threshold: {value: null, status: "target-specific requirement unresolved"}, normalization: "none", weight: null, uncertainty_penalty: "uncalibrated/virtual output cannot be the sole experimental release criterion", missing_policy: "manual_review", status: "proposed", evidence_refs: ["EA-KA:E001", "AL:catalyst_active_learning_runnable/catalyst_al/model.py"]}
+  - {component_id: RC-COST-001, metric_id: M_ACTUAL_COST, evaluator_id: "no actual cost evaluator currently implemented", role: "objective", direction: "minimize", threshold: {value: null, status: "quote/cost cap unresolved"}, normalization: "none", weight: null, uncertainty_penalty: "unknown cost remains null; no implicit proxy substitution", missing_policy: "manual_review", status: "proposed", evidence_refs: ["EA-KA:E015"]}
+  - {component_id: RC-STABILITY-001, metric_id: M_FORMULATION_STABILITY, evaluator_id: "future replicate interface", role: "soft_constraint", direction: "minimize", threshold: {value: null, status: "replicate rule unresolved"}, normalization: "none", weight: null, uncertainty_penalty: "insufficient replicate count flagged not stable/unstable", missing_policy: "manual_review", status: "proposed", evidence_refs: ["EA-KA:E001"]}
+workflow:
+  workflow_id: "WF-AL-HEA-ROUND2-PROPOSAL"
+  status: "draft_awaiting_user_confirmation"
+  authorization_required_before: ["training", "GBR inference", "LLM API call", "candidate generation", "candidate scoring", "writing AL outputs", "physical experiment"]
+  search_space:
+    definition: "Mass-fraction simplex over [Pd,Pt,Au,Cr,Ir,Ce,Cu,Nb]"
+    allowed_regions: []
+    forbidden_regions: []
+    expert_rules: ["finite nonnegative mass fractions", "sum to one within approved tolerance"]
+    element_bounds: null
+    all_positive_policy: null
+    migration_adapter_required: true
+  nodes:
+    - {node_id: N01, action: "load", model_id: "", inputs: ["AL config/source snapshots", "raw XLSX/CSV", "Round 2 alignment"], outputs: ["file/version/hash manifest", "read-only source inventory"], gate: "no model/API invocation", stop_on_failure: true}
+    - {node_id: N02, action: "check", model_id: "", inputs: ["source rows", "column headings", "basis metadata"], outputs: ["provenance map", "eligible/abandoned/simulated strata"], gate: "do not infer composition basis from closure", stop_on_failure: true}
+    - {node_id: N03, action: "check", model_id: "", inputs: ["verified basis-tagged compositions"], outputs: ["canonical mass-order arrays", "quarantined unknown-basis rows", "sum residuals"], gate: "header-based mapping; validated conversion only", stop_on_failure: true}
+    - {node_id: N04, action: "review", model_id: "", inputs: ["target device/protocol", "metric definitions", "cost/stability criteria", "source audit"], outputs: ["expert-approved objective/constraints and training eligibility"], gate: "blocking human confirmation", stop_on_failure: true}
+    - {node_id: N05, action: "load", model_id: "", inputs: ["approved measured-compatible records"], outputs: ["group-aware train/validation/test sets", "source ledger"], gate: "no target-sorted sample used as unbiased holdout", stop_on_failure: true}
+    - {node_id: N06, action: "predict", model_id: AL-MODEL-GBR-001, inputs: ["canonical mass fractions", "conditions only if model supports them"], outputs: ["virtual peak-power estimate", "model version/status"], gate: "test only after user authorizes run; no calibrated uncertainty interface currently", stop_on_failure: true}
+    - {node_id: N07, action: "generate", model_id: AL-CANDIDATE-PIPELINE-001, inputs: ["approved mass simplex", "existing measured sample pool", "metric configuration"], outputs: ["candidate vectors and generation provenance"], gate: "do not invoke current LLM API until explicit authorization and order adapter", stop_on_failure: true}
+    - {node_id: N08, action: "check", model_id: "", inputs: ["candidate mass vectors"], outputs: ["composition validity", "element bounds/presence status", "dedup status"], gate: "all hard constraints first; unknown bounds unresolved", stop_on_failure: true}
+    - {node_id: N09, action: "calculate", model_id: "", inputs: ["candidate and eligible measured dataset"], outputs: ["nearest-measured distance/novelty", "known cost proxy vs actual cost status"], gate: "recompute after new order and mass representation; no undocumented epsilon policy", stop_on_failure: true}
+    - {node_id: N10, action: "score", model_id: AL-CANDIDATE-PIPELINE-001, inputs: ["power outputs", "cost metrics", "novelty", "confidence flags", "stability status"], outputs: ["Pareto set and candidate evidence cards"], gate: "do not use current batch min-max scalar/0.6 weight without approval", stop_on_failure: true}
+    - {node_id: N11, action: "review", model_id: "", inputs: ["candidate evidence cards", "risks and domain status"], outputs: ["human-approved candidate batch"], gate: "explicit user confirmation before AL run; domain review before experiments", stop_on_failure: true}
+    - {node_id: N12, action: "measure", model_id: "", inputs: ["approved candidate formulation and protocol"], outputs: ["physical device curve", "actual cost/precursor records", "replicates and failures"], gate: "experiment authorization and safety approval", stop_on_failure: true}
+    - {node_id: N13, action: "export", model_id: "", inputs: ["new measurements plus provenance"], outputs: ["append-only measured-data version", "retrained/reevaluated model proposal", "updated Pareto/robustness report"], gate: "keep predicted, simulated, derived and measured rows distinct", stop_on_failure: true}
+  budget: {max_candidates: null, max_evaluations: null, api_calls: null, max_runtime: "", compute_limit: "", note: "capacity not approved; existing config defaults are not endorsed budgets"}
+  stopping_conditions: ["approved target-specific power/cost criterion met with confirmation replicates", "approved physical evaluation budget exhausted", "source/model validity gate fails", "uncertainty/applicability requires review", "user/expert pause or veto"]
+parameter_controls:
+  - {parameter_id: PC-ORDER-001, target: "workflow", name: "composition_order_adapter", current_value: "old order in code", allowed_range: [], allowed_values: [["Pd","Pt","Au","Cr","Ir","Ce","Cu","Nb"]], adjustment_mode: "manual", trigger: "before any run, after confirming source units", max_change_per_round: null, rollback_value: "preserve raw old-order source", change_history: []}
+  - {parameter_id: PC-AL-001, target: "model", name: "AL runtime and API parameters", current_value: "config.json defaults; see AL implementation", allowed_range: [], allowed_values: [], adjustment_mode: "fixed", trigger: "none until user authorizes run and approves parameter set", max_change_per_round: null, rollback_value: "existing config snapshot", change_history: []}
+expert_feedback_history: []
+expert_activity_log:
+  - {activity_id: EA-DOM-ROUND2, expert_role: "domain_expert", action_type: "recommend", target_type: "metric", target_id: "M_FORMULATION_STABILITY", contribution: "Requested consideration of normalized cost, composition validity/bounds, candidate distance, model confidence, and stability of high-performance formulations.", decision_or_effect: "Added distinct proposed metrics; no thresholds presumed.", evidence_refs: ["USER:materials-scientist-round2"], timestamp: "2026-10-27", status: "applied"}
+  - {activity_id: EA-COMP-ROUND2, expert_role: "computer_expert", action_type: "define", target_type: "metric", target_id: "M_POWER/M_COMP_VALID", contribution: "Confirmed peak power density is core metric and mass-fraction nonnegativity, closure and fixed order are composition constraints.", decision_or_effect: "Promoted peak power to primary objective; composition validity is hard constraint; applied fixed order [Pd,Pt,Au,Cr,Ir,Ce,Cu,Nb].", evidence_refs: ["USER:computer-expert-round2"], timestamp: "2026-10-27", status: "applied"}
+  - {activity_id: EA-COMP-AL-ROUND2, expert_role: "computer_expert", action_type: "recommend", target_type: "model", target_id: "AL-CANDIDATE-PIPELINE-001", contribution: "Identified AL folder as implemented model execution path and requested configuration/model/data interface inspection.", decision_or_effect: "Mapped actual interfaces; did not run or claim validation under new schema.", evidence_refs: ["USER:computer-expert-round2", "AL:source-files"], timestamp: "2026-10-27", status: "recorded"}
+run_history: []
+version_history:
+  - {version: "2.0.0-draft", date: "2026-10-27", change: "Updated metric organization and registered actual AL stack/interfaces; added novelty/confidence/formulation-stability metrics; explicit no-run state.", previous_version: "1.0.0-draft"}
+
+dialogue_status_reconciliation:
+  annotation_date: '2026-10-30'
+  basis: Retrospective inference from the supplied dialogue; broad acceptance of task roles and working knowledge, not
+    newly performed expert validation.
+  source_file: multi_round_dialogue_example_EN.txt
+  source_sha256: 759f71d407a9bb2c542208a75279b8477e0833f2f54ee566e3e990870f96a994
+  independent_itemwise_verification_recorded: false
+  quantitative_thresholds_or_prices_approved: false
+  execution_authorized: false
+  composition_basis_caution: Dialogue specifies mass fractions. Atomic-/molar-fraction entries are not upgraded by this
+    annotation; conversion and schema reconciliation remain necessary.
+  feedback:
+  - id: EO1
+    line: 12
+    statement: 'Please run the Execution Orchestration Skill. Based on the three output files from the knowledge-alignment
+      stage and the research methods used in this field, which may be identified from the literature or through online
+      research, design a basic task-execution workflow for optimizing the formulation of an eight-component high-entropy
+      alloy catalyst. Provide necessary recommendations, especially recommendations for metric ranking and corresponding
+      threshold guidance, preferably supported by evidence. Starting from existing experimental data, the workflow should
+      explain how to perform data organization, model training, candidate-composition generation, performance evaluation,
+      candidate screening, and result feedback, but it must not assume a specific model or algorithm that has not yet
+      been confirmed. The materials expert provides the following information: the catalyst consists of eight metals—Pd,
+      Pt, Au, Cr, Ir, Ce, Cu, and Nb—and is generally represented as a mass-fraction vector with a fixed element order;
+      each element''s mass fraction must be nonnegative, and the fractions must sum to 1. The optimization problem therefore
+      involves trade-offs among peak power density, cost, and composition constraints. The computer expert would like
+      to construct a model workflow capable of iterative optimization from existing composition-performance data. Add
+      the suffix `round1` to the output filenames.'
+  - id: EO2
+    line: 16
+    statement: The materials scientist notes that the organization of metrics in the current workflow still needs adjustment.
+      In addition to peak power density, the workflow may consider normalized cost, composition validity, element-content
+      ranges, differences between candidate compositions and existing experimental samples, model-prediction confidence,
+      and the stability of high-performance formulations. The computer expert confirms that peak power density will be
+      the core performance metric for formulation optimization, while nonnegative mass fractions for the eight elements,
+      a total fraction of 1, and a fixed element order will serve as composition constraints. The `AL` folder is now
+      provided as the implemented model execution path. The model architecture, training method, metric-configuration
+      files, runtime parameters, data interfaces, and candidate-result format must be obtained from the code, documentation,
+      and interface documents in the `AL` folder. Inspect and update the model information and interfaces independently,
+      improve the workflow, and report the proposed execution procedure to me for confirmation. Do not run it without
+      authorization. Clearly specify all output paths. Update the previous round's output files and add the suffix `round2`.

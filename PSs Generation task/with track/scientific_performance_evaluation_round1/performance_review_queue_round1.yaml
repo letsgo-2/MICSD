@@ -1,0 +1,132 @@
+{
+  "review_items": [
+    {
+      "issue_id": "PE-R1-001",
+      "category": "environment",
+      "question": "Provide Slurm cluster hostname/account/partition, module or container versions, CPU/memory/time limits, scratch policy and output location.",
+      "affected_ids": [
+        "ENV-R1-SLURM",
+        "TOOL-R1-SLURM"
+      ],
+      "recommendation": "Keep environment unregistered and tools proposed until concrete runtime metadata are supplied.",
+      "evidence_refs": [
+        "AE-R1-004",
+        "Performance Evaluation Skill 3.3"
+      ],
+      "required_expert": "computer expert",
+      "priority": "critical",
+      "blocking": true,
+      "status": "open"
+    },
+    {
+      "issue_id": "PE-R1-002",
+      "category": "tool",
+      "question": "Provide RDKit and ORCA versions, executable/module paths, approved ORCA method/basis/solvent/state protocol, and parameter authorization.",
+      "affected_ids": [
+        "TOOL-R1-RDKIT",
+        "TOOL-R1-ORCA"
+      ],
+      "recommendation": "Register exact versions and run a tiny approved validation fixture before batch evaluation.",
+      "evidence_refs": [
+        "AE-R1-004",
+        "Performance Evaluation Skill 3.2"
+      ],
+      "required_expert": "materials expert",
+      "priority": "critical",
+      "blocking": true,
+      "status": "open"
+    },
+    {
+      "issue_id": "PE-R1-003",
+      "category": "results",
+      "question": "Provide SDPD run artifacts, including diversity_memory.csv, seed/config metadata, component scores, raw ST-gap and failure logs.",
+      "affected_ids": [
+        "EP-R1-INGEST",
+        "BIND-R1-MODEL"
+      ],
+      "recommendation": "Until artifacts exist, report all performance results as not_observed and do not infer convergence.",
+      "evidence_refs": [
+        "AE-R1-001",
+        "AE-R1-003"
+      ],
+      "required_expert": "computer expert",
+      "priority": "critical",
+      "blocking": true,
+      "status": "open"
+    },
+    {
+      "issue_id": "PE-R1-004",
+      "category": "protocol",
+      "question": "Approve the ORCA recomputation protocol and stratified sampling design for validating the SDPD ST-gap proxy.",
+      "affected_ids": [
+        "EP-R1-ORCA",
+        "VIS-R1-ORCA-AGREE"
+      ],
+      "recommendation": "Use a documented method/geometry/charge/multiplicity/solvent protocol and retain failed jobs.",
+      "evidence_refs": [
+        "AE-R1-004",
+        "BIND-R1-STGAP"
+      ],
+      "required_expert": "materials expert",
+      "priority": "high",
+      "blocking": true,
+      "status": "open"
+    },
+    {
+      "issue_id": "PE-R1-005",
+      "category": "statistics",
+      "question": "Confirm independent replicate definition, minimum number of RL seeds/runs, bootstrap policy, missing-data policy and multiple-testing correction.",
+      "affected_ids": [
+        "EP-R1-MODEL",
+        "PLAN-R1-COMP"
+      ],
+      "recommendation": "Use run-level replication; do not treat individual generated molecules as independent model replicates.",
+      "evidence_refs": [
+        "Performance Evaluation Skill 5.2",
+        "CONC-R1-COMP"
+      ],
+      "required_expert": "computer expert and interdisciplinary reviewer",
+      "priority": "high",
+      "blocking": true,
+      "status": "open"
+    },
+    {
+      "issue_id": "PE-R1-006",
+      "category": "comparison",
+      "question": "Confirm random-sampling and training-reference paths and conditions before direct baseline comparisons.",
+      "affected_ids": [
+        "BM-R1-RANDOM",
+        "BM-R1-TRAIN"
+      ],
+      "recommendation": "Label missing/unmatched baselines as unknown or context-only; do not calculate superiority claims.",
+      "evidence_refs": [
+        "AE-R1-003",
+        "SDPD/configs/*.json"
+      ],
+      "required_expert": "computer expert",
+      "priority": "high",
+      "blocking": false,
+      "status": "open"
+    },
+    {
+      "issue_id": "PE-R1-007",
+      "category": "visualization",
+      "question": "Approve the separate computer, materials-domain and cross-domain figure sets and evidence-state annotations.",
+      "affected_ids": [
+        "VIS-R1-TREND",
+        "VIS-R1-CHEM",
+        "VIS-R1-ORCA-AGREE",
+        "VIS-R1-PARETO",
+        "VIS-R1-MATRIX"
+      ],
+      "recommendation": "Keep predicted, computed, implementation-score and missing values visually distinct.",
+      "evidence_refs": [
+        "Performance Evaluation Skill 6.3-6.4"
+      ],
+      "required_expert": "computer and materials experts",
+      "priority": "medium",
+      "blocking": false,
+      "status": "open"
+    }
+  ]
+}

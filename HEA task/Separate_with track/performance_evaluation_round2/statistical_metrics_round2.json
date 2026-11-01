@@ -1,0 +1,191 @@
+{
+  "round": 2,
+  "evaluation_state": "partially_executed",
+  "source_type": "AL-derived pool with virtual/model-labeled power density",
+  "composition_order": {
+    "al_order": [
+      "Pd",
+      "Pt",
+      "Cu",
+      "Au",
+      "Ir",
+      "Ce",
+      "Nb",
+      "Cr"
+    ],
+    "project_order": [
+      "Pd",
+      "Pt",
+      "Au",
+      "Cr",
+      "Ir",
+      "Ce",
+      "Cu",
+      "Nb"
+    ],
+    "mapping_policy": "named elements only"
+  },
+  "pool_rows": 160,
+  "strict_closure": {
+    "tolerance": 1e-09,
+    "failures": 0,
+    "max_error": 4.440892098500626e-16
+  },
+  "performance": {
+    "power_density": {
+      "n": 160,
+      "mean": 54.799770405062496,
+      "std_sample": 14.800752689074505,
+      "median": 60.06957452,
+      "q25": 50.37789238,
+      "q75": 63.8784222425,
+      "min": 0.4594,
+      "max": 68.58106887
+    },
+    "normalized_cost": {
+      "n": 160,
+      "mean": 58.980215145224996,
+      "std_sample": 12.177760051046016,
+      "median": 58.21930992,
+      "q25": 54.476692015,
+      "q75": 63.8204698225,
+      "min": 0.017163642,
+      "max": 111.0067063
+    },
+    "high_performance_threshold_q90": 65.477473377,
+    "high_performance_count": 16,
+    "top5_count": 5
+  },
+  "correlations": {
+    "power_cost_pearson": 0.051849969212287475,
+    "power_cost_spearman": -0.15823860307043244
+  },
+  "high_performance_composition": {
+    "Pd": {
+      "pool_mean": 0.3619278502406676,
+      "high_mean": 0.40377211827279624,
+      "difference": 0.04184426803212865
+    },
+    "Pt": {
+      "pool_mean": 0.1602399755549651,
+      "high_mean": 0.15885849346937575,
+      "difference": -0.0013814820855893584
+    },
+    "Cu": {
+      "pool_mean": 0.09797192252548755,
+      "high_mean": 0.09532335454399685,
+      "difference": -0.0026485679814906987
+    },
+    "Au": {
+      "pool_mean": 0.06286932679261278,
+      "high_mean": 0.023088434014890684,
+      "difference": -0.0397808927777221
+    },
+    "Ir": {
+      "pool_mean": 0.038072912386689195,
+      "high_mean": 0.03063778149523799,
+      "difference": -0.007435130891451206
+    },
+    "Ce": {
+      "pool_mean": 0.10946797457103803,
+      "high_mean": 0.1250667107510007,
+      "difference": 0.015598736179962672
+    },
+    "Nb": {
+      "pool_mean": 0.09507806072717198,
+      "high_mean": 0.09361162120294275,
+      "difference": -0.0014664395242292294
+    },
+    "Cr": {
+      "pool_mean": 0.07437197720136779,
+      "high_mean": 0.06964148624975902,
+      "difference": -0.004730490951608768
+    }
+  },
+  "iterative_process": {
+    "available_ids": [
+      1,
+      160
+    ],
+    "phase_summary": [
+      {
+        "pool_phase": "generated_or_retained_rows",
+        "rows": 150,
+        "mean_power_density": 58.075122432066664,
+        "median_power_density": 60.437930980000004,
+        "max_power_density": 68.58106887,
+        "mean_normalized_cost": 59.230812355199994,
+        "median_normalized_cost": 58.21930992,
+        "mean_nonzero_elements": 8.0
+      },
+      {
+        "pool_phase": "seed_or_baseline_rows",
+        "rows": 10,
+        "mean_power_density": 5.66949,
+        "median_power_density": 0.70095,
+        "max_power_density": 49.53,
+        "mean_normalized_cost": 55.2212569956,
+        "median_normalized_cost": 58.454009510000006,
+        "mean_nonzero_elements": 2.2
+      }
+    ],
+    "missing_logs": [
+      "iteration_log.csv",
+      "query_log.csv",
+      "generated_ratios.csv"
+    ]
+  },
+  "predictive_model": {
+    "training_rows": 120,
+    "model": "GradientBoostingRegressor",
+    "configuration": {
+      "n_estimators": 512,
+      "learning_rate": 0.03,
+      "max_depth": 3,
+      "loss": "squared_error",
+      "random_state": 42
+    },
+    "random_split_holdout": {
+      "n": 24,
+      "r2": 0.8647236500420666,
+      "rmse": 8.659894821553493,
+      "mae": 6.573925256785887,
+      "pearson_r": 0.9318205858135844,
+      "spearman_r": 0.7452173913043478,
+      "mean_signed_error": 1.2967913856497226
+    },
+    "five_fold_cross_validated": {
+      "n": 120,
+      "r2": 0.8698543231789541,
+      "rmse": 8.56366767053842,
+      "mae": 6.6913091501398885,
+      "pearson_r": 0.93518836538996,
+      "spearman_r": 0.8277033127300506,
+      "mean_signed_error": 1.3199538480385067
+    },
+    "interpretation": "virtual-oracle accuracy on supplied training data; not experimental predictive validity",
+    "pool_process_coverage": {
+      "pool_rows": 160,
+      "id_min": 1,
+      "id_max": 160,
+      "unique_ids": 160,
+      "iteration_log_available": false,
+      "query_log_available": false,
+      "generated_ratios_log_available": false,
+      "exact_iteration_reconstruction": false
+    }
+  },
+  "recommendations_basis": [
+    "composition_high_performance_stats_round2.csv",
+    "process_phase_summary_round2.csv",
+    "oracle_cv_predictions_round2.csv",
+    "pool_annotated_round2.csv"
+  ],
+  "limitations": [
+    "No measured P_peak unit, device protocol, conditions, or replicate metadata.",
+    "Power-density labels are virtual/model-derived according to the AL README.",
+    "The pool does not retain iteration labels; IDs are not sufficient to reconstruct exact iteration behavior.",
+    "Cross-validation evaluates interpolation on the supplied oracle-training sample, not external predictive validity.",
+    "Normalized cost is a relative index with unresolved price provenance."
+  ]
+}

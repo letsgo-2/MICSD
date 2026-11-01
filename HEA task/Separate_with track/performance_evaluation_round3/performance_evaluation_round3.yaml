@@ -1,0 +1,34 @@
+metadata:
+  title: "Performance evaluation: adjusted HEA composition design for experimental round 3"
+  round: 3
+  language: English
+  state: planned_experimental_round
+  upstream_round2: "../performance_evaluation_round2/"
+  source_evidence: "../performance_evaluation_round2/statistical_metrics_round2.json"
+  output_directory: "performance_evaluation_round3/"
+expert_request:
+  materials_scientist: "Adjust initial composition ratios and conduct another experimental round."
+design_policy:
+  adjustment_basis: "descriptive round2 high-performance composition centroids"
+  high_region_signal: "higher Pd/Ce and lower Au in virtual top-decile subset"
+  causal_claim: false
+  source_type: "provisional designs; not measured"
+  closure_tolerance: 1.0e-9
+  element_bounds: "not supplied; only nonnegativity and closure enforced"
+outputs:
+  scripts:
+    - "generate_round3_design.py"
+    - "plot_round3.py"
+  tables:
+    - "adjusted_composition_design_round3.csv"
+    - "composition_validation_round3.jsonl"
+    - "composition_design_summary_round3.json"
+  figures:
+    - "figures_round3/adjusted_compositions_round3.png"
+    - "figures_round3/round2_round3_composition_comparison_round3.png"
+    - "figures_round3/round3_design_tradeoff_round3.png"
+  documents:
+    - "experimental_round_plan_round3.md"
+    - "recommendations_round3.md"
+    - "performance_evaluation_report_round3.md"
+  trace: "execution_trace_round3.jsonl"

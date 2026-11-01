@@ -1,0 +1,149 @@
+metadata:
+  schema_version: "1.0"
+  round: 3
+  language: en
+  stage: performance-evaluation
+  status: "synthesizability_requirement_confirmed_threshold_and_route_review_required"
+  update_of: ../performance_evaluation_round2/performance_evaluation_round2.yaml
+upstream_inputs:
+  prior_round: ../performance_evaluation_round2/performance_evaluation_round2.yaml
+  expert_adjustment_request:
+    request_id: EAR3-MAT-01
+    source: materials_scientist
+    request: Add a synthesizability constraint.
+    status: incorporated_as_new_constraint_plan
+    threshold_provided: false
+evaluation_subjects:
+  - {subject_id: pic16_s1_core, rows: 222, status: inherited_reference_baseline}
+  - {subject_id: generated_cohort_round1, rows: 60, status: inherited_descriptive_cohort}
+  - {subject_id: generated_cohort_round2, rows: 60, status: inherited_descriptive_cohort}
+  - {subject_id: synthesizability, status: proxy_available_route_validation_missing}
+expert_registry:
+  - expert_id: materials_scientist
+    input_status: explicit_round3_recommendation
+    request_id: EAR3-MAT-01
+analysis_evidence:
+  - {evidence_id: EV3-SA-IMPLEMENTATION, source: ../meloculardftcal/04_data_processing/sascorer.py, claim: SA score is an Ertl-Schuffenhauer-style fragment/complexity heuristic and includes size, stereo, ring and symmetry contributions}
+  - {evidence_id: EV3-SA-BASELINE, source: ../meloculardftcal/reports/pic16_s1/metrics.json, claim: core SA score count 222, median 6.2455, mean 6.3105, range 5.022-7.935}
+  - {evidence_id: EV3-SA-COHORTS, source: ../meloculardftcal/molecule_figures/02_data/round1_n60.csv and round2_n60.csv, claim: cohort SA score medians are 6.463 and 6.071; unpaired descriptive comparison only}
+analysis_concerns:
+  - {concern_id: AC3-01, attribution: expert_provided, role: materials_scientist, concern: generated photosensitizers need synthesizability constraint}
+  - {concern_id: AC3-02, attribution: skill_inferred, role: materials_scientist, concern: SA score is a heuristic and may not represent route feasibility for large macrocyclic/charged photosensitizers}
+  - {concern_id: AC3-03, attribution: skill_inferred, role: optimization_expert, concern: SA score symmetry term may overlap with the existing symmetry objective}
+metric_evaluation_bindings:
+  - {metric_id: min_positive_S1-Ti, direction: minimize, unit: eV, status: inherited}
+  - {metric_id: max_SOCME_S1_Ti_value, direction: maximize, unit: cm^-1, status: inherited}
+  - {metric_id: max_SOCME_over_deltaE_S1_Ti_value, direction: maximize, unit: cm^-1/eV, status: inherited}
+  - metric_id: SA_Score
+    role: synthesizability_proxy
+    direction: minimize
+    scale: approximately_1_to_10
+    threshold: null
+    threshold_status: "requires_materials_expert_approval"
+    hard_constraint_active: false
+    limitations: [heuristic_not_route_validation, includes_symmetry_contribution, scaffold_domain_bias_possible]
+  - metric_id: route_feasibility_review
+    role: finalist_validation
+    status: not_yet_available
+    required_evidence: [route_disconnections, building_block_availability, key_steps, functional_group_compatibility, macrocycle_assembly, purification_and_charge_handling, expert_review]
+evaluation_protocols:
+  - protocol_id: EP3-synthesizability-screen
+    steps: [verify_SA_score_provenance_and_version, retain_score_as_separate_dimension, Pareto_and_threshold_sensitivity, route_review_shortlist]
+    threshold_selection: expert_approved_only
+    no_threshold_behavior: report_distribution_and_tradeoff_without_binary_pass_fail
+    missing_route_review_behavior: unknown_not_synthesizable
+analysis_plans:
+  - {plan_id: AP3-retrospective-SA-profile, status: planned, outputs: [score_distribution_by_cohort, score_vs_photophysics, scaffold_and_size_strata]}
+  - {plan_id: AP3-SA-Pareto-sensitivity, status: planned, outputs: [photophysics_only_front, photophysics_plus_SA_front, candidate_retention_curve]}
+  - {plan_id: AP3-route-review, status: "requires_candidates_and_materials_expert_review", outputs: [route_review_records]}
+performance_records:
+  - {record_id: PR3-SA-core, n: 222, median: 6.2455, mean: 6.3105405405, min: 5.022, max: 7.935, source: EV3-SA-BASELINE}
+  - {record_id: PR3-SA-cohort-round1, n: 60, median: 6.463, mean: 6.481567, interpretation: descriptive_only}
+  - {record_id: PR3-SA-cohort-round2, n: 60, median: 6.071, mean: 6.064883, interpretation: descriptive_only}
+visualization_specs:
+  - {figure_id: fig01_sa_score_distribution_round3, status: planned, filename: fig01_sa_score_distribution_round3.png}
+  - {figure_id: fig02_photophysics_vs_sa_round3, status: planned, filename: fig02_photophysics_vs_sa_round3.png}
+  - {figure_id: fig03_pareto_sa_sensitivity_round3, status: planned, filename: fig03_pareto_sa_sensitivity_round3.png}
+analysis_findings:
+  - {finding_id: F3-01, evidence_ref: EV3-SA-IMPLEMENTATION, attribution: repository_evidence, finding: SA_Score is a complexity-based heuristic rather than a route feasibility assessment}
+  - {finding_id: F3-02, evidence_ref: EV3-SA-BASELINE, attribution: repository_evidence, finding: core median SA_Score is 6.2455}
+  - {finding_id: F3-03, evidence_ref: EV3-SA-COHORTS, attribution: repository_evidence, finding: generated cohorts have medians 6.463 and 6.071; cohorts are disjoint and comparison descriptive only}
+cross_domain_findings: []
+adjustment_proposals:
+  - proposal_id: ADJ3-01
+    attribution: skill_generated
+    status: proposed_not_activated
+    target: candidate_selection
+    recommendation: retain SA_Score as a separate minimize-direction Pareto/soft-feasibility dimension until expert threshold approval
+  - proposal_id: ADJ3-02
+    attribution: skill_generated
+    status: proposed
+    target: finalist_synthesis
+    recommendation: route-review shortlisted candidates and record route evidence separately from SA_Score
+  - proposal_id: ADJ3-03
+    attribution: skill_generated
+    status: proposed
+    target: reward_design
+    recommendation: assess overlap between the SA score symmetry term and existing decoration symmetry before weighting both
+expert_adjustment_requests:
+  - request_id: EAR3-MAT-01
+    expert_id: materials_scientist
+    request: Add a synthesizability constraint.
+    threshold: not_specified
+    status: "synthesizability_requirement_confirmed_operational_definition_required"
+adjustment_syntheses: []
+expert_feedback_history:
+  - {round: 3, expert_id: materials_scientist, request_id: EAR3-MAT-01, status: recorded}
+artifact_manifest:
+  - {path: performance_evaluation_report_round3.md, purpose: evidence synthesis and synthesizability update}
+  - {path: performance_review_queue_round3.yaml, purpose: unresolved threshold and route-review decisions}
+  - {path: performance_evaluation_round3.yaml, purpose: machine-readable evaluation update}
+  - {path: synthesizability_parameters_round3.yaml, purpose: proposed constraint and data contract}
+  - {path: plotting_script_plan_round3.md, purpose: updated analysis and plotting plan}
+  - {path: execution_trace_round3.jsonl, purpose: Agent execution trace}
+workflow: {status: updated_plan_only, next_gate: materials_expert_approves_operational_threshold_and_route_review_protocol}
+run_history: []
+version_history:
+  - {round: 2, change: inherited toolchain, cohort summaries and known evaluation gaps}
+  - {round: 3, change: registered explicit materials-scientist request and added synthesizability proxy/route-validation plan}
+
+expert_feedback_reconciliation:
+  annotation_date: '2026-10-31'
+  annotation_type: dialogue_based_stage_status_reconciliation
+  requested_by: user
+  source_dialogue: ../../multi_round_dialogue_example_EN.txt
+  source_sha256: ebb57f5513ccd2ee131a9971088e81acaa8e6b610f46e7df5afea5890dbc12d8
+  interpretation: Stage-scoped working acceptance from the saved dialogue and subsequent adoption, following the earlier
+    PS reconciliation rules.
+  itemwise_scientific_validation_completed_by_this_update: false
+  numerical_values_units_and_thresholds_certified_by_this_update: false
+  execution_authorized_by_this_update: false
+  existing_disputed_entries_preserved: true
+  unanswered_review_items_and_blocking_flags_preserved: true
+  historical_execution_trace_events_modified: false
+  source_feedback_records:
+  - feedback_id: PS-PE-R3-SYNTHESIS
+    source_line: 31
+    excerpt: The materials scientist recommends adding a synthesizability constraint. Please update the output files
+      and add the suffix `round3`.
+  updates:
+  - path: metadata/status
+    status: synthesizability_requirement_confirmed_threshold_and_route_review_required
+    feedback_refs:
+    - PS-PE-R3-SYNTHESIS
+    scope: Adding synthesizability is explicit. Its threshold and route-review decisions remain unresolved.
+  - path: metric_evaluation_bindings/3/threshold_status
+    status: requires_materials_expert_approval
+    feedback_refs:
+    - PS-PE-R3-SYNTHESIS
+    scope: No SA threshold was provided. The null threshold and inactive hard constraint remain unchanged.
+  - path: analysis_plans/2/status
+    status: requires_candidates_and_materials_expert_review
+    feedback_refs:
+    - PS-PE-R3-SYNTHESIS
+    scope: Candidate-specific route review has not been completed by this update.
+  - path: expert_adjustment_requests/0/status
+    status: synthesizability_requirement_confirmed_operational_definition_required
+    feedback_refs:
+    - PS-PE-R3-SYNTHESIS
+    scope: The requirement itself is confirmed; operational details still require definition.

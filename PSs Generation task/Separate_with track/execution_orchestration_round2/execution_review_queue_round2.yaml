@@ -1,0 +1,94 @@
+round: 2
+status: "metric_roles_confirmed_detailed_settings_require_review"
+source_round: execution_orchestration_round1
+items:
+  - id: EXR2-001
+    object: E_S1_protocol
+    issue: "Approve the TD-DFT functional, basis, solvent, conformer ensemble, state-selection rule, and vertical/adiabatic convention for E(S1)."
+    requested_expert: computational_photochemistry
+    action: request_test
+    blocking: true
+  - id: EXR2-002
+    object: E_S1_minus_E_T1_protocol
+    issue: "Define whether E(S1)−E(T1) is vertical or adiabatic, how state ordering is handled, and which reference protocol is used."
+    requested_expert: computational_photochemistry
+    action: approve_or_revise
+    blocking: true
+  - id: EXR2-003
+    object: SOCME_protocol
+    issue: "Specify relativistic method, state pair, solvent treatment, units, uncertainty, and scaffold-family calibration before SOCME enters reward."
+    requested_expert: computational_photochemistry
+    action: request_test
+    blocking: true
+  - id: EXR2-004
+    object: charge_state
+    issue: "Define pH, protonation/tautomer policy, counterion treatment, and partial-charge method for charge-aware descriptors."
+    requested_expert: materials_chemist_and_formulation_expert
+    action: request_evidence
+    blocking: true
+  - id: EXR2-005
+    object: developability_descriptors
+    issue: "Select logP method and pH, TPSA convention, MW metal/counterion policy, and target compartment before assigning intervals."
+    requested_expert: medicinal_chemist_and_formulation_expert
+    action: request_evidence
+    blocking: true
+  - id: EXR2-006
+    object: symmetry_definition
+    issue: "Choose graph, point-group, or continuous symmetry descriptor and define conformer handling."
+    requested_expert: materials_scientist
+    action: approve_or_revise
+    blocking: false
+  - id: EXR2-007
+    object: SA_definition
+    issue: "Specify SA score implementation, direction, reaction inventory, and calibration set for porphyrin, metal, and targeted conjugate families."
+    requested_expert: synthetic_chemist
+    action: request_test
+    blocking: false
+  - id: EXR2-008
+    object: HOMO_LUMO_gap_use
+    issue: "Confirm low-weight diagnostic status and prohibit substitution for E(S1), especially for charge-transfer systems."
+    requested_expert: computational_photochemistry
+    action: approve_or_revise
+    blocking: false
+  - id: EXR2-009
+    object: ranking_scope
+    issue: "Confirm that the ranking is an execution priority for this photosensitizer workflow, not a universal ranking across all molecular-design tasks."
+    requested_expert: materials_scientist_and_project_owner
+    action: approve_or_revise
+    blocking: false
+
+expert_feedback_reconciliation:
+  annotation_date: '2026-10-31'
+  annotation_type: dialogue_based_stage_status_reconciliation
+  requested_by: user
+  source_dialogue: ../../multi_round_dialogue_example_EN.txt
+  source_sha256: ebb57f5513ccd2ee131a9971088e81acaa8e6b610f46e7df5afea5890dbc12d8
+  interpretation: Stage-scoped working acceptance from the saved dialogue and subsequent adoption, following the earlier
+    PS reconciliation rules.
+  itemwise_scientific_validation_completed_by_this_update: false
+  numerical_values_units_and_thresholds_certified_by_this_update: false
+  execution_authorized_by_this_update: false
+  existing_disputed_entries_preserved: true
+  unanswered_review_items_and_blocking_flags_preserved: true
+  historical_execution_trace_events_modified: false
+  source_feedback_records:
+  - feedback_id: PS-EO-R2-METRICS
+    source_line: 15
+    excerpt: 'The materials scientist requests an updated priority ranking for the following metrics: SOCME, HOMO–LUMO
+      gap, E(S1)−E(T1), E(S1), charge, symmetry, SA, logP, TPSA, and molecular weight (MW). Update the output files and
+      add the suffix `round2`.'
+  - feedback_id: PS-EO-R3-SELECTION
+    source_line: 18
+    excerpt: The computer scientist ultimately selects E(S1)−E(T1), charge, and symmetry as the three metrics. The training
+      framework's metric-configuration files, predictive-model execution paths, and other parameters can be obtained
+      from `SDPD/AGENT_INTERFACE.md`. Inspect and update the model information and interfaces independently, improve
+      the workflow, and report the proposed execution procedure to me for confirmation. Do not run it without authorization.
+      Clearly specify all output paths. Update the previous round's output files and add the suffix `round3`.
+  updates:
+  - path: status
+    status: metric_roles_confirmed_detailed_settings_require_review
+    feedback_refs:
+    - PS-EO-R2-METRICS
+    - PS-EO-R3-SELECTION
+    scope: Stage-level intent is confirmed; existing review questions, blocking flags and unanswered details are retained,
+      not marked resolved.

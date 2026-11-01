@@ -1,0 +1,143 @@
+project: "Eight-metal catalyst formulation optimization, execution orchestration Round 1"
+status: open
+review_items:
+  - issue_id: EO-ISSUE-001
+    category: "constraint"
+    question: "Approve the fixed mass-fraction order [Pd, Pt, Au, Cr, Ir, Ce, Cu, Nb], source basis conversions, closure tolerance and whether all eight components must be positive."
+    affected_ids: ["M_COMPOSITION", "MODEL-DATA-QA-001", "WF-HEA-CLOSED-LOOP-ROUND1"]
+    recommendation: "Keep raw source columns and basis unchanged; migrate only after basis is verified. Define tolerance from assay/reporting precision and LOQ, not an arbitrary epsilon."
+    evidence_refs: ["USER:materials-expert-round1", "EA-KA:E003"]
+    required_expert: "Materials expert and analytical-characterization expert"
+    priority: "critical"
+    blocking: true
+    status: "open"
+  - issue_id: EO-ISSUE-002
+    category: "metric"
+    question: "Confirm exact target device, reaction and electrode role; is the project specifically a direct formate fuel cell (DFFC) with formate oxidation at anode and ORR at counter-electrode?"
+    affected_ids: ["M_POWER", "M_HALF_CELL", "IF-POWER-001"]
+    recommendation: "Do not transfer CRESt's 60 C/2 M KOH/1 M HCOOK conditions or 325 mW cm^-2 value unless the target setup matches."
+    evidence_refs: ["EA-KA:E001", "EA-KA:E002", "WEB:CREST2025"]
+    required_expert: "Domain and electrochemical-device experts"
+    priority: "critical"
+    blocking: true
+    status: "open"
+  - issue_id: EO-ISSUE-003
+    category: "threshold"
+    question: "Define the primary power metric's area basis, test protocol, matched baseline, minimum acceptable improvement and replicate/uncertainty criterion."
+    affected_ids: ["M_POWER", "RC-POWER-001", "IF-POWER-001"]
+    recommendation: "Use the CRESt direct-formate value only as study context. Select a target-specific minimum or baseline-relative rule before scoring candidates."
+    evidence_refs: ["EA-KA:E001", "WEB:FCTESQA2010"]
+    required_expert: "Device expert and domain expert"
+    priority: "critical"
+    blocking: true
+    status: "open"
+  - issue_id: EO-ISSUE-004
+    category: "metric"
+    question: "Specify actual precursor cost basis: currency, location, procurement date, precursor grade/form, production scale, stoichiometric conversion, yield and recovery. Is there a hard budget?"
+    affected_ids: ["M_COST", "M_COST_PROXY", "RC-COST-001", "MODEL-COST-001"]
+    recommendation: "Keep public commodity proxy as diagnostic only; prefer quote- and mass-balance-derived actual cost for cost decisions."
+    evidence_refs: ["EA-KA:E006-E015"]
+    required_expert: "Procurement/cost expert and synthesis expert"
+    priority: "critical"
+    blocking: true
+    status: "open"
+  - issue_id: EO-ISSUE-005
+    category: "metric"
+    question: "Should precious-metal loading remain a separate optimization objective, or is it redundant with actual cost? Define PGM set and broader PM set, and whether denominator is alloy mass, catalyst layer, electrode or device."
+    affected_ids: ["M_PGM", "M_COST", "RC-PGM-001"]
+    recommendation: "Report PGM Pd+Pt+Ir and broader precious set including Au separately. Avoid double-counting with cost unless experts explicitly want both."
+    evidence_refs: ["EA-KA:E001", "EA-KA:E006", "EA-KA:E007"]
+    required_expert: "Domain expert and cost/accounting owner"
+    priority: "high"
+    blocking: true
+    status: "open"
+  - issue_id: EO-ISSUE-006
+    category: "evidence"
+    question: "Confirm which historical labels are physical device measurements, half-cell proxies, computed values, simulated/GBR predictions, or derived values; link test conditions and source rows."
+    affected_ids: ["M_POWER", "MODEL-POWER-PRED-001", "N01", "N04"]
+    recommendation: "Preserve separate label-source fields and exclude virtual predictions from physical training/evaluation unless explicitly modeled as a separate fidelity."
+    evidence_refs: ["AL:Data.xlsx:Result 1", "AL:data/README.md", "AL:README.md"]
+    required_expert: "Data curator and experimental expert"
+    priority: "critical"
+    blocking: true
+    status: "open"
+  - issue_id: EO-ISSUE-007
+    category: "evidence"
+    question: "Reconcile the 703-row workbook, 396 sample-preparation-abandoned rows, 307 unflagged rows, 120 target-sorted/downsampled GBR training rows, 10 seeds and 160 accumulated pool entries. Which rows are actual, duplicate, valid and condition-comparable?"
+    affected_ids: ["N01", "N04", "MODEL-POWER-PRED-001"]
+    recommendation: "Create immutable row-level provenance and eligibility table; retain failures for audit but do not mix them into response labels without an explicit failure model."
+    evidence_refs: ["AL:Data.xlsx:Result 1", "AL:data/README.md", "AL:outputs/total_examples_pool.csv"]
+    required_expert: "Data owner and experimental expert"
+    priority: "critical"
+    blocking: true
+    status: "open"
+  - issue_id: EO-ISSUE-008
+    category: "model"
+    question: "Approve the validation split policy and minimum model acceptance criteria, including batch/date/group leakage prevention, baseline comparison, uncertainty calibration, residual checks and applicability-domain rules."
+    affected_ids: ["MODEL-POWER-PRED-001", "N04", "N05"]
+    recommendation: "Do not validate using a target-sorted thinned sample as if it were an unbiased holdout. Reserve independent batches/device runs when possible."
+    evidence_refs: ["AL:data/README.md", "WEB:Borg2023", "WEB:Lookman2019"]
+    required_expert: "Computer expert and data scientist"
+    priority: "high"
+    blocking: true
+    status: "open"
+  - issue_id: EO-ISSUE-009
+    category: "model"
+    question: "Provide or approve a predictor/interface, version, training conditions, parameters, executable entrypoint, access level and adjustable parameter bounds."
+    affected_ids: ["MODEL-POWER-PRED-001"]
+    recommendation: "Keep all predictor/generator/ranker interfaces proposed and non-executable until human provisions and authorization are explicit."
+    evidence_refs: ["AL:catalyst_al/model.py", "AL:catalyst_al/pipeline.py"]
+    required_expert: "Computer expert/model owner"
+    priority: "high"
+    blocking: true
+    status: "open"
+  - issue_id: EO-ISSUE-010
+    category: "reward"
+    question: "Approve whether power and actual cost remain separate objectives and select a Pareto-based decision policy or an explicitly justified scalar reward. Define any normalization reference and weight only after objective units are fixed."
+    affected_ids: ["RC-POWER-001", "RC-COST-001", "RC-PGM-001"]
+    recommendation: "Start with separate objectives and Pareto display; do not inherit the prototype's 0.6 performance weight or randomized improvement targets."
+    evidence_refs: ["EA-KA:E001", "WEB:Xu2024", "AL:config.json"]
+    required_expert: "Domain expert and computer expert"
+    priority: "high"
+    blocking: true
+    status: "open"
+  - issue_id: EO-ISSUE-011
+    category: "workflow"
+    question: "Set feasible batch size, replicate policy, experimental capacity, cost budget, campaign limit and stopping/confirmation rules."
+    affected_ids: ["WF-HEA-CLOSED-LOOP-ROUND1"]
+    recommendation: "Choose batch size from instrument throughput and uncertainty/replicate needs; prototype settings are implementation defaults, not evidence-based scientific parameters."
+    evidence_refs: ["WEB:Lookman2019", "WEB:CREST2025"]
+    required_expert: "Lab lead and experimental expert"
+    priority: "high"
+    blocking: true
+    status: "open"
+  - issue_id: EO-ISSUE-012
+    category: "evidence"
+    question: "Verify CRESt's exact composition precision, cost-specific performance equation and reported device value against Supplementary Table 1 and source data before quantitative benchmark reuse."
+    affected_ids: ["M_POWER", "M_COST", "M_COST_PROXY"]
+    recommendation: "Retain the article's separate reported observations but do not infer a missing fraction, renormalize, or equate cost-per-power with actual precursor cost."
+    evidence_refs: ["EA-KA:E001", "EA-KA:E002"]
+    required_expert: "Evidence curator and domain expert"
+    priority: "high"
+    blocking: false
+    status: "open"
+  - issue_id: EO-ISSUE-013
+    category: "constraint"
+    question: "Approve per-element synthesis bounds, safety/procurement restrictions, and whether all eight metals must be present above assay LOQ."
+    affected_ids: ["M_COMPOSITION", "WF-HEA-CLOSED-LOOP-ROUND1"]
+    recommendation: "Keep the simplex as the only active numeric region until feasibility ranges and presence policy are approved."
+    evidence_refs: ["EA-KA:E001", "USER:materials-expert-round1"]
+    required_expert: "Materials and synthesis experts"
+    priority: "high"
+    blocking: true
+    status: "open"
+  - issue_id: EO-ISSUE-014
+    category: "metric"
+    question: "Approve whether half-cell formate-oxidation metrics are useful for screening and define calibration evidence linking them to full-device power for this target."
+    affected_ids: ["M_HALF_CELL", "M_POWER"]
+    recommendation: "Keep half-cell outputs as intermediate only; require matched-device ranking validation before using as a surrogate objective."
+    evidence_refs: ["EA-KA:E001", "EA-KA:E002"]
+    required_expert: "Electrocatalysis and device experts"
+    priority: "medium"
+    blocking: false
+    status: "open"

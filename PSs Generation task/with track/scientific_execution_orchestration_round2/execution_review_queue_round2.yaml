@@ -1,0 +1,139 @@
+{
+  "review_items": [
+    {
+      "issue_id": "EO-R2-001",
+      "category": "metric",
+      "question": "Confirm that SOCME means the state-pair-specific spin-orbit coupling matrix element and define the exact state pair(s) to calculate.",
+      "affected_ids": [
+        "SOCME"
+      ],
+      "recommendation": "Use SOCME as a calibrated soft proxy, not a universal maximize objective; retain units and state identity.",
+      "evidence_refs": [
+        "X001",
+        "X002"
+      ],
+      "required_expert": "computational photochemistry expert",
+      "priority": "critical",
+      "blocking": true,
+      "status": "open"
+    },
+    {
+      "issue_id": "EO-R2-002",
+      "category": "metric",
+      "question": "Confirm whether E(S1)-E(T1) or E(S1)-E(Tn) is the intended ISC descriptor for the selected mechanism branch.",
+      "affected_ids": [
+        "E(S1)-E(T1)",
+        "D004",
+        "D003"
+      ],
+      "recommendation": "Track Tn states when the ISC pathway is not S1→T1; use <0.4 eV only as a soft heuristic.",
+      "evidence_refs": [
+        "X001",
+        "X002"
+      ],
+      "required_expert": "photochemistry expert",
+      "priority": "critical",
+      "blocking": true,
+      "status": "open"
+    },
+    {
+      "issue_id": "EO-R2-003",
+      "category": "threshold",
+      "question": "Approve the E(S1) spectral band and whether oscillator strength must be a joint gate.",
+      "affected_ids": [
+        "E(S1)",
+        "D001"
+      ],
+      "recommendation": "Use a 600–800 nm equivalent band-pass and require adequate oscillator strength; calibrate for the actual light source.",
+      "evidence_refs": [
+        "X001",
+        "X005"
+      ],
+      "required_expert": "materials/photochemistry expert",
+      "priority": "high",
+      "blocking": true,
+      "status": "open"
+    },
+    {
+      "issue_id": "EO-R2-004",
+      "category": "constraint",
+      "question": "Define allowed formal charges, protonation/counterion policy, multiplicity, metal states, and whether charge is a hard constraint.",
+      "affected_ids": [
+        "charge",
+        "STRUCTURE",
+        "MODEL-003"
+      ],
+      "recommendation": "Reject invalid or untracked charge/multiplicity states before quantum evaluation.",
+      "evidence_refs": [
+        "Materials expert input",
+        "X006"
+      ],
+      "required_expert": "materials and computational experts",
+      "priority": "critical",
+      "blocking": true,
+      "status": "open"
+    },
+    {
+      "issue_id": "EO-R2-005",
+      "category": "metric",
+      "question": "Define a reproducible graph/geometric symmetry descriptor and assess whether symmetry belongs in reward, constraint or diagnostics.",
+      "affected_ids": [
+        "symmetry"
+      ],
+      "recommendation": "Keep symmetry deferred until definition and scaffold-local calibration are complete.",
+      "evidence_refs": [
+        "X001",
+        "X006"
+      ],
+      "required_expert": "materials and cheminformatics experts",
+      "priority": "high",
+      "blocking": false,
+      "status": "open"
+    },
+    {
+      "issue_id": "EO-R2-006",
+      "category": "threshold",
+      "question": "Calibrate SA, logP, TPSA and MW thresholds on porphyrin-centered candidates rather than applying broad drug-like cutoffs as hard rules.",
+      "affected_ids": [
+        "SA",
+        "logP",
+        "TPSA",
+        "MW"
+      ],
+      "recommendation": "Use soft penalties, preserve porphyrin candidates above generic cutoffs for review, and verify SA with retrosynthesis.",
+      "evidence_refs": [
+        "X003",
+        "X004",
+        "X005",
+        "X006",
+        "X007"
+      ],
+      "required_expert": "materials, medicinal chemistry and computer experts",
+      "priority": "high",
+      "blocking": true,
+      "status": "open"
+    },
+    {
+      "issue_id": "EO-R2-007",
+      "category": "reward",
+      "question": "Approve the Round 2 weights and uncertainty penalties after a calibration set is available.",
+      "affected_ids": [
+        "RC-R2-001",
+        "RC-R2-002",
+        "RC-R2-003",
+        "RC-R2-005",
+        "RC-R2-006",
+        "RC-R2-007",
+        "RC-R2-008"
+      ],
+      "recommendation": "Use the proposed weights only for a smoke test; use Pareto selection during calibration.",
+      "evidence_refs": [
+        "Round 2 metric ranking"
+      ],
+      "required_expert": "domain and computer experts",
+      "priority": "high",
+      "blocking": true,
+      "status": "open"
+    }
+  ]
+}

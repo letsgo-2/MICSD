@@ -1,0 +1,43 @@
+{"source_id":"S001","filename":"01_Kim_2026_Tailored_medium_entropy_Si_alloy_anodes.md","role":"materials/electrochemical evidence","coverage_status":"registered; paper-level extraction pending expert validation"}
+{"source_id":"S002","filename":"02_Cantor_2004_Microstructural_development_in_equiatomic_multicomponent_alloys.md","role":"HEA foundation","coverage_status":"registered"}
+{"source_id":"S003","filename":"03_Miracle_2017_Critical_review_of_high_entropy_alloys.md","role":"HEA review","coverage_status":"registered"}
+{"source_id":"S004","filename":"04_Li_2026_PtRuCuCoNi_nanosponges_for_lactic_acid_oxidation.md","role":"primary HEA electrocatalysis","coverage_status":"registered; abstract evidence extracted"}
+{"source_id":"S005","filename":"05_Yao_2022_High_entropy_nanoparticles.md","role":"HEA nanoparticle evidence","coverage_status":"registered"}
+{"source_id":"S006","filename":"06_Li_2016_Metastable_high_entropy_dual_phase_alloys.md","role":"phase/structure evidence","coverage_status":"registered"}
+{"source_id":"S007","filename":"07_Zhang_2022_High_entropy_alloys_for_electrocatalysis.md","role":"electrocatalysis review","coverage_status":"registered; abstract evidence extracted"}
+{"source_id":"S008","filename":"08_Batchelor_2019_High_entropy_alloys_as_discovery_platform.md","role":"HEA discovery platform","coverage_status":"registered"}
+{"source_id":"S009","filename":"09_Cao_2025_Interpretable_ML_for_refractory_HEA_discovery.md","role":"ML/HEA discovery","coverage_status":"registered"}
+{"source_id":"S010","filename":"10_Zhou_2021_LDH_electrocatalysts_for_OER.md","role":"electrocatalysis context","coverage_status":"registered"}
+{"source_id":"S011","filename":"11_Katiyar_2021_Hydrazine_electrooxidation_with_HEAs.md","role":"primary HEA electrocatalysis","coverage_status":"registered"}
+{"source_id":"S012","filename":"12_Pan_2024_High_throughput_screening_of_Pt_based_HEAs.md","role":"primary high-throughput HEA electrocatalysis","coverage_status":"registered; abstract evidence extracted"}
+{"source_id":"S013","filename":"13_Ren_2023_High_entropy_alloys_in_electrocatalysis.md","role":"electrocatalysis review","coverage_status":"registered"}
+{"source_id":"S014","filename":"14_Lookman_2019_Active_learning_in_materials_science.md","role":"active learning method","coverage_status":"registered"}
+{"source_id":"S015","filename":"15_Jang_2026_Active_learning_for_high_entropy_thermoelectrics.md","role":"active learning/HEA method","coverage_status":"registered"}
+{"source_id":"S016","filename":"16_Qin_2025_ML_driven_alloy_electrocatalysts_for_HER.md","role":"ML electrocatalysis","coverage_status":"registered"}
+{"source_id":"S017","filename":"17_Clausen_2023_ML_optimization_of_HEA_catalytic_activity.md","role":"ML HEA catalysis","coverage_status":"registered"}
+{"source_id":"S018","filename":"18_Zhao_2025_ML_design_methods_for_high_entropy_alloys.md","role":"ML/HEA method review","coverage_status":"registered"}
+{"source_id":"S019","filename":"19_Sun_2024_ML_advances_in_high_entropy_alloys.md","role":"ML/HEA review","coverage_status":"registered"}
+{"source_id":"S020","filename":"20_Niu_2025_Bayesian_optimization_of_bimetallic_catalysts.md","role":"Bayesian optimization","coverage_status":"registered"}
+{"source_id":"S021","filename":"21_Wang_2023_Ordering_dependent_electrocatalysis_of_Pt4FeCoCuNi.md","role":"primary structure-performance evidence","coverage_status":"registered; abstract evidence extracted"}
+{"source_id":"S022","filename":"22_Yang_2024_Active_learning_for_selective_ammonia_oxidation.md","role":"active learning electrocatalysis","coverage_status":"registered"}
+{"source_id":"S023","filename":"23_Perumal_2025_Active_learning_for_high_entropy_nanocatalysts.md","role":"primary octonary active learning","coverage_status":"registered; abstract evidence extracted"}
+{"source_id":"S024","filename":"24_Banko_2021_Combinatorial_HEA_electrocatalyst_discovery.md","role":"combinatorial HEA electrocatalysis","coverage_status":"registered"}
+{"source_id":"S025","filename":"25_Qi_2020_Navigating_HEA_compositional_landscape.md","role":"HEA composition/ML review","coverage_status":"registered; abstract evidence extracted"}
+{"source_id":"S026","filename":"26_Zhang_2025_Multimodal_robotic_electrocatalyst_discovery.md","role":"primary octonary robotic discovery","coverage_status":"registered; abstract evidence extracted"}
+{"source_id":"S027","filename":"27_Rouzegar_2024_LLM_driven_active_learning_for_text_classification.md","role":"LLM active learning method","coverage_status":"registered"}
+{"source_id":"S028","filename":"28_Almoqren_2025_LLM_driven_active_learning_for_dependency_analysis.md","role":"LLM active learning method","coverage_status":"registered"}
+{"source_id":"S029","filename":"29_Rankovic_2025_GOLLuM_Gaussian_process_optimized_LLMs.md","role":"LLM/GP optimization method","coverage_status":"registered"}
+{"source_id":"S030","filename":"30_Choudhary_2024_AtomGPT.md","role":"LLM materials method","coverage_status":"registered"}
+{"source_id":"S031","filename":"31_Hao_2025_LLM_assisted_inverse_materials_design.md","role":"inverse materials design","coverage_status":"registered"}
+{"source_id":"S032","filename":"32_Chen_2024_MatterGPT.md","role":"generative materials method","coverage_status":"registered"}
+{"source_id":"S033","filename":"33_Egozcue_2018_Modelling_compositional_data.md","role":"compositional data statistics","coverage_status":"registered; definition evidence extracted"}
+{"source_id":"S034","filename":"34_Aitchison_1982_Statistical_analysis_of_compositional_data.md","role":"compositional data statistics","coverage_status":"registered; definition evidence extracted"}
+{"source_id":"S035","filename":"36_Carbonell_1998_MMR_diversity_based_reranking.md","role":"diversity selection method","coverage_status":"registered"}
+{"source_id":"S036","filename":"37_Kulesza_2012_Determinantal_point_processes_for_ML.md","role":"diversity selection method","coverage_status":"registered"}
+{"source_id":"S037","filename":"38_Jenewein_2024_Navigating_the_unknown_with_AI.md","role":"AI exploration method","coverage_status":"registered"}
+{"source_id":"S038","filename":"39_Xu_2024_Multiobjective_optimization_of_HEA_electrocatalysts.md","role":"primary multiobjective HEA method","coverage_status":"registered; abstract evidence extracted"}
+{"source_id":"S039","filename":"40_Deb_2002_NSGA_II.md","role":"multiobjective optimization method","coverage_status":"registered; abstract evidence extracted"}
+{"source_id":"S040","filename":"41_Important：Reference to core optimization methods.md","role":"BO/LLM method","coverage_status":"registered; abstract evidence extracted"}
+{"source_id":"S041","filename":"A practical inverse design approach for high-entropy catalysts using generative A.md","role":"generative inverse design","coverage_status":"registered"}
+{"source_id":"S042","filename":"ICLR-2024-large-language-models-to-enhance-bayesian-optimization-Paper-Conference.md","role":"LLM/BO method","coverage_status":"registered"}
+{"source_id":"S043","filename":"Machine-learning-guided tungsten single atoms promote oxyhydroxides for noble-metal-free water electrolysis.md","role":"ML electrocatalysis context","coverage_status":"registered"}

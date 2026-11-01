@@ -1,0 +1,83 @@
+project: "Performance Evaluation: Composition Adjustment Proposal, Round 3"
+status: "open; proposal only"
+review_items:
+  - issue_id: PE3-001
+    category: "adjustment"
+    question: "Which exact initial composition ratios should be adjusted or included as new candidates? Provide mass fractions in fixed order [Pd, Pt, Au, Cr, Ir, Ce, Cu, Nb], with basis, sum tolerance and rationale."
+    affected_ids: ["PE3-ADJ-001", "PE3-PROT-ADJUST-001", "PE3-VIS-COMPOSITIONS"]
+    recommendation: "Do not derive or infer recipes from top-decile mean differences; ask the materials scientist to supply/approve candidate vectors and allowable ranges."
+    evidence_refs: ["PE3-E001", "PE3-E002", "performance_evaluation_round2/composition_distribution_summary_round2.csv"]
+    required_expert_ids: ["EXP-MAT-ROUND3", "analytical_characterization_expert"]
+    priority: "critical"
+    blocking: true
+    status: "open"
+  - issue_id: PE3-002
+    category: "protocol"
+    question: "Confirm target device/reaction, electrode role, area basis, power unit, loading, electrolyte/fuel, operating conditions, conditioning and polarization-curve protocol for the next experiment."
+    affected_ids: ["PE3-PROT-ADJUST-001", "PE3-VIS-POLARIZATION"]
+    recommendation: "Use the CRESt direct formate protocol only if the target is explicitly confirmed as comparable; otherwise define the target protocol independently."
+    evidence_refs: ["PE3-E004", "performance_evaluation_round2/performance_review_queue_round2.yaml:PE2-002"]
+    required_expert_ids: ["electrochemical_device_expert", "EXP-MAT-ROUND3"]
+    priority: "critical"
+    blocking: true
+    status: "open"
+  - issue_id: PE3-003
+    category: "experiment"
+    question: "Specify control/baseline composition, independent synthesis/device replicate count, randomization/order, sample preparation plan, and experiment budget."
+    affected_ids: ["PE3-PROT-ADJUST-001", "PE3-VIS-REPLICATES"]
+    recommendation: "Include matched control and replicate structure; define how failed preparations and invalid tests are logged before execution."
+    evidence_refs: ["PE3-E001", "PE3-E002"]
+    required_expert_ids: ["EXP-MAT-ROUND3", "experimental_expert", "lab_lead"]
+    priority: "critical"
+    blocking: true
+    status: "open"
+  - issue_id: PE3-004
+    category: "authorization"
+    question: "Explicitly authorize or decline the next experiment round. Which actions are permitted: composition proposal, AL script execution, model training/inference, external API calls, synthesis, device testing, or only manual analysis?"
+    affected_ids: ["PE3-ADJ-001", "PE3-SYN-001"]
+    recommendation: "No execution until the scope, data/API access, budget and safety approvals are explicit."
+    evidence_refs: ["user request"]
+    required_expert_ids: ["user/project owner", "lab safety/operations as applicable"]
+    priority: "critical"
+    blocking: true
+    status: "open"
+  - issue_id: PE3-005
+    category: "provenance"
+    question: "Verify whether Round 2 total_pool power labels are physical measurements, virtual GBR outputs, or mixed; attach per-row source, iteration, model/config version, and measured/predicted status."
+    affected_ids: ["SUBJ-ROUND2-POOL", "PE3-PROT-ADJUST-001", "PE3-PLAN-LOGGING"]
+    recommendation: "Use Round 2 pool only to nominate hypotheses until source type and conditions are verified; preserve its legacy data without overwriting."
+    evidence_refs: ["PE3-E002", "PE3-E003", "performance_evaluation_round2/performance_review_queue_round2.yaml:PE2-001"]
+    required_expert_ids: ["data_owner", "computer_expert"]
+    priority: "critical"
+    blocking: true
+    status: "open"
+  - issue_id: PE3-006
+    category: "constraint"
+    question: "Confirm per-element lower/upper limits, zero/absence rules, measured-composition assay and closure tolerance for the candidate recipes."
+    affected_ids: ["PE3-PROT-ADJUST-001", "M_COMP_VALID"]
+    recommendation: "Use only the already confirmed nonnegative mass simplex and fixed order as provisional constraints; add no guessed interval or minimum fraction."
+    evidence_refs: ["execution_orchestration_round2/execution_orchestration_round2.yaml:execution_context.composition"]
+    required_expert_ids: ["EXP-MAT-ROUND3", "analytical_characterization_expert"]
+    priority: "high"
+    blocking: true
+    status: "open"
+  - issue_id: PE3-007
+    category: "metric"
+    question: "Define acceptable peak-power gain, cost ceiling/denominator, and any formulation-stability or durability criterion before unblinding results."
+    affected_ids: ["M_POWER", "M_ACTUAL_COST", "M_FORMULATION_STABILITY", "PE3-PROT-ADJUST-001"]
+    recommendation: "Pre-register acceptance criteria based on target application and measurement repeatability; do not use the Round 2 top-decile q90 as a scientific threshold."
+    evidence_refs: ["PE3-E002", "performance_evaluation_round2/pool_statistics_round2.json"]
+    required_expert_ids: ["EXP-MAT-ROUND3", "computer_expert", "cost/procurement expert"]
+    priority: "high"
+    blocking: true
+    status: "open"
+  - issue_id: PE3-008
+    category: "model"
+    question: "If the model is to guide the next candidate set, provide a provenance-complete, condition-compatible training dataset and define group-held-out accuracy/calibration checks."
+    affected_ids: ["PE3-PLAN-LOGGING", "PE3-VIS-PREDICTION"]
+    recommendation: "Do not use current predictor outputs as measured evidence; preserve a confirmation set not used for model fitting or selection."
+    evidence_refs: ["PE3-E003", "performance_evaluation_round2/performance_evaluation_round2.yaml:iteration_analysis"]
+    required_expert_ids: ["computer expert", "model owner", "data owner"]
+    priority: "high"
+    blocking: true
+    status: "open"

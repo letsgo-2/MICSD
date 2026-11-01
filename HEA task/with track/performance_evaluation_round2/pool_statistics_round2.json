@@ -1,0 +1,142 @@
+{
+  "input_path": "/Users/jimmmmmies/Desktop/催化剂案例/AL/catalyst_active_learning_runnable/outputs/total_pool.csv",
+  "rows": 160,
+  "columns": [
+    "id",
+    "ratio",
+    "power_density",
+    "normalized_cost"
+  ],
+  "legacy_vector_order": [
+    "Pd",
+    "Pt",
+    "Cu",
+    "Au",
+    "Ir",
+    "Ce",
+    "Nb",
+    "Cr"
+  ],
+  "expert_display_order": [
+    "Pd",
+    "Pt",
+    "Au",
+    "Cr",
+    "Ir",
+    "Ce",
+    "Cu",
+    "Nb"
+  ],
+  "basis_status": "unverified; do not call these mass fractions",
+  "power_label_status": "provenance/unit/conditions absent in this file; not assumed measured device power",
+  "iteration_status": "not available; id is a row identifier, not iteration",
+  "power_density": {
+    "n": 160,
+    "mean": 54.799770405062496,
+    "sd_sample": 14.800752689074502,
+    "min": 0.4594,
+    "q25": 50.37789238,
+    "median": 60.06957452,
+    "q75": 63.8784222425,
+    "q90": 65.477473377,
+    "max": 68.58106887
+  },
+  "normalized_cost": {
+    "n": 160,
+    "mean": 58.980215145224996,
+    "sd_sample": 12.17776005104601,
+    "min": 0.017163642,
+    "q25": 54.476692015,
+    "median": 58.21930992,
+    "q75": 63.8204698225,
+    "q90": 70.83735751100001,
+    "max": 111.0067063
+  },
+  "pearson_power_cost_proxy": 0.051849969212287475,
+  "spearman_power_cost_proxy": -0.15823860307043244,
+  "composition_sum_min": 0.9999999999999998,
+  "composition_sum_max": 1.0000000000000004,
+  "positive_element_count_distribution": {
+    "1": 5,
+    "2": 3,
+    "3": 1,
+    "8": 151
+  },
+  "zero_count_by_legacy_element": {
+    "Pd": 7,
+    "Pt": 4,
+    "Cu": 7,
+    "Au": 8,
+    "Ir": 7,
+    "Ce": 8,
+    "Nb": 8,
+    "Cr": 9
+  },
+  "high_performance_definition": {
+    "rule": "top decile of this pool by stored power_density",
+    "q90_value": 65.477473377,
+    "n": 16,
+    "status": "descriptive post-selection slice; not a pre-registered scientific threshold"
+  },
+  "all_pool_composition_mean_legacy_order": {
+    "Pd": 0.3619278502406676,
+    "Pt": 0.1602399755549651,
+    "Cu": 0.09797192252548755,
+    "Au": 0.06286932679261278,
+    "Ir": 0.038072912386689195,
+    "Ce": 0.10946797457103803,
+    "Nb": 0.09507806072717198,
+    "Cr": 0.07437197720136779
+  },
+  "top_decile_composition_mean_legacy_order": {
+    "Pd": 0.40377211827279624,
+    "Pt": 0.15885849346937575,
+    "Cu": 0.09532335454399685,
+    "Au": 0.023088434014890684,
+    "Ir": 0.03063778149523799,
+    "Ce": 0.1250667107510007,
+    "Nb": 0.09361162120294275,
+    "Cr": 0.06964148624975902
+  },
+  "top_decile_power": {
+    "n": 16,
+    "mean": 66.3963563425,
+    "sd_sample": 0.819423186595875,
+    "min": 65.48295453,
+    "q25": 65.90681162749999,
+    "median": 66.21404075000001,
+    "q75": 66.78831703750001,
+    "q90": 67.29140008499999,
+    "max": 68.58106887
+  },
+  "top_decile_normalized_cost": {
+    "n": 16,
+    "mean": 57.96828168625,
+    "sd_sample": 2.4645854484877816,
+    "min": 53.76374535,
+    "q25": 56.431896585,
+    "median": 57.94221044,
+    "q75": 60.239740655000006,
+    "q90": 60.880048485,
+    "max": 61.995991
+  },
+  "pareto_nondominated_count_power_vs_legacy_cost": 10,
+  "predictor_accuracy": {
+    "status": "not_evaluable",
+    "reason": "No measured/predicted pairs, targets, model ID, split, or prediction errors in total_pool.csv."
+  },
+  "iteration_analysis": {
+    "status": "not_evaluable",
+    "reason": "No iteration field; row id is not interpreted as iteration."
+  },
+  "causal_composition_effects": {
+    "status": "not_estimated",
+    "reason": "Adaptive selection, compositional closure, unverified labels/conditions, and no controlled comparisons prevent causal attribution."
+  },
+  "warnings": [
+    "The pool has only id, ratio, power_density and normalized_cost; it lacks source/value type, model version, conditions, units, run/iteration, replicates and actual cost definition.",
+    "The top-decile comparison is post-selection descriptive and must not be treated as confirmatory inference or per-element effect.",
+    "The Pareto set is only with respect to stored power_density and legacy normalized_cost proxy; cost basis is undocumented.",
+    "The 8-vector was decoded using the AL legacy order; expert order is produced only by header permutation. Basis remains unverified."
+  ]
+}

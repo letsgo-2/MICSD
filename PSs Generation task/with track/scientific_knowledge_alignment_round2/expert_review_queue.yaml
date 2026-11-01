@@ -1,0 +1,53 @@
+{
+  "review_items": [
+    {
+      "object_id": "S001-S008",
+      "question": "Validate the scaffold advantages, limitations, and design handles for the intended application and decide which scaffold families are in scope for candidate generation.",
+      "required_expert": "materials/photochemistry expert",
+      "reason": "Scaffold performance is conditional and the supplied corpus does not support a universal ranking.",
+      "priority": "high"
+    },
+    {
+      "object_id": "D001-D002",
+      "question": "Approve the TD-DFT protocol, wavelength window, oscillator-strength handling, conformer policy, and uncertainty calibration.",
+      "required_expert": "computational photochemistry expert",
+      "reason": "Excitation energies and oscillator strengths are method- and state-dependent.",
+      "priority": "high"
+    },
+    {
+      "object_id": "D003",
+      "question": "Select Type-II or Type-I optimization branch for the project and approve consistent T1/oxygen reference definitions.",
+      "required_expert": "photochemistry expert",
+      "reason": "The branches have intentionally opposite triplet-energy logic; a single reward would be contradictory.",
+      "priority": "high"
+    },
+    {
+      "object_id": "D004-D005",
+      "question": "Validate state tracking, SOC calculation method, and whether <0.4 eV and >0.24 cm−1 can be used as scaffold-local screening heuristics.",
+      "required_expert": "computational photochemistry expert",
+      "reason": "Both thresholds are literature-derived and not universal; SOC is state-pair-specific.",
+      "priority": "high"
+    },
+    {
+      "object_id": "D006-D010",
+      "question": "Decide which descriptors are features, constraints, or rewards and define the calibration dataset and uncertainty penalty.",
+      "required_expert": "computer and computational experts",
+      "reason": "Raw orbital energies, CT descriptors, solvation proxies and reorganization energies are not direct biological endpoints.",
+      "priority": "high"
+    },
+    {
+      "object_id": "D007-D009",
+      "question": "Specify electron-transfer partners, solvent/microenvironment model, and experimental validation before using ET driving force or reorganization energy in rewards.",
+      "required_expert": "photochemistry and experimental experts",
+      "reason": "These quantities are partner-specific and cannot be defined from an isolated molecule alone.",
+      "priority": "high"
+    },
+    {
+      "object_id": "ALL",
+      "question": "Approve the iterative reward formula, branch-specific heads, invalid-calculation penalties, and separation of computational proxy rewards from biological evaluation.",
+      "required_expert": "computer expert",
+      "reason": "The reward design must avoid contradictory objectives and proxy overinterpretation.",
+      "priority": "high"
+    }
+  ]
+}

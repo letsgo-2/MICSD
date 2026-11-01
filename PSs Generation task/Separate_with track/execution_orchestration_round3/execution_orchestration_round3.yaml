@@ -1,0 +1,223 @@
+schema_version: "0.6.0"
+round: 3
+language: en
+stage: execution-orchestration
+status: "selected_metrics_confirmed_procedure_requires_authorization"
+execution_authorized: false
+update_of: "../execution_orchestration_round2/execution_orchestration_round2.yaml"
+based_on:
+  - "../execution_orchestration_round2/execution_orchestration_report_round2.md"
+  - "../execution_orchestration_round2/execution_orchestration_round2.yaml"
+  - "../execution_orchestration_round2/execution_review_queue_round2.yaml"
+repository:
+  name: SDPD
+  clone_path: "/Users/jimmmmmies/Desktop/alignment/SDPD"
+  remote: "https://github.com/letsgo-2/SDPD.git"
+  interface_document: "SDPD/AGENT_INTERFACE_EN.md"
+  read_only_inspection_completed: true
+  commands_executed: false
+  dependencies_installed: false
+  checkpoints_modified: false
+  source_files_modified: false
+selected_metrics:
+  - metric_id: E_S1_minus_E_T1
+    display_name: "E(S1)-E(T1) / ST gap"
+    rank: 1
+    role: primary_selected_objective
+    direction: minimize_gap_with_context
+    implementation_contract:
+      predictor_id: kagnn_3out
+      output_index: 2
+      companion_outputs: {0: S1, 1: T1, 2: ST_Gap}
+      runtime_normalization: "1 / (1 + max(raw_ST_gap, 0) / scale)"
+      current_scale: 1.0
+    threshold: {status: unresolved, rule: "No universal ST-gap cutoff; approve mechanism-specific regime and method calibration first."}
+    source_paths:
+      predictor_profile: "SDPD/data_preparation/prediction_model/rl_compatible_2025"
+      predictor_config: "SDPD/data_preparation/prediction_model/rl_compatible_2025/config/c_path.yaml"
+      predictor_checkpoint: "SDPD/data_preparation/prediction_model/pretrained_models/best.pth"
+      scoring_code: "SDPD/data_preparation/scoring_strategy/score_function.py"
+    status: proposed
+  - metric_id: charge
+    display_name: "Formal/partial charge state"
+    rank: 2
+    role: selected_soft_constraint_and_validity_descriptor
+    direction: application_specific
+    implementation_contract:
+      evaluator_id: charge_score
+      current_rule: "For one decoration, score positive/negative atom-charge presence; for multiple decorations, score total formal-charge parity."
+      required_metadata: [pH, protonation_state, tautomer_policy, counterion_policy, partial_charge_method]
+    threshold: {status: unresolved, rule: "No universal charge optimum; define intended compartment and charge-state policy before reward activation."}
+    source_paths:
+      scoring_code: "SDPD/data_preparation/scoring_strategy/score_function.py"
+      rl_config: "SDPD/configs/rl_configs.json"
+    status: proposed_proxy_validation_required
+  - metric_id: symmetry
+    display_name: "Decoration symmetry proxy"
+    rank: 3
+    role: selected_soft_constraint_and_diversity_descriptor
+    direction: maximize_conditionally
+    implementation_contract:
+      evaluator_id: symmetry_score
+      current_rule: "Decoration fragment Morgan-fingerprint identity/pair-pattern rules, not general point-group symmetry."
+      required_metadata: [decoration_string, attachment_order, symmetry_definition, conformer_policy]
+    threshold: {status: unresolved, rule: "No universal symmetry optimum; approve proxy semantics or replace with a declared graph/point-group descriptor."}
+    source_paths:
+      scoring_code: "SDPD/data_preparation/scoring_strategy/score_function.py"
+      scoring_strategy: "SDPD/data_preparation/scoring_strategy/standard_strategy.py"
+    status: proposed_proxy_validation_required
+representation:
+  molecule: canonical_and_isomeric_SMILES
+  fragmentation_rule: RECAP
+  required_seed_family: porphyrin
+  inherited_policy: "Preserve Round 2 family labels, molecule-condition metadata, edit provenance, uncertainty, and Pareto selection."
+interfaces:
+  - id: IF-001
+    name: sdpd_runtime_predictor
+    role: predictor
+    status: available_as_repository_contract_not_executed
+    entrypoint: "SDPD/data_preparation/prediction_model/rl_compatible_2025/main.py"
+    execution_directory: "SDPD/data_preparation/prediction_model/rl_compatible_2025"
+    config: "SDPD/data_preparation/prediction_model/rl_compatible_2025/config/c_path.yaml"
+    checkpoint: "SDPD/data_preparation/prediction_model/pretrained_models/best.pth"
+    input_schema: [SMILES]
+    output_schema: [S1, T1, ST_Gap]
+    selected_output: ST_Gap
+    output_index: 2
+    execution_command_documented_only: "cd data_preparation/prediction_model/rl_compatible_2025 && python main.py"
+    prohibited_until_confirmation: [execute_training, replace_checkpoint, modify_source_config]
+  - id: IF-002
+    name: sdpd_metric_scorer
+    role: scorer
+    status: available_as_source_contract_not_executed
+    source: "SDPD/data_preparation/scoring_strategy/score_function.py"
+    entrypoint: "multiple_score(smiles_list, weights, config, decorations)"
+    input_schema: [SMILES, decorations, weights, predictor_config]
+    output_schema: [st_gap, charge_score, symmetry_score, st_gap_raw, decoration_ring_penalty]
+    current_component_order: [st_gap, charge_score, symmetry_score]
+    current_weights_from_rl_config: [0.1, 0.3, 0.6]
+    limitations: ["charge is heuristic", "symmetry is decoration proxy", "ST gap is surrogate", "invalid_value and ring penalty affect reward"]
+  - id: IF-003
+    name: sdpd_rl_runner
+    role: reinforcement_learning_runner
+    status: proposed_not_executed
+    entrypoint: "SDPD/data_preparation/run_rl.py"
+    config: "SDPD/configs/rl_configs.json"
+    actor_checkpoint: "SDPD/pretrained_models/rl/best.pt"
+    critic_checkpoint: "SDPD/pretrained_models/rl/best.pt"
+    output_dir_configured_currently: "SDPD/rl_runs"
+    proposed_output_dir: "SDPD/rl_runs/round3_pilot"
+    writes_documented: ["diversity_memory.csv", "wandb metrics if enabled"]
+    does_not_automatically_write: [updated_actor_checkpoint]
+    execution_command_documented_only: "python data_preparation/run_rl.py --config configs/rl_configs.json"
+    prohibited_until_confirmation: [execute_rl, alter_checkpoint, alter_hard_constraints, alter_metric_semantics]
+  - id: IF-004
+    name: copied_configuration_review
+    role: parameter_review_adapter
+    status: proposed_not_created
+    source_config: "SDPD/configs/rl_configs.json"
+    proposed_copy: "/Users/jimmmmmies/Desktop/alignment/execution_orchestration_round3/proposed_sdpd_configs/rl_configs_round3.json"
+    source_predictor_config: "SDPD/data_preparation/prediction_model/rl_compatible_2025/config/c_path.yaml"
+    proposed_predictor_copy: "/Users/jimmmmmies/Desktop/alignment/execution_orchestration_round3/proposed_sdpd_configs/c_path_round3.yaml"
+    policy: "Review copies first; do not edit SDPD source configuration without confirmation."
+current_sdpd_configuration_snapshot:
+  source: "SDPD/configs/rl_configs.json"
+  actor: "./pretrained_models/rl/best.pt"
+  critic: "./pretrained_models/rl/best.pt"
+  n_steps: 1000
+  learning_rate: 0.0001
+  batch_size: 128
+  output_dir: "./rl_runs"
+  scoring_function:
+    use_kan: true
+    weights: [0.1, 0.3, 0.6]
+    scale: 1.0
+    invalid_value: 0.0
+    model_path: "./data_preparation/prediction_model/pretrained_models/best.pth"
+  diversity_filter: {name: no_filter_with_penalty, minscore: 0.77, bucket_size: 25, minsimilarity: 0.4}
+proposed_procedure:
+  status: "proposed_execution_authorization_required"
+  phases:
+    - phase_id: P0
+      name: confirmation_gate
+      actions: [approve_metric_semantics, approve_weights, approve_scaffold, approve_output_paths, approve_preflight_scope]
+      commands_run: false
+    - phase_id: P1
+      name: immutable_snapshot_and_review_copy
+      actions: [record_git_commit, record_environment, record_checksums, copy_rl_json_to_review_area, copy_predictor_yaml_to_review_area]
+      commands_run: false
+      outputs: [proposed_sdpd_configs, snapshot_manifest_round3.json]
+    - phase_id: P2
+      name: metric_preflight
+      actions: [fixture_smiles_validation, predictor_contract_check, score_component_check, weight_order_check, invalid_value_check, checkpoint_identity_check]
+      commands_run: false
+      outputs: ["preflight_round3/preflight_report.json", "preflight_round3/metric_records.jsonl"]
+    - phase_id: P3
+      name: controlled_rl_pilot
+      actions: [approved_porhyrin_scaffold, fixed_budget, fixed_weights, record_metric_components, record_failures, export_diversity_memory]
+      commands_run: false
+      outputs: ["SDPD/rl_runs/round3_pilot/diversity_memory.csv", "SDPD/rl_runs/round3_pilot/run.log"]
+    - phase_id: P4
+      name: review_and_iteration
+      actions: [check_metric_dominance, check_invalid_rate, check_scaffold_coverage, review_proxy_behavior, approve_parameter_changes]
+      commands_run: false
+      outputs: ["round3_pilot_review.md", "round3_parameter_change_log.jsonl"]
+preflight_fixture_policy:
+  required_cases: [valid_neutral, valid_ionic, zwitterionic, invalid_smiles, repeated_decoration, asymmetric_decoration]
+  expected_fields: [SMILES, decoration, S1, T1, ST_Gap, st_gap_raw, st_gap, charge_score, symmetry_score, ring_penalty, invalid_reason]
+  no_rl: true
+  no_checkpoint_replacement: true
+output_paths:
+  round3_folder: "/Users/jimmmmmies/Desktop/alignment/execution_orchestration_round3"
+  report: "/Users/jimmmmmies/Desktop/alignment/execution_orchestration_round3/execution_orchestration_report_round3.md"
+  configuration: "/Users/jimmmmmies/Desktop/alignment/execution_orchestration_round3/execution_orchestration_round3.yaml"
+  review_queue: "/Users/jimmmmmies/Desktop/alignment/execution_orchestration_round3/execution_review_queue_round3.yaml"
+  trace: "/Users/jimmmmmies/Desktop/alignment/execution_orchestration_round3/execution_trace_round3.jsonl"
+  proposed_rl_config_copy: "/Users/jimmmmmies/Desktop/alignment/execution_orchestration_round3/proposed_sdpd_configs/rl_configs_round3.json"
+  proposed_predictor_config_copy: "/Users/jimmmmmies/Desktop/alignment/execution_orchestration_round3/proposed_sdpd_configs/c_path_round3.yaml"
+  preflight_report: "/Users/jimmmmmies/Desktop/alignment/execution_orchestration_round3/preflight_round3/preflight_report.json"
+  preflight_records: "/Users/jimmmmmies/Desktop/alignment/execution_orchestration_round3/preflight_round3/metric_records.jsonl"
+  pilot_output_dir: "/Users/jimmmmmies/Desktop/alignment/SDPD/rl_runs/round3_pilot"
+  pilot_diversity_memory: "/Users/jimmmmmies/Desktop/alignment/SDPD/rl_runs/round3_pilot/diversity_memory.csv"
+  pilot_log: "/Users/jimmmmmies/Desktop/alignment/SDPD/rl_runs/round3_pilot/run.log"
+  optional_actor_checkpoint: "/Users/jimmmmmies/Desktop/alignment/SDPD/rl_runs/round3_pilot/actor_final.pt"
+authorization:
+  current_status: not_authorized
+  permitted_now: [read_only_inspection, proposal_generation, static_validation]
+  prohibited_now: [install_dependencies, run_predictor, train_predictor, run_rl, sample_molecules, modify_sdpd_configs, modify_python, replace_checkpoints, write_pilot_outputs]
+  confirmation_required_for: [preflight, config_copy, predictor_execution, rl_pilot, checkpoint_export]
+review_queue: [EXR3-001, EXR3-002, EXR3-003, EXR3-004, EXR3-005, EXR3-006, EXR3-007, EXR3-008]
+
+expert_feedback_reconciliation:
+  annotation_date: '2026-10-31'
+  annotation_type: dialogue_based_stage_status_reconciliation
+  requested_by: user
+  source_dialogue: ../../multi_round_dialogue_example_EN.txt
+  source_sha256: ebb57f5513ccd2ee131a9971088e81acaa8e6b610f46e7df5afea5890dbc12d8
+  interpretation: Stage-scoped working acceptance from the saved dialogue and subsequent adoption, following the earlier
+    PS reconciliation rules.
+  itemwise_scientific_validation_completed_by_this_update: false
+  numerical_values_units_and_thresholds_certified_by_this_update: false
+  execution_authorized_by_this_update: false
+  existing_disputed_entries_preserved: true
+  unanswered_review_items_and_blocking_flags_preserved: true
+  historical_execution_trace_events_modified: false
+  source_feedback_records:
+  - feedback_id: PS-EO-R3-SELECTION
+    source_line: 18
+    excerpt: The computer scientist ultimately selects E(S1)−E(T1), charge, and symmetry as the three metrics. The training
+      framework's metric-configuration files, predictive-model execution paths, and other parameters can be obtained
+      from `SDPD/AGENT_INTERFACE.md`. Inspect and update the model information and interfaces independently, improve
+      the workflow, and report the proposed execution procedure to me for confirmation. Do not run it without authorization.
+      Clearly specify all output paths. Update the previous round's output files and add the suffix `round3`.
+  updates:
+  - path: status
+    status: selected_metrics_confirmed_procedure_requires_authorization
+    feedback_refs:
+    - PS-EO-R3-SELECTION
+    scope: Only the three metric selections are explicit; the proposed procedure is not authorized to execute.
+  - path: proposed_procedure/status
+    status: proposed_execution_authorization_required
+    feedback_refs:
+    - PS-EO-R3-SELECTION
+    scope: The procedure remains proposed. Do not run it without authorization, as explicitly required in the dialogue.

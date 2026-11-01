@@ -1,0 +1,63 @@
+round: 2
+language: en
+source_interface: ../meloculardftcal/config/agent_interface.json
+repository: https://github.com/letsgo-2/meloculardftcal.git
+status: registered_from_interface_and_environment_snapshot
+software:
+  python_minimum: ">=3.9"
+  python_recorded: "3.12.2"
+  orca_reference: {version: "6.0.1", build: linux_x86_64_shared_openmpi416_avx2, executable_env: ORCA_BIN, local_available: false}
+  mpi_reference: {implementation: OpenMPI, version: "4.1.6", recorded_runtime_version: "4.0.3"}
+  ucx_reference: "1.15.0"
+  scheduler: Slurm
+  recorded_runtime_tools: {sbatch_available: false, squeue_available: false, obabel: "3.1.0"}
+  python_packages_recorded: {numpy: "1.26.4", pandas: "2.2.2", scipy: "1.15.2", matplotlib: "3.8.4", seaborn: "0.13.2", rdkit: "2025.9.3", scikit_learn: "1.4.2", umap_learn: null}
+reference_hardware: {cpu: "2x AMD EPYC 7H12", physical_cores: 128, logical_cpus: 256, memory_gib: 503, gpu_required: false}
+recorded_runtime_hardware: {cpu: "Intel Core i7-14700K", logical_cpus: 28, memory_gib: 62.48, linux_kernel: "5.15.0-139-generic"}
+scheduler_defaults:
+  partition: amd_512q
+  nodes: 1
+  opt_mpi_ranks: 64
+  td_mpi_ranks: 32
+  omp_threads_per_rank: 1
+  maxcore_mb_per_rank: 3000
+  max_jobs_per_user: 20
+  poll_interval_seconds: 1800
+  memory_product_gib: {optimization: 187.5, td: 93.75}
+quantum_profiles:
+  opt_standard: {method: B3LYP, basis: def2-SVP, tasks: [Opt, Freq], keywords: [RIJCOSX, CPCM(Water)], ranks: 64, maxcore_mb_per_rank: 3000}
+  opt_heavy_zora: {method: PBE0, dispersion: D3BJ, basis: ZORA-def2-TZVP, auxiliary_basis: SARC/J, tasks: [Opt, Freq], keywords: [ZORA, RIJCOSX, TightSCF, CPCM(Water)], ranks: 64, maxcore_mb_per_rank: 3000}
+  td_standard: {method: wB97X-D3, basis: def2-TZVP, keywords: [RIJCOSX, TightSCF, CPCM(Water)], nroots: 10, triplets: true, dosoc: true, guess: MORead, geometry: optimized_xyz_and_gbw, ranks: 32, maxcore_mb_per_rank: 3000}
+  td_heavy_zora: {method: wB97X-D3, basis: ZORA-def2-TZVP, auxiliary_basis: SARC/J, keywords: [ZORA, RIJCOSX, RI-SOMF(1X), TightSCF, CPCM(Water)], nroots: 10, triplets: true, dosoc: true, guess: MORead, geometry: optimized_xyz_and_gbw, ranks: 32, maxcore_mb_per_rank: 3000}
+mutable_parameter_locations:
+  standard_opt: ../meloculardftcal/01_structure_preparation/gjf_to_inp.sh
+  heavy_opt: ../meloculardftcal/01_structure_preparation/gjf_to_inpp13.sh
+  standard_td: ../meloculardftcal/01_structure_preparation/gjf_to_inptd.sh
+  heavy_td: ../meloculardftcal/01_structure_preparation/gjf_to_inptdp13.sh
+  change_policy: copy_generator_or_branch; alter_one_dimension; regenerate_in_isolated_path; inspect_input_and_job; test_reference_subset; log_exact_protocol
+workflow_stages:
+  - [S00_PREFLIGHT, 07_validation/check_environment.py]
+  - [S10_STRUCTURE, 01_structure_preparation/convertInputs.py]
+  - [S20_OPT_GENERATE, 01_structure_preparation/gjf_to_inp.sh]
+  - [S21_OPT_SUBMIT, 02_cluster_execution/suboptsbatch.sh]
+  - [S22_OPT_QC, 02_cluster_execution/find_missing_opt_ids.sh]
+  - [S30_TD_GENERATE, 01_structure_preparation/gjf_to_inptd.sh]
+  - [S31_TD_SUBMIT, 02_cluster_execution/subtdsbatch.sh]
+  - [S32_TD_QC, 02_cluster_execution/find_missing_td_ids.sh]
+  - [S40_PARSE_OPT, 03_result_parsing/parse_orca_opt.py]
+  - [S41_PARSE_TD, 03_result_parsing/parse_orca_td_socv2.py]
+  - [S42_MERGE_DFT, 03_result_parsing/merge_dft_csv.py]
+  - [S50_MERGE_SOURCE, 04_data_processing/merge_summary.py]
+  - [S51_ENRICH, 04_data_processing/addrdkit.py]
+  - [S60_METRICS, 07_validation/collect_metrics.py]
+  - [S70_ANALYZE, 05_analysis/plotters/plot_pareto_s1ti_socmegap.py]
+  - [S80_VISUALIZE, 06_visualization/generate_molecule_images_with_props.py]
+path_policy: repository_relative; preserve source row order because parser maps log id to row id minus one
+analysis:
+  core_rows: 222
+  valid_minimum_rows_no_imaginary: 191
+  candidate_cohort_sizes: {round1: 60, round2: 60}
+  candidate_cohorts_paired: false
+  candidate_shared_smiles: 0
+  inferential_comparison_performed: false
+  model_accuracy_evaluation: unavailable_without_independent_prediction_reference_pairs

@@ -1,0 +1,111 @@
+review_items:
+  - issue_id: EO2-001
+    category: constraint
+    question: "Approve canonical project basis/order and authorize an explicit named-element adapter from AL order [Pd, Pt, Cu, Au, Ir, Ce, Nb, Cr] to project order [Pd, Pt, Au, Cr, Ir, Ce, Cu, Nb]."
+    affected_ids: [M-COMPOSITION-VALIDITY, AL-DATA, AL-LLM-DESIGN-001, AL-COST-001]
+    recommendation: "Do not execute on project data until mappings are explicit and independently validated; keep raw vectors and reject closure errors rather than normalize."
+    evidence_refs: ["costs.py:6,19-34", "data.py:11-21", "providers.py:51-70"]
+    required_expert: "materials + computer"
+    priority: critical
+    blocking: true
+    status: open
+  - issue_id: EO2-002
+    category: metric
+    question: "Confirm whether `AL/data/initial_examples.csv` and `oracle_training_sample.csv` are project experimental data or AL demonstration/virtual data; supply P_peak unit, device protocol, conditions, provenance and replicate metadata."
+    affected_ids: [M-PPOWER, AL-DATA, AL-GBR-ORACLE-001]
+    recommendation: "Keep virtual oracle targets distinct; do not train or rank project candidates until target comparability is demonstrated."
+    evidence_refs: ["README.md:30-32,198-208", "data.py:24-48"]
+    required_expert: "domain + computer + experimental"
+    priority: critical
+    blocking: true
+    status: open
+  - issue_id: EO2-003
+    category: reward
+    question: "Choose whether normalized cost is a reporting diagnostic, Pareto co-objective or hard budget; define price source/date, currency, metal product/purity, and basis."
+    affected_ids: [M-NORMALIZED-COST, AL-COST-001, AL-PARETO-001]
+    recommendation: "Do not treat the current relative index as USD/g or apply a cost threshold; replace/approve fixed price constants with provenance before procurement decisions."
+    evidence_refs: ["costs.py:6-16,31-34", "config.json:18-23"]
+    required_expert: "project + materials + procurement + computer"
+    priority: critical
+    blocking: true
+    status: open
+  - issue_id: EO2-004
+    category: constraint
+    question: "Set approved closure tolerance, per-element bounds, zero/presence detection policy, and whether octonary support applies to nominal, bulk, or surface composition."
+    affected_ids: [M-COMPOSITION-VALIDITY, M-ELEMENT-RANGE]
+    recommendation: "No unapproved content ranges or epsilon; add strict, reason-coded validation before candidate generation."
+    evidence_refs: ["config.json", "data.py:11-21", "costs.py:19-28"]
+    required_expert: "materials + experimental + computer"
+    priority: critical
+    blocking: true
+    status: open
+  - issue_id: EO2-005
+    category: model
+    question: "Authorize or reject live OpenAI-compatible API calls; if approved, specify model ID, provider/base URL, key management, privacy review, call limit, and spend cap."
+    affected_ids: [AL-LLM-DESIGN-001, WF-HEA-AL-ROUND2]
+    recommendation: "No `.env` inspection or API calls before approval; run only in a separate output directory and count retries."
+    evidence_refs: ["providers.py:18-47", ".env.example", "README.md:83-110,141-156"]
+    required_expert: "user + computer + data governance"
+    priority: critical
+    blocking: true
+    status: open
+  - issue_id: EO2-006
+    category: model
+    question: "Confirm whether the existing GBR joblib artifact can be used, retrained, or neither; provide artifact provenance and approve any training/inference."
+    affected_ids: [AL-GBR-ORACLE-001]
+    recommendation: "Check provenance without loading/executing it; prevent auto-training/overwrite unless explicitly approved."
+    evidence_refs: ["model.py:14-56", "run.py:29-40", "README.md:119-139,198-208"]
+    required_expert: "computer + domain"
+    priority: critical
+    blocking: true
+    status: open
+  - issue_id: EO2-007
+    category: threshold
+    question: "Approve, replace, or disable demo assumptions: performance weight 0.6, target power gain 6%±2%, cost reduction 3%±1%, power threshold 200, and default iteration/search/API budgets."
+    affected_ids: [CFG-WEIGHTS, AL-PARETO-001]
+    recommendation: "Keep scalar weights and stop thresholds inactive until tied to project utility, conditions, and measured baseline."
+    evidence_refs: ["config.json:7-23", "config.py:14-31", "pareto.py:44-58"]
+    required_expert: "domain + project + computer"
+    priority: high
+    blocking: true
+    status: open
+  - issue_id: EO2-008
+    category: metric
+    question: "Approve how candidate-to-experimental novelty is calculated and which source records qualify as experiments; set out-of-domain action from validation."
+    affected_ids: [M-EXPERIMENTAL-NOVELTY, AL-AKDAS-001]
+    recommendation: "Report nearest-neighbor CLR/Aitchison distance as a diagnostic; do not set an arbitrary exclusion cutoff or mix virtual oracle points with measurements."
+    evidence_refs: ["sampling.py:6-25", "pipeline.py:166-175"]
+    required_expert: "materials + computer + experimental"
+    priority: high
+    blocking: false
+    status: open
+  - issue_id: EO2-009
+    category: metric
+    question: "Define validation for LLM committee disagreement and decide whether it may influence selection after calibration to held-out measured P_peak."
+    affected_ids: [M-PREDICTION-CONFIDENCE, AL-LLM-DESIGN-001]
+    recommendation: "Until calibrated, label std as response disagreement only; high disagreement may trigger human review but not numeric confidence claims."
+    evidence_refs: ["providers.py:72-92", "pipeline.py:115-128"]
+    required_expert: "computer + domain"
+    priority: high
+    blocking: false
+    status: open
+  - issue_id: EO2-010
+    category: metric
+    question: "Provide stability response, assay/device protocol, duration/cycle conditions, failure criteria, replicates, and acceptance threshold."
+    affected_ids: [M-STABILITY]
+    recommendation: "Keep deferred; add stability observations and interface before using as a constraint or objective."
+    evidence_refs: ["README.md:198-208"]
+    required_expert: "materials + experimental + domain"
+    priority: medium
+    blocking: false
+    status: open
+  - issue_id: EO2-011
+    category: workflow
+    question: "Confirm whether a no-network, non-mutating schema/config review is authorized as the first operational action; separately authorize tests, environment checks, training, inference, or API calls."
+    affected_ids: [WF-HEA-AL-ROUND2, AL-ENTRY]
+    recommendation: "No commands from the AL package have been run; scope authorization separately by operation and output path."
+    evidence_refs: ["run.py:29-44", "train_oracle.py:14-25", "check_environment.py:13-63"]
+    required_expert: "user + computer"
+    priority: critical
+    blocking: true
+    status: open

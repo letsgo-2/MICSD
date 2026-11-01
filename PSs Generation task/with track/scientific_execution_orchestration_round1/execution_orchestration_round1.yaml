@@ -1,0 +1,1295 @@
+{
+  "metadata": {
+    "name": "Scientific Execution Orchestration — Round 1",
+    "language": "English",
+    "version": "0.1.0-draft",
+    "created": "2026-10-31",
+    "status": "draft",
+    "suffix": "round1",
+    "upstream_round": "scientific_knowledge_alignment_round2"
+  },
+  "upstream_inputs": {
+    "alignment_yaml": "../scientific_knowledge_alignment_round2/knowledge_alignment.yaml",
+    "alignment_report": "../scientific_knowledge_alignment_round2/knowledge_alignment_report.md",
+    "alignment_review_queue": "../scientific_knowledge_alignment_round2/expert_review_queue.yaml",
+    "source_count": 47,
+    "upstream_review_items": 7
+  },
+  "execution_context": {
+    "representation": "SMILES",
+    "fragmentation_rule": "RECAP",
+    "default_scaffold": "porphyrin",
+    "optimization_paradigm": "reinforcement learning molecular generation",
+    "mechanism_branches": [
+      "type_ii",
+      "type_i"
+    ],
+    "experimental_endpoints": "deferred from molecule-only reward"
+  },
+  "metric_candidates": [
+    {
+      "metric_id": "D001",
+      "name": "Vertical excitation energy / absorption wavelength and oscillator strength",
+      "aliases": [
+        "lambda_abs",
+        "f"
+      ],
+      "definition": "Electronic excitation energy and corresponding wavelength; screens spectral compatibility with the selected light window.",
+      "proposed_roles": [
+        "primary_objective",
+        "soft_constraint"
+      ],
+      "direction": "target_range",
+      "threshold": {
+        "value": null,
+        "range": [
+          600,
+          800
+        ],
+        "unit": "nm",
+        "status": "provisional_literature_band",
+        "companion": "f >= 0.01 is a provisional screen"
+      },
+      "conditions": [
+        "TD-DFT method/basis",
+        "solvent model",
+        "target state",
+        "conformer"
+      ],
+      "acquisition": [
+        "TD-DFT evaluator"
+      ],
+      "evidence_refs": [
+        "X001",
+        "X006"
+      ],
+      "expert_status": "pending",
+      "unresolved_fields": [
+        "approved method/basis/solvent",
+        "project irradiation window",
+        "f threshold calibration"
+      ]
+    },
+    {
+      "metric_id": "D003",
+      "name": "Triplet energy relative to oxygen sensitization threshold",
+      "aliases": [
+        "T1 energy",
+        "S0-T1"
+      ],
+      "definition": "Triplet-state energy relative to the energy required for 3O2→1O2; selects a mechanistic branch.",
+      "proposed_roles": [
+        "hard_constraint",
+        "soft_constraint",
+        "branch_gate"
+      ],
+      "direction": "context_dependent",
+      "threshold": {
+        "value": null,
+        "range": [
+          0.98,
+          1.13
+        ],
+        "unit": "eV",
+        "status": "provisional_branch_threshold",
+        "note": "Type-II favors above; indirect Type-I may favor below"
+      },
+      "conditions": [
+        "triplet state definition",
+        "oxygen reference",
+        "vertical versus adiabatic energy",
+        "method consistency"
+      ],
+      "acquisition": [
+        "TD-DFT/DFT evaluator"
+      ],
+      "evidence_refs": [
+        "X001",
+        "X006"
+      ],
+      "expert_status": "pending",
+      "unresolved_fields": [
+        "selected mechanism branch",
+        "oxygen reference protocol"
+      ]
+    },
+    {
+      "metric_id": "D004",
+      "name": "Singlet-triplet energy separation for ISC channel",
+      "aliases": [
+        "DeltaEST",
+        "DeltaE(S1,Tn)"
+      ],
+      "definition": "Singlet–triplet energy separation for a candidate ISC channel; smaller gaps can facilitate ISC but are not sufficient without SOC and state character.",
+      "proposed_roles": [
+        "secondary_objective",
+        "soft_constraint"
+      ],
+      "direction": "minimize",
+      "threshold": {
+        "value": 0.4,
+        "range": [
+          0,
+          0.4
+        ],
+        "unit": "eV",
+        "status": "provisional_scaffold_local_heuristic"
+      },
+      "conditions": [
+        "state tracking",
+        "relevant Tn",
+        "geometry",
+        "functional"
+      ],
+      "acquisition": [
+        "TD-DFT evaluator"
+      ],
+      "evidence_refs": [
+        "X006",
+        "X008"
+      ],
+      "expert_status": "pending",
+      "unresolved_fields": [
+        "state-tracking protocol",
+        "family calibration"
+      ]
+    },
+    {
+      "metric_id": "D005",
+      "name": "Spin-orbit coupling",
+      "aliases": [
+        "SOC"
+      ],
+      "definition": "Electronic coupling that enables spin-forbidden singlet–triplet transitions and informs ISC propensity.",
+      "proposed_roles": [
+        "secondary_objective",
+        "diagnostic"
+      ],
+      "direction": "maximize",
+      "threshold": {
+        "value": 0.24,
+        "range": [
+          0.24,
+          null
+        ],
+        "unit": "cm^-1",
+        "status": "provisional_state_pair_heuristic"
+      },
+      "conditions": [
+        "state pair",
+        "SOC method",
+        "relativistic treatment",
+        "units"
+      ],
+      "acquisition": [
+        "SOC-capable quantum chemistry evaluator"
+      ],
+      "evidence_refs": [
+        "X001",
+        "X006"
+      ],
+      "expert_status": "pending",
+      "unresolved_fields": [
+        "state pair",
+        "calibrated threshold"
+      ]
+    },
+    {
+      "metric_id": "D008",
+      "name": "Charge-transfer character / electron-hole separation",
+      "aliases": [
+        "CT character",
+        "NTO separation"
+      ],
+      "definition": "Spatial separation and donor-to-acceptor character of an excitation; helps distinguish local excitation from ICT/ET states.",
+      "proposed_roles": [
+        "diagnostic",
+        "secondary_objective"
+      ],
+      "direction": "context_dependent",
+      "threshold": {
+        "value": null,
+        "range": [],
+        "unit": "method-specific",
+        "status": "unresolved_percentile_or_family_target"
+      },
+      "conditions": [
+        "transition density",
+        "partitioning method",
+        "target state"
+      ],
+      "acquisition": [
+        "NTO/transition-density evaluator"
+      ],
+      "evidence_refs": [
+        "X001",
+        "X006"
+      ],
+      "expert_status": "pending",
+      "unresolved_fields": [
+        "descriptor definition",
+        "reward calibration"
+      ]
+    },
+    {
+      "metric_id": "D006",
+      "name": "HOMO/LUMO energies and gap",
+      "aliases": [
+        "frontier orbitals",
+        "gap"
+      ],
+      "definition": "Frontier orbital energies and separation that provide qualitative information about redox propensity, electronic structure and CT tuning.",
+      "proposed_roles": [
+        "feature_only",
+        "diagnostic"
+      ],
+      "direction": "none",
+      "threshold": {
+        "value": null,
+        "range": [],
+        "unit": "eV",
+        "status": "no_universal_threshold"
+      },
+      "conditions": [
+        "charge",
+        "multiplicity",
+        "functional",
+        "conformer"
+      ],
+      "acquisition": [
+        "ground-state DFT"
+      ],
+      "evidence_refs": [
+        "X001",
+        "X006"
+      ],
+      "expert_status": "pending",
+      "unresolved_fields": [
+        "calibrated use case"
+      ]
+    },
+    {
+      "metric_id": "D010",
+      "name": "Dipole, polarizability, volume and solvation descriptors",
+      "aliases": [
+        "polarity/shape descriptors"
+      ],
+      "definition": "Descriptors related to polarity, shape, dispersion and possible solubility/partition behavior.",
+      "proposed_roles": [
+        "feature_only",
+        "soft_constraint"
+      ],
+      "direction": "context_dependent",
+      "threshold": {
+        "value": null,
+        "range": [],
+        "unit": "method-specific",
+        "status": "project_calibration_required"
+      },
+      "conditions": [
+        "solvent",
+        "conformer",
+        "descriptor implementation"
+      ],
+      "acquisition": [
+        "ground-state DFT and cheminformatics"
+      ],
+      "evidence_refs": [
+        "X001"
+      ],
+      "expert_status": "pending",
+      "unresolved_fields": [
+        "aggregation and solubility model"
+      ]
+    },
+    {
+      "metric_id": "I001",
+      "name": "Singlet oxygen quantum yield",
+      "aliases": [
+        "PhiDelta"
+      ],
+      "definition": "Experimental Type-II photochemical output; not a molecule-only RL evaluator in this round.",
+      "proposed_roles": [
+        "deferred",
+        "experimental_validation"
+      ],
+      "direction": "maximize",
+      "threshold": {
+        "value": null,
+        "range": [],
+        "unit": "dimensionless",
+        "status": "deferred_until_matched_assay"
+      },
+      "conditions": [
+        "solvent",
+        "oxygenation",
+        "wavelength",
+        "reference method"
+      ],
+      "acquisition": [
+        "experimental assay"
+      ],
+      "evidence_refs": [
+        "X001",
+        "X007"
+      ],
+      "expert_status": "pending",
+      "unresolved_fields": [
+        "matched assay dataset"
+      ]
+    },
+    {
+      "metric_id": "I003",
+      "name": "Photodynamic potency",
+      "aliases": [
+        "light-induced IC50"
+      ],
+      "definition": "Experimental biological endpoint; deferred from molecule-only reward.",
+      "proposed_roles": [
+        "deferred",
+        "experimental_validation"
+      ],
+      "direction": "minimize",
+      "threshold": {
+        "value": null,
+        "range": [],
+        "unit": "assay-specific",
+        "status": "deferred_until_matched_assay"
+      },
+      "conditions": [
+        "cell",
+        "dose",
+        "fluence",
+        "wavelength",
+        "time",
+        "oxygenation"
+      ],
+      "acquisition": [
+        "biological assay"
+      ],
+      "evidence_refs": [
+        "Round2 alignment I003"
+      ],
+      "expert_status": "pending",
+      "unresolved_fields": [
+        "harmonized dataset"
+      ]
+    }
+  ],
+  "metric_decisions": [
+    {
+      "metric_id": "D001",
+      "final_role": "primary_objective",
+      "rank": 1,
+      "ranking_basis": [
+        "Directly linked to usable excitation; cheap enough for high-throughput TD-DFT surrogate/calculation and has a provisional band.",
+        "Current status is proposed, not expert-approved.",
+        "SMILES-level RL needs deterministic or cached evaluation."
+      ],
+      "direction": "target_range",
+      "threshold": {
+        "value": null,
+        "range": [
+          600,
+          800
+        ],
+        "unit": "nm",
+        "status": "provisional_literature_band",
+        "companion": "f >= 0.01 is a provisional screen"
+      },
+      "evaluator_id": "EVAL-D001",
+      "decision_status": "proposed",
+      "evidence_refs": [
+        "X001",
+        "X006"
+      ],
+      "expert_feedback_refs": []
+    },
+    {
+      "metric_id": "D003",
+      "final_role": "hard_constraint",
+      "rank": 2,
+      "ranking_basis": [
+        "Mechanism branch gate prevents contradictory Type-I/Type-II rewards; threshold is evidence-backed but method dependent.",
+        "Current status is proposed, not expert-approved.",
+        "SMILES-level RL needs deterministic or cached evaluation."
+      ],
+      "direction": "context_dependent",
+      "threshold": {
+        "value": null,
+        "range": [
+          0.98,
+          1.13
+        ],
+        "unit": "eV",
+        "status": "provisional_branch_threshold",
+        "note": "Type-II favors above; indirect Type-I may favor below"
+      },
+      "evaluator_id": "EVAL-D003",
+      "decision_status": "proposed",
+      "evidence_refs": [
+        "X001",
+        "X006"
+      ],
+      "expert_feedback_refs": []
+    },
+    {
+      "metric_id": "D004",
+      "final_role": "secondary_objective",
+      "rank": 3,
+      "ranking_basis": [
+        "Mechanistically relevant ISC proxy with a literature heuristic; expensive and state-tracking sensitive.",
+        "Current status is proposed, not expert-approved.",
+        "SMILES-level RL needs deterministic or cached evaluation."
+      ],
+      "direction": "minimize",
+      "threshold": {
+        "value": 0.4,
+        "range": [
+          0,
+          0.4
+        ],
+        "unit": "eV",
+        "status": "provisional_scaffold_local_heuristic"
+      },
+      "evaluator_id": "EVAL-D004",
+      "decision_status": "proposed",
+      "evidence_refs": [
+        "X006",
+        "X008"
+      ],
+      "expert_feedback_refs": []
+    },
+    {
+      "metric_id": "D005",
+      "final_role": "secondary_objective",
+      "rank": 4,
+      "ranking_basis": [
+        "Mechanistically relevant SOC proxy; useful for metal/heavy-atom and ICT comparisons but state-pair specific.",
+        "Current status is proposed, not expert-approved.",
+        "SMILES-level RL needs deterministic or cached evaluation."
+      ],
+      "direction": "maximize",
+      "threshold": {
+        "value": 0.24,
+        "range": [
+          0.24,
+          null
+        ],
+        "unit": "cm^-1",
+        "status": "provisional_state_pair_heuristic"
+      },
+      "evaluator_id": "EVAL-D005",
+      "decision_status": "proposed",
+      "evidence_refs": [
+        "X001",
+        "X006"
+      ],
+      "expert_feedback_refs": []
+    },
+    {
+      "metric_id": "D008",
+      "final_role": "diagnostic",
+      "rank": 5,
+      "ranking_basis": [
+        "Checks whether favorable gaps represent the intended CT state; descriptor standardization is incomplete.",
+        "Current status is proposed, not expert-approved.",
+        "SMILES-level RL needs deterministic or cached evaluation."
+      ],
+      "direction": "context_dependent",
+      "threshold": {
+        "value": null,
+        "range": [],
+        "unit": "method-specific",
+        "status": "unresolved_percentile_or_family_target"
+      },
+      "evaluator_id": "EVAL-D008",
+      "decision_status": "proposed",
+      "evidence_refs": [
+        "X001",
+        "X006"
+      ],
+      "expert_feedback_refs": []
+    },
+    {
+      "metric_id": "D006",
+      "final_role": "feature_only",
+      "rank": 6,
+      "ranking_basis": [
+        "Low-cost electronic feature, but raw frontier energies are method-dependent and not a direct endpoint.",
+        "Current status is proposed, not expert-approved.",
+        "SMILES-level RL needs deterministic or cached evaluation."
+      ],
+      "direction": "none",
+      "threshold": {
+        "value": null,
+        "range": [],
+        "unit": "eV",
+        "status": "no_universal_threshold"
+      },
+      "evaluator_id": "EVAL-D006",
+      "decision_status": "proposed",
+      "evidence_refs": [
+        "X001",
+        "X006"
+      ],
+      "expert_feedback_refs": []
+    },
+    {
+      "metric_id": "D010",
+      "final_role": "soft_constraint",
+      "rank": 7,
+      "ranking_basis": [
+        "May expose polarity/shape risk, but no validated universal target and aggregation is not captured directly.",
+        "Current status is proposed, not expert-approved.",
+        "SMILES-level RL needs deterministic or cached evaluation."
+      ],
+      "direction": "context_dependent",
+      "threshold": {
+        "value": null,
+        "range": [],
+        "unit": "method-specific",
+        "status": "project_calibration_required"
+      },
+      "evaluator_id": "EVAL-D010",
+      "decision_status": "proposed",
+      "evidence_refs": [
+        "X001"
+      ],
+      "expert_feedback_refs": []
+    },
+    {
+      "metric_id": "I001",
+      "final_role": "deferred",
+      "rank": 8,
+      "ranking_basis": [
+        "Scientifically central but requires matched experiment and cannot be inferred reliably from a single DFT value.",
+        "Current status is proposed, not expert-approved.",
+        "SMILES-level RL needs deterministic or cached evaluation."
+      ],
+      "direction": "maximize",
+      "threshold": {
+        "value": null,
+        "range": [],
+        "unit": "dimensionless",
+        "status": "deferred_until_matched_assay"
+      },
+      "evaluator_id": "EVAL-I001",
+      "decision_status": "proposed",
+      "evidence_refs": [
+        "X001",
+        "X007"
+      ],
+      "expert_feedback_refs": []
+    },
+    {
+      "metric_id": "I003",
+      "final_role": "deferred",
+      "rank": 9,
+      "ranking_basis": [
+        "Final biological objective but not available as molecule-only evaluator; reserve for active-learning validation.",
+        "Current status is proposed, not expert-approved.",
+        "SMILES-level RL needs deterministic or cached evaluation."
+      ],
+      "direction": "minimize",
+      "threshold": {
+        "value": null,
+        "range": [],
+        "unit": "assay-specific",
+        "status": "deferred_until_matched_assay"
+      },
+      "evaluator_id": "EVAL-I003",
+      "decision_status": "proposed",
+      "evidence_refs": [
+        "Round2 alignment I003"
+      ],
+      "expert_feedback_refs": []
+    }
+  ],
+  "model_interfaces": [
+    {
+      "model_id": "MODEL-001",
+      "name": "SMILES RL molecular generator",
+      "role": "generator",
+      "status": "proposed",
+      "source": {
+        "type": "local",
+        "location": "not provided",
+        "version": "unknown"
+      },
+      "entrypoint": {
+        "command": "",
+        "script": "",
+        "environment": "",
+        "working_directory": ""
+      },
+      "human_provision": {
+        "model_information_provided": false,
+        "script_location_provided": false,
+        "executable_interface_exposed": false,
+        "parameter_interface_exposed": false,
+        "access_level": "none",
+        "authorized_parameters": [],
+        "prohibited_actions": [
+          "modify production code",
+          "change scientific targets",
+          "change unapproved constraints"
+        ],
+        "provided_by": "computer expert request only",
+        "confirmation_ref": ""
+      },
+      "input_schema": [
+        "SMILES seed or graph state",
+        "RECAP fragment vocabulary",
+        "porphyrin scaffold rule",
+        "reward configuration"
+      ],
+      "output_schema": [
+        "candidate SMILES",
+        "generation log probability",
+        "validity status",
+        "parent/action trace"
+      ],
+      "supported_metrics": [
+        "D001",
+        "D003",
+        "D004",
+        "D005",
+        "D008"
+      ],
+      "parameters": {
+        "representation": "SMILES",
+        "fragmentation": "RECAP",
+        "scaffold": "porphyrin",
+        "policy_parameters": "to be provided"
+      },
+      "validation": {
+        "test_data": "not provided",
+        "metrics": {
+          "valid_smiles": "required",
+          "unique_rate": "required",
+          "scaffold_retention": "required",
+          "reward_direction": "required"
+        },
+        "applicability_domain": "porphyrin-centered SMILES edits",
+        "known_failures": [
+          "invalid valence",
+          "broken aromaticity",
+          "scaffold loss",
+          "out-of-domain substituents"
+        ]
+      },
+      "evidence_refs": [
+        "Materials expert input"
+      ]
+    },
+    {
+      "model_id": "MODEL-002",
+      "name": "SMILES parser/standardizer",
+      "role": "constraint_checker",
+      "status": "proposed",
+      "source": {
+        "type": "package",
+        "location": "not provided",
+        "version": "unknown"
+      },
+      "entrypoint": {
+        "command": "",
+        "script": "",
+        "environment": "",
+        "working_directory": ""
+      },
+      "human_provision": {
+        "model_information_provided": false,
+        "script_location_provided": false,
+        "executable_interface_exposed": false,
+        "parameter_interface_exposed": false,
+        "access_level": "none",
+        "authorized_parameters": [],
+        "prohibited_actions": [],
+        "provided_by": "not provided",
+        "confirmation_ref": ""
+      },
+      "input_schema": [
+        "candidate SMILES"
+      ],
+      "output_schema": [
+        "canonical/standardized SMILES",
+        "validity",
+        "charge",
+        "multiplicity proxy",
+        "molecular graph"
+      ],
+      "supported_metrics": [
+        "structure validity",
+        "scaffold retention",
+        "RECAP edit legality"
+      ],
+      "parameters": {},
+      "validation": {
+        "test_data": "must be supplied",
+        "metrics": {
+          "validity": "100% on smoke-test set required"
+        },
+        "applicability_domain": "organic/coordination structures supported by selected toolkit",
+        "known_failures": [
+          "metals or unusual valence if toolkit unsupported"
+        ]
+      },
+      "evidence_refs": [
+        "Materials expert input"
+      ]
+    },
+    {
+      "model_id": "MODEL-003",
+      "name": "DFT/TD-DFT evaluator",
+      "role": "physics_calculator",
+      "status": "proposed",
+      "source": {
+        "type": "package",
+        "location": "not provided",
+        "version": "unknown"
+      },
+      "entrypoint": {
+        "command": "",
+        "script": "",
+        "environment": "",
+        "working_directory": ""
+      },
+      "human_provision": {
+        "model_information_provided": false,
+        "script_location_provided": false,
+        "executable_interface_exposed": false,
+        "parameter_interface_exposed": false,
+        "access_level": "none",
+        "authorized_parameters": [],
+        "prohibited_actions": [
+          "silently change functional/basis/solvent",
+          "return untracked state assignments"
+        ],
+        "provided_by": "not provided",
+        "confirmation_ref": ""
+      },
+      "input_schema": [
+        "standardized SMILES/3D structure",
+        "charge",
+        "multiplicity",
+        "conformer policy",
+        "method/basis/solvent config"
+      ],
+      "output_schema": [
+        "D001",
+        "D003",
+        "D004",
+        "D005",
+        "D006",
+        "D008",
+        "D010",
+        "convergence status",
+        "uncertainty metadata"
+      ],
+      "supported_metrics": [
+        "D001",
+        "D003",
+        "D004",
+        "D005",
+        "D006",
+        "D008",
+        "D010"
+      ],
+      "parameters": {
+        "method": "pending expert approval",
+        "basis": "pending expert approval",
+        "solvent": "pending expert approval",
+        "max_conformers": "pending"
+      },
+      "validation": {
+        "test_data": "Round 2 calibration set required",
+        "metrics": {
+          "spectral_error": "required",
+          "state-tracking consistency": "required",
+          "convergence": "required"
+        },
+        "applicability_domain": "porphyrin-centered candidates",
+        "known_failures": [
+          "large metal complexes",
+          "near-degenerate states",
+          "open-shell convergence"
+        ]
+      },
+      "evidence_refs": [
+        "X001",
+        "X006"
+      ]
+    },
+    {
+      "model_id": "MODEL-004",
+      "name": "Uncertainty and applicability checker",
+      "role": "uncertainty_model",
+      "status": "proposed",
+      "source": {
+        "type": "local",
+        "location": "not provided",
+        "version": "unknown"
+      },
+      "entrypoint": {
+        "command": "",
+        "script": "",
+        "environment": "",
+        "working_directory": ""
+      },
+      "human_provision": {
+        "model_information_provided": false,
+        "script_location_provided": false,
+        "executable_interface_exposed": false,
+        "parameter_interface_exposed": false,
+        "access_level": "none",
+        "authorized_parameters": [],
+        "prohibited_actions": [],
+        "provided_by": "not provided",
+        "confirmation_ref": ""
+      },
+      "input_schema": [
+        "structure descriptors",
+        "evaluator outputs",
+        "training/calibration domain"
+      ],
+      "output_schema": [
+        "uncertainty",
+        "out-of-domain flag",
+        "manual-review flag"
+      ],
+      "supported_metrics": [
+        "all active proxy metrics"
+      ],
+      "parameters": {
+        "threshold": "pending calibration"
+      },
+      "validation": {
+        "test_data": "required",
+        "metrics": {
+          "coverage": "required",
+          "calibration": "required"
+        },
+        "applicability_domain": "calibration set only",
+        "known_failures": [
+          "no calibration data"
+        ]
+      },
+      "evidence_refs": [
+        "Orchestration skill requirement"
+      ]
+    }
+  ],
+  "reward_components": [
+    {
+      "component_id": "RC-001",
+      "metric_id": "D001",
+      "evaluator_id": "EVAL-D001",
+      "role": "objective",
+      "direction": "target_range",
+      "threshold": {
+        "range": [
+          600,
+          800
+        ],
+        "unit": "nm",
+        "status": "trial",
+        "source": "X001/X006"
+      },
+      "normalization": "piecewise",
+      "weight": 0.35,
+      "uncertainty_penalty": "subtract normalized wavelength/f uncertainty; reject missing state",
+      "missing_policy": "manual_review",
+      "status": "proposed",
+      "evidence_refs": [
+        "X001",
+        "X006"
+      ]
+    },
+    {
+      "component_id": "RC-002",
+      "metric_id": "D003",
+      "evaluator_id": "EVAL-D003",
+      "role": "hard_constraint",
+      "direction": "context_dependent",
+      "threshold": {
+        "type_ii": "T1 >= calibrated oxygen threshold",
+        "type_i": "T1 below selected Type-II threshold only if ET gate is active",
+        "status": "trial",
+        "source": "X001/X006"
+      },
+      "normalization": "none",
+      "weight": 0,
+      "uncertainty_penalty": "reject if branch assignment or oxygen reference is missing",
+      "missing_policy": "reject",
+      "status": "proposed",
+      "evidence_refs": [
+        "X001",
+        "X006"
+      ]
+    },
+    {
+      "component_id": "RC-003",
+      "metric_id": "D004",
+      "evaluator_id": "EVAL-D004",
+      "role": "soft_constraint",
+      "direction": "minimize",
+      "threshold": {
+        "value": 0.4,
+        "unit": "eV",
+        "status": "trial_scaffold_local",
+        "source": "X006"
+      },
+      "normalization": "piecewise",
+      "weight": 0.15,
+      "uncertainty_penalty": "penalize state-assignment uncertainty",
+      "missing_policy": "manual_review",
+      "status": "proposed",
+      "evidence_refs": [
+        "X006",
+        "X008"
+      ]
+    },
+    {
+      "component_id": "RC-004",
+      "metric_id": "D005",
+      "evaluator_id": "EVAL-D005",
+      "role": "soft_constraint",
+      "direction": "maximize",
+      "threshold": {
+        "value": 0.24,
+        "unit": "cm^-1",
+        "status": "trial_state_pair",
+        "source": "X001/X006"
+      },
+      "normalization": "rank",
+      "weight": 0.15,
+      "uncertainty_penalty": "penalize absent SOC state pair",
+      "missing_policy": "manual_review",
+      "status": "proposed",
+      "evidence_refs": [
+        "X001",
+        "X006"
+      ]
+    },
+    {
+      "component_id": "RC-005",
+      "metric_id": "D008",
+      "evaluator_id": "EVAL-D008",
+      "role": "objective",
+      "direction": "context_dependent",
+      "threshold": {
+        "value": null,
+        "status": "calibrate_by_scaffold_family"
+      },
+      "normalization": "rank",
+      "weight": 0.1,
+      "uncertainty_penalty": "penalize out-of-domain CT descriptor",
+      "missing_policy": "manual_review",
+      "status": "proposed",
+      "evidence_refs": [
+        "X001",
+        "X006"
+      ]
+    },
+    {
+      "component_id": "RC-006",
+      "metric_id": "STRUCTURE",
+      "evaluator_id": "EVAL-STRUCTURE",
+      "role": "hard_constraint",
+      "direction": "target_range",
+      "threshold": {
+        "valid_smiles": true,
+        "retain_scaffold": "porphyrin",
+        "recap_legal_edits": true
+      },
+      "normalization": "none",
+      "weight": 0,
+      "uncertainty_penalty": "none",
+      "missing_policy": "reject",
+      "status": "proposed",
+      "evidence_refs": [
+        "Materials expert input"
+      ]
+    }
+  ],
+  "workflow": {
+    "workflow_id": "WF-ORCH-R1",
+    "status": "draft",
+    "objective": "Generate and rank porphyrin-centered candidate SMILES with DFT/TD-DFT proxy rewards for later experimental validation.",
+    "search_space": {
+      "definition": "SMILES molecular generation using RECAP edits around a retained porphyrin scaffold.",
+      "allowed_regions": [
+        "valid standardized SMILES",
+        "porphyrin core retained",
+        "RECAP-compatible fragment substitutions",
+        "charge/multiplicity explicitly represented"
+      ],
+      "forbidden_regions": [
+        "invalid valence/aromaticity",
+        "scaffold deletion unless expert-approved",
+        "untracked metals/charges",
+        "candidates outside evaluator applicability domain"
+      ],
+      "expert_rules": [
+        "Porphyrin is the default scaffold family, not a claim of universal superiority.",
+        "Do not mix Type-I and Type-II triplet-energy rewards in one run."
+      ]
+    },
+    "nodes": [
+      {
+        "node_id": "N001",
+        "action": "load",
+        "model_id": "MODEL-002",
+        "inputs": [
+          "seed SMILES",
+          "RECAP vocabulary",
+          "porphyrin scaffold rule"
+        ],
+        "outputs": [
+          "standardized valid seed set"
+        ],
+        "retry_policy": "manual review after parser failure",
+        "stop_on_failure": true
+      },
+      {
+        "node_id": "N002",
+        "action": "generate",
+        "model_id": "MODEL-001",
+        "inputs": [
+          "valid seed set",
+          "RECAP actions",
+          "policy state"
+        ],
+        "outputs": [
+          "candidate SMILES",
+          "edit trace"
+        ],
+        "retry_policy": "retry invalid action with masked action space; stop after configured failure rate",
+        "stop_on_failure": false
+      },
+      {
+        "node_id": "N003",
+        "action": "check",
+        "model_id": "MODEL-002",
+        "inputs": [
+          "candidate SMILES"
+        ],
+        "outputs": [
+          "validity",
+          "scaffold retention",
+          "RECAP legality",
+          "charge/multiplicity metadata"
+        ],
+        "retry_policy": "reject invalid candidates",
+        "stop_on_failure": false
+      },
+      {
+        "node_id": "N004",
+        "action": "calculate",
+        "model_id": "MODEL-003",
+        "inputs": [
+          "valid candidates",
+          "approved quantum protocol"
+        ],
+        "outputs": [
+          "D001,D003,D004,D005,D006,D008,D010",
+          "convergence and uncertainty"
+        ],
+        "retry_policy": "one controlled retry; then manual review",
+        "stop_on_failure": false
+      },
+      {
+        "node_id": "N005",
+        "action": "check",
+        "model_id": "MODEL-004",
+        "inputs": [
+          "DFT outputs",
+          "calibration domain"
+        ],
+        "outputs": [
+          "uncertainty",
+          "OOD flag",
+          "manual-review flag"
+        ],
+        "retry_policy": "defer OOD candidates",
+        "stop_on_failure": false
+      },
+      {
+        "node_id": "N006",
+        "action": "score",
+        "model_id": "MODEL-001",
+        "inputs": [
+          "hard constraints",
+          "proxy outputs",
+          "uncertainty"
+        ],
+        "outputs": [
+          "branch-specific reward",
+          "component scores"
+        ],
+        "retry_policy": "stop scoring if direction/units fail",
+        "stop_on_failure": true
+      },
+      {
+        "node_id": "N007",
+        "action": "select",
+        "model_id": "MODEL-001",
+        "inputs": [
+          "rewarded valid candidates"
+        ],
+        "outputs": [
+          "Pareto/frontier or top-k candidates",
+          "diversity statistics"
+        ],
+        "retry_policy": "manual review if diversity collapses",
+        "stop_on_failure": false
+      },
+      {
+        "node_id": "N008",
+        "action": "review",
+        "model_id": "MODEL-004",
+        "inputs": [
+          "candidate report",
+          "proxy scores",
+          "failure log"
+        ],
+        "outputs": [
+          "expert feedback request",
+          "experimental shortlist"
+        ],
+        "retry_policy": "pause on critical issue",
+        "stop_on_failure": true
+      },
+      {
+        "node_id": "N009",
+        "action": "export",
+        "model_id": "MODEL-001",
+        "inputs": [
+          "shortlist",
+          "full provenance"
+        ],
+        "outputs": [
+          "SMILES shortlist",
+          "evaluation metadata",
+          "RL training log"
+        ],
+        "retry_policy": "manual retry",
+        "stop_on_failure": true
+      }
+    ],
+    "budget": {
+      "max_candidates": 1000,
+      "max_evaluations": 200,
+      "max_runtime": "not specified",
+      "compute_limit": "not specified"
+    },
+    "stopping_conditions": [
+      "smoke test passes before formal run",
+      "no valid candidates after configured generation budget",
+      "proxy reward plateau defined after calibration",
+      "uncertainty/OOD rate exceeds expert-approved limit",
+      "expert pause or critical constraint conflict",
+      "budget exhausted"
+    ]
+  },
+  "parameter_controls": [
+    {
+      "parameter_id": "PARAM-001",
+      "target": "generator",
+      "name": "policy learning rate",
+      "current_value": null,
+      "allowed_range": [],
+      "allowed_values": [],
+      "adjustment_mode": "fixed",
+      "trigger": "not adjustable until interface and range are provided",
+      "max_change_per_round": null,
+      "rollback_value": null,
+      "change_history": []
+    },
+    {
+      "parameter_id": "PARAM-002",
+      "target": "optimizer",
+      "name": "RL reward weights",
+      "current_value": {
+        "D001": 0.35,
+        "D004": 0.15,
+        "D005": 0.15,
+        "D008": 0.1
+      },
+      "allowed_range": [
+        "expert-approved simplex only"
+      ],
+      "allowed_values": [],
+      "adjustment_mode": "manual",
+      "trigger": "only after calibration and expert review",
+      "max_change_per_round": "not specified",
+      "rollback_value": "previous approved vector",
+      "change_history": []
+    },
+    {
+      "parameter_id": "PARAM-003",
+      "target": "workflow",
+      "name": "mechanism branch",
+      "current_value": "unselected",
+      "allowed_range": [],
+      "allowed_values": [
+        "type_ii",
+        "type_i"
+      ],
+      "adjustment_mode": "manual",
+      "trigger": "domain-expert branch decision",
+      "max_change_per_round": 1,
+      "rollback_value": "unselected",
+      "change_history": []
+    }
+  ],
+  "expert_feedback_history": [],
+  "expert_activity_log": [
+    {
+      "activity_id": "EA-001",
+      "expert_role": "domain_expert",
+      "action_type": "provide",
+      "target_type": "search_space",
+      "target_id": "WF-ORCH-R1",
+      "contribution": "Specified SMILES representation, RECAP fragmentation and porphyrin as a common scaffold.",
+      "decision_or_effect": "Used to define the proposed search space and structure hard constraint.",
+      "evidence_refs": [
+        "Materials expert input"
+      ],
+      "timestamp": "2026-10-31",
+      "status": "recorded"
+    },
+    {
+      "activity_id": "EA-002",
+      "expert_role": "computer_expert",
+      "action_type": "recommend",
+      "target_type": "workflow",
+      "target_id": "WF-ORCH-R1",
+      "contribution": "Requested an RL framework for molecular-generation optimization.",
+      "decision_or_effect": "Registered generator as proposed and created reward/evaluator interfaces; no executable model was assumed.",
+      "evidence_refs": [
+        "Computer expert input"
+      ],
+      "timestamp": "2026-10-31",
+      "status": "recorded"
+    }
+  ],
+  "run_history": [],
+  "version_history": [
+    {
+      "version": "0.1.0-draft",
+      "change": "Initial orchestration derived from Round 2 alignment",
+      "timestamp": "2026-10-31",
+      "status": "draft"
+    }
+  ],
+  "stop_policy": [
+    "pause on unresolved branch conflict",
+    "pause on missing evaluator interface",
+    "pause on invalid reward direction or units",
+    "pause on OOD/uncertainty breach",
+    "pause on expert veto"
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "design_count": 11,
+  "strategies": {
+    "high_to_pool_gradient": 3,
+    "local_diversity": 3,
+    "Pd_Au_contrast": 2,
+    "full_pool_control": 1,
+    "high_performance_centroid": 1,
+    "top5_centroid": 1
+  },
+  "closure_failures": 0,
+  "negative_fraction_rows": 0,
+  "al_order": [
+    "Pd",
+    "Pt",
+    "Cu",
+    "Au",
+    "Ir",
+    "Ce",
+    "Nb",
+    "Cr"
+  ],
+  "project_order": [
+    "Pd",
+    "Pt",
+    "Au",
+    "Cr",
+    "Ir",
+    "Ce",
+    "Cu",
+    "Nb"
+  ],
+  "provisional_guardrail": "No expert-approved element-specific bounds were supplied; only nonnegativity and closure were enforced."
+}

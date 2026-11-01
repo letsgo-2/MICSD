@@ -1,0 +1,154 @@
+review_items:
+  - issue_id: EO-ISSUE-001
+    category: constraint
+    question: "Confirm that the project-selected system uses mass fractions and fixed order [Pd, Pt, Au, Cr, Ir, Ce, Cu, Nb], distinct from round2's atomic/molar example order."
+    affected_ids: [I204, BASIS-ORDER-001, WF-HEA-001]
+    recommendation: "Approve one canonical schema; retain any historical atomic/molar vectors in separate basis/order-tagged fields."
+    evidence_refs: [user_project_specification, E202, E203]
+    required_expert: "materials + computer + project"
+    priority: critical
+    blocking: true
+    status: open
+  - issue_id: EO-ISSUE-002
+    category: metric
+    question: "Define device architecture, catalyst role, active area, reaction, operating conditions, and power-curve protocol for P_peak; confirm availability of matched historical target data."
+    affected_ids: [I201, MODEL-PERF-001, WF-HEA-001]
+    recommendation: "Lock a protocol and condition ID before training/ranking; collect baseline and replicate measurements if historical records are not comparable."
+    evidence_refs: [E201, E212]
+    required_expert: "domain + experimental"
+    priority: critical
+    blocking: true
+    status: open
+  - issue_id: EO-ISSUE-003
+    category: metric
+    question: "Choose whether cost is a co-objective, explicit budget constraint, or diagnostic; define cost basis and denominator for cost-specific power."
+    affected_ids: [I202, I203, I206, RC-COST, RC-PCOST]
+    recommendation: "Provide dated quotes/prices by product form and purity, currency, procurement scale, precious-metal set, and catalyst-mass basis; defer numerical cost cutoff until supplied."
+    evidence_refs: [E201, E205, E206]
+    required_expert: "project + domain + procurement + computer"
+    priority: critical
+    blocking: true
+    status: open
+  - issue_id: EO-ISSUE-004
+    category: constraint
+    question: "Approve closure tolerance/rounding for mass-fraction vectors and define epsilon_presence and whether K=8 applies to nominal, measured bulk, surface, or more than one vector."
+    affected_ids: [I204, I205, RC-COMPOSITION, RC-SUPPORT]
+    recommendation: "Use 1e-6 only as a draft validation convention requiring approval; derive presence threshold from analytical method/detection limit and intended scientific meaning."
+    evidence_refs: [E202, E203, E204]
+    required_expert: "materials + experimental + computer"
+    priority: critical
+    blocking: true
+    status: open
+  - issue_id: EO-ISSUE-005
+    category: model
+    question: "Provide model identity/version, data/features, code or repository, environment, entrypoint, output mapping, validation policy, applicability domain, and execution authorization."
+    affected_ids: [MODEL-PERF-001, MODEL-UNC-001, WF-HEA-001]
+    recommendation: "Register and test candidate model interfaces before use; select model family only after data audit and baseline comparison."
+    evidence_refs: [E204, E217]
+    required_expert: "computer expert"
+    priority: critical
+    blocking: true
+    status: open
+  - issue_id: EO-ISSUE-006
+    category: parameter
+    question: "Will an executable parameter interface be provided, and which parameters/ranges/step limits/rollback values are authorized?"
+    affected_ids: [MODEL-PERF-001, GEN-CANDIDATE-001, PARAM-MODEL-001]
+    recommendation: "Keep automated adjustment disabled until explicit parameter-level authorization and rollback controls are recorded."
+    evidence_refs: []
+    required_expert: "computer expert"
+    priority: high
+    blocking: true
+    status: open
+  - issue_id: EO-ISSUE-007
+    category: constraint
+    question: "Define acceptable phase, ordering, oxide, defect, morphology, and synthesis-failure states."
+    affected_ids: [I207, CHECK-PHASE]
+    recommendation: "Use expert-approved categorical states and characterization protocol; unknown structural state routes to review."
+    evidence_refs: [E209, E213]
+    required_expert: "materials + experimental"
+    priority: high
+    blocking: true
+    status: open
+  - issue_id: EO-ISSUE-008
+    category: threshold
+    question: "Set stability retention protocol/threshold and reproducibility CV policy with replicate design."
+    affected_ids: [I210, I215, EVAL-STABILITY, EVAL-REPEAT]
+    recommendation: "Establish time/cycles, response variable, failure rule, independent replicate count, and measurement/process noise before selecting limits."
+    evidence_refs: [E209, E218]
+    required_expert: "domain + experimental + materials"
+    priority: high
+    blocking: false
+    status: open
+  - issue_id: EO-ISSUE-009
+    category: metric
+    question: "Select any condition-specific secondary activity metric and confirm reaction-specific protocol; decide whether cost-specific power remains active alongside separate objectives."
+    affected_ids: [I203, I208, I209, I211]
+    recommendation: "Keep secondary half-cell metrics diagnostic until condition mapping and comparability are verified; avoid duplicate reward contributions."
+    evidence_refs: [E201, E214]
+    required_expert: "domain + experimental + project"
+    priority: medium
+    blocking: false
+    status: open
+  - issue_id: EO-ISSUE-010
+    category: workflow
+    question: "Specify pilot batch/evaluation budget and approved stopping rule after data and model readiness are established."
+    affected_ids: [WF-HEA-001]
+    recommendation: "Record candidate/evaluation/runtime limits, control/reference samples, human approval gate, and stopping criteria before pilot execution."
+    evidence_refs: [E204, E217]
+    required_expert: "computer + domain + project"
+    priority: high
+    blocking: false
+    status: open
+
+expert_feedback_reconciliation:
+  annotation_date: '2026-10-31'
+  annotation_type: dialogue_based_stage_status_reconciliation
+  requested_by: user
+  source_dialogue: ../../multi_round_dialogue_example_EN.txt
+  source_sha256: 759f71d407a9bb2c542208a75279b8477e0833f2f54ee566e3e990870f96a994
+  interpretation: Stage-scoped working acceptance and task roles from the saved dialogue, following earlier HEA and PS
+    reconciliation rules.
+  itemwise_scientific_verification_completed_by_this_update: false
+  numerical_thresholds_prices_and_model_calibration_certified: false
+  execution_authorized_by_this_update: false
+  historical_version_snapshots_modified: false
+  composition_basis_caution: The project specifies mass fractions. Atomic/molar fraction entries and literature/AL element-order
+    differences require explicit reconciliation; none are silently converted.
+  unanswered_review_questions_and_blocking_flags_preserved: true
+  source_feedback_records:
+  - feedback_id: EO1
+    source_line: 12
+    excerpt: 'Please run the Execution Orchestration Skill. Based on the three output files from the knowledge-alignment
+      stage and the research methods used in this field, which may be identified from the literature or through online
+      research, design a basic task-execution workflow for optimizing the formulation of an eight-component high-entropy
+      alloy catalyst. Provide necessary recommendations, especially recommendations for metric ranking and corresponding
+      threshold guidance, preferably supported by evidence. Starting from existing experimental data, the workflow should
+      explain how to perform data organization, model training, candidate-composition generation, performance evaluation,
+      candidate screening, and result feedback, but it must not assume a specific model or algorithm that has not yet
+      been confirmed. The materials expert provides the following information: the catalyst consists of eight metals—Pd,
+      Pt, Au, Cr, Ir, Ce, Cu, and Nb—and is generally represented as a mass-fraction vector with a fixed element order;
+      each element''s mass fraction must be nonnegative, and the fractions must sum to 1. The optimization problem therefore
+      involves trade-offs among peak power density, cost, and composition constraints. The computer expert would like
+      to construct a model workflow capable of iterative optimization from existing composition-performance data. Add
+      the suffix `round1` to the output filenames.'
+  - feedback_id: EO2
+    source_line: 16
+    excerpt: The materials scientist notes that the organization of metrics in the current workflow still needs adjustment.
+      In addition to peak power density, the workflow may consider normalized cost, composition validity, element-content
+      ranges, differences between candidate compositions and existing experimental samples, model-prediction confidence,
+      and the stability of high-performance formulations. The computer expert confirms that peak power density will be
+      the core performance metric for formulation optimization, while nonnegative mass fractions for the eight elements,
+      a total fraction of 1, and a fixed element order will serve as composition constraints. The `AL` folder is now
+      provided as the implemented model execution path. The model architecture, training method, metric-configuration
+      files, runtime parameters, data interfaces, and candidate-result format must be obtained from the code, documentation,
+      and interface documents in the `AL` folder. Inspect and update the model information and interfaces independently,
+      improve the workflow, and report the proposed execution procedure to me for confirmation. Do not run it without
+      authorization. Clearly specify all output paths. Update the previous round's output files and add the suffix `round2`.
+  updates:
+  - path: review_items/3/recommendation
+    status: Use 1e-6 only as a draft validation convention requiring approval; derive presence threshold from analytical
+      method/detection limit and intended scientific meaning.
+    feedback_refs:
+    - EO1
+    - EO2
+    scope: Record confirmed requirements while preserving missing definitions, approval conditions and execution restrictions.

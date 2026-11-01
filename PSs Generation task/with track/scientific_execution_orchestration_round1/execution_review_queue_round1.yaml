@@ -1,0 +1,119 @@
+{
+  "review_items": [
+    {
+      "issue_id": "EO-ISSUE-001",
+      "category": "model",
+      "question": "Provide the RL generator, parser, RECAP implementation, DFT/TD-DFT evaluator, versions, scripts, environment and executable entrypoints.",
+      "affected_ids": [
+        "MODEL-001",
+        "MODEL-002",
+        "MODEL-003",
+        "MODEL-004"
+      ],
+      "recommendation": "Keep all models proposed and access_level none until interfaces are provided; then run smoke tests.",
+      "evidence_refs": [
+        "Round 2 alignment",
+        "Execution skill sections 5 and 7"
+      ],
+      "required_expert": "computer expert",
+      "priority": "critical",
+      "blocking": true,
+      "status": "open"
+    },
+    {
+      "issue_id": "EO-ISSUE-002",
+      "category": "metric",
+      "question": "Select the active mechanism branch: Type-II or indirect Type-I.",
+      "affected_ids": [
+        "D003",
+        "RC-002",
+        "PARAM-003"
+      ],
+      "recommendation": "Run separate branch configurations; do not combine opposing T1 directions.",
+      "evidence_refs": [
+        "X001",
+        "X006"
+      ],
+      "required_expert": "domain/photochemistry expert",
+      "priority": "critical",
+      "blocking": true,
+      "status": "open"
+    },
+    {
+      "issue_id": "EO-ISSUE-003",
+      "category": "threshold",
+      "question": "Approve TD-DFT method, basis, solvent, state tracking, conformer policy, and calibration thresholds for D001/D003/D004/D005.",
+      "affected_ids": [
+        "D001",
+        "D003",
+        "D004",
+        "D005"
+      ],
+      "recommendation": "Treat 600–800 nm, f>=0.01, 0.98/1.13 eV, <0.4 eV, and >0.24 cm^-1 as provisional trial bands only.",
+      "evidence_refs": [
+        "X001",
+        "X006"
+      ],
+      "required_expert": "computational photochemistry expert",
+      "priority": "critical",
+      "blocking": true,
+      "status": "open"
+    },
+    {
+      "issue_id": "EO-ISSUE-004",
+      "category": "constraint",
+      "question": "Confirm that porphyrin-core retention is a hard search-space constraint and define allowed charge, metal, axial-ligand, and fragment edits.",
+      "affected_ids": [
+        "STRUCTURE",
+        "MODEL-001"
+      ],
+      "recommendation": "Use scaffold-retaining RECAP actions for the first run; preserve rejected candidates for review.",
+      "evidence_refs": [
+        "Materials expert input",
+        "Round 2 S001"
+      ],
+      "required_expert": "materials expert",
+      "priority": "high",
+      "blocking": true,
+      "status": "open"
+    },
+    {
+      "issue_id": "EO-ISSUE-005",
+      "category": "reward",
+      "question": "Approve the proposed reward weights and uncertainty/OOD penalty after a calibration set is available.",
+      "affected_ids": [
+        "RC-001",
+        "RC-003",
+        "RC-004",
+        "RC-005"
+      ],
+      "recommendation": "Use Pareto selection and keep weights manually controlled until proxy-to-experiment calibration exists.",
+      "evidence_refs": [
+        "Round 2 reward_design"
+      ],
+      "required_expert": "computer and domain experts",
+      "priority": "high",
+      "blocking": true,
+      "status": "open"
+    },
+    {
+      "issue_id": "EO-ISSUE-006",
+      "category": "evidence",
+      "question": "Provide a matched experimental dataset linking SMILES, assay conditions, PhiDelta, phototoxicity, dark toxicity and photostability for later surrogate training.",
+      "affected_ids": [
+        "I001",
+        "I003",
+        "I004",
+        "I005"
+      ],
+      "recommendation": "Keep biological endpoints deferred; do not backfill them from DFT proxies.",
+      "evidence_refs": [
+        "Round 2 I001/I003/I004/I005"
+      ],
+      "required_expert": "experimental expert",
+      "priority": "high",
+      "blocking": false,
+      "status": "open"
+    }
+  ]
+}

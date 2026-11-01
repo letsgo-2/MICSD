@@ -1,0 +1,60 @@
+{
+  "review_items": [
+    {
+      "object_id": "C001-C004",
+      "question": "Confirm exact ontology concepts, definitions, synonyms, and stable identifiers for photosensitizer, PDT, ROS, and Type-I/Type-II photochemistry.",
+      "required_expert": "photochemistry/materials expert",
+      "reason": "IUPAC endpoint access and term-level mappings were not verified; close mappings must not be treated as exact.",
+      "priority": "high"
+    },
+    {
+      "object_id": "I001",
+      "question": "Confirm ΦΔ measurement method, reference standard, solvent, oxygenation, excitation wavelength, and whether maximizing it is appropriate for each target application.",
+      "required_expert": "photochemistry and experimental expert",
+      "reason": "ΦΔ is condition-dependent and not universally predictive of cellular efficacy.",
+      "priority": "high"
+    },
+    {
+      "object_id": "I003-I004",
+      "question": "Define a harmonized light-induced potency and dark-toxicity protocol and acceptable control structure.",
+      "required_expert": "experimental pharmacology expert",
+      "reason": "IC50 and viability values are not comparable across cell lines, light doses, and assay times.",
+      "priority": "high"
+    },
+    {
+      "object_id": "I005-I006",
+      "question": "Select operational assays and thresholds for photostability, aggregation, and aqueous dispersibility.",
+      "required_expert": "photophysical/materials expert",
+      "reason": "The papers use heterogeneous or incomplete definitions; direction and thresholds are context-dependent.",
+      "priority": "high"
+    },
+    {
+      "object_id": "I007-I008",
+      "question": "Confirm whether localization and hypoxia performance are objectives, constraints, or diagnostics for the intended application.",
+      "required_expert": "cell-biology and PDT expert",
+      "reason": "Organelle targeting and oxygen dependence require matched biological assays and pathway controls.",
+      "priority": "high"
+    },
+    {
+      "object_id": "I009",
+      "question": "Determine whether fluorescence yield and excited-state lifetime should be modeled as features or diagnostics for the candidate-generation task.",
+      "required_expert": "photophysics and computational expert",
+      "reason": "Their relationship to ROS output is not monotonic without a mechanistic model.",
+      "priority": "medium"
+    },
+    {
+      "object_id": "K001-K005",
+      "question": "Review each structure–property–mechanism–performance claim and distinguish observation, correlation, causal mechanism, proxy, and hypothesis.",
+      "required_expert": "materials, photochemistry, and cell-biology experts",
+      "reason": "The corpus contains author interpretations and context-specific mechanisms that should not be generalized.",
+      "priority": "high"
+    },
+    {
+      "object_id": "ALL",
+      "question": "Provide machine-readable structures and identity normalization for every candidate molecule, including charge, protonation, counterion, stereochemistry, and aggregation state where relevant.",
+      "required_expert": "chemical informatics expert",
+      "reason": "The Markdown corpus does not consistently provide structure identifiers suitable for computation.",
+      "priority": "high"
+    }
+  ]
+}

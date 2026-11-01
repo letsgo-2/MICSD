@@ -1,0 +1,227 @@
+schema_version: "0.4.0"
+round: 1
+language: en
+stage: execution-orchestration
+based_on:
+  - "../knowledge_alignment_round2/round2_alignment_report.md"
+  - "../knowledge_alignment_round2/optimization_metrics.yaml"
+  - "../knowledge_alignment_round2/expert_review_queue_round2.yaml"
+project_goal: "Generate condition-specific photosensitizer candidates with molecularly supported photochemistry and experimentally defensible safety and targeting evaluation."
+representation:
+  molecule: "canonical_and_isomeric_SMILES"
+  fragmentation_rule: "RECAP"
+  required_seed_family: "porphyrin"
+  parallel_families: [phthalocyanine, porphyrin, chlorin, bacteriochlorin, BODIPY_ICT, AIE, metal_heavy_atom, Type_I, targeted_activatable]
+  metadata_required: [scaffold_family, charge, metal_identity, targeting_motif, parent_id, edit_ledger, source_provenance]
+  policy: "Maintain family labels and molecule-condition metadata; do not pool condition-confounded measurements."
+computability_boundary:
+  DFT_computable: [geometry, conformer_energy, orbital_descriptors, vertical_excitation, oscillator_strength, triplet_state_energy, state_character, dipole, charge, approximate_redox, reorganization_energy, selected_dimer_energy, approximate_SOC]
+  DFT_not_sufficient_for: [absolute_PhiDelta, absolute_ROS_rate, cellular_IC50, cellular_EC50, dark_toxicity, phototherapeutic_index, organelle_localization, cellular_photostability, pyroptosis_fraction, cytokine_release, immune_response]
+  rule: "DFT values are molecular descriptors or calibrated proxies; never label them predicted phototoxicity."
+metric_decisions:
+  - metric_id: VALIDITY
+    final_role: hard_constraint
+    rank: 1
+    ranking_basis: ["directly protects scientific validity", "cheap and highly computable", "prevents reward hacking"]
+    direction: pass_fail
+    threshold: {value: "all required checks pass", status: proposed_hard_gate, provenance: execution_recommendation}
+    evaluator_id: EVAL-VALIDITY
+    decision_status: proposed
+    evidence_refs: [R2_report, R2_computability_policy]
+  - metric_id: D001
+    final_role: primary_objective
+    rank: 2
+    ranking_basis: ["direct light-source relevance", "P0 and fixed-protocol eligible", "high candidate discrimination"]
+    direction: target_range
+    threshold: {range: [600, 800], broader_context_range: [600, 850], unit: nm, status: contextual_not_universal, provenance: inherited_R2}
+    evaluator_id: EVAL-TDDFT-SPECTRUM
+    decision_status: proposed
+    evidence_refs: [E_R2_01, E_R2_02]
+  - metric_id: D002
+    final_role: secondary_objective
+    rank: 3
+    ranking_basis: ["computable and useful with D001", "state relevance must be checked", "no universal cutoff"]
+    direction: maximize_conditionally
+    threshold: {value: null, status: no_universal_threshold, provenance: inherited_R2}
+    evaluator_id: EVAL-TDDFT-SPECTRUM
+    decision_status: proposed
+    evidence_refs: [E_R2_03]
+  - metric_id: D003_D004
+    final_role: secondary_objective
+    rank: 4
+    ranking_basis: ["mechanistic relevance", "method and state-definition uncertainty", "eligible after calibration"]
+    direction: context_dependent
+    threshold: {soft_reference_eV: [0.98, 1.75], anchor_eV: 0.98, status: method_and_mechanism_dependent, provenance: inherited_R2}
+    evaluator_id: EVAL-TRIPLET-STATE
+    decision_status: proposed
+    evidence_refs: [E_R2_04, E_R2_05]
+  - metric_id: D006
+    final_role: secondary_objective
+    rank: 5
+    ranking_basis: ["important for Type-I branch", "reaction partner and electrode unresolved", "protocol-specific"]
+    direction: target_range
+    threshold: {value: null, status: reaction_specific, provenance: "expert_protocol_required"}
+    evaluator_id: EVAL-REDOX-ET
+    decision_status: suspended_until_protocol
+    evidence_refs: [E_R2_07, E_R2_08]
+  - metric_id: D008
+    final_role: soft_constraint
+    rank: 6
+    ranking_basis: ["aggregation can invalidate isolated-molecule scores", "relative proxy available", "dimer protocol unresolved"]
+    direction: minimize_relative_binding
+    threshold: {value: null, status: relative_to_family_control, provenance: "expert_protocol_required"}
+    evaluator_id: EVAL-DIMER
+    decision_status: suspended_until_protocol
+    evidence_refs: [E_R2_02, E_R2_10]
+  - metric_id: D007
+    final_role: secondary_objective
+    rank: 7
+    ranking_basis: ["supports ET kinetics", "regime-dependent direction", "protocol eligible only"]
+    direction: minimize_conditionally
+    threshold: {value: null, status: no_universal_threshold, provenance: inherited_R2}
+    evaluator_id: EVAL-REORG
+    decision_status: proposed
+    evidence_refs: [E_R2_09]
+  - metric_id: D005
+    final_role: diagnostic
+    rank: 8
+    ranking_basis: ["family-specific ISC relevance", "low data readiness", "transferability concern"]
+    direction: maximize_conditionally
+    threshold: {value: null, status: no_universal_threshold, provenance: "expert_calibration_required"}
+    evaluator_id: EVAL-SOC
+    decision_status: proposed
+    evidence_refs: [E_R2_06]
+  - metric_id: D009
+    final_role: secondary_objective
+    rank: 9
+    ranking_basis: ["captures spectrum and intensity", "requires extinction calibration", "protocol-defined"]
+    direction: maximize
+    threshold: {value: null, status: contextual_not_universal, provenance: inherited_R2}
+    evaluator_id: EVAL-CAPTURE
+    decision_status: proposed
+    evidence_refs: [E_R2_11]
+  - metric_id: E001
+    final_role: primary_objective_after_experiment
+    rank: 10
+    ranking_basis: ["direct photochemical endpoint", "not DFT-computable", "assay metadata required"]
+    direction: maximize
+    threshold: {value: null, status: source_specific, provenance: inherited_R2}
+    evaluator_id: EVAL-PHI-DELTA-EXPERIMENT
+    decision_status: deferred_to_harmonized_experiment
+    evidence_refs: [E_R2_12, E_R2_13]
+  - metric_id: E002
+    final_role: primary_objective_and_hard_safety_constraint_after_experiment
+    rank: 11
+    ranking_basis: ["application relevance", "cell and protocol confounding", "not DFT-computable"]
+    direction: assay_specific_pareto
+    threshold: {value: null, status: assay_specific_no_pooling, provenance: inherited_R2}
+    evaluator_id: EVAL-CELL-ASSAY
+    decision_status: deferred_to_harmonized_experiment
+    evidence_refs: [E_R2_14, E_R2_15]
+reward:
+  policy: "Validity gate plus normalized uncertainty-aware soft rewards; Pareto archive; branch-specific objectives."
+  formula: "gate * (w_window*S_window + w_mechanism*S_mechanism + w_ET*S_ET + w_antiagg*S_antiagg + w_capture*S_capture - lambda*uncertainty_out_of_domain)"
+  active_initial_components:
+    - {component_id: RC-VALIDITY, metric_id: VALIDITY, role: hard_constraint, direction: pass_fail, normalization: none, weight: 1.0, missing_policy: reject, status: proposed}
+    - {component_id: RC-WINDOW, metric_id: D001, role: objective, direction: target_range, normalization: piecewise, weight: 0.30, uncertainty_penalty: "subtract calibrated standard-error penalty", missing_policy: reject, status: proposed}
+    - {component_id: RC-BRIGHTNESS, metric_id: D002, role: soft_constraint, direction: maximize_conditionally, normalization: rank, weight: 0.15, uncertainty_penalty: "penalize out-of-domain state assignment", missing_policy: manual_review, status: proposed}
+    - {component_id: RC-TRIPLET, metric_id: D003_D004, role: soft_constraint, direction: context_dependent, normalization: custom, weight: 0.20, uncertainty_penalty: "family/method calibration penalty", missing_policy: manual_review, status: proposed}
+    - {component_id: RC-ET, metric_id: D006, role: objective, direction: target_range, normalization: rank, weight: 0.15, uncertainty_penalty: "active only after reaction protocol approval", missing_policy: skip, status: suspended}
+    - {component_id: RC-ANTIAGG, metric_id: D008, role: soft_constraint, direction: minimize_relative_binding, normalization: zscore, weight: 0.10, uncertainty_penalty: "ensemble and control coverage penalty", missing_policy: manual_review, status: suspended}
+    - {component_id: RC-CAPTURE, metric_id: D009, role: objective, direction: maximize, normalization: rank, weight: 0.10, uncertainty_penalty: "calibration uncertainty penalty", missing_policy: skip, status: suspended}
+  biological_reward_policy: "E001/E002 and later endpoints enter only with matched condition records or validated surrogate models with held-out performance, uncertainty, and applicability-domain checks."
+interfaces:
+  - model_id: MODEL-GENERATOR-001
+    name: "RECAP-constrained SMILES RL generator"
+    role: generator
+    status: proposed
+    source: {type: local, location: "not provided", version: "unspecified"}
+    entrypoint: {command: "", script: "", environment: "", working_directory: ""}
+    human_provision: {model_information_provided: false, script_location_provided: false, executable_interface_exposed: false, parameter_interface_exposed: false, access_level: none, authorized_parameters: [], prohibited_actions: ["modify_source_generator", "invent_missing_interface"]}
+    input_schema: [seed_SMILES, scaffold_family, RECAP_edit_rules, branch_constraints, random_seed]
+    output_schema: [candidate_SMILES, edit_ledger, family_label, novelty, duplicate_flag]
+    supported_metrics: [VALIDITY]
+  - model_id: MODEL-TDDFT-001
+    name: "Fixed-protocol geometry and TD-DFT calculator"
+    role: physics_calculator
+    status: proposed
+    source: {type: package_or_server, location: "not provided", version: "unspecified"}
+    entrypoint: {command: "", script: "", environment: "", working_directory: ""}
+    human_provision: {model_information_provided: false, script_location_provided: false, executable_interface_exposed: false, parameter_interface_exposed: false, access_level: none, authorized_parameters: [], prohibited_actions: ["change_functional_without_approval", "claim_cellular_endpoint"]}
+    input_schema: [SMILES, conformer_settings, functional, basis, solvent, state_selection]
+    output_schema: [geometry_status, conformer_energies, excitation_energy, wavelength_nm, oscillator_strength, state_character, uncertainty, failure_reason]
+    supported_metrics: [D001, D002, D003_D004]
+  - model_id: MODEL-RL-001
+    name: "Molecular-generation reinforcement-learning policy"
+    role: optimizer
+    status: proposed
+    source: {type: local, location: "not provided", version: "unspecified"}
+    entrypoint: {command: "", script: "", environment: "", working_directory: ""}
+    human_provision: {model_information_provided: false, script_location_provided: false, executable_interface_exposed: false, parameter_interface_exposed: false, access_level: none, authorized_parameters: [], prohibited_actions: ["auto_adjust_scientific_thresholds", "modify_hard_constraints", "modify_production_scripts"]}
+    input_schema: [state_features, reward_components, action_space, branch_label, budget]
+    output_schema: [policy_update, candidate_batch, uncertainty, diagnostics]
+    supported_metrics: [VALIDITY, D001, D002, D003_D004]
+workflow:
+  workflow_id: WF-EXEC-ROUND1
+  status: draft
+  search_space: {definition: "SMILES molecules generated by RECAP-compatible fragment edits", allowed_regions: [porphyrin_seed_branch, approved_parallel_scaffold_branches], forbidden_regions: [invalid_chemistry, failed_convergence, banned_reactive_groups_after_expert_review], expert_rules: ["preserve scaffold and edit provenance", "do not mix Type-I and Type-II assumptions without branch labels"]}
+  nodes:
+    - {node_id: N01, action: load, model_id: "", inputs: [round2_outputs], outputs: [metric_registry, expert_queue], retry_policy: "fail_with_trace", stop_on_failure: true}
+    - {node_id: N02, action: generate, model_id: MODEL-GENERATOR-001, inputs: [seed_SMILES, RECAP_rules, branch_constraints], outputs: [candidate_SMILES, edit_ledger], retry_policy: "retry_invalid_batch_once", stop_on_failure: false}
+    - {node_id: N03, action: check, model_id: MODEL-GENERATOR-001, inputs: [candidate_SMILES], outputs: [validity, duplicate_status], retry_policy: "reject_candidate", stop_on_failure: false}
+    - {node_id: N04, action: calculate, model_id: MODEL-TDDFT-001, inputs: [valid_SMILES, fixed_protocol], outputs: [D001, D002, D003_D004, uncertainty], retry_policy: "retry_failed_geometry_once_then_manual_review", stop_on_failure: false}
+    - {node_id: N05, action: score, model_id: "", inputs: [validity, metrics, branch_label, uncertainty], outputs: [reward_vector, Pareto_status], retry_policy: "fail_with_trace", stop_on_failure: true}
+    - {node_id: N06, action: select, model_id: MODEL-RL-001, inputs: [reward_vector, Pareto_archive, budget], outputs: [next_batch], retry_policy: "manual_review_if_interface_missing", stop_on_failure: true}
+    - {node_id: N07, action: review, model_id: "", inputs: [pilot_report, expert_queue, diagnostics], outputs: [approved_changes, requested_evidence], retry_policy: "pause", stop_on_failure: true}
+    - {node_id: N08, action: export, model_id: "", inputs: [Pareto_archive, trace, review_decisions], outputs: [round1_results], retry_policy: "fail_with_trace", stop_on_failure: true}
+  budget: {max_candidates: 50, max_evaluations: 50, max_runtime: "pilot only; define after environment provision", compute_limit: "expert approval required"}
+  stopping_conditions: ["three batches without meaningful Pareto improvement", "budget exhaustion", "systematic metric failure", "safety or assay conflict", "invalid rate above 20% triggers pause and review"]
+parameter_control:
+  - {parameter_id: PARAM-RECAP-EDIT-DEPTH, target: generator, name: edit_depth, current_value: 2, allowed_range: [1, 3], adjustment_mode: expert_approved_auto, trigger: "pilot diversity or validity diagnostic", max_change_per_round: 1, rollback_value: 2, change_history: []}
+  - {parameter_id: PARAM-BRANCH-QUOTA, target: workflow, name: family_branch_quota, current_value: "balanced", allowed_values: [balanced, diversity_biased, expert_fixed], adjustment_mode: manual, trigger: "family undercoverage", max_change_per_round: null, rollback_value: balanced, change_history: []}
+  - {parameter_id: PARAM-REWARD-WINDOW-WEIGHT, target: reward, name: w_window, current_value: 0.30, allowed_range: [0.20, 0.40], adjustment_mode: expert_approved_auto, trigger: "approved illumination branch change", max_change_per_round: 0.05, rollback_value: 0.30, change_history: []}
+  - {parameter_id: PARAM-THRESHOLDS, target: constraint, name: "scientific_thresholds", current_value: "fixed contextual references", allowed_range: [], adjustment_mode: fixed, trigger: "expert approval only", max_change_per_round: null, rollback_value: "fixed contextual references", change_history: []}
+review_policy:
+  inherited_round2_items: [R2RQ001, R2RQ002, R2RQ003, R2RQ004, R2RQ005, R2RQ006, R2RQ007, R2RQ008, R2RQ009]
+  required_before_formal_run: [R2RQ001, R2RQ002, R2RQ003, R2RQ005, R2RQ006, R2RQ008]
+  feedback_actions: [approve, revise, reject, request_evidence, request_test, pause, resume]
+
+expert_feedback_reconciliation:
+  annotation_date: '2026-10-31'
+  annotation_type: dialogue_based_stage_status_reconciliation
+  requested_by: user
+  source_dialogue: ../../multi_round_dialogue_example_EN.txt
+  source_sha256: ebb57f5513ccd2ee131a9971088e81acaa8e6b610f46e7df5afea5890dbc12d8
+  interpretation: Stage-scoped working acceptance from the saved dialogue and subsequent adoption, following the earlier
+    PS reconciliation rules.
+  itemwise_scientific_validation_completed_by_this_update: false
+  numerical_values_units_and_thresholds_certified_by_this_update: false
+  execution_authorized_by_this_update: false
+  existing_disputed_entries_preserved: true
+  unanswered_review_items_and_blocking_flags_preserved: true
+  historical_execution_trace_events_modified: false
+  source_feedback_records:
+  - feedback_id: PS-EO-R1-INPUTS
+    source_line: 12
+    excerpt: 'Please run the Execution Orchestration Skill. Based on the three output files from the knowledge-alignment
+      stage, design a task-execution workflow. Provide necessary recommendations, especially recommendations for metric
+      ranking and corresponding threshold guidance, preferably supported by evidence. The materials expert provides the
+      following information: molecules are generally represented using SMILES, RECAP is used as the molecular fragmentation
+      rule, and porphyrin is a commonly used scaffold. The computer expert intends to construct a reinforcement-learning
+      framework for molecular-generation optimization. Add the suffix `round1` to the output filenames.'
+  updates:
+  - path: metric_decisions/4/threshold/provenance
+    status: expert_protocol_required
+    feedback_refs:
+    - PS-EO-R1-INPUTS
+    scope: The missing protocol or calibration remains required; no numerical threshold is approved.
+  - path: metric_decisions/5/threshold/provenance
+    status: expert_protocol_required
+    feedback_refs:
+    - PS-EO-R1-INPUTS
+    scope: The missing protocol or calibration remains required; no numerical threshold is approved.
+  - path: metric_decisions/7/threshold/provenance
+    status: expert_calibration_required
+    feedback_refs:
+    - PS-EO-R1-INPUTS
+    scope: The missing protocol or calibration remains required; no numerical threshold is approved.

@@ -1,0 +1,143 @@
+project: "Round 2 execution orchestration for eight-metal HEA catalyst"
+status: "open; orchestration is not authorized to execute"
+review_items:
+  - issue_id: EO2-001
+    category: "workflow"
+    question: "Confirm this revised proposal and explicitly authorize or decline any execution. Until explicit authorization, no training, inference, candidate generation, LLM/API calls, file output from AL, or experiments may occur."
+    affected_ids: ["WF-AL-HEA-ROUND2-PROPOSAL", "AL-MODEL-GBR-001", "AL-LLM-GENERATOR-001", "AL-CANDIDATE-PIPELINE-001"]
+    recommendation: "Review report and select scope for any permitted next run; state allowed API/model access and experiment budget explicitly."
+    evidence_refs: ["USER:execution-orchestration-round2"]
+    required_expert: "User/project owner"
+    priority: "critical"
+    blocking: true
+    status: "open"
+  - issue_id: EO2-002
+    category: "constraint"
+    question: "Confirm mass composition basis for each source dataset and approve canonical column migration to [Pd, Pt, Au, Cr, Ir, Ce, Cu, Nb]. What closure tolerance and per-element bounds apply?"
+    affected_ids: ["M_COMP_VALID", "M_ELEMENT_BOUNDS", "N02", "N03", "PC-ORDER-001"]
+    recommendation: "Retain original source records/order/basis; convert only verified atom-fraction data using versioned weights; derive no basis from sum=1 alone."
+    evidence_refs: ["USER:materials-scientist-round2", "AL:data/Data.xlsx", "EA-KA:E003"]
+    required_expert: "Materials and analytical-characterization experts"
+    priority: "critical"
+    blocking: true
+    status: "open"
+  - issue_id: EO2-003
+    category: "metric"
+    question: "Confirm target device, reaction, electrode role, area basis, operating conditions, polarization protocol, and the unit/definition of peak power in Data.xlsx max_power."
+    affected_ids: ["M_POWER", "AL-MODEL-GBR-001"]
+    recommendation: "Do not treat max_power as peak areal device power until linked to target-compatible measured protocol metadata."
+    evidence_refs: ["EA-KA:E001", "EA-KA:E002", "AL:data/Data.xlsx:Result 1", "WEB:FCTESQA2010"]
+    required_expert: "Electrochemical-device expert and data owner"
+    priority: "critical"
+    blocking: true
+    status: "open"
+  - issue_id: EO2-004
+    category: "evidence"
+    question: "Reconcile the 703 source rows, 396 abandoned rows and 307 unflagged rows; establish why each row is included/excluded, and identify physical measurements versus simulated/virtual outputs in the 120-row sample and 160-row pool."
+    affected_ids: ["AL-MODEL-GBR-001", "N01", "N02", "N04"]
+    recommendation: "Build a provenance/status ledger; retain failures for audit; exclude them from primary performance labels unless separately modeling failures. Keep GBR/LLM outputs out of measured labels."
+    evidence_refs: ["AL:data/Data.xlsx:Result 1", "AL:data/README.md", "AL:README.md", "AL:outputs/total_examples_pool.csv"]
+    required_expert: "Data owner and experimental expert"
+    priority: "critical"
+    blocking: true
+    status: "open"
+  - issue_id: EO2-005
+    category: "model"
+    question: "Approve whether the existing GBR training recipe (random 80/20 row split, 120 target-sorted/thinned rows, 512 estimators/depth 3) may be evaluated as a baseline, and provide held-out evaluation/acceptance criteria."
+    affected_ids: ["AL-MODEL-GBR-001", "N05", "N06"]
+    recommendation: "Do not treat current reported split as sufficient validation; prefer group/batch/device/time separation and evaluate calibration/applicability as well as error."
+    evidence_refs: ["AL:catalyst_active_learning_runnable/catalyst_al/model.py", "AL:data/README.md", "WEB:Borg2023"]
+    required_expert: "Computer expert and data scientist"
+    priority: "critical"
+    blocking: true
+    status: "open"
+  - issue_id: EO2-006
+    category: "model"
+    question: "Authorize exact API provider/model/base URL and call budget before invoking LLM generation or committee prediction. Is the remote provider permitted to receive composition and experiment records?"
+    affected_ids: ["AL-LLM-GENERATOR-001", "AL-CANDIDATE-PIPELINE-001"]
+    recommendation: "No API calls until user explicitly authorizes provider, data disclosure and maximum spend/calls. Do not include secrets in configuration outputs."
+    evidence_refs: ["AL:catalyst_active_learning_runnable/catalyst_al/providers.py", "AL:catalyst_active_learning_runnable/.env.example", "AL:README.md"]
+    required_expert: "User/project owner and computer expert"
+    priority: "critical"
+    blocking: true
+    status: "open"
+  - issue_id: EO2-007
+    category: "metric"
+    question: "Approve whether the hard-coded normalized-cost proxy is retained only for comparison or replaced; specify public-price vintage/material forms or actual precursor-cost data and any budget cap."
+    affected_ids: ["M_NORMALIZED_COST", "M_ACTUAL_COST", "AL:catalyst_active_learning_runnable/catalyst_al/costs.py"]
+    recommendation: "Do not interpret current hard-coded prices as current/actual cost; actual cost stays null without quotes, yield and cost basis."
+    evidence_refs: ["AL:catalyst_active_learning_runnable/catalyst_al/costs.py", "EA-KA:E006-E015"]
+    required_expert: "Cost/procurement expert and domain expert"
+    priority: "high"
+    blocking: true
+    status: "open"
+  - issue_id: EO2-008
+    category: "metric"
+    question: "Define the stability metric: independent formulation reproducibility across batches/devices, long-term electrochemical durability, or both? Specify replicate plan, stress protocol and threshold."
+    affected_ids: ["M_FORMULATION_STABILITY", "AL-REPLICATE-STABILITY-001"]
+    recommendation: "Keep formulation reproducibility and operational lifetime as separate metrics; do not derive either from prediction dispersion."
+    evidence_refs: ["USER:materials-scientist-round2", "EA-KA:E001"]
+    required_expert: "Materials and experimental experts"
+    priority: "high"
+    blocking: true
+    status: "open"
+  - issue_id: EO2-009
+    category: "metric"
+    question: "Approve novelty-distance representation after mass-order migration: mass-space Euclidean, log-ratio/Aitchison transform with zeros policy, or the current CLR epsilon=1e-6; define measured reference pool and whether distance affects ranking or only display."
+    affected_ids: ["M_NOVELTY_DISTANCE", "AL-CANDIDATE-PIPELINE-001"]
+    recommendation: "Expose distance and transform settings; do not transplant current epsilon or thresholds without evaluating sensitivity and zero semantics."
+    evidence_refs: ["AL:catalyst_active_learning_runnable/catalyst_al/sampling.py", "EA-KA:E003"]
+    required_expert: "Computer expert and domain expert"
+    priority: "high"
+    blocking: false
+    status: "open"
+  - issue_id: EO2-010
+    category: "metric"
+    question: "Should LLM committee standard deviation be reported as prompt-dispersion only, and what calibrated confidence/uncertainty measure is accepted for candidate gates?"
+    affected_ids: ["M_MODEL_CONFIDENCE", "AL-LLM-GENERATOR-001", "AL-MODEL-GBR-001"]
+    recommendation: "Do not call current LLM std confidence or GBR point predictions confidence. Validate calibration/applicability before using uncertainty to reject/advance candidates."
+    evidence_refs: ["AL:catalyst_active_learning_runnable/catalyst_al/providers.py", "AL:catalyst_active_learning_runnable/catalyst_al/model.py"]
+    required_expert: "Computer expert and model owner"
+    priority: "high"
+    blocking: true
+    status: "open"
+  - issue_id: EO2-011
+    category: "reward"
+    question: "Approve objective policy: Pareto trade-off of peak power and actual cost, or an explicitly weighted scalar? Should normalized proxy cost or PGM loading enter the active objective?"
+    affected_ids: ["M_POWER", "M_ACTUAL_COST", "M_NORMALIZED_COST", "M_PGM", "AL:catalyst_active_learning_runnable/catalyst_al/pareto.py"]
+    recommendation: "Default proposal keeps power and actual cost separate and does not inherit performance_weight=0.6 or randomized improvement targets."
+    evidence_refs: ["EA-KA:E001", "WEB:Xu2024", "AL:catalyst_active_learning_runnable/config.json"]
+    required_expert: "Domain expert and computer expert"
+    priority: "high"
+    blocking: true
+    status: "open"
+  - issue_id: EO2-012
+    category: "workflow"
+    question: "Approve candidate batch size, experiment budget, replicate/control allocation, and stopping rule after condition and data reconciliation."
+    affected_ids: ["WF-AL-HEA-ROUND2-PROPOSAL"]
+    recommendation: "Do not inherit AL default 20,000 candidate pool, 8 virtual queries, 3 retained rows, or 200 power threshold as approved scientific values."
+    evidence_refs: ["AL/catalyst_active_learning_runnable/config.json", "AL/README.md"]
+    required_expert: "User/project owner and lab lead"
+    priority: "high"
+    blocking: true
+    status: "open"
+  - issue_id: EO2-013
+    category: "evidence"
+    question: "Verify CRESt recipe precision and cost-specific metric from supplementary data before using its 5.6x/9.3x or 325 mW cm^-2 results as quantitative targets."
+    affected_ids: ["M_POWER", "M_NORMALIZED_COST"]
+    recommendation: "Treat published values as conditional reference context; do not back-calculate missing recipe fractions or cost equation."
+    evidence_refs: ["EA-KA:E001", "EA-KA:E002"]
+    required_expert: "Evidence curator and domain expert"
+    priority: "medium"
+    blocking: false
+    status: "open"
+  - issue_id: EO2-014
+    category: "workflow"
+    question: "Approve whether a schema migration patch is allowed in the AL package after this proposal; it currently assumes the old element order and lacks the new stability/novelty/confidence output fields."
+    affected_ids: ["AL:catalyst_active_learning_runnable/catalyst_al/costs.py", "AL:catalyst_active_learning_runnable/catalyst_al/providers.py", "AL:catalyst_active_learning_runnable/catalyst_al/data.py"]
+    recommendation: "This orchestration task only inspected and documented. Treat any code/config change as a separate authorized implementation action after schema decisions."
+    evidence_refs: ["AL source inspection", "USER:execution-orchestration-round2"]
+    required_expert: "User/project owner and computer expert"
+    priority: "critical"
+    blocking: true
+    status: "open"
